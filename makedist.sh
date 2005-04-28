@@ -4,14 +4,16 @@
 # making sure only source and required files to build are put into the
 # tarball (i.e. no .svn dirs, no oolite.app dir etc.)
 #
-rm -rf ~/oolite-snapshot
-mkdir ~/oolite-snapshot
-cp *.m *.c *.h GNU* README.TXT PORTING.TXT ~/oolite-snapshot
+rm -rf ~/oolite-src
+rm -rf ~/oolite-data
+mkdir ~/oolite-src
+mkdir ~/oolite-data
+cp *.m *.c *.h GNU* README.TXT PORTING.TXT ~/oolite-src
 
 # we don't cp -r because then we'd get all the .svn stuff
 # so do it a dir at a time and copy specific files
 SRCDIR=Resources
-RESDIR=~/oolite-snapshot/Resources
+RESDIR=~/oolite-data/Resources
 mkdir $RESDIR
 mkdir $RESDIR/AIs
 cp $SRCDIR/AIs/*.plist $RESDIR/AIs
@@ -30,5 +32,6 @@ cp $SRCDIR/Textures/*.png $RESDIR/Textures
 cp $SRCDIR/Info-Oolite.plist $RESDIR
 
 cd ~/
-tar zcvf oolite-snapshot.tar.gz oolite-snapshot
+tar zcvf oolite-src-beta-`date +%Y%m%d`.tar.gz oolite-src
+tar zcvf oolite-data-beta-`date +%Y%m%d`.tar.gz oolite-data
 
