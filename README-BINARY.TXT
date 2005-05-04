@@ -3,10 +3,11 @@ Oolite Binary Release
 
 To run Oolite, you need the following pre-requisites:
 
-- Your distro must support ALSA (Advanced Linux Sound Architecture).
-ALSA is the mainstream 2.6.x sound implementation, so all modern
-distros should support it. You may or may not be lucky with a 2.4.x
-based system.
+- Your distro must support SDL (Simple DirectMedia Layer), or if it
+doesn't you need to install the SDL shared libaries. I would imagine
+all desktop distros have SDL by now. Currently, SDL is only used for
+sound and music. (Graphics and input will be moved to SDL eventually,
+but that's a big job).
 
 - You must have GNUstep installed. You don't have to run a GNUstep
 desktop (I don't, I never have). I recommend using the latest
