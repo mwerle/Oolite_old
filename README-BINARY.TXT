@@ -43,10 +43,23 @@ weirdness. Include any logs in the terminal window.
 NOTE: "Validation failed!" messages are expected when processing the
 XML plists (property lists). The property list is still getting loaded;
 it's not the cause of any troubles you may be having.
-There are also a couple of X-Windows errors on startup (this is almost
-certainly why the splash screen doesn't show) - this doesn't affect
-game play. It doesn't cause textures not to load, fonts not to display
-or your dog to vomit on the carpet.
+
+Dependencies
+============
+Requires:
+GNUstep - Foundation and AppKit. (Get the GNUstep starter from
+http://www.gnustep.org, or from your distro's packages). Sadly, RedHattish
+types of distros don't have GNUstep packages, but it's easy to build from
+source. Just make sure you 'up2date -i gcc-objc' first.
+
+SDL - Most distros will have SDL by default. However...
+SDL_gfx - Some distros don't have it by default. On a RedHattish or
+Fedora-like system, 'up2date -i SDL_gfx'. If you want to build oolite
+from source, also 'up2date -i SDL_gfx-devel'. RPMs are available 
+at http://dag.wieers.com/packages/SDL_gfx/ if that gives you no joy.
+
+Talking about it, reporting bugs etc.
+=====================================
 
 The oolite forums can be found here:
 
