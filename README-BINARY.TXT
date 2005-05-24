@@ -63,5 +63,5 @@ Talking about it, reporting bugs etc.
 
 The oolite forums can be found here:
 
-http://aegidean.org/bb
+http://aegidian.org/bb
 
