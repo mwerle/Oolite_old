@@ -1,0 +1,22 @@
+{
+    MyFirstApp = {
+	NSDefaultOpenDirectory = "/home/winston/ObjC/TestApp";
+	NSMenuLocations = {
+	    "\033" = "540 718 93 46 0 0  1536 1200 ";
+	};
+    };
+    NSGlobalDomain = {
+    };
+    gdnc = {
+    };
+    gltest = {
+	NSDefaultOpenDirectory = "/home/winston/ObjC/gl";
+    };
+    gnustep_sndd = {
+    };
+    gpbs = {
+    };
+    oolite = {
+	NSDefaultOpenDirectory = "/home/winston/oo/trunk";
+    };
+}

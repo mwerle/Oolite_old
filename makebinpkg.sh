@@ -8,4 +8,15 @@ rm -rf Music/.svn
 rm -rf Sounds/.svn
 rm -rf Textures/.svn
 cd ../../..
-tar zcvf ~/oolite-x86-binary-`date +%Y%m%d`.tar.gz oolite.app README-BINARY.TXT
+
+rm -rf $HOME/oolite-installer
+mkdir -p $HOME/oolite-installer
+tar cvf ~/oolite-installer/oolite-app.tar oolite.app
+
+cd SelfContainedInstaller
+cp install README.TXT PLAYING.TXT oolite ~/oolite-installer
+tar cvf ~/oolite-installer/oolite-deps.tar oolite-deps
+
+cd ~/
+tar zcvf oolite-x86-installer-`date +%Y%m%d`.tar.gz oolite-installer
+

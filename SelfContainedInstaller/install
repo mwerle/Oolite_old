@@ -1,0 +1,32 @@
+#!/bin/sh
+case $1 in
+   "systemwide")
+      INSTALLDIR=/usr/local
+      BINDIR=$INSTALLDIR/bin
+      ;;
+   "homedir")
+      INSTALLDIR=$HOME
+      BINDIR=$HOME
+      ;;
+   *)
+      echo "Usage:"
+      echo "./install systemwide     - installs in /usr/local"
+      echo "./install homedir        - installs in your home directory"
+      exit
+esac
+
+echo "Installing Oolite-Linux in $INSTALLDIR"
+echo "Unpacking Oolite dependencies package..."
+tar xf oolite-deps.tar -C $INSTALLDIR
+echo "Unpacking Oolite..."
+tar xf oolite-app.tar -C $INSTALLDIR
+echo "Creating Oolite run script..."
+echo "#!/bin/sh" > $BINDIR/oolite
+echo "export OOLITE_ROOT=$INSTALLDIR" >> $BINDIR/oolite
+cat oolite >>$BINDIR/oolite
+chmod +x $BINDIR/oolite
+
+echo "Complete. To run oolite-linux, run $BINDIR/oolite or create a desktop"
+echo "shortcut to $BINDIR/oolite and double-click on the icon."
+echo ""
+

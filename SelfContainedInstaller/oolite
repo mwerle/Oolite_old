@@ -1,0 +1,28 @@
+#
+# Oolite Run Script
+# This is to run Oolite with the standalone Dependencies Pack.
+#
+# Usage: ./oolite
+# Dylan Smith, 2005-09-03
+#
+
+# Oolite fails with a black message box with no text with the title
+# 'Critical' if this doesn't exist.
+mkdir -p $HOME/GNUstep/Library
+
+# Set GNUstep environment.
+export GNUSTEP_FLATTENED=yes
+export GNUSTEP_HOST=i686-pc-linux-gnu
+export GNUSTEP_HOST_CPU=ix86
+export GNUSTEP_HOST_OS=linux-gnu
+export GNUSTEP_HOST_VENDOR=pc
+export GNUSTEP_ROOT=$OOLITE_ROOT/oolite-deps/GNUstep
+export GNUSTEP_PATHLIST=$OOLITE_ROOT/oolite-deps/GNUstep:$OOLITE_ROOT/oolite-deps/GNUstep/Local:$OOLITE_ROOT/oolite-deps/GNUstep/System
+export GNUSTEP_USER_ROOT=$OOLITE_ROOT/oolite-deps/GNUstep
+export GNUSTEP_SYSTEM_ROOT=$OOLITE_ROOT/oolite-deps/GNUstep/System
+export GNUSTEP_NETWORK_ROOT=$OOLITE_ROOT/oolite-deps/GNUstep/Local
+export GNUSTEP_LOCAL_ROOT=$OOLITE_ROOT/oolite-deps/GNUstep/Local
+export LD_LIBRARY_PATH=$OOLITE_ROOT/oolite-deps/lib
+cd $OOLITE_ROOT/oolite.app
+./oolite
+
