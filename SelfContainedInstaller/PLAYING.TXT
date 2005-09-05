@@ -107,8 +107,10 @@ Expansion Packs at the Oosat website:
 
 http://capnhack.com/hosting/oolite/Oolite/OoSat.html
 
-To install an OXP, create the directory 'AddOns' in your home directory.
-Download the OXP and put it in the AddOns directory, and run Oolite.
+To install OXPs, if you installed Oolite system-wide, put them in
+/usr/local/AddOns. If you installed into your home directory, put them
+in $HOME/AddOns. (Note: in future releases, it will be also possible to
+use your home directory in the case of system-wide installs).
 
 There are OXPs for additional missions, new ships and new game elements.
 
