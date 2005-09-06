@@ -5,6 +5,14 @@
 # Usage: ./oolite
 # Dylan Smith, 2005-09-03
 #
+if [ ! $OOLITE_ROOT ]
+then
+   echo "Oops, it looks like you didn't read README.TXT..."
+   echo "Oolite-Linux isn't yet installed. README.TXT contains installation"
+   echo "instructions. Might be an idea to read it. Consider this a gentle LART."
+
+   exit
+fi
 
 # Oolite fails with a black message box with no text with the title
 # 'Critical' if this doesn't exist.
