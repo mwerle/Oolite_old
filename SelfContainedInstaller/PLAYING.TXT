@@ -45,9 +45,12 @@ CONTROLS
 
 Game control
 ------------
-F12      Toggle full screen
-F11      Change screen resolution (800x600, 1024x768 and native display mode)
-P        Pause game
+(Note that screen mode/quit can also be selected from the Game Control Menu)
+F2          Game control menu (load, save etc.) - only when docked
+F12         Toggle full screen
+F11         Change screen resolution (800x600, 1024x768 and native display mode)
+P           Pause game
+Shift-Esc   Quit game
 
 In-flight controls
 ------------------
@@ -88,6 +91,7 @@ Esc            Launch escape capsule
 
 Finding your way around, trade and equipment
 --------------------------------------------
+Either the number key or F-key listed below:
 1              Launch from dock (only while docked)
 2              Load/Save game and game options (only while docked)
 3              Buy equipment (only while docked)
