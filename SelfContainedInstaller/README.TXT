@@ -1,8 +1,14 @@
 Oolite Binary Release
 =====================
 
-Firstly, to head off the inevitable question 'how do you make it go full
-screen?', press F12!
+Note for users of beta 20050904
+===============================
+Newer versions have a reorganized directory tree. You're strongly
+suggested to rm -rf oolite.app and oolite-deps before installing
+the new version - the old ones won't get overwritten!
+
+Installing
+==========
 
 To run Oolite, you need the following pre-requisites:
 
@@ -46,6 +52,17 @@ copied to your home directory. To run, type ./oolite in your home directory.
 
 You can also create a desktop shortcut icon to this script.
 
+Updating to new versions
+========================
+Now you have installed oolite, you can update it by running the
+oolite-update script that is installed either in your homedir or in
+/usr/local/bin depending on the type of installation you did. Running
+this updater will be considerably faster than downloading a new package.
+It uses rsync, and so can update from any version to any later
+version - you don't need to have the immediately previous release
+to update to a given package. When it completes, it will tell you
+what version it was when it started, and what version you now have.
+
 Things that get created
 =======================
 When you run oolite for the first time, wherever you installed it, a GNUstep
@@ -59,6 +76,9 @@ Saved games currently are all saved in oolite-saves in your home directory.
 You can copy any existing .oolite-save files (for example, from a Macintosh)
 into this directory, and they will appear in the 'Load Commander' screen
 in the game.
+However, if you decide to install add ons, make sure if you buy an
+add on ship you don't remove it, because your save game will stop working
+if the ship it's based on doesn't exist!
 
 What are the dependencies that are packaged?
 ============================================
@@ -119,4 +139,8 @@ Credits
 =======
 Original OS X game: Giles Williams
 Linux port: David Taylor, Giles Williams and Dylan Smith
+
+...and of course the GNUstep project and the SDL, SDL_mixer and SDL_gfx
+people, without which the Linux and Win32 ports would not have been
+possible.
 

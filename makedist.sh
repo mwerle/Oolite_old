@@ -4,6 +4,12 @@
 # making sure only source and required files to build are put into the
 # tarball (i.e. no .svn dirs, no oolite.app dir etc.)
 #
+if [ ! $1 ]
+then
+   echo "Usage: makedist.sh <release>"
+   exit
+fi
+
 rm -rf ~/oolite-src
 rm -rf ~/oolite-data
 mkdir ~/oolite-src
@@ -32,6 +38,6 @@ cp $SRCDIR/Textures/*.png $RESDIR/Textures
 cp $SRCDIR/Info-Oolite.plist $RESDIR
 
 cd ~/
-tar zcvf oolite-src-beta-`date +%Y%m%d`.tar.gz oolite-src
-tar zcvf oolite-data-beta-`date +%Y%m%d`.tar.gz oolite-data
+tar zcvf oolite-src-$1.tar.gz oolite-src
+tar zcvf oolite-data-$1.tar.gz oolite-data
 

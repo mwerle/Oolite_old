@@ -45,10 +45,7 @@ CONTROLS
 
 Game control
 ------------
-(Note that screen mode/quit can also be selected from the Game Control Menu)
-F2          Game control menu (load, save etc.) - only when docked
-F12         Toggle full screen
-F11         Change screen resolution (800x600, 1024x768 and native display mode)
+F2          Game control menu (load, save, fullscreen etc.) - only when docked
 P           Pause game
 Shift-Esc   Quit game
 
@@ -111,10 +108,12 @@ Expansion Packs at the Oosat website:
 
 http://capnhack.com/hosting/oolite/Oolite/OoSat.html
 
-To install OXPs, if you installed Oolite system-wide, put them in
-/usr/local/AddOns. If you installed into your home directory, put them
-in $HOME/AddOns. (Note: in future releases, it will be also possible to
-use your home directory in the case of system-wide installs).
+To install an OXP, put the OXP in the Oolite top-level directory
+(i.e. /usr/local/Oolite if you installed system-wide, or $HOME/Oolite
+if you installed in your home directory). Next time you run
+Oolite, the OXP will be loaded.
 
-There are OXPs for additional missions, new ships and new game elements.
+Caution: if you save a game after buying a ship that was in an OXP,
+if you subsequently remove the OXP, that commander file will be rendered
+useless!
 

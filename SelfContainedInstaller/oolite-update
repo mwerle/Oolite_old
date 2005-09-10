@@ -1,0 +1,16 @@
+#
+# Oolite Updater Script
+# Dylan Smith, 2005-09-10
+#
+cd $OOLITE_ROOT/$TOPLEVEL
+CURRENTVER=`cat release.txt`
+rsync -rl rsync://rsync.alioth.net/oolite-linux/* .
+NEWVER=`cat release.txt`
+
+if [ $CURRENTVER != $NEWVER ]
+then
+   echo "Oolite was upgraded from $CURRENTVER to $NEWVER"
+   exit
+fi
+echo "Oolite was already up to date - no changes made"
+
