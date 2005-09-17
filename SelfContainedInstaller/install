@@ -22,6 +22,8 @@ echo "Unpacking Oolite dependencies package..."
 tar xf oolite-deps.tar -C $INSTALLDIR/$TOPLEVEL
 echo "Unpacking Oolite..."
 tar xf oolite-app.tar -C $INSTALLDIR/$TOPLEVEL
+echo "Creating AddOns directory in $INSTALLDIR/$TOPLEVEL/AddOns"
+mkdir -p $INSTALLDIR/$TOPLEVEL/AddOns
 echo "Creating Oolite run script..."
 echo "#!/bin/sh" > $BINDIR/oolite
 echo "export OOLITE_ROOT=$INSTALLDIR" >> $BINDIR/oolite

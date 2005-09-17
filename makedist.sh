@@ -30,7 +30,7 @@ cp $SRCDIR/Images/*.png $RESDIR/Images
 mkdir $RESDIR/Models
 cp $SRCDIR/Models/*.dat $RESDIR/Models
 mkdir $RESDIR/Music
-# TODO: add music
+cp $SRCDIR/Music/*.ogg $RESDIR/Music
 mkdir $RESDIR/Sounds
 cp $SRCDIR/Sounds/*.ogg $RESDIR/Sounds
 mkdir $RESDIR/Textures
