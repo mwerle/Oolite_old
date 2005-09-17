@@ -32,7 +32,7 @@ cp $SRCDIR/Models/*.dat $RESDIR/Models
 mkdir $RESDIR/Music
 # TODO: add music
 mkdir $RESDIR/Sounds
-cp $SRCDIR/Sounds/*.aiff $RESDIR/Sounds
+cp $SRCDIR/Sounds/*.ogg $RESDIR/Sounds
 mkdir $RESDIR/Textures
 cp $SRCDIR/Textures/*.png $RESDIR/Textures
 cp $SRCDIR/Info-Oolite.plist $RESDIR
