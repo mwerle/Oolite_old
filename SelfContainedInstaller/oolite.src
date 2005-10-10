@@ -33,8 +33,11 @@ cd $OOLITE_ROOT/$TOPLEVEL/oolite.app
 ./oolite
 if [ $? != 0 ]
 then
+   echo
    echo "Erk. It looks like Oolite died with an error. When making an error"
    echo "report, please copy + paste the log above into the report."
    echo
+   echo "(Press Ctrl-C to continue)"
+   cat
 fi
 
