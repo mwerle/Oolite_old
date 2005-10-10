@@ -1,0 +1,88 @@
+# -*-shell-script-*-
+
+[Meta]
+RootName: @oolite-linux.berlios.de/oolite:$SOFTWAREVERSION
+DisplayName: Oolite for Linux
+ShortName: oolite
+Maintainer: Dylan Smith <dyls@alioth.net>
+Packager: Dylan Smith <dyls@alioth.net>
+Summary: Oolite is an Elite tribute game that is easily expandable.
+URL: http://oolite.aegidian.org
+License: Creative Commons Attribution-NonCommercial-ShareAlike
+SoftwareVersion: 1.53-1dev3
+AutopackageTarget: 1.0
+CPUArchitectures: x86
+
+# Only uncomment InterfaceVersion if your package exposes interfaces to other software,
+# for instance if it includes DSOs or python/perl modules. See the developer guide for more info,
+# or ask on autopackage-dev if you don't understand interface versioning in autopackage.
+#
+# InterfaceVersion: 0.0
+
+[Description]
+Oolite for Linux is an independent recreation and interpretation of the
+classic space game Elite. Choose your side of the law. Choose your
+profession. Above all, reach the Elite rating.
+
+# we do the executable separately as this allows Autopackage to check
+# the libc version. Note: autopackage doesn't seem to compress, that's
+# why we are using tar files :/
+[BuildPrepare]
+make
+cp Desktop/oolite.desktop $build_root
+cp Desktop/oolite-icon.png $build_root
+mv oolite.app/oolite $build_root/oolite
+tar zcf $build_root/oolite.app.tar oolite.app --exclude .svn
+cd SelfContainedInstaller
+cp oolite.src $build_root
+cp oolite-update.src $build_root
+tar zcf $build_root/oolite.deps.tar * --exclude .svn
+
+#[BuildUnprepare]
+#unprepareBuild
+
+[Imports]
+import <<EOF
+oolite
+oolite.src
+oolite-update.src
+oolite.app.tar
+oolite.deps.tar
+oolite.desktop
+oolite-icon.png
+EOF
+
+[Prepare]
+# Dependency checking
+#require @whatever.you/need 1.0
+
+[Install]
+# Put your installation script here
+outputStatus "Making Oolite directory in $PREFIX/lib/Oolite"
+mkdirs $PREFIX/lib/Oolite
+mkdirs $PREFIX/lib/Oolite/AddOns
+outputStatus "Unpacking trees"
+tar zxf oolite.app.tar 
+tar zxf oolite.deps.tar
+copyFiles oolite.app $PREFIX/lib/Oolite
+copyFiles oolite-deps $PREFIX/lib/Oolite
+outputStatus "Inserting oolite into app dir"
+copyFile oolite $PREFIX/lib/Oolite/oolite.app/oolite
+chmod +x $PREFIX/lib/Oolite/oolite.app/oolite
+outputStatus "Creating shell scripts"
+echo "#!/bin/sh" > oolite
+echo "OOLITE_ROOT=$PREFIX/lib" >> oolite
+echo "TOPLEVEL=$OOLITE_ROOT/Oolite" >> oolite
+cat oolite.src >> oolite
+echo "#!/bin/sh" > oolite-update
+echo "OOLITE_ROOT=$PREFIX/lib/" >> oolite-update
+echo "TOPLEVEL=$OOLITE_ROOT/Oolite" >> oolite-update
+cat oolite-update.src >> oolite-update
+installExe oolite oolite-update
+installIcon oolite-icon.png
+installDesktop "Game" oolite.desktop
+outputStatus "Complete"
+
+[Uninstall]
+# Usually just the following line is enough to uninstall everything
+uninstallFromLog
