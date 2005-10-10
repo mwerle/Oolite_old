@@ -7,10 +7,8 @@
 #
 if [ ! $OOLITE_ROOT ]
 then
-   echo "Oops, it looks like you didn't read README.TXT..."
-   echo "Oolite-Linux isn't yet installed. README.TXT contains installation"
-   echo "instructions. Might be an idea to read it. Consider this a gentle LART."
-
+   echo "Oops, OOLITE_ROOT was not set. This is very bad, it meant the install"
+   echo "package didn't do its job. Please report this!"
    exit
 fi
 
@@ -33,4 +31,10 @@ export GNUSTEP_LOCAL_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/Local
 export LD_LIBRARY_PATH=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/lib
 cd $OOLITE_ROOT/$TOPLEVEL/oolite.app
 ./oolite
+if [ $? != 0 ]
+then
+   echo "Erk. It looks like Oolite died with an error. When making an error"
+   echo "report, please copy + paste the log above into the report."
+   echo
+fi
 

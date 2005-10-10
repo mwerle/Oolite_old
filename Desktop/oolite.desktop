@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Oolite
+Comment=Oolite for Linux
+Exec=oolite
+Icon=oolite-icon.png
+Terminal=true
+Type=Application
+Categories=Application;Game;

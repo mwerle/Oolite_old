@@ -4,9 +4,8 @@
 #
 if [ ! $OOLITE_ROOT ]
 then
-   echo "This program has not been properly installed. Please read the"
-   echo "Oolite-installer README.TXT file and consider this a gentle LART."
-   echo
+   echo "Oops, OOLITE_ROOT was not set. This is very bad, it meant the install"
+   echo "package didn't do its job. Please report this!"
    exit
 fi
 
