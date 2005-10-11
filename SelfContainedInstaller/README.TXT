@@ -1,62 +1,28 @@
 Oolite Binary Release
 =====================
 
-Note for users of beta 20050904
-===============================
-Newer versions have a reorganized directory tree. You're strongly
-suggested to rm -rf oolite.app and oolite-deps before installing
-the new version - the old ones won't get overwritten!
+Important!
+First up: if this is the first time you've run Oolite, here's some things
+that will get you out of any video/OpenGL trouble and you need to know.
 
-Installing
-==========
+Keyboard shortcut F12 toggles full screen/windowed mode.
+Keyboard shortcut F11 and Shift-F11 changes resolution.
 
-To run Oolite, you need the following pre-requisites:
+(The F2 menu has the list of resolutions, and will save the mode you select
+there to your user defaults for Oolite).
 
-- A decent, working hardware accelerated OpenGL installation.
-
-If you can play other games such as TuxRacer (which comes with many Linux
-distros by default), or Enemy Territory or Doom3 at a reasonable frame
-rate, you have that dependency satisfied.
-
-If you have an nVidia graphics card or newer ATi graphics card, and have not
-used any OpenGL applications yet, you may need to install the driver.
-See the driver downloads page for your card manufacturer - both nVidia
-and ATi provide Linux drivers for their hardware.
-
-Other 3D hardware is often supported by open source drivers as part of
-x.org/XFree86. Older ATi cards are supported by these drivers.
-
-Now assuming you have that satisfied, you need to install Oolite-Linux.
-
-You can either install it in your home directory as whatever user you're
-logged in as now, or you can log in as root (or su to root) and install
-it system-wide in /usr/local.
-
-To install systemwide, type:
-
-./install systemwide
-
-To install in your home directory, type:
-
-./install homedir
-
-For a systemwide install, the dependencies package is copied to
-/usr/local/oolite-deps, and the game itself is copied to
-/usr/local/oolite.app. A script to run the game is copied to /usr/local/bin.
-To run, just type 'oolite' in a Terminal or in the Run window (assuming
-/usr/local/bin is in your path) - or type /usr/local/bin/oolite if it isn't.
-
-For a home directory install, the dependencies are copied to oolite-deps
-in your homedir, and the game to oolite.app. The oolite script is
-copied to your home directory. To run, type ./oolite in your home directory.
-
-You can also create a desktop shortcut icon to this script.
+Some older OpenGL cards can't hack Oolite in higher resolutions and 
+often results in text not rendering or rendering as blocks. 
+Try a lower screen resolution if you have problems. Most newer cards 
+(tested with nVidia GeForce 4ti circa 2003, ATi Radeon Mobility circa 
+2000, Intel integrated video circa 2003) work just fine in all supported 
+resolutions. 
 
 Updating to new versions
 ========================
 Now you have installed oolite, you can update it by running the
 oolite-update script that is installed either in your homedir or in
-/usr/local/bin depending on the type of installation you did. Running
+/usr/bin depending on the type of installation you did. Running
 this updater will be considerably faster than downloading a new package.
 It uses rsync, and so can update from any version to any later
 version - you don't need to have the immediately previous release
@@ -79,6 +45,14 @@ in the game.
 However, if you decide to install add ons, make sure if you buy an
 add on ship you don't remove it, because your save game will stop working
 if the ship it's based on doesn't exist!
+
+Adding AddOns
+=============
+There's a whole heap of game add ons - missions, ships etc - on Oosat
+http://capnhack.com/hosting/oolite/Oolite/OoSat.html
+These are called 'OXPs'. Unpack them inside the AddOns directory (either
+/usr/lib/Oolite/AddOns or in ~/.local/lib/Oolite/AddOns, depending on 
+whether you chose to install system wide or in your home directory)
 
 What are the dependencies that are packaged?
 ============================================

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Oolite
-Comment=Oolite for Linux
+Comment=An OpenGL Elite-like space game
 Exec=oolite
 Icon=oolite-icon.png
 Terminal=true

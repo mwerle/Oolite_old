@@ -9,7 +9,7 @@ Packager: Dylan Smith <dyls@alioth.net>
 Summary: Oolite is an Elite tribute game that is easily expandable.
 URL: http://oolite.aegidian.org
 License: Creative Commons Attribution-NonCommercial-ShareAlike
-SoftwareVersion: 1.53-1dev3
+SoftwareVersion: 1.53-1dev4
 AutopackageTarget: 1.0
 CPUArchitectures: x86
 
@@ -61,6 +61,7 @@ EOF
 outputStatus "Making Oolite directory in $PREFIX/lib/Oolite"
 mkdirs $PREFIX/lib/Oolite
 mkdirs $PREFIX/lib/Oolite/AddOns
+mkdirs $PREFIX/lib/Oolite/doc
 outputStatus "Unpacking trees"
 tar zxf oolite.app.tar 
 tar zxf oolite.deps.tar
@@ -69,6 +70,12 @@ copyFiles oolite-deps $PREFIX/lib/Oolite
 outputStatus "Inserting oolite into app dir"
 copyFile oolite $PREFIX/lib/Oolite/oolite.app/oolite
 chmod +x $PREFIX/lib/Oolite/oolite.app/oolite
+outputStatus "Installing documentation"
+echo "This is the first time you've run the game. Here is the README file -" > README-PREAMBLE.TXT
+echo "more docs can be found at $PREFIX/lib/Oolite/doc" >> README-PREAMBLE.TXT
+echo "Press q to exit this document and launch the game" >> README-PREAMBLE.TXT
+echo >> README-PREAMBLE.TXT
+copyFiles *.TXT $PREFIX/lib/Oolite/doc
 outputStatus "Creating shell scripts"
 echo "#!/bin/sh" > oolite
 echo "OOLITE_ROOT=$PREFIX/lib" >> oolite
