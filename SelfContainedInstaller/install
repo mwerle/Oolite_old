@@ -25,6 +25,7 @@ tar xf oolite-app.tar -C $INSTALLDIR/$TOPLEVEL
 echo "Creating AddOns directory in $INSTALLDIR/$TOPLEVEL/AddOns"
 mkdir -p $INSTALLDIR/$TOPLEVEL/AddOns
 mkdir -p $INSTALLDIR/$TOPLEVEL/doc
+cp *.TXT $INSTALLDIR/$TOPLEVEL/doc
 echo "Creating Oolite run script..."
 echo "#!/bin/sh" > $BINDIR/oolite
 echo "export OOLITE_ROOT=$INSTALLDIR" >> $BINDIR/oolite
