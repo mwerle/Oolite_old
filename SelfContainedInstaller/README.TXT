@@ -16,7 +16,18 @@ often results in text not rendering or rendering as blocks.
 Try a lower screen resolution if you have problems. Most newer cards 
 (tested with nVidia GeForce 4ti circa 2003, ATi Radeon Mobility circa 
 2000, Intel integrated video circa 2003) work just fine in all supported 
-resolutions. 
+resolutions.
+
+Note for amd64 users using the x86 build
+========================================
+You may find you need some extra 32-bit libraries. Testing so far
+indicates that usually you need a 32-bit libxml2, libxslt and 
+libart_lgpl_2.so.2.
+If you're willing to maintain an amd64 binary build (i.e. at least
+build an Autopackage for each stable release) please get in touch with
+dyls@alioth.net - indeed, if you're willing to maintain any non-x86
+arch and any non-Linux OS (Oolite is at least known to run on FreeBSD)
+please let us know! 
 
 Updating to new versions
 ========================
@@ -34,7 +45,8 @@ Things that get created
 When you run oolite for the first time, wherever you installed it, a GNUstep
 directory will be copied into your home directory. The GNUstep backend needs
 this. Additionally, an oolite-saves directory is created when you save
-a commander for the first time.
+a commander for the first time. Finally, a .oolite-run file is created
+(whose existence supresses the display of this README again)
 
 Saved games
 ===========
