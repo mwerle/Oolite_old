@@ -15,16 +15,16 @@ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, Californi
 
 You are free:
 
-¥	to copy, distribute, display, and perform the work
-¥	to make derivative works
+â€¢	to copy, distribute, display, and perform the work
+â€¢	to make derivative works
 
 Under the following conditions:
 
-¥	Attribution. You must give the original author credit.
+â€¢	Attribution. You must give the original author credit.
 
-¥	Noncommercial. You may not use this work for commercial purposes.
+â€¢	Noncommercial. You may not use this work for commercial purposes.
 
-¥	Share Alike. If you alter, transform, or build upon this work,
+â€¢	Share Alike. If you alter, transform, or build upon this work,
 you may distribute the resulting work only under a license identical to this one.
 
 For any reuse or distribution, you must make clear to others the license terms of this work.
@@ -41,6 +41,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "GameController.h"
 #import "Universe.h"
 #import "JoystickHandler.h" // TODO: Not here!
+#import "SDL_syswm.h"
 
 #include <ctype.h>
 
@@ -62,17 +63,17 @@ Your fair use and other rights are in no way affected by the above.
       [mode setValue: [NSNumber numberWithInt: 0] forKey: kCGDisplayRefreshRate];
 #else
       NSLog(@"Unknown architecture, defaulting to 1024x768");
-      [mode setValue: [NSNumber numberWithInt: 1024] forKey: kCGDisplayWidth];
-      [mode setValue: [NSNumber numberWithInt: 768] forKey: kCGDisplayHeight];
-      [mode setValue: [NSNumber numberWithInt: 0] forKey: kCGDisplayRefreshRate];
+      [mode setValue: [NSNumber numberWithInt: 1024] forKey: (NSString *)kCGDisplayWidth];
+      [mode setValue: [NSNumber numberWithInt: 768] forKey: (NSString *)kCGDisplayHeight];
+      [mode setValue: [NSNumber numberWithInt: 0] forKey: (NSString *)kCGDisplayRefreshRate];
 #endif      
    }
    else
    {
       NSLog(@"SDL_GetWMInfo failed, defaulting to 1024x768 for native size");
-      [mode setValue: [NSNumber numberWithInt: 1024] forKey: kCGDisplayWidth];
-      [mode setValue: [NSNumber numberWithInt: 768] forKey: kCGDisplayHeight];
-      [mode setValue: [NSNumber numberWithInt: 0] forKey: kCGDisplayRefreshRate];
+      [mode setValue: [NSNumber numberWithInt: 1024] forKey: (NSString *)kCGDisplayWidth];
+      [mode setValue: [NSNumber numberWithInt: 768] forKey: (NSString *)kCGDisplayHeight];
+      [mode setValue: [NSNumber numberWithInt: 0] forKey: (NSString *)kCGDisplayRefreshRate];
    }
    return mode;
 }
@@ -287,8 +288,8 @@ Your fair use and other rights are in no way affected by the above.
 - (NSSize) modeAsSize:(int)sizeIndex
 {
    NSDictionary *mode=[screenSizes objectAtIndex: sizeIndex];
-   return NSMakeSize([[mode objectForKey: kCGDisplayWidth] intValue],
-                     [[mode objectForKey: kCGDisplayHeight] intValue]);
+   return NSMakeSize([[mode objectForKey: (NSString *)kCGDisplayWidth] intValue],
+                     [[mode objectForKey: (NSString *)kCGDisplayHeight] intValue]);
 }
 
 #endif
@@ -445,7 +446,7 @@ Your fair use and other rights are in no way affected by the above.
 	if (w & 3)
 		w = w + 4 - (w & 3);
 	
-    long nPixels = w * h + 1;	
+//    long nPixels = w * h + 1;	
 
 	NSString	*filepath = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
 	int imageNo = 1;
@@ -462,7 +463,7 @@ Your fair use and other rights are in no way affected by the above.
 	NSLog(@">>>>> Snapshot %d x %d file path chosen = %@", w, h, pathToPic);
 
 	unsigned char *puntos = (unsigned char*)malloc(surface->w * surface->h * 3);
-	SDL_Surface *screen;  
+//	SDL_Surface *screen;  
 	glReadPixels(0,0,surface->w,surface->h,GL_RGB,GL_UNSIGNED_BYTE,puntos);
 
 	int pitch = surface->w * 3;
@@ -703,8 +704,8 @@ Your fair use and other rights are in no way affected by the above.
 	SDL_KeyboardEvent* kbd_event;
 	SDL_MouseButtonEvent* mbtn_event;
 	SDL_MouseMotionEvent *mmove_event;
-	Uint32 startTicks;
-	Sint32 sleepTicks;
+//	Uint32 startTicks;
+//	Sint32 sleepTicks;
 
    while (SDL_PollEvent(&event)) {
       switch (event.type) {
@@ -1051,8 +1052,8 @@ Your fair use and other rights are in no way affected by the above.
       return;
    }
 
-   int lastw=[[mode objectForKey: kCGDisplayWidth] intValue];
-   int lasth=[[mode objectForKey: kCGDisplayHeight] intValue];
+   int lastw=[[mode objectForKey: (NSString *)kCGDisplayWidth] intValue];
+   int lasth=[[mode objectForKey: (NSString *)kCGDisplayHeight] intValue];
    for(i=0; modes[i]; i++)
    {
       // SDL_ListModes often lists a mode several times,
@@ -1064,11 +1065,11 @@ Your fair use and other rights are in no way affected by the above.
          // new resolution, save it
          mode=[[NSMutableDictionary alloc] init];
          [mode setValue: [NSNumber numberWithInt: (int)modes[i]->w] 
-                 forKey: kCGDisplayWidth];
+                 forKey: (NSString *)kCGDisplayWidth];
          [mode setValue: [NSNumber numberWithInt: (int)modes[i]->h]
-                 forKey: kCGDisplayHeight];
+                 forKey: (NSString *)kCGDisplayHeight];
          [mode setValue: [NSNumber numberWithInt: 0]
-                 forKey: kCGDisplayRefreshRate];
+                 forKey: (NSString *)kCGDisplayRefreshRate];
          [screenSizes addObject: mode];
          NSLog(@"Added res %d x %d", modes[i]->w, modes[i]->h);
          lastw=modes[i]->w;

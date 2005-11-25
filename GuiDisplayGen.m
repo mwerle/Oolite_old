@@ -41,6 +41,8 @@ Your fair use and other rights are in no way affected by the above.
 #import "Universe.h"
 #import "OpenGLSprite.h"
 #import "ResourceManager.h"
+#import "OOSound.h"
+
 
 @implementation GuiDisplayGen
 
@@ -89,7 +91,7 @@ Your fair use and other rights are in no way affected by the above.
 	
 	title = @"Test Page";
 	
-	guiclick =  [[ResourceManager soundNamed:@"guiclick.ogg" inFolder:@"Sounds"] retain];
+	guiclick =  [[ResourceManager ooSoundNamed:@"guiclick.ogg" inFolder:@"Sounds"] retain];
 
 	backgroundImage = nil;
 	backgroundColor = nil;
@@ -137,7 +139,7 @@ Your fair use and other rights are in no way affected by the above.
 	
 	title = [gui_title retain];
 	
-	guiclick =  [[ResourceManager soundNamed:@"guiclick.ogg" inFolder:@"Sounds"] retain];
+	guiclick =  [[ResourceManager ooSoundNamed:@"guiclick.ogg" inFolder:@"Sounds"] retain];
 
 	backgroundImage = nil;
 	backgroundColor = nil;

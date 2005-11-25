@@ -40,6 +40,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "PlayerEntity.h"
 #import "PlayerEntity Additions.h"
 #import "PlayerEntity (contracts).h"
+#import "PlayerEntity (Sound).h"
 #import "entities.h"
 
 #import "vector.h"
@@ -51,6 +52,9 @@ Your fair use and other rights are in no way affected by the above.
 #import "OOTrumble.h"
 #import "JoystickHandler.h"
 #import "LoadSave.h"
+
+#import "OOSound.h"
+#import "OOMusic.h"
 
 #import "PlayerEntity_StickMapper.h"
 
@@ -838,6 +842,7 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	save_path = nil;
 	//
+	[self setUpSound];
 	//
     return self;
 }
@@ -978,61 +983,6 @@ static BOOL galactic_witchjump;
 	fuel_leak_rate =	0.0;
 	//
 	witchspaceCountdown = 0.0;
-	//
-	// release sounds
-	//
-    if (beepSound)				[beepSound release];
-    if (boopSound)				[boopSound release];
-    if (weaponSound)			[weaponSound release];
-    if (weaponHitSound)			[weaponHitSound release];
-    if (damageSound)			[damageSound release];
-    if (scrapeDamageSound)		[scrapeDamageSound release];
-    if (destructionSound)		[destructionSound release];
-    if (breakPatternSound)		[breakPatternSound release];
-	//
-    if (ecmSound)				[ecmSound release];
-    if (buySound)				[buySound release];
-    if (sellSound)				[sellSound release];
-    if (warningSound)			[warningSound release];
-    if (afterburner1Sound)		[afterburner1Sound release];
-    if (afterburner2Sound)		[afterburner2Sound release];
-	//
-    if (witchAbortSound)		[witchAbortSound release];
-	//
-	if (themeMusic)				[themeMusic release];
-	if (missionMusic)			[missionMusic release];
-	if (dockingMusic)			[dockingMusic release];
-	//
-	// allocate sounds
-	//
-	beepSound =			[[ResourceManager soundNamed:@"beep.ogg" inFolder:@"Sounds"] retain];
-	boopSound =			[[ResourceManager soundNamed:@"boop.ogg" inFolder:@"Sounds"] retain];
-	weaponSound =		[[ResourceManager soundNamed:@"laser.ogg" inFolder:@"Sounds"] retain];
-	weaponHitSound =	[[ResourceManager soundNamed:@"laserhits.ogg" inFolder:@"Sounds"] retain];
-	missileSound =		[[ResourceManager soundNamed:@"missile.ogg" inFolder:@"Sounds"] retain];
-	damageSound =		[[ResourceManager soundNamed:@"hit.ogg" inFolder:@"Sounds"] retain];
-	scrapeDamageSound = [[ResourceManager soundNamed:@"hullbang.ogg" inFolder:@"Sounds"] retain];
-	destructionSound =  [[ResourceManager soundNamed:@"bigbang.ogg" inFolder:@"Sounds"] retain];
-	breakPatternSound = [[ResourceManager soundNamed:@"breakpattern.ogg" inFolder:@"Sounds"] retain];
-	//
-	ecmSound =			[[ResourceManager soundNamed:@"ecm.ogg" inFolder:@"Sounds"] retain];
-	buySound =			[[ResourceManager soundNamed:@"buy.ogg" inFolder:@"Sounds"] retain];
-	sellSound =			[[ResourceManager soundNamed:@"sell.ogg" inFolder:@"Sounds"] retain];
-	warningSound =		[[ResourceManager soundNamed:@"warning.ogg" inFolder:@"Sounds"] retain];
-	afterburner1Sound =  [[ResourceManager soundNamed:@"afterburner1.ogg" inFolder:@"Sounds"] retain];
-	afterburner2Sound =  [[ResourceManager soundNamed:@"afterburner2.ogg" inFolder:@"Sounds"] retain];
-   witchAbortSound = [[ResourceManager soundNamed:@"witchabort.ogg" inFolder:@"Sounds"] retain];
-	//
-	
-//	//// for looping sounds set the sound's delegate to self
-//	//
-//	[afterburner1Sound setDelegate:self];
-//	[afterburner2Sound setDelegate:self];
-	
-	//
-    themeMusic =		[[ResourceManager movieFromFilesNamed:@"OoliteTheme.ogg" inFolder:@"Music"] retain];
-    missionMusic =		[[ResourceManager movieFromFilesNamed:@"OoliteTheme.ogg" inFolder:@"Music"] retain];
-    dockingMusic =		[[ResourceManager movieFromFilesNamed:@"BlueDanube.ogg" inFolder:@"Music"] retain];
 	//
 	collision_radius =  50.0;
 	//
@@ -1303,29 +1253,6 @@ static BOOL galactic_witchjump;
 	if (contracts)				[contracts release];
 	if (contract_record)		[contract_record release];
 	if (shipyard_record)		[shipyard_record release];
-	
-    if (beepSound)				[beepSound release];
-    if (boopSound)				[boopSound release];
-    if (weaponSound)			[weaponSound release];
-    if (weaponHitSound)			[weaponHitSound release];
-    if (missileSound)			[missileSound release];
-    if (damageSound)			[damageSound release];
-    if (scrapeDamageSound)		[scrapeDamageSound release];
-    if (destructionSound)		[destructionSound release];
-    if (breakPatternSound)		[breakPatternSound release];
-	//
-    if (ecmSound)				[ecmSound release];
-    if (buySound)				[buySound release];
-    if (sellSound)				[sellSound release];
-    if (warningSound)			[warningSound release];
-    if (afterburner1Sound)		[afterburner1Sound release];
-    if (afterburner2Sound)		[afterburner2Sound release];
-
-    if (witchAbortSound)		[witchAbortSound release];
-
-    if (themeMusic)				[themeMusic release];
-    if (missionMusic)			[missionMusic release];
-    if (dockingMusic)			[dockingMusic release];
 
     if (missionBackgroundImage) [missionBackgroundImage release];
 
@@ -1337,6 +1264,8 @@ static BOOL galactic_witchjump;
 	if (save_path)				[save_path release];
 	
 	if (cdrDetailArray)			[cdrDetailArray release];
+	
+	[self destroySound];
 	
 	int i;
 	for (i = 0; i < SHIPENTITY_MAX_MISSILES; i++)
@@ -3753,7 +3682,7 @@ static BOOL queryPressed;
 				int save_row =			GUI_ROW_OPTIONS_SAVE;
 				int load_row =			GUI_ROW_OPTIONS_LOAD;
 				int begin_new_row =	GUI_ROW_OPTIONS_BEGIN_NEW;
-				int options_row =   GUI_ROW_OPTIONS_OPTIONS;
+//				int options_row =   GUI_ROW_OPTIONS_OPTIONS;
 #ifndef GNUSTEP            
 				int ootunes_row =	GUI_ROW_OPTIONS_OOTUNES;
 #endif            
@@ -7969,7 +7898,7 @@ static int last_outfitting_index;
 //	time delay method for playing afterburner sounds
 // this overlaps two sounds each 2 seconds long, but with a .5s
 // crossfade
-NSSound* burnersound;
+OOSound* burnersound;
 - (void) loopAfterburnerSound
 {
 	SEL _loopAfterburnerSoundSelector = @selector(loopAfterburnerSound);

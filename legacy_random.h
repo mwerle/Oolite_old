@@ -1,5 +1,3 @@
-#ifndef LEGACY_RANDOM_H
-#define LEGACY_RANDOM_H
 /*
  *  legacy_random.h
  *
@@ -38,9 +36,6 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifndef GNUSTEP
-#include <Carbon/Carbon.h>
-#endif
 
 struct rand_seed_6uc
 {
@@ -95,5 +90,3 @@ void rotate_seed (struct rand_seed_6uc *seed_ptr);
 int rotate_byte_left (int x);
 
 int equal_seeds (Random_Seed seed1, Random_Seed seed2);
-#endif
-

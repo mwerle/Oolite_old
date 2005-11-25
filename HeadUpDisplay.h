@@ -38,9 +38,8 @@ Any of these conditions can be waived if you get permission from the copyright h
 Your fair use and other rights are in no way affected by the above.
 
 */
-//
 
-#ifdef LINUX
+#ifdef GNUSTEP
 #include "oolite-linux.h"
 #else
 #import <OpenGL/gl.h>

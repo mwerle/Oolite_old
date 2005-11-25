@@ -62,7 +62,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "OpenGLSprite.h"
 #import "HeadUpDisplay.h"
 
-@class Universe;
+@class Universe, OOSound;
 
 extern int debug;
 
@@ -79,7 +79,7 @@ extern int debug;
 	BOOL			has_title;
 	NSSize			pixel_title_size;
 	
-	NSSound			*guiclick;
+	OOSound			*guiclick;
 
 	NSImage			*backgroundImage;
 	NSColor			*backgroundColor;

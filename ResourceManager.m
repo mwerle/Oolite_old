@@ -477,31 +477,70 @@ NSMutableDictionary*	surface_cache;
 	return [NSArray arrayWithArray:result];
 }
 
-+ (NSSound *) soundNamed:(NSString *)filename inFolder:(NSString *)foldername
+
++ (OOMusic *) ooMusicNamed:(NSString *)filename inFolder:(NSString *)foldername
 {
-	NSSound *result = nil;
+	OOMusic *result = nil;
 	NSMutableArray *fpaths = [ResourceManager paths];
 	int i, r;
 	r = 0;
 	if (!filename)
 		return nil;
 
-	NSString* sound_key = [NSString stringWithFormat:@"%@:%@", foldername, filename];
+	NSString* music_key = [NSString stringWithFormat:@"OOMusic:%@:%@", foldername, filename];
 	if (!sound_cache)
 		sound_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
-	if ([sound_cache objectForKey:sound_key])
-		return (NSSound *)[sound_cache objectForKey:sound_key];	// return the cached sound
+	if ([sound_cache objectForKey:music_key])
+		return (OOMusic *)[sound_cache objectForKey:music_key];	// return the cached sound
 	
 	for (i = 0; i < [fpaths count]; i++)
 	{
 		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
 		{
-#ifdef GNUSTEP
-         result = [[[OOSound alloc] initWithContentsOfFile:filepath byReference:NO] autorelease];
-#else    
-			result = [[[NSSound alloc] initWithContentsOfFile:filepath byReference:NO] autorelease];
-#endif         
+			result = [[[OOMusic alloc] initWithContentsOfFile:filepath] autorelease];
+			r++;
+		}
+		if (foldername)
+		{
+			filepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:filename];
+			//NSLog(@".... checking filepath '%@' for Music", filepath);
+			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
+			{
+				result = [[[OOMusic alloc] initWithContentsOfFile:filepath] autorelease];
+				r++;
+			}
+		}
+	}
+	
+	if (result)
+		[sound_cache setObject:result forKey:music_key];
+	
+//	NSLog(@"---> ResourceManager found OOMusic %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
+	return result;
+}
+
++ (OOSound *) ooSoundNamed:(NSString *)filename inFolder:(NSString *)foldername
+{
+	OOSound *result = nil;
+	NSMutableArray *fpaths = [ResourceManager paths];
+	int i, r;
+	r = 0;
+	if (!filename)
+		return nil;
+
+	NSString* sound_key = [NSString stringWithFormat:@"OOSound:%@:%@", foldername, filename];
+	if (!sound_cache)
+		sound_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
+	if ([sound_cache objectForKey:sound_key])
+		return (OOSound *)[sound_cache objectForKey:sound_key];	// return the cached sound
+	
+	for (i = 0; i < [fpaths count]; i++)
+	{
+		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
+		{
+			result = [[[OOSound alloc] initWithContentsOfFile:filepath] autorelease];
 			r++;
 		}
 		if (foldername)
@@ -510,11 +549,7 @@ NSMutableDictionary*	surface_cache;
 			//NSLog(@".... checking filepath '%@' for Sounds", filepath);
 			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
 			{
-#ifdef GNUSTEP
-				result = [[[OOSound alloc] initWithContentsOfFile:filepath byReference:NO] autorelease];
-#else            
-				result = [[[NSSound alloc] initWithContentsOfFile:filepath byReference:NO] autorelease];
-#endif            
+				result = [[[OOSound alloc] initWithContentsOfFile:filepath] autorelease];
 				r++;
 			}
 		}
@@ -523,7 +558,7 @@ NSMutableDictionary*	surface_cache;
 	if (result)
 		[sound_cache setObject:result forKey:sound_key];
 	
-	//NSLog(@"---> ResourceManager found %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
+//	NSLog(@"---> ResourceManager found OOSound %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
 	return result;
 }
 
@@ -608,6 +643,7 @@ NSMutableDictionary*	surface_cache;
 }
 
 #ifdef GNUSTEP
+#if 0
 + (OOMusic *) movieFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername
 {
 	OOMusic *result = nil;
@@ -647,6 +683,7 @@ NSMutableDictionary*	surface_cache;
 
 	return [result autorelease];
 }
+#endif
 
 + (SDLImage *) surfaceNamed:(NSString *)filename inFolder:(NSString *)foldername
 {

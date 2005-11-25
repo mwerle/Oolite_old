@@ -37,18 +37,14 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifdef GNUSTEP
-#import <Foundation/Foundation.h>
-#import "OOSound.h"
-#else
+#ifndef GNUSTEP
 #import <Cocoa/Cocoa.h>
+#import <OpenGL/gl.h>
+#else
+#import <Foundation/Foundation.h>
+#include "oolite-linux.h"
 #endif
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#endif
 
 @class PlayerEntity, AI, OOSound;
 

@@ -39,18 +39,10 @@ Your fair use and other rights are in no way affected by the above.
 
 #import <Foundation/Foundation.h>
 
-#ifndef GNUSTEP
-#import <QuickTime/Movies.h>
-#else
-#include "OOMusic.h"
-#endif
-
 #import "ShipEntity.h"
 
 @class GuiDisplayGen, OOTrumble, MyOpenGLView, HeadUpDisplay, ShipEntity, JoystickHandler;
-#ifndef GNUSTEP
-@class OOSound;
-#endif
+@class OOSound, OOMusic, OOSoundSource, OOSoundReferencePoint;
 
 #define SCRIPT_TIMER_INTERVAL			10.0
 
@@ -316,33 +308,32 @@ Your fair use and other rights are in no way affected by the above.
 
 		BOOL	ecm_in_operation;
 		double	ecm_start_time;
-	
-#ifndef GNUSTEP
-		NSMovie*	themeMusic;
-		NSMovie*	missionMusic;
-		NSMovie*	dockingMusic;
-#else
-		OOMusic* themeMusic;
-		OOMusic* missionMusic;
-		OOMusic* dockingMusic;
-#endif
-
-		NSSound*	beepSound;
-		NSSound*	boopSound;
-		NSSound*	weaponSound;
-		NSSound*	weaponHitSound;
-		NSSound*	missileSound;
-		NSSound*	damageSound;
-		NSSound*	scrapeDamageSound;
-		NSSound*	destructionSound;
-		NSSound*	breakPatternSound;
-		NSSound*	ecmSound;
-		NSSound*	buySound;
-		NSSound*	sellSound;
-		NSSound*	warningSound;
-		NSSound*	afterburner1Sound;
-		NSSound*	afterburner2Sound;
-		NSSound*	witchAbortSound;
+		
+		OOMusic		*themeMusic;
+		OOMusic		*missionMusic;
+		OOMusic		*dockingMusic;
+		
+		OOSound		*beepSound;
+		OOSound		*boopSound;
+		OOSound		*weaponSound;
+		OOSound		*weaponHitSound;
+		OOSound		*missileSound;
+		OOSound		*damageSound;
+		OOSound		*scrapeDamageSound;
+		OOSound		*destructionSound;
+		OOSound		*breakPatternSound;
+		OOSound		*ecmSound;
+		OOSound		*buySound;
+		OOSound		*sellSound;
+		OOSound		*warningSound;
+		OOSound		*afterburner1Sound;
+		OOSound		*afterburner2Sound;
+		OOSound		*witchAbortSound;
+		
+		OOSoundReferencePoint *refPoint;
+		OOSoundSource	*interfaceBeepSource;
+		OOSoundSource	*ecmSource;
+		OOSoundSource	*breakPatternSource;
 		
 		int			gui_screen;
 		int			alert_flags;

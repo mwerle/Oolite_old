@@ -197,18 +197,11 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	textureName = [[[player universe] textureStore] getTextureNameFor:@"trumblekit.png"];
 	//
-#ifdef GNUSTEP
-   if (!prootSound)
-      prootSound=[[ResourceManager soundNamed:@"trumble.ogg" inFolder:@"Sounds"] retain];
-   if (!squealSound)
-      squealSound=[[ResourceManager soundNamed:@"trumblesqueal.ogg" inFolder:@"Sounds"] retain];
-#else
 	if (!prootSound)
-		prootSound = [[ResourceManager fmodSoundSampleNamed:@"trumble.ogg" inFolder:@"Sounds"] retain];
+		prootSound = [[ResourceManager ooSoundNamed:@"trumble.ogg" inFolder:@"Sounds"] retain];
 	if (!squealSound)
-		squealSound = [[ResourceManager fmodSoundSampleNamed:@"trumblesqueal.ogg" inFolder:@"Sounds"] retain];
+		squealSound = [[ResourceManager ooSoundNamed:@"trumblesqueal.ogg" inFolder:@"Sounds"] retain];
 	//
-#endif
 	readyToSpawn = NO;
 }
 

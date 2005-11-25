@@ -6,6 +6,9 @@
 //
 // David Taylor, 2005-05-04
 
-#ifdef LINUX
+#if defined(LINUX) || defined(OOLITE_SDL_MAC)
 #import "SDLMusic.h"
+#else
+#warning No music implementation included!
 #endif
+

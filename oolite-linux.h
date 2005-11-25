@@ -11,16 +11,25 @@
 
 #include <math.h>
 
+#ifndef OOLITE_SDL_MAC
+
 #include "SDL.h"
 #include "SDL_opengl.h"
 #include "SDL_mixer.h"
 #include "SDL_syswm.h"
 
-#define MAX_CHANNELS 16
-
 // Macintosh compatibility defines
 #define kCGDisplayWidth (@"Width")
 #define kCGDisplayHeight (@"Height")
 #define kCGDisplayRefreshRate (@"RefreshRate")
+
+#define IBOutlet /**/
+#define IBAction void
+
+typedef int32_t CGMouseDelta;
+
+#endif
+
+#define MAX_CHANNELS 16
 
 #endif /* OOLITE_LINUX */

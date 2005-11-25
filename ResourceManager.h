@@ -44,7 +44,6 @@ Your fair use and other rights are in no way affected by the above.
 #import <AppKit/AppKit.h>
 #include <SDL.h>
 #include <SDL_image.h>
-#import "OOMusic.h"
 #import "SDLImage.h"
 #else
 #import <Cocoa/Cocoa.h>
@@ -53,7 +52,7 @@ Your fair use and other rights are in no way affected by the above.
 #define OOLITE_EXCEPTION_XML_PARSING_FAILURE	@"OOXMLException"
 #define OOLITE_EXCEPTION_FATAL					@"OoliteFatalException"
 
-@class OOSound;
+@class OOSound, OOMusic;
 
 typedef struct
 {
@@ -81,18 +80,12 @@ BOOL always_include_addons;
 + (NSDictionary *) dictionaryFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername andMerge:(BOOL) mergeFiles;
 + (NSArray *) arrayFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername andMerge:(BOOL) mergeFiles;
 
-+ (NSSound *) soundNamed:(NSString *)filename inFolder:(NSString *)foldername;
++ (OOSound *) ooSoundNamed:(NSString *)filename inFolder:(NSString *)foldername;
++ (OOMusic *) ooMusicNamed:(NSString *)filename inFolder:(NSString *)foldername;
+
 + (NSImage *) imageNamed:(NSString *)filename inFolder:(NSString *)foldername;
 + (NSString *) stringFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername;
-#ifdef GNUSTEP
-// This method name looks bizarre, but it's just that on OS X the music
-// is played by QuickTime which calls everything 'movie', even though in
-// this case it isn't.
-+ (OOMusic *) movieFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername;
 + (SDLImage *) surfaceNamed:(NSString *)filename inFolder:(NSString *)foldername;
-#else
-+ (NSMovie *) movieFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername;
-#endif
 
 + (NSMutableArray *) scanTokensFromString:(NSString*) values;
 + (NSString *) decodeString:(NSString*) encodedString;

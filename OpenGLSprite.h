@@ -37,20 +37,14 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifdef GNUSTEP
+#ifndef GNUSTEP
+#import <Cocoa/Cocoa.h>
+#import <OpenGL/gl.h>
+#else
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#else
-#import <Cocoa/Cocoa.h>
-#endif
-#import <Foundation/Foundation.h>
-
-#ifdef LINUX
-#include "oolite-linux.h"
-#include "SDLImage.h"
-#else
-#import <OpenGL/gl.h>
-#import <OpenGL/glu.h>
+#import "oolite-linux.h"
+#import "SDLImage.h"
 #endif
 
 #define	OPEN_GL_SPRITE_MIN_WIDTH	64.0
@@ -93,4 +87,3 @@ extern int debug;
 #endif
 
 @end
-

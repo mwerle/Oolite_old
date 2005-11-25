@@ -37,14 +37,8 @@ Any of these conditions can be waived if you get permission from the copyright h
 Your fair use and other rights are in no way affected by the above.
 
 */
-#ifndef VECTOR_H
-#define VECTOR_H
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
 #import <OpenGL/gl.h>
-#endif
 
 struct vector
 {
@@ -158,6 +152,3 @@ void	quaternion_rotate_about_axis(struct quaternion *quat, Vector axis, GLfloat 
 // normalise
 //
 void	quaternion_normalise(struct quaternion *quat);
-
-#endif
-

@@ -39,21 +39,6 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "OpenGLSprite.h"
 
-#ifdef GNUSTEP
-/* SDL interprets each pixel as a 32-bit number, so our masks must depend
-   on the endianness (byte order) of the machine */
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-Uint32 rmask = 0xff000000;
-Uint32 gmask = 0x00ff0000;
-Uint32 bmask = 0x0000ff00;
-Uint32 amask = 0x000000ff;
-#else
-Uint32 rmask = 0x000000ff;
-Uint32 gmask = 0x0000ff00;
-Uint32 bmask = 0x00ff0000;
-Uint32 amask = 0xff000000;
-#endif
-#endif
 
 @implementation OpenGLSprite
 
@@ -73,34 +58,7 @@ Uint32 amask = 0xff000000;
 
 - (id) initWithText:(NSString *)str
 {
-#ifndef GNUSTEP
-    NSImage	*image;
-    NSSize	strsize;
-    NSMutableDictionary *stringAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-        [NSFont fontWithName:@"ArialNarrow-Bold" size:18], NSFontAttributeName,
-        [NSColor blackColor], NSForegroundColorAttributeName, NULL];
-
-    strsize = [str sizeWithAttributes:stringAttributes];
-    strsize.width += 3;
-    strsize.height += 1;
-
-    image= [[NSImage alloc] initWithSize:strsize];
-    [image lockFocus];
-    [stringAttributes setObject:[NSColor blackColor] forKey:NSForegroundColorAttributeName];	
-    [str drawAtPoint:NSMakePoint(2,0) withAttributes:stringAttributes];
-    [stringAttributes setObject:[NSColor yellowColor] forKey:NSForegroundColorAttributeName];	
-    [str drawAtPoint:NSMakePoint(1,1) withAttributes:stringAttributes];
-    [image unlockFocus];
-
-    self = [super init];
-    [self makeTextureFromImage:image cropRectangle:NSMakeRect(0, 0, [image size].width, [image size].height) size:[image size]];
-    
-	[image release];
-	
-    return self;
-#else
-	return nil;
-#endif
+    return [self initWithText:str ofColor:[NSColor yellowColor]];
 }
 
 - (id) initWithText:(NSString *)str ofColor:(NSColor *) textColor
@@ -131,20 +89,23 @@ Uint32 amask = 0xff000000;
 	
     return self;
 #else
+	[self release];
 	return nil;
 #endif
 }
 
 - (void) dealloc
 {
-    const GLuint	delTextures[1] = { texName };
-    glDeleteTextures(1, delTextures);	// clean up the texture from the 3d card's memory
-    if (textureData)
-        [textureData release];
+	if (nil != textureData)
+	{
+		glDeleteTextures(1, &texName);	// clean up the texture from the 3d card's memory
+		[textureData release];
+	}
+	
     [super dealloc];
 }
 
-- (NSSize)  size
+- (NSSize) size
 {
 	return size;
 }
@@ -190,6 +151,7 @@ Uint32 amask = 0xff000000;
 - (void) setText:(NSString *)str
 {
 #ifndef GNUSTEP
+	// TODO: merge implementation with initWithText:ofColor: (let both use a setText:ofColor:) -- Jens
     NSImage	*image;
     NSSize	strsize;
 
@@ -384,6 +346,27 @@ Uint32 amask = 0xff000000;
 }
 
 #ifdef GNUSTEP
+/* SDL interprets each pixel as a 32-bit number, so our masks must depend
+   on the endianness (byte order) of the machine */
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+enum
+{
+	rmask = 0xff000000UL,
+	gmask = 0x00ff0000UL,
+	bmask = 0x0000ff00UL,
+	amask = 0x000000ffUL
+};
+#else
+enum
+{
+	rmask = 0x000000ffUL,
+	gmask = 0x0000ff00UL,
+	bmask = 0x00ff0000UL,
+	amask = 0xff000000UL
+};
+#endif
+
+
 - (id) initWithSurface:(SDLImage *)textureImage cropRectangle:(NSRect)cropRect size:(NSSize) spriteSize
 {
     self = [super init];
@@ -442,7 +425,7 @@ Uint32 amask = 0xff000000;
     textureCropRect.size.width /= textureRect.size.width;
     textureCropRect.size.height /= textureRect.size.height;
 
-	int n_bytes = surface->format->BytesPerPixel * surface->w * surface->h;
+//	int n_bytes = surface->format->BytesPerPixel * surface->w * surface->h;
 	//unsigned char *buffer = malloc(n_bytes);
 	SDL_LockSurface(surface);
 	//memcpy(buffer, surface->pixels, n_bytes);
@@ -478,4 +461,3 @@ Uint32 amask = 0xff000000;
 #endif
 
 @end
-

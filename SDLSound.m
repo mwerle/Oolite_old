@@ -7,6 +7,9 @@
 
 #import "SDLSound.h"
 #include "oolite-linux.h"
+#import "OOSoundSource.h"
+
+
 static int mixChan=0;
 static float masterVol=1.0;
 static BOOL isSetUp=NO;
@@ -124,7 +127,7 @@ static BOOL isSetUp=NO;
 	return YES;
 }
 
-- (id) initWithContentsOfFile:(NSString*)filepath byReference:(BOOL)ref
+- (id) initWithContentsOfFile:(NSString*)filepath
 {
 	[super init];
    if(!isSetUp) [OOSound setUp];
@@ -150,6 +153,12 @@ static BOOL isSetUp=NO;
 + (void) channelDone:(int) channel
 {
 	NSLog(@"channel done: %d", channel);
+}
+
+
++ (void)update
+{
+	[OOSoundSource update];
 }
 
 @end

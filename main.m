@@ -11,9 +11,15 @@ GameController* controller;
 
 int debug = NO;
 
-int main(int argc, const char *argv[])
+
+#ifdef OOLITE_SDL_MAC
+#define main SDL_main
+#endif
+
+
+int main(int argc, char *argv[])
 {
-#ifdef GNUSTEP
+#ifdef GNUSTEP && !OOLITE_SDL_MAC
 	int i;
 
 	// This is still necessary for NSFont calls.
@@ -48,7 +54,7 @@ int main(int argc, const char *argv[])
 	// GNUstep port.
 	[controller applicationDidFinishLaunching: nil];
 #else
-	return NSApplicationMain(argc, argv);
+	return NSApplicationMain(argc, (const char *)argv);
 #endif
 
 	// never reached
