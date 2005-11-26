@@ -37,26 +37,18 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#import <OpenGL/glu.h>
-#endif
-
+#import "OOOpenGL.h"
 #import "Universe.h"
-
 #import "entities.h"
-
 #import "MyOpenGLView.h"
 #import "GameController.h"
 #import "ResourceManager.h"
 #import "TextureStore.h"
 #import "OpenGLSprite.h"
 #import "AI.h"
-
 #import "GuiDisplayGen.h"
 #import "HeadUpDisplay.h"
+#import "OOSound.h"
 
 #define MAX_NUMBER_OF_ENTITIES				200
 #define MAX_NUMBER_OF_SOLAR_SYSTEM_ENTITIES 20
@@ -92,12 +84,10 @@ Your fair use and other rights are in no way affected by the above.
 //	[PlanetEntity resetBaseVertexArray];
 	
 	reducedDetail = NO;
-
-   // TODO: Speech, but I doubt we'll have it with GNUstep
-#ifndef GNUSTEP   
+	
+	#ifndef GNUSTEP
 	//// speech stuff
 	//
-//	speechChannel = nil;
 	speechSynthesizer = [[NSSpeechSynthesizer alloc] init];
 	//
 	//Jester Speech Begin
@@ -105,7 +95,7 @@ Your fair use and other rights are in no way affected by the above.
 	//Jester Speech End
 	//
 	////
-#endif   
+	#endif
 	
  	dumpCollisionInfo = NO;
 	next_universal_id = 100;	// start arbitrarily above zero
@@ -142,9 +132,6 @@ Your fair use and other rights are in no way affected by the above.
 	message_gui = [[GuiDisplayGen alloc] initWithPixelSize:NSMakeSize( 480, 160) Columns:1 Rows:8 RowHeight:20 RowStart:20 Title:nil];
 	[message_gui setCurrentRow:7];
 	[message_gui setCharacterSize:NSMakeSize(16,20)];	// slightly narrower characters
-	
-//	// TEST
-//	[message_gui setBackgroundColor:[NSColor colorWithCalibratedRed:0.0 green:0.1 blue:0.9 alpha:0.5]];
 	
 	//
 	comm_log_gui = [[GuiDisplayGen alloc] initWithPixelSize:NSMakeSize( 360, 120) Columns:1 Rows:10 RowHeight:12 RowStart:12 Title:nil];
@@ -274,11 +261,10 @@ Your fair use and other rights are in no way affected by the above.
     if (demo_ships)				[demo_ships release];
     if (gameView)				[gameView release];
 
-#ifndef GNUSTEP
-	//Jester Speech Begin
+	#ifndef GNUSTEP
 	if (speechArray)			[speechArray release];
-	//Jester Speech End
-#endif
+	if (speechSynthesizer)		[speechSynthesizer release];
+	#endif
 	
 	if (local_planetinfo_overrides)
 								[local_planetinfo_overrides release];
@@ -331,11 +317,12 @@ Your fair use and other rights are in no way affected by the above.
 	if (![Entity dataStore])
 		[Entity setDataStore:self];
 	//
-#ifndef GNUSTEP	
+	
+#ifndef GNUSTEP
 	//// speech stuff
 	//
 	if (speechArray)
-		[speechArray release];
+		[speechArray autorelease];
 	speechArray = [[ResourceManager arrayFromFilesNamed:@"speech_pronunciation_guide.plist" inFolder:@"Config" andMerge:YES] retain];
 	//
 	////
@@ -369,8 +356,6 @@ Your fair use and other rights are in no way affected by the above.
 		[textureStore autorelease];
 	textureStore = [[TextureStore alloc] init];	// alloc retains
 	//
-	if (cursorSprite)
-		[cursorSprite autorelease];
 #ifndef WIN32
 	cursorSprite = [[OpenGLSprite alloc]   initWithImage:[ResourceManager imageNamed:@"cursor.png" inFolder:@"Images"]
 											cropRectangle:NSMakeRect(0, 0, 128, 128)
@@ -2978,17 +2963,13 @@ Your fair use and other rights are in no way affected by the above.
 		int co_type, co_amount, qr;
 		
 		// select a random point in the histogram
-      // TODO: find out why total_quantity is sometimes zero.
-      // oolite-linux: prevent the SIGFPE if total_quantity is zero
-      if(total_quantity)
-      {
-		   qr = ranrot_rand() % total_quantity;
-      }
-      else
-      {
-         qr = 0;
-      }
-
+		#if __POWERPC__ || defined(NO_DIV_ZERO_EXCEPTION)
+			qr = ranrot_rand() % total_quantity;
+		#else
+			if (0 != total_quantity) qr = ranrot_rand() % total_quantity;
+			else qr = 0;
+		#endif
+		
 		co_type = 0;
 		while (qr > 0)
 		{
@@ -4914,13 +4895,11 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) addMessage:(NSString *) text forCount:(int) count
 {
-#ifndef GNUSTEP
-	PlayerEntity* player = (PlayerEntity *)[self entityZero];
-#endif   
 	if (![currentMessage isEqual:text])
-    {		
+	{
+	#ifndef GNUSTEP
+		PlayerEntity* player = (PlayerEntity *)[self entityZero];
 		//speech synthesis
-#ifndef GNUSTEP      
 		if ([player speech_on])
 		{
 			NSString* systemName = [self generateSystemName:system_seed];
@@ -4954,7 +4933,7 @@ Your fair use and other rights are in no way affected by the above.
 			[self startSpeakingString:spoken_text];
 			
 		}
-#endif // ifndef GNUSTEP...      
+	#endif	// !def GNUSTEP
 		
 		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
 		
@@ -7248,11 +7227,13 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 - (void) setDisplayCursor:(BOOL) value
 {
 	displayCursor = value;
+	
 #ifdef GNUSTEP
 	if ([gameView inFullScreenMode])
 	{
 		if (displayCursor == YES)
 		{
+			// *** Is the query actually necessary or meaningful? -- Jens
 			if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
 				SDL_ShowCursor(SDL_ENABLE);
 		}
@@ -7331,9 +7312,6 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 - (void) startSpeakingString:(NSString *) text
 {
 #ifndef GNUSTEP
-//	if (speechChannel == nil)
-//		NewSpeechChannel(NULL,&speechChannel);
-//	SpeakText(speechChannel,[text UTF8String],[text length]);
 	if ([OOSound respondsToSelector:@selector(masterVolume)])
 		[speechSynthesizer startSpeakingString:[NSString stringWithFormat:@"[[volm %.3f]]%@", [OOSound masterVolume], text]];
 	else
@@ -7344,19 +7322,16 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 - (void) stopSpeaking
 {
 #ifndef GNUSTEP
-//	if (speechChannel == nil)
-//		NewSpeechChannel(NULL,&speechChannel);
-//	StopSpeech(speechChannel);
 	[speechSynthesizer stopSpeaking];
 #endif
 }
 //
 - (BOOL) isSpeaking
 {
-#ifdef GNUSTEP
-   return 0;
-#else
+#ifndef GNUSTEP
 	return [speechSynthesizer isSpeaking];
+#else
+	return NO;
 #endif
 }
 //

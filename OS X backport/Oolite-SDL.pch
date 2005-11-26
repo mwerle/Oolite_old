@@ -2,7 +2,7 @@
     #import <Cocoa/Cocoa.h>
 #endif
 
-#include <OpenGL/gl.h>
+#include "OOOpenGL.h"
 #include <SDL/SDL.h>
 #include <math.h>
 

@@ -55,6 +55,7 @@ Your fair use and other rights are in no way affected by the above.
 	
 	int old_target = primaryTarget;
 	primaryTarget = [[other getPrimaryTarget] universal_id];
+	[(ShipEntity *)[other getPrimaryTarget] markAsOffender:8];	// mark their card
 	[self launchDefenseShip];
 	primaryTarget = old_target;
 
@@ -1078,6 +1079,7 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		if ((ship != self)&&(d2 < 25000000)&&(ship->status != STATUS_DOCKED))	// within 5km
 		{
 			Vector ppos = [self getPortPosition];
+			float time_out = -15.00;	// 15 secs
 			do
 			{
 				isClear = YES;
@@ -1102,6 +1104,14 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 						// okay it's in the way .. give it a wee nudge (0.25s)
 //						NSLog(@"DEBUG [StationEntity clearDockingCorridor] nudging %@", ship);
 						[ship update: 0.25];
+						time_out += 0.25;
+					}
+					if (time_out > 0)
+					{
+						Vector v1 = vector_forward_from_quaternion(port_qrotation);
+						Vector spos = ship->position;
+						spos.x += 3000.0 * v1.x;	spos.y += 3000.0 * v1.y;	spos.z += 3000.0 * v1.z; 
+						[ship setPosition:spos]; // move 3km out of the way
 					}
 				}
 			} while (!isClear);

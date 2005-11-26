@@ -36,11 +36,7 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 
-#ifndef GNUSTEP
-#import <Cocoa/Cocoa.h>
-#else
-#import <Foundation/Foundation.h>
-#endif
+#import "OOCocoa.h"
 
 #define MODE_WINDOWED		100
 #define MODE_FULL_SCREEN	200

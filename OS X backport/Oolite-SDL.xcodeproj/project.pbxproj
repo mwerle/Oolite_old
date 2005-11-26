@@ -314,7 +314,6 @@
 		1A41F982093644F1009360C8 /* RingEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingEntity.h; sourceTree = "<group>"; };
 		1A41F983093644F1009360C8 /* SDLSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLSound.h; sourceTree = "<group>"; };
 		1A41F985093644F1009360C8 /* ParticleEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleEntity.h; sourceTree = "<group>"; };
-		1A41F986093644F1009360C8 /* gnustep-oolite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "gnustep-oolite.h"; sourceTree = "<group>"; };
 		1A41F987093644F1009360C8 /* OOFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOFileManager.h; sourceTree = "<group>"; };
 		1A41F988093644F1009360C8 /* GameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameController.h; sourceTree = "<group>"; };
 		1A41F989093644F1009360C8 /* PlanetEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlanetEntity.h; sourceTree = "<group>"; };
@@ -360,6 +359,7 @@
 		1A41FA070936471D009360C8 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = "OS X backport/SDLMain.h"; sourceTree = "<group>"; };
 		1A41FA080936471D009360C8 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = "OS X backport/SDLMain.m"; sourceTree = "<group>"; };
 		1A41FA2909364866009360C8 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
+		1ADC7EBD09388E6D00B60602 /* OOOpenGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOOpenGL.h; sourceTree = "<group>"; };
 		1AE31DAB093649D000A97D75 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = /Library/Frameworks/SDL_mixer.framework; sourceTree = "<absolute>"; };
 		1AE31DF109364BB900A97D75 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = /Library/Frameworks/SDL_image.framework; sourceTree = "<absolute>"; };
 		1AE31E2709364CBD00A97D75 /* SDL_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_version.h; path = "OS X backport/SDL_version.h"; sourceTree = "<group>"; };
@@ -585,7 +585,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Oolite-SDL.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Oolite-SDL.pch"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Oolite-SDL.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "Oolite-SDL.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* Oolite-SDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Oolite-SDL.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -610,10 +610,11 @@
 				1AE321500936575700A97D75 /* UI */,
 				1AE3214D0936573D00A97D75 /* Non-Player Entities */,
 				1AE321470936571E00A97D75 /* Audio */,
-				1A41F986093644F1009360C8 /* gnustep-oolite.h */,
 				1A41F96F093644F1009360C8 /* ResourceManager.h */,
 				1A41F996093644FF009360C8 /* ResourceManager.m */,
 				1A41F971093644F1009360C8 /* TextureStore.h */,
+				1A41F9A3093644FF009360C8 /* TextureStore.m */,
+				1A41F98B093644F1009360C8 /* OOTrumble.h */,
 				1A41F9B2093644FF009360C8 /* OOTrumble.m */,
 				1A41F973093644F1009360C8 /* SDLImage.h */,
 				1A41F9A4093644FF009360C8 /* SDLImage.m */,
@@ -631,8 +632,6 @@
 				1A41F9A6093644FF009360C8 /* OOFileManager.m */,
 				1A41F988093644F1009360C8 /* GameController.h */,
 				1A41F995093644FF009360C8 /* GameController.m */,
-				1A41F98B093644F1009360C8 /* OOTrumble.h */,
-				1A41F9A3093644FF009360C8 /* TextureStore.m */,
 			);
 			name = Classes;
 			path = ..;
@@ -1056,6 +1055,7 @@
 			isa = PBXGroup;
 			children = (
 				1A41FA0609364710009360C8 /* Mac-specific */,
+				1ADC7EBD09388E6D00B60602 /* OOOpenGL.h */,
 				1A41F964093644DC009360C8 /* vector.h */,
 				1A41F965093644DC009360C8 /* vector.c */,
 				1A41F966093644DC009360C8 /* legacy_random.h */,
@@ -1429,6 +1429,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Oolite-SDL.pch";
+				HEADER_SEARCH_PATHS = ../;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Oolite-SDL";
@@ -1452,6 +1453,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Oolite-SDL.pch";
+				HEADER_SEARCH_PATHS = ../;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;

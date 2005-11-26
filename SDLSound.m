@@ -6,7 +6,6 @@
 //
 
 #import "SDLSound.h"
-#include "oolite-linux.h"
 #import "OOSoundSource.h"
 
 

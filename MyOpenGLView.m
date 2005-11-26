@@ -34,7 +34,6 @@ Any of these conditions can be waived if you get permission from the copyright h
 Your fair use and other rights are in no way affected by the above.
 
 */
-#import <Foundation/NSAutoreleasePool.h>
 
 #import "MyOpenGLView.h"
 
@@ -42,6 +41,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "Universe.h"
 #import "JoystickHandler.h" // TODO: Not here!
 #import "SDL_syswm.h"
+#import "OOSound.h"
 
 #include <ctype.h>
 

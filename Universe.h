@@ -37,6 +37,11 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
+#import <Foundation/Foundation.h>
+#import "OOOpenGL.h"
+#import "entities.h"
+#import "GuiDisplayGen.h"
+
 #define CROSSHAIR_SIZE			32.0
 
 #define VIEW_FORWARD			0
@@ -125,23 +130,6 @@ Your fair use and other rights are in no way affected by the above.
 #define OOLITE_EXCEPTION_SHIP_NOT_FOUND	@"OoliteShipNotFoundException"
 #define OOLITE_EXCEPTION_FATAL			@"OoliteFatalException"
 
-//#import <OpenGL/glu.h>
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#endif
-
-#ifdef GNUSTEP
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#else
-#import <Cocoa/Cocoa.h>
-#endif
-
-#import "entities.h"
-#import "GuiDisplayGen.h"
-
 @class TextureStore, OpenGLSprite, GameController, ShipEntity;
 
 extern int debug;
@@ -149,127 +137,122 @@ extern int debug;
 @interface Universe : NSObject
 {
 		@public
-			// use a sorted list for drawing and other activities
-			//
-			Entity*				sortedEntities[UNIVERSE_MAX_ENTITIES];
-			int					n_entities;
-			int					cursor_row;
-			//
-			////
-			
-			// colors
-			//
-			GLfloat sun_diffuse[4];
-			GLfloat sun_specular[4];
-			GLfloat stars_ambient[4];
-			
-			GLfloat				air_resist_factor;
+		// use a sorted list for drawing and other activities
+		//
+		Entity*					sortedEntities[UNIVERSE_MAX_ENTITIES];
+		int						n_entities;
+		int						cursor_row;
+		//
+		////
 		
-			int					viewDirection;	// read only
-			
+		// colors
+		//
+		GLfloat					sun_diffuse[4];
+		GLfloat					sun_specular[4];
+		GLfloat					stars_ambient[4];
+		
+		GLfloat					air_resist_factor;
+	
+		int						viewDirection;	// read only
+		
 		@protected
-		MyOpenGLView	*gameView;
-        TextureStore	*textureStore;
-        
-#ifndef GNUSTEP        
-//		SpeechChannel		speechChannel;				// used only to support OS X 10.2.8
-		NSSpeechSynthesizer*	speechSynthesizer;		// use this from OS X 10.3 onwards
+		MyOpenGLView			*gameView;
+		TextureStore			*textureStore;
 		
-		//Jester Speech Begin
-		NSArray				*speechArray;
-		//Jester Speech End
-#endif
-
-//		NSMutableDictionary *universal_id_dictionary;
-		int					next_universal_id;
-		Entity*				entity_for_uid[MAX_ENTITY_UID];
+		#ifndef GNUSTEP
+		NSSpeechSynthesizer*	speechSynthesizer;		// use this from OS X 10.3 onwards
+		NSArray					*speechArray;
+		#endif
+		
+		int						next_universal_id;
+		Entity*					entity_for_uid[MAX_ENTITY_UID];
 		
 		//
 		////
 		
-		NSLock				*recycleLock;
-		NSMutableDictionary *entityRecyclePool;
+		NSLock					*recycleLock;
+		NSMutableDictionary		*entityRecyclePool;
 
-		NSMutableDictionary *preloadedDataFiles;
+		NSMutableDictionary		*preloadedDataFiles;
 
-		NSMutableArray	*entities;
+		NSMutableArray			*entities;
 				
-		int				station;
-		int				sun;
-		int				planet;
+		int						station;
+		int						sun;
+		int						planet;
 		
-		int				firstBeacon, lastBeacon;
+		int						firstBeacon, lastBeacon;
 		
-		GLfloat			sky_clear_color[4];
+		GLfloat					sky_clear_color[4];
 		
-        NSString		*currentMessage;
+		NSString				*currentMessage;
 		
-		GuiDisplayGen*	gui;
-		GuiDisplayGen*	message_gui;
-		GuiDisplayGen*	comm_log_gui;
+		GuiDisplayGen*			gui;
+		GuiDisplayGen*			message_gui;
+		GuiDisplayGen*			comm_log_gui;
 		
-		OpenGLSprite	*textDisplaySprite;
-		BOOL			displayGUI;
-		BOOL			displayCursor;
+		OpenGLSprite			*textDisplaySprite;
+		BOOL					displayGUI;
+		BOOL					displayCursor;
 		
-		BOOL			reducedDetail;
-        
-		BOOL			displayFPS;		
-        OpenGLSprite	*cursorSprite;
+		BOOL					reducedDetail;
+		
+		BOOL					displayFPS;		
+		OpenGLSprite			*cursorSprite;
 				
-		double			universal_time;
-		double			time_delta;
-		double			ai_think_time;
+		double					universal_time;
+		double					time_delta;
+		double					ai_think_time;
 		
-		double			demo_stage_time;
-		int				demo_stage;
-		int				demo_ship_index;
-		NSArray			*demo_ships;
+		double					demo_stage_time;
+		int						demo_stage;
+		int						demo_ship_index;
+		NSArray					*demo_ships;
 		
-		GLfloat			sun_center_position[4];
+		GLfloat					sun_center_position[4];
 		
-		BOOL			dumpCollisionInfo;
+		BOOL					dumpCollisionInfo;
 		
-		NSDictionary	*shipdata;			// holds data on all ships available, loaded at initialisation
-		NSDictionary	*shipyard;			// holds data on all ships for sale, loaded at initialisation
+		NSDictionary			*shipdata;			// holds data on all ships available, loaded at initialisation
+		NSDictionary			*shipyard;			// holds data on all ships for sale, loaded at initialisation
 		
-		NSDictionary	*commoditylists;	// holds data on commodities for various types of station, loaded at initialisation
-		NSArray			*commoditydata;		// holds data on commodities extracted from commoditylists
+		NSDictionary			*commoditylists;	// holds data on commodities for various types of station, loaded at initialisation
+		NSArray					*commoditydata;		// holds data on commodities extracted from commoditylists
 		
-		NSDictionary	*illegal_goods;		// holds the legal penalty for illicit commodities, loaded at initialisation
-		NSDictionary	*descriptions;		// holds descriptive text for lots of stuff, loaded at initialisation
-		NSDictionary	*planetinfo;		// holds overrides for individual planets, keyed by "g# p#" where g# is the galaxy number 0..7 and p# the planet number 0..255
-		NSDictionary	*missiontext;		// holds descriptive text for missions, loaded at initialisation
-		NSArray			*equipmentdata;		// holds data on available equipment, loaded at initialisation
+		NSDictionary			*illegal_goods;		// holds the legal penalty for illicit commodities, loaded at initialisation
+		NSDictionary			*descriptions;		// holds descriptive text for lots of stuff, loaded at initialisation
+		NSDictionary			*planetinfo;		// holds overrides for individual planets, keyed by "g# p#" where g# is the galaxy number 0..7 and p# the planet number 0..255
+		NSDictionary			*missiontext;		// holds descriptive text for missions, loaded at initialisation
+		NSArray					*equipmentdata;		// holds data on available equipment, loaded at initialisation
 		
-		Random_Seed		galaxy_seed;
-		Random_Seed		system_seed;
-		Random_Seed		target_system_seed;
+		Random_Seed				galaxy_seed;
+		Random_Seed				system_seed;
+		Random_Seed				target_system_seed;
 		
-		Random_Seed		systems[256];		// hold pregenerated universe info
-		NSString*		system_names[256];		// hold pregenerated universe info
-		BOOL			system_found[256];		// holds matches for input strings
+		Random_Seed				systems[256];		// hold pregenerated universe info
+		NSString*				system_names[256];		// hold pregenerated universe info
+		BOOL					system_found[256];		// holds matches for input strings
 		
-		int				breakPatternCounter;
+		int						breakPatternCounter;
 		
-		ShipEntity		*demo_ship;
+		ShipEntity				*demo_ship;
 		
-		StationEntity*	cachedStation;
-		PlanetEntity*	cachedPlanet;
-		PlanetEntity*	cachedSun;
-		Entity*			cachedEntityZero;
+		StationEntity*			cachedStation;
+		PlanetEntity*			cachedPlanet;
+		PlanetEntity*			cachedSun;
+		Entity*					cachedEntityZero;
 		
-		BOOL			strict;
+		BOOL					strict;
 		
-		BOOL			no_update;
+		BOOL					no_update;
 		
 		NSMutableDictionary*	local_planetinfo_overrides;
 		
-		NSException*	exception;
+		NSException*			exception;
 		
-		NSMutableArray*	activeWormholes;
+		NSMutableArray*			activeWormholes;
 		
-		NSMutableArray* characterPool;
+		NSMutableArray*			characterPool;
 
 }
 

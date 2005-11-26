@@ -15,16 +15,16 @@ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, Californi
 
 You are free:
 
-¥	to copy, distribute, display, and perform the work
-¥	to make derivative works
+â€¢	to copy, distribute, display, and perform the work
+â€¢	to make derivative works
 
 Under the following conditions:
 
-¥	Attribution. You must give the original author credit.
+â€¢	Attribution. You must give the original author credit.
 
-¥	Noncommercial. You may not use this work for commercial purposes.
+â€¢	Noncommercial. You may not use this work for commercial purposes.
 
-¥	Share Alike. If you alter, transform, or build upon this work,
+â€¢	Share Alike. If you alter, transform, or build upon this work,
 you may distribute the resulting work only under a license identical to this one.
 
 For any reuse or distribution, you must make clear to others the license terms of this work.
@@ -34,19 +34,10 @@ Any of these conditions can be waived if you get permission from the copyright h
 Your fair use and other rights are in no way affected by the above.
 
 */
-#ifdef GNUSTEP
-#import <Foundation/Foundation.h>
-#else
-#import <Cocoa/Cocoa.h>
-#endif
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/gl.h>
-#import <OpenGL/glext.h>
-#endif
+#import "OOCocoa.h"
+#import "OOOpenGl.h"
+
 
 #define MAX_CLEAR_DEPTH		100000000.0
 // 100 000 km.
@@ -55,7 +46,14 @@ Your fair use and other rights are in no way affected by the above.
 
 #define MOUSE_DOUBLE_CLICK_INTERVAL	0.40
 
-@class Entity, GameController, OpenGLSprite, JoystickHandler;
+@class Entity, GameController, OpenGLSprite;
+
+#ifdef GNUSTEP
+@class JoystickHandler;
+#define OpenGLViewSuperClass	NSObject
+#else
+#define OpenGLViewSuperClass	NSOpenGLView
+#endif
 
 enum GameViewKeys
 {
@@ -98,53 +96,50 @@ enum StringInput
 
 extern int debug;
 
-@interface MyOpenGLView : NSObject
+@interface MyOpenGLView : OpenGLViewSuperClass
 {
-	GameController  *gameController;
+	GameController		*gameController;
 #ifndef GNUSTEP	
-	OpenGLSprite* splashSprite;
+	OpenGLSprite		*splashSprite;
 #endif
-	BOOL keys[NUM_KEYS];
-   BOOL supressKeys;    // DJS
+	BOOL				keys[NUM_KEYS];
+	BOOL				supressKeys;    // DJS
 
-	BOOL opt, ctrl, command, shift;
-	BOOL allowingStringInput;
-	BOOL isAlphabetKeyDown;
+	BOOL				opt, ctrl, command, shift;
+	BOOL				allowingStringInput;
+	BOOL				isAlphabetKeyDown;
 	
-	int keycodetrans[255];
+	int					keycodetrans[255];
 	
-	BOOL	m_glContextInitialized;
-    NSPoint	mouseDragStartPoint;
-    double 	squareX,squareY;
+	BOOL				m_glContextInitialized;
+    NSPoint				mouseDragStartPoint;
 	
-	NSTimeInterval timeIntervalAtLastClick;
-	BOOL doubleClick;
+	NSTimeInterval		timeIntervalAtLastClick;
+	BOOL				doubleClick;
 	
-	NSMutableString	*typedString;
-	NSRect bounds;
-	NSSize  viewSize;
-	GLfloat display_z;
+	NSMutableString		*typedString;
 	
-	NSPoint virtualJoystickPosition;
-
+	NSPoint				virtualJoystickPosition;
+	
+	NSSize				viewSize;
+	GLfloat				display_z;
+	
+#ifdef GNUSTEP
+    double				squareX,squareY;
+	NSRect				bounds;
+	
    // Full screen sizes
-	NSMutableArray *screenSizes;
-	int currentSize;
-	BOOL fullScreen;
-
-   // Windowed mode
-   NSSize currentWindowSize;
-
+	NSMutableArray		*screenSizes;
+	int					currentSize;
+	BOOL				fullScreen;
+	
+	// Windowed mode
+	NSSize currentWindowSize;
 	SDL_Surface* surface;
-
-   JoystickHandler *stickHandler;
+	JoystickHandler *stickHandler;
+#endif
 }
 
-+ (NSMutableDictionary *) getNativeSize;
-
-// override
-- (id) init;
-- (void) dealloc;
 
 - (void) setStringInput: (enum StringInput) value;
 - (void) allowStringInput: (BOOL) value;
@@ -153,7 +148,6 @@ extern int debug;
 - (void) resetTypedString;
 - (void) setTypedString:(NSString*) value;
 
-- (NSRect) bounds;
 - (NSSize) viewSize;
 - (GLfloat) display_z;
 
@@ -163,13 +157,19 @@ extern int debug;
 - (void) initialiseGLWithSize:(NSSize) v_size;
 
 - (void)drawRect:(NSRect)rect;
-- (void) display;
 
 - (void) snapShot;
 
-- (BOOL) inFullScreenMode;
-#ifdef GNUSTEP
+#ifndef GNUSTEP
+- (void)mouseDown:(NSEvent *)theEvent;
+- (void)mouseUp:(NSEvent *)theEvent;
+#else
+- (NSRect) bounds;
+- (void) display;
++ (NSMutableDictionary *) getNativeSize;
+
 - (void) setFullScreenMode:(BOOL)fsm;
+- (BOOL) inFullScreenMode;
 - (void) toggleScreenMode;
 - (void) setDisplayMode:(int)mode fullScreen:(BOOL)fsm;
 
@@ -183,15 +183,13 @@ extern int debug;
 - (int) loadFullscreenSettings;
 - (int) findDisplayModeForWidth: (unsigned int) d_width Height:(unsigned int) d_height
                         Refresh: (unsigned int)d_refresh;
-- (NSSize) currentScreenSize;                        
+- (NSSize) currentScreenSize;
+
+ - (void) pollControls: (id)sender;
+ - (void) handleStringInput: (SDL_KeyboardEvent *) kbd_event; // DJS
+ - (JoystickHandler *)getStickHandler; // DJS                       
 #endif
 
-/*
-// These are standard methods in NSView.
-- (void)mouseDown:(NSEvent *)theEvent;
-- (void)mouseUp:(NSEvent *)theEvent;
-- (void)mouseDragged:(NSEvent *)theEvent;
-*/
 - (void) setVirtualJoystick:(double) vmx :(double) vmy;
 - (NSPoint) virtualJoystickPosition;
 
@@ -205,8 +203,4 @@ extern int debug;
  - (BOOL) isCommandDown;
  - (BOOL) isShiftDown;
  - (int) numKeys;
-
- - (void) pollControls: (id)sender;
- - (void) handleStringInput: (SDL_KeyboardEvent *) kbd_event; // DJS
- - (JoystickHandler *)getStickHandler; // DJS
 @end

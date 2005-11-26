@@ -2,7 +2,7 @@
 //  TextureStore.m
 /*
  *
- *  Oolite (Linux/Windows + SDL)
+ *  Oolite
  *
  *  Created by Giles Williams on Sat Apr 03 2004.
  *  Copyright (c) 2004 for aegidian.org. All rights reserved.
@@ -37,18 +37,8 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifdef GNUSTEP
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#else
-#import <Cocoa/Cocoa.h>
-#endif
-
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#endif
+#import "OOCocoa.h"
+#import "OOOpenGL.h"
 
 #import "ResourceManager.h"
 #import "legacy_random.h"
@@ -60,60 +50,60 @@ Your fair use and other rights are in no way affected by the above.
 
 - (id) init
 {
-    self = [super init];
-    //
-    textureDictionary = [[NSMutableDictionary dictionaryWithCapacity:5] retain];
-    //
-    return self;
+	self = [super init];
+	//
+	textureDictionary = [[NSMutableDictionary dictionaryWithCapacity:5] retain];
+	//
+	return self;
 }
 
 - (void) dealloc
 {
-    if (textureDictionary) [textureDictionary release];
-    //
-    [super dealloc];
+	if (textureDictionary) [textureDictionary release];
+	//
+	[super dealloc];
 }
 
 - (GLuint) getTextureNameFor:(NSString *)filename
 {
 #ifndef GNUSTEP
-    NSBitmapImageRep	*bitmapImageRep = nil;
-    NSImage		*texImage;
+	NSBitmapImageRep	*bitmapImageRep = nil;
+	NSImage				*texImage;
 #else
-	SDLImage	*texImage;
+	SDLImage			*texImage;
 #endif
-    NSSize		imageSize;
-    NSData		*textureData;
-    GLuint		texName;
+	NSSize				imageSize;
+	NSData				*textureData;
+	GLuint				texName;
 	
-	int			texture_h = 4;
-	int			texture_w = 4;
-	int			image_h, image_w;
-	int			n_planes, im_bytes, tex_bytes;
+	int					texture_h = 4;
+	int					texture_w = 4;
+	int					image_h, image_w;
+	int					n_planes, im_bytes, tex_bytes;
 	
-	int			im_bytesPerRow;
-    
-	int			texi = 0; 
+	int					im_bytesPerRow;
 	
-    if (![textureDictionary objectForKey:filename])
-    {
-        NSMutableDictionary*	texProps = [NSMutableDictionary dictionaryWithCapacity:3];  // autoreleased
+	int					texi = 0; 
+	
+	if (![textureDictionary objectForKey:filename])
+	{
+		NSMutableDictionary*	texProps = [NSMutableDictionary dictionaryWithCapacity:3];  // autoreleased
 #ifndef GNUSTEP		   
 		texImage = [ResourceManager imageNamed:filename inFolder:@"Textures"];
 #else
 		texImage = [ResourceManager surfaceNamed:filename inFolder:@"Textures"];
 #endif
-        if (!texImage)
-        {
-            NSLog(@"***** Couldn't find texture : %@", filename);
+		if (!texImage)
+		{
+			NSLog(@"***** Couldn't find texture : %@", filename);
 			NSException* myException = [NSException
 				exceptionWithName: OOLITE_EXCEPTION_TEXTURE_NOT_FOUND
 				reason: [NSString stringWithFormat:@"Oolite couldn't find texture : %@ on any search-path.", filename]
 				userInfo: [NSDictionary dictionaryWithObjectsAndKeys: filename, @"texture", nil]];
 			[myException raise];
 			return 0;
-        }
-		        
+		}
+		
 #ifndef GNUSTEP
 		NSArray* reps = [texImage representations];
 		
@@ -128,7 +118,7 @@ Your fair use and other rights are in no way affected by the above.
 		}
 		if (!bitmapImageRep)
 		{
-            NSLog(@"***** Couldn't find a representation for texture : %@ %@", filename, texImage);
+			NSLog(@"***** Couldn't find a representation for texture : %@ %@", filename, texImage);
 			NSException* myException = [NSException
 				exceptionWithName: OOLITE_EXCEPTION_TEXTURE_NOT_FOUND
 				reason: [NSString stringWithFormat:@"Oolite couldn't find a NSBitMapImageRep for texture : %@ : %@.", filename, texImage]
@@ -137,32 +127,31 @@ Your fair use and other rights are in no way affected by the above.
 			return 0;
 		}
 		
-//        imageSize = [texImage size];	// NOT RESOLUTION INDEPENDENT
-        imageSize = NSMakeSize( [bitmapImageRep pixelsWide], [bitmapImageRep pixelsHigh]);	// resolution independent
+//		imageSize = [texImage size];			// Gives size in points, which is bad.
+		imageSize = NSMakeSize( [bitmapImageRep pixelsWide], [bitmapImageRep pixelsHigh]);	// Gives size in pixels, which is good.
 		image_w = imageSize.width;
 		image_h = imageSize.height;
 		
-        while (texture_w < image_w)
-            texture_w *= 2;
-        while (texture_h < image_h)
-            texture_h *= 2;
+		while (texture_w < image_w)
+			texture_w *= 2;
+		while (texture_h < image_h)
+			texture_h *= 2;
 		
 		n_planes = [bitmapImageRep samplesPerPixel];
 		im_bytes = image_w * image_h * n_planes;
 		tex_bytes = texture_w * texture_h * n_planes;
 		im_bytesPerRow = [bitmapImageRep bytesPerRow];
 
-		
 		unsigned char* imageBuffer = [bitmapImageRep bitmapData];
 #else
 		imageSize = NSMakeSize([texImage surface]->w, [texImage surface]->h);
 		image_w = imageSize.width;
 		image_h = imageSize.height;
 		
-        while (texture_w < image_w)
-            texture_w *= 2;
-        while (texture_h < image_h)
-            texture_h *= 2;
+		while (texture_w < image_w)
+			texture_w *= 2;
+		while (texture_h < image_h)
+			texture_h *= 2;
 		
 		n_planes = [texImage surface]->format->BytesPerPixel;
 		im_bytesPerRow = [texImage surface]->pitch;
@@ -178,7 +167,7 @@ Your fair use and other rights are in no way affected by the above.
 //			NSLog(@"DEBUG filling image data for %@ (%d x %d) with special sauce!", filename, texture_w, texture_h);
 			fillSquareImageDataWithBlur(imageBuffer, texture_w, n_planes);
 		}
-				
+		
 		if ((texture_w > image_w)||(texture_h > image_h))	// we need to scale the image to the texture dimensions
 		{
 			unsigned char textureBuffer[tex_bytes];
@@ -231,11 +220,9 @@ Your fair use and other rights are in no way affected by the above.
 							+ py1 * (px0 * imageBuffer[ xy01 + n] + px1 * imageBuffer[ xy11 + n]);
 						textureBuffer[ texi++] = (char)acc;	// float -> char
 					}
-				}
-				
+				}			
 			}
 			textureData = [NSData dataWithBytes:textureBuffer length: tex_bytes];	// copies the data
-			
 		}
 		else
 		{
@@ -243,47 +230,47 @@ Your fair use and other rights are in no way affected by the above.
 			textureData = [NSData dataWithBytes:imageBuffer length: im_bytes];	// copies the data
 		}
 		
-
-                
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glGenTextures(1, &texName);			// get a new unique texture name
-        glBindTexture(GL_TEXTURE_2D, texName);	// initialise it
-    
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// adjust this
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// adjust this
-    
-        if (n_planes == 4)
+		
+		
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glGenTextures(1, &texName);			// get a new unique texture name
+		glBindTexture(GL_TEXTURE_2D, texName);	// initialise it
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// adjust this
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// adjust this
+		
+		if (n_planes == 4)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, [textureData bytes]);
 		else
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGB, GL_UNSIGNED_BYTE, [textureData bytes]);
-    
-        // add to dictionary
-        //
-        [texProps setObject:textureData forKey:@"textureData"];
-        [texProps setObject:[NSNumber numberWithInt:texName] forKey:@"texName"];
-        [texProps setObject:[NSNumber numberWithInt:texture_w] forKey:@"width"];
-        [texProps setObject:[NSNumber numberWithInt:texture_h] forKey:@"height"];
+		
+		// add to dictionary
+		//
+		[texProps setObject:textureData forKey:@"textureData"];
+		[texProps setObject:[NSNumber numberWithInt:texName] forKey:@"texName"];
+		[texProps setObject:[NSNumber numberWithInt:texture_w] forKey:@"width"];
+		[texProps setObject:[NSNumber numberWithInt:texture_h] forKey:@"height"];
 
-        [textureDictionary setObject:texProps forKey:filename];
-    }
-    else
-    {
-        texName = (GLuint)[(NSNumber *)[[textureDictionary objectForKey:filename] objectForKey:@"texName"] intValue];
-    }
-    return texName;
+		[textureDictionary setObject:texProps forKey:filename];
+	}
+	else
+	{
+		texName = (GLuint)[(NSNumber *)[[textureDictionary objectForKey:filename] objectForKey:@"texName"] intValue];
+	}
+	return texName;
 }
 
 - (NSSize) getSizeOfTexture:(NSString *)filename
 {
-    NSSize size = NSMakeSize(0.0, 0.0);	// zero size
-    if ([textureDictionary objectForKey:filename])
-    {
-        size.width = [(NSNumber *)[[textureDictionary objectForKey:filename] objectForKey:@"width"] intValue];
-        size.height = [(NSNumber *)[[textureDictionary objectForKey:filename] objectForKey:@"height"] intValue];
-    }
-    return size;
+	NSSize size = NSMakeSize(0.0, 0.0);	// zero size
+	if ([textureDictionary objectForKey:filename])
+	{
+		size.width = [(NSNumber *)[[textureDictionary objectForKey:filename] objectForKey:@"width"] intValue];
+		size.height = [(NSNumber *)[[textureDictionary objectForKey:filename] objectForKey:@"height"] intValue];
+	}
+	return size;
 }
 
 - (void) reloadTextures

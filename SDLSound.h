@@ -14,6 +14,8 @@
 
 #define KEY_VOLUME_CONTROL @"volume_control"
 
+#define MAX_CHANNELS 16
+
 
 @interface OOSound : NSObject
 {

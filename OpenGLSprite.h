@@ -37,13 +37,10 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifndef GNUSTEP
-#import <Cocoa/Cocoa.h>
-#import <OpenGL/gl.h>
-#else
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#import "oolite-linux.h"
+#import "OOCocoa.h"
+#import "OOOpenGL.h"
+
+#ifdef GNUSTEP
 #import "SDLImage.h"
 #endif
 

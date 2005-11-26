@@ -38,16 +38,13 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 
+#import "OOCocoa.h"
+#import "OOOpenGL.h"
+
 #ifdef GNUSTEP
-#include "oolite-linux.h"
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#include <SDL.h>
-#include <SDL_image.h>
 #import "SDLImage.h"
-#else
-#import <Cocoa/Cocoa.h>
 #endif
+
 
 #define OOLITE_EXCEPTION_XML_PARSING_FAILURE	@"OOXMLException"
 #define OOLITE_EXCEPTION_FATAL					@"OoliteFatalException"
@@ -85,7 +82,9 @@ BOOL always_include_addons;
 
 + (NSImage *) imageNamed:(NSString *)filename inFolder:(NSString *)foldername;
 + (NSString *) stringFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername;
+#ifdef GNUSTEP
 + (SDLImage *) surfaceNamed:(NSString *)filename inFolder:(NSString *)foldername;
+#endif
 
 + (NSMutableArray *) scanTokensFromString:(NSString*) values;
 + (NSString *) decodeString:(NSString*) encodedString;

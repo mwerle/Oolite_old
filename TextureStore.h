@@ -37,18 +37,8 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifdef GNUSTEP
 #import <Foundation/Foundation.h>
-//#import <AppKit/AppKit.h>
-#else
-#import <Cocoa/Cocoa.h>
-#endif
-
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#endif
+#import "OOOpenGL.h"
 
 #define OOLITE_EXCEPTION_TEXTURE_NOT_FOUND  @"OoliteTextureNotFoundException"
 #define OOLITE_EXCEPTION_FATAL              @"OoliteFatalException"
@@ -72,4 +62,3 @@ extern int debug;
 void fillSquareImageDataWithBlur(unsigned char * imageBuffer, int width, int nplanes);
 
 @end
-

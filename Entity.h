@@ -93,13 +93,7 @@ Your fair use and other rights are in no way affected by the above.
 
 #define MODEL_FILE @"CORIOLIS.DAT"
 
-#ifdef GNUSTEP
-#import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#import "gnustep-oolite.h"
-#else
-#import <Cocoa/Cocoa.h>
-#endif
+#import "OOCocoa.h"
 #include "vector.h"
 #include "legacy_random.h"
 

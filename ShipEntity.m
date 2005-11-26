@@ -1444,26 +1444,27 @@ BOOL ship_canCollide (ShipEntity* ship)
 
 - (void) update:(double) delta_t
 {
-	double  damping = 0.5 * delta_t;
-	double	confidenceFactor;
-	double	targetCR;
-
-   // this all prevents a sigfpe (division by zero)
-   int      missile_chance=0;
-   int      rhs=(int)(32 * 0.1 / delta_t);
-   if(rhs)
-   {
-      missile_chance=1+(ranrot_rand() % rhs);
-   }
-   //
-	double	hurt_factor = 16 * pow(energy/max_energy, 4.0);
-	double	last_success_factor = success_factor;
+	double		damping = 0.5 * delta_t;
+	double		confidenceFactor;
+	double		targetCR;
+	int			missile_chance;
 	//
-	BOOL	canBurn = has_fuel_injection && (fuel > 1);	// was &&(fuel > 0)
-	BOOL	isUsingAfterburner = canBurn && (flight_speed > max_flight_speed);
+	double		hurt_factor = 16 * pow(energy/max_energy, 4.0);
+	double		last_success_factor = success_factor;
 	//
-	double	max_available_speed = (canBurn)? max_flight_speed * AFTERBURNER_FACTOR : max_flight_speed;
+	BOOL		canBurn = has_fuel_injection && (fuel > 1);	// was &&(fuel > 0)
+	BOOL		isUsingAfterburner = canBurn && (flight_speed > max_flight_speed);
 	//
+	double		max_available_speed = (canBurn)? max_flight_speed * AFTERBURNER_FACTOR : max_flight_speed;
+	//
+	
+	#if __POWERPC__ || defined(NO_DIV_ZERO_EXCEPTION)
+		missile_chance = 1 + (ranrot_rand() % (int)( 32 * 0.1 / delta_t));
+	#else
+		int      rhs = 32 * 0.1 / delta_t;
+		if(rhs) missile_chance = 1 + (ranrot_rand() % rhs);
+		else missile_chance = 0;
+	#endif
 	
 	//
 	// deal with collisions
