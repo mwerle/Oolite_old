@@ -2883,30 +2883,40 @@ Your fair use and other rights are in no way affected by the above.
 
 - (NSDictionary *) getDictionaryForShip:(NSString *) desc
 {
-	if (![shipdata objectForKey:desc])
+	id result = [[[shipdata objectForKey:desc] copy] autorelease];
+	if (nil == result)
 	{
 		NSLog(@"***** Universe couldn't find a dictionary for a ship with description '%@'",desc);
-		// throw an exception here...
-		NSException* myException = [NSException
-			exceptionWithName: OOLITE_EXCEPTION_SHIP_NOT_FOUND
-			reason:[NSString stringWithFormat:@"No ship called '%@' could be found in the Oolite folder.", desc]
-			userInfo:nil];
-		[myException raise];
-		return nil;
-	}
-	else
-		return [NSDictionary dictionaryWithDictionary:(NSDictionary *)[shipdata objectForKey:desc]];	// is autoreleased
+		// throw an exception here...	 
+		NSException* myException = [NSException	 
+			exceptionWithName: OOLITE_EXCEPTION_SHIP_NOT_FOUND	 
+			reason:[NSString stringWithFormat:@"No ship called '%@' could be found in the Oolite folder.", desc]	 
+			userInfo:nil];	 
+		[myException raise];	 
+		return nil;	}
+	return result;
 }
 
 - (int) maxCargoForShip:(NSString *) desc
 {
 	int result = 0;
-	if ([self getDictionaryForShip:desc])
+	NSDictionary* dict = nil;
+	
+	NS_DURING
+		dict = [self getDictionaryForShip:desc];
+	NS_HANDLER
+		if ([[localException name] isEqual:OOLITE_EXCEPTION_SHIP_NOT_FOUND])
+			dict = nil;
+		else
+			[localException raise];
+	NS_ENDHANDLER
+			
+	if (dict)
 	{
-		NSDictionary* dict = [self getDictionaryForShip:desc];
 		if ([dict objectForKey:@"max_cargo"])
 			result = [(NSNumber *)[dict objectForKey:@"max_cargo"]   intValue];
 	}
+	
 	return result;
 }
 
@@ -6501,9 +6511,23 @@ double estimatedTimeForJourney(double distance, int hops)
 		int super_rand2 = ship_seed.b * 0x10000 + ship_seed.d * 0x100 + ship_seed.f;
 		ranrot_srand(super_rand2);
 		
-		if ((days_until_sale > 0.0) && (days_until_sale < 30.0) && (ship_techlevel < techlevel) && (randf() < chance))
+		NSDictionary* ship_base_dict = nil;
+		
+		NS_DURING
+			ship_base_dict= [self getDictionaryForShip:ship_key];
+		NS_HANDLER
+			if ([[localException name] isEqual: OOLITE_EXCEPTION_SHIP_NOT_FOUND])
+			{
+				NSLog(@"***** Oolite Ship Not Found Exception : '%@' in [Universe shipsForSaleInSystem:atTime:] *****", [localException reason]);
+				ship_base_dict = nil;
+			}
+			else
+				[localException raise];
+		NS_ENDHANDLER
+		
+		if ((days_until_sale > 0.0) && (days_until_sale < 30.0) && (ship_techlevel < techlevel) && (randf() < chance) && (ship_base_dict != nil))
 		{			
-			NSMutableDictionary* ship_dict = [NSMutableDictionary dictionaryWithDictionary:[self getDictionaryForShip:ship_key]];
+			NSMutableDictionary* ship_dict = [NSMutableDictionary dictionaryWithDictionary:ship_base_dict];
 			NSMutableString* description = [NSMutableString stringWithCapacity:256];
 			NSMutableString* short_description = [NSMutableString stringWithCapacity:256];
 			int price = [(NSNumber*)[ship_info objectForKey:KEY_PRICE] intValue];
@@ -6702,7 +6726,6 @@ double estimatedTimeForJourney(double distance, int hops)
 		rotate_seed(&ship_seed);
 		rotate_seed(&ship_seed);
 		rotate_seed(&ship_seed);
-	
 	}
 	
 	NSArray* shipsForSale = [resultDictionary allKeys];

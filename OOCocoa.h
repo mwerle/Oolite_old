@@ -1,6 +1,6 @@
 // Import OpenStep main headers and define some Macisms and other compatibility stuff.
 
-#ifdef GNUSTEP
+#if defined(GNUSTEP) && !defined(OOLITE_SDL_MAC)
 
 #define Boolean unsigned char
 #define Byte unsigned char
@@ -21,4 +21,3 @@ typedef int32_t CGMouseDelta;
 #import <math.h>
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-
