@@ -319,7 +319,6 @@
 		1A41F989093644F1009360C8 /* PlanetEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlanetEntity.h; sourceTree = "<group>"; };
 		1A41F98A093644F1009360C8 /* PlayerEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerEntity.h; sourceTree = "<group>"; };
 		1A41F98B093644F1009360C8 /* OOTrumble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTrumble.h; sourceTree = "<group>"; };
-		1A41F98C093644F1009360C8 /* OOMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMusic.h; sourceTree = "<group>"; };
 		1A41F98E093644F1009360C8 /* ShipEntity (AI).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ShipEntity (AI).h"; sourceTree = "<group>"; };
 		1A41F98F093644F1009360C8 /* PlayerEntity_StickMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerEntity_StickMapper.h; sourceTree = "<group>"; };
 		1A41F990093644F1009360C8 /* entities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entities.h; sourceTree = "<group>"; };
@@ -709,7 +708,6 @@
 			isa = PBXGroup;
 			children = (
 				1A41F96A093644F1009360C8 /* OOSound.h */,
-				1A41F98C093644F1009360C8 /* OOMusic.h */,
 				1A41F983093644F1009360C8 /* SDLSound.h */,
 				1A41F9AB093644FF009360C8 /* SDLSound.m */,
 				1A41F979093644F1009360C8 /* SDLMusic.h */,

@@ -237,8 +237,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -350,6 +348,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -386,9 +386,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1ADC7DCA093875C700B60602</string>
+				<string>1A537B67093F0A6D004D5571</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1ADC7DCB093875C700B60602</string>
+				<string>1A537B68093F0A6D004D5571</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -507,7 +507,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>154705176.93281999</real>
+	<real>155127287.81478301</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -522,10 +522,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1A41F9E20936450D009360C8</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/jayton/Programming/Projects/Oolite/oolite-linux-merge/OS X backport/Oolite-SDL.xcodeproj</string>
+		<string>1A41F9E20936450D009360C8</string>
 	</array>
 	<key>WindowString</key>
 	<string>681 57 768 819 0 0 1440 878 </string>
@@ -571,7 +569,7 @@
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXBuildLogShowsTranscriptDefaultKey</key>
-								<string>{{0, 225}, {1110, 276}}</string>
+								<string>{{0, 242}, {1110, 259}}</string>
 								<key>PBXProjectModuleGUID</key>
 								<string>XCMainBuildResultsModuleGUID</string>
 								<key>PBXProjectModuleLabel</key>
@@ -609,7 +607,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1A41F9E20936450D009360C8</string>
-				<string>1ADC7DE70938797E00B60602</string>
+				<string>1A537B83093F0DC7004D5571</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -620,7 +618,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A41F9E20936450D009360C8</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

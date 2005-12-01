@@ -41,11 +41,7 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "ResourceManager.h"
 #import "ScannerExtension.h"
-#ifdef GNUSTEP
-#import "Comparison.h"
 #import "OOSound.h"
-#import "OOMusic.h"
-#endif
 
 
 @implementation ResourceManager
@@ -643,48 +639,6 @@ NSMutableDictionary*	surface_cache;
 }
 
 #ifdef GNUSTEP
-#if 0
-+ (OOMusic *) movieFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername
-{
-	OOMusic *result = nil;
-	NSMutableArray *fpaths = [ResourceManager paths];
-	int i, r;
-	r = 0;
-	if (!filename)
-		return nil;
-
-	NSString* movie_key = [NSString stringWithFormat:@"%@:%@", foldername, filename];
-	if (!movie_cache)
-		movie_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
-	if ([movie_cache objectForKey:movie_key])
-		return (id)[movie_cache objectForKey:movie_key];	// return the cached movie
-	
-	for (i = 0; i < [fpaths count]; i++)
-	{
-		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
-			result = [[OOMusic alloc] initWithContentsOfFile:filepath];
-		if (foldername)
-		{
-			filepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:filename];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
-			{
-				//NSLog(@"DEBUG ResourceManager found %@ at %@",filename,filepath);
-				if (result)
-					[result release];
-				result = [[OOMusic alloc] initWithContentsOfFile:filepath];
-			}
-		}
-	}
-	//NSLog(@"---> ResourceManager found %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
-	
-	if (result)
-		[movie_cache setObject:result forKey:movie_key];
-
-	return [result autorelease];
-}
-#endif
-
 + (SDLImage *) surfaceNamed:(NSString *)filename inFolder:(NSString *)foldername
 {
 	SDLImage *result = 0;
@@ -735,54 +689,6 @@ NSMutableDictionary*	surface_cache;
 	}
 
 	return result;
-}
-
-#else
-+ (NSMovie *) movieFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername
-{
-	NSMovie *result = nil;
-	NSMutableArray *fpaths = [ResourceManager paths];
-	int i, r;
-	r = 0;
-	if (!filename)
-		return nil;
-
-	NSString* movie_key = [NSString stringWithFormat:@"%@:%@", foldername, filename];
-	if (!movie_cache)
-		movie_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
-	if ([movie_cache objectForKey:movie_key])
-		return (NSMovie *)[movie_cache objectForKey:movie_key];	// return the cached movie
-	
-	for (i = 0; i < [fpaths count]; i++)
-	{
-		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
-			result = [[NSMovie alloc] initWithURL:[NSURL fileURLWithPath: filepath] byReference: NO];
-		if (foldername)
-		{
-			filepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:filename];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
-			{
-				//NSLog(@"DEBUG ResourceManager found %@ at %@",filename,filepath);
-				if (result)
-					[result release];
-				result = [[NSMovie alloc] initWithURL:[NSURL fileURLWithPath: filepath] byReference: NO];
-			}
-		}
-	}
-	//NSLog(@"---> ResourceManager found %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
-	
-	if ((result == nil)&&([filename hasSuffix:@"ogg"]))
-	{
-		// look for an alternative .mid file
-		NSString *midifilename = [[filename stringByDeletingPathExtension] stringByAppendingPathExtension:@"mid"];
-		result =[[ResourceManager movieFromFilesNamed:midifilename inFolder:foldername] retain];
-	}
-	
-	if (result)
-		[movie_cache setObject:result forKey:movie_key];
-	
-	return [result autorelease];
 }
 #endif
 

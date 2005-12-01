@@ -8,6 +8,7 @@
 
 #if defined(LINUX) || defined(OOLITE_SDL_MAC)
 #import "SDLSound.h"
+#import "SDLMusic.h"
 #else
 #warning No sound implementation included!
 #endif

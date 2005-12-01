@@ -16,6 +16,8 @@
 
 typedef int32_t CGMouseDelta;
 
+#import "Comparison.h"
+
 #endif
 
 #import <math.h>
