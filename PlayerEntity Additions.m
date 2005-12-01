@@ -1290,15 +1290,15 @@ static int shipsFound;
 
 - (void) setMissionMusic: (NSString *)value
 {
-#ifdef GNUSTEP
-  // TODO: do something
-#else
-	if (missionMusic)   [missionMusic release];
-	if ([[value lowercaseString] isEqual:@"none"])
+	[missionMusic release];
+	if (NSOrderedSame == [value caseInsensitiveCompare:@"none"])
+	{
 		missionMusic = nil;
+	}
 	else
-		missionMusic =  [[ResourceManager movieFromFilesNamed:value inFolder:@"Music"] retain];
-#endif
+	{
+		missionMusic =  [[ResourceManager ooMusicNamed:value inFolder:@"Music"] retain];
+	}
 }
 
 - (void) setMissionImage: (NSString *)value
