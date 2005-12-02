@@ -256,6 +256,7 @@
 		1AE323120936588F00A97D75 /* warning.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 1AE322FF0936588F00A97D75 /* warning.ogg */; };
 		1AE323130936588F00A97D75 /* witchabort.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 1AE323000936588F00A97D75 /* witchabort.ogg */; };
 		1AE3247A09366B8300A97D75 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A41FA080936471D009360C8 /* SDLMain.m */; };
+		1AE64847093FCC3300F3CADA /* PlayerEntity (Controls).m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE64846093FCC3300F3CADA /* PlayerEntity (Controls).m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -579,6 +580,8 @@
 		1AE322FE0936588F00A97D75 /* trumblesqueal.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = trumblesqueal.ogg; sourceTree = "<group>"; };
 		1AE322FF0936588F00A97D75 /* warning.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = warning.ogg; sourceTree = "<group>"; };
 		1AE323000936588F00A97D75 /* witchabort.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = witchabort.ogg; sourceTree = "<group>"; };
+		1AE64845093FCC3300F3CADA /* PlayerEntity (Controls).h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PlayerEntity (Controls).h"; sourceTree = "<group>"; };
+		1AE64846093FCC3300F3CADA /* PlayerEntity (Controls).m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PlayerEntity (Controls).m"; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -1028,6 +1031,8 @@
 				1A41F9A5093644FF009360C8 /* PlayerEntity Additions.m */,
 				1A41F97A093644F1009360C8 /* PlayerEntity (contracts).h */,
 				1A41F992093644FF009360C8 /* PlayerEntity (contracts).m */,
+				1AE64845093FCC3300F3CADA /* PlayerEntity (Controls).h */,
+				1AE64846093FCC3300F3CADA /* PlayerEntity (Controls).m */,
 				1AE320370936520900A97D75 /* PlayerEntity (Sound).h */,
 				1AE320360936520900A97D75 /* PlayerEntity (Sound).m */,
 				1A41F98F093644F1009360C8 /* PlayerEntity_StickMapper.h */,
@@ -1396,6 +1401,7 @@
 				1AE32030093651B300A97D75 /* OOBasicSoundReferencePoint.m in Sources */,
 				1AE320380936520900A97D75 /* PlayerEntity (Sound).m in Sources */,
 				1AE3247A09366B8300A97D75 /* SDLMain.m in Sources */,
+				1AE64847093FCC3300F3CADA /* PlayerEntity (Controls).m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

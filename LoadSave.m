@@ -19,6 +19,7 @@
 #import "LoadSave.h"
 #import "OOFileManager.h"
 #import "GameController.h"
+#import "PlayerEntity (Controls).h"
 
 @implementation PlayerEntity (LoadSave)
 

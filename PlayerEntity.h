@@ -86,15 +86,17 @@ enum
 	GUI_ROW_OPTIONS_GROWL,
 	GUI_ROW_OPTIONS_OOTUNES,
 	GUI_ROW_OPTIONS_DETAIL,
-	GUI_ROW_OPTIONS_STRICT
+	GUI_ROW_OPTIONS_STRICT,
 #else
 	GUI_ROW_OPTIONS_DISPLAYSTYLE,
 	GUI_ROW_OPTIONS_VOLUME,
 	GUI_ROW_OPTIONS_DETAIL,
 	GUI_ROW_OPTIONS_STRICT,
 	GUI_ROW_OPTIONS_STICKMAPPER,
-	GUI_ROW_OPTIONS_QUIT
+	GUI_ROW_OPTIONS_QUIT,
 #endif
+	
+	GUI_ROW_OPTIONS_END_OF_LIST
 };
 
 #define GUI_ROW_EQUIPMENT_START			3
@@ -212,256 +214,257 @@ enum
 
 @interface PlayerEntity : ShipEntity
 {
-	@public
+@public
 	
-		Random_Seed		system_seed;
-		Random_Seed		target_system_seed;
-		
-		BOOL			show_info_flag;
+	Random_Seed				system_seed;
+	Random_Seed				target_system_seed;
 	
-	@protected
-		
-		NSString				*ship_desc;
-		int						ship_trade_in_factor;
-		
-		NSDictionary			*script;
-		NSMutableDictionary		*mission_variables;
-		int						missionTextRow;
-		ShipEntity				*script_target;
-		NSString				*missionChoice;
-		
-		NSString*				specialCargo;
-		
-		NSMutableArray*			comm_log;
-		
-		NSImage					*missionBackgroundImage;
-		
-		NSMutableDictionary		*extra_equipment;
-		BOOL					found_equipment;
-		
-		NSMutableDictionary		*reputation;
-		
-		int						max_passengers;
-		NSMutableArray			*passengers;
-		NSMutableDictionary		*passenger_record;
-
-		NSMutableArray			*contracts;
-		NSMutableDictionary		*contract_record;
-		
-		NSMutableDictionary		*shipyard_record;
-
-		double					script_time;
-		double					script_time_check;
-		double					script_time_interval;
-		NSString				*lastTextKey;
-		
-		double					ship_clock;
-		double					ship_clock_adjust;
-
-		double					fps_check_time;
-		int						fps_counter;
-
-		NSString				*planetSearchString;
-
+	BOOL					show_info_flag;
+	
+@protected
+	
+	NSString				*ship_desc;
+	int						ship_trade_in_factor;
+	
+	NSDictionary			*script;
+	NSMutableDictionary		*mission_variables;
+	int						missionTextRow;
+	ShipEntity				*script_target;
+	NSString				*missionChoice;
+	
+	NSString*				specialCargo;
+	
+	NSMutableArray*			comm_log;
+	
+	NSImage					*missionBackgroundImage;
+	
+	NSMutableDictionary		*extra_equipment;
+	BOOL					found_equipment;
+	
+	NSMutableDictionary		*reputation;
+	
+	int						max_passengers;
+	NSMutableArray			*passengers;
+	NSMutableDictionary		*passenger_record;
+	
+	NSMutableArray			*contracts;
+	NSMutableDictionary		*contract_record;
+	
+	NSMutableDictionary		*shipyard_record;
+	
+	double					script_time;
+	double					script_time_check;
+	double					script_time_interval;
+	NSString				*lastTextKey;
+	
+	double					ship_clock;
+	double					ship_clock_adjust;
+	
+	double					fps_check_time;
+	int						fps_counter;
+	
+	NSString				*planetSearchString;
+	
 #ifdef LOADSAVEGUI
-	   // For GUI/SDL based save screen
-	   NSString          *commanderNameString;
-	   NSMutableArray    *cdrDetailArray;
-      int               currentPage;
-      BOOL              pollControls;
+	// For GUI/SDL based save screen
+	NSString				*commanderNameString;
+	NSMutableArray			*cdrDetailArray;
+	int						currentPage;
+	BOOL					pollControls;
 #endif   
-		
-		StationEntity			*docked_station;
-		
-		HeadUpDisplay			*hud;
-		
-		BOOL	showDemoShips;
-		
-		BOOL rolling, pitching;
-		BOOL using_mining_laser;
-		
-		BOOL mouse_control_on;
-		
-		BOOL speech_on;
-		BOOL ootunes_on;
+	
+	StationEntity			*docked_station;
+	
+	HeadUpDisplay			*hud;
+	
+	BOOL					showDemoShips;
+	
+	BOOL					rolling, pitching;
+	BOOL					using_mining_laser;
+	
+	BOOL					mouse_control_on;
+	
+	BOOL					speech_on;
+	BOOL					ootunes_on;
+	
+	BOOL					docking_music_on;
+	
+	double					roll_delta, pitch_delta;
+	
+	double					forward_shield, aft_shield;
+	double					weapon_temp;
+	double					forward_weapon_temp, aft_weapon_temp, port_weapon_temp, starboard_weapon_temp;
+	double					weapon_energy_per_shot, weapon_heat_increment_per_shot, weapon_reload_time;
+	double					cabin_temp;
+	
+	int						chosen_weapon_facing;   // for purchasing weapons
+	
+	BOOL					game_over;
+	BOOL					docked;
+	BOOL					finished;
+	BOOL					bomb_detonated;
+	BOOL					autopilot_engaged;
+	
+	BOOL					afterburner_engaged;
+	BOOL					afterburnerSoundLooping;
+	
+	BOOL					hyperspeed_engaged;
+	BOOL					travelling_at_hyperspeed;
+	BOOL					hyperspeed_locked;
+	
+	BOOL					ident_engaged;
+	
+	BOOL					galactic_witchjump;
+	
+	BOOL					ecm_in_operation;
+	double					ecm_start_time;
+	
+	OOMusic					*themeMusic;
+	OOMusic					*missionMusic;
+	OOMusic					*dockingMusic;
+	
+	OOSound					*beepSound;
+	OOSound					*boopSound;
+	OOSound					*weaponSound;
+	OOSound					*weaponHitSound;
+	OOSound					*missileSound;
+	OOSound					*damageSound;
+	OOSound					*scrapeDamageSound;
+	OOSound					*destructionSound;
+	OOSound					*breakPatternSound;
+	OOSound					*ecmSound;
+	OOSound					*buySound;
+	OOSound					*sellSound;
+	OOSound					*warningSound;
+	OOSound					*afterburner1Sound;
+	OOSound					*afterburner2Sound;
+	OOSound					*witchAbortSound;
+	
+	OOSoundReferencePoint	*refPoint;
+	OOSoundSource			*interfaceBeepSource;
+	OOSoundSource			*ecmSource;
+	OOSoundSource			*breakPatternSource;
+	
+	int						gui_screen;
+	int						alert_flags;
+	int						alert_condition;
+	int						missile_status;
+	int						active_missile;
+	
+	int						current_cargo;
+	
+	NSPoint					cursor_coordinates;
+	double					witchspaceCountdown;
+	
+	// player commander data
+	NSString*				player_name;
+	NSPoint					galaxy_coordinates;
+	
+	Random_Seed				galaxy_seed;
+	
+	int						credits;	
+	int						galaxy_number;
+	int						forward_weapon;
+	int						aft_weapon;
+	int						port_weapon;
+	int						starboard_weapon;
+	
+	NSMutableArray			*shipCommodityData;
+	
+	BOOL					has_energy_unit;
+	int						energy_unit;
+	int						shield_booster, shield_enhancer;
+	BOOL					has_docking_computer;
+	BOOL					has_galactic_hyperdrive;
+	
+	int						max_missiles;		// int				- no. of missile pylons
+	ShipEntity*				missile_entity[SHIPENTITY_MAX_MISSILES];	// holds the actual missile entities or equivalents
+	
+	int						legal_status;
+	int						market_rnd;
+	int						ship_kills;
+	BOOL					saved;
+	
+	int						compass_mode;
+	
+	double					fuel_leak_rate;
+	
+	// keys!
+	int						key_roll_left;
+	int						key_roll_right;
+	int						key_pitch_forward;
+	int						key_pitch_back;
+	int						key_increase_speed;
+	int						key_decrease_speed;
+	
+	int						key_inject_fuel;
+	
+	int						key_fire_lasers;
+	int						key_target_missile;
+	int						key_untarget_missile;
+	int						key_launch_missile;
+	int						key_ecm;
+	int						key_launch_escapepod;
+	int						key_energy_bomb;
+	int						key_galactic_hyperspace;
+	int						key_hyperspace;
+	int						key_jumpdrive;
+	int						key_dump_cargo;
+	int						key_autopilot;
+	int						key_autopilot_target;
+	int						key_autodock;
+	int						key_snapshot;
+	int						key_docking_music;
+	int						key_scanner_zoom;
+	
+	int						key_map_dump;
+	int						key_map_home;
+	int						key_map_info;
+	
+	int						key_pausebutton;
+	int						key_show_fps;
+	int						key_mouse_control;
+	
+	int						key_emergency_hyperdrive;
+	
+	int						key_next_missile;
+	int						key_ident_system;
+	
+	int						key_comms_log;
+	
+	int						key_next_compass_mode;
+	
+	int						key_cloaking_device;
+	
+	int						key_contract_info;
+	
+	// save-file
+	NSString				*save_path;
+	
+	// position of viewports
+	Vector					forwardViewOffset, aftViewOffset, portViewOffset, starboardViewOffset;
+	
+	// DEBUG
+	ParticleEntity			*drawDebugParticle;
+	int						debugShipID;
+	
+	// trumbles
+	int						n_trumbles;
+	OOTrumble				*trumble[PLAYER_MAX_TRUMBLES];
+	
+	// smart zoom
+	double					scanner_zoom_rate;
 
-		BOOL docking_music_on;
-
-		double  roll_delta, pitch_delta;
-		
-		double  forward_shield, aft_shield;
-		double  weapon_temp;
-		double  forward_weapon_temp, aft_weapon_temp, port_weapon_temp, starboard_weapon_temp;
-		double  weapon_energy_per_shot, weapon_heat_increment_per_shot, weapon_reload_time;
-		double  cabin_temp;
-		
-		int		chosen_weapon_facing;   // for purchasing weapons
-		
-		BOOL	game_over;
-		BOOL	docked;
-		BOOL	finished;
-		BOOL	bomb_detonated;
-		BOOL	autopilot_engaged;
-			
-		BOOL	afterburner_engaged;
-		BOOL	afterburnerSoundLooping;
-			
-		BOOL	hyperspeed_engaged;
-		BOOL	travelling_at_hyperspeed;
-		BOOL	hyperspeed_locked;
-		
-		BOOL	ident_engaged;
-
-		BOOL	ecm_in_operation;
-		double	ecm_start_time;
-		
-		OOMusic		*themeMusic;
-		OOMusic		*missionMusic;
-		OOMusic		*dockingMusic;
-		
-		OOSound		*beepSound;
-		OOSound		*boopSound;
-		OOSound		*weaponSound;
-		OOSound		*weaponHitSound;
-		OOSound		*missileSound;
-		OOSound		*damageSound;
-		OOSound		*scrapeDamageSound;
-		OOSound		*destructionSound;
-		OOSound		*breakPatternSound;
-		OOSound		*ecmSound;
-		OOSound		*buySound;
-		OOSound		*sellSound;
-		OOSound		*warningSound;
-		OOSound		*afterburner1Sound;
-		OOSound		*afterburner2Sound;
-		OOSound		*witchAbortSound;
-		
-		OOSoundReferencePoint *refPoint;
-		OOSoundSource	*interfaceBeepSource;
-		OOSoundSource	*ecmSource;
-		OOSoundSource	*breakPatternSource;
-		
-		int			gui_screen;
-		int			alert_flags;
-		int			alert_condition;
-		int			missile_status;
-		int			active_missile;
-
-		int			current_cargo;
-
-		NSPoint		cursor_coordinates;
-		double		witchspaceCountdown;
-		
-		// player commander data
-		//
-		NSString*		player_name;
-		NSPoint			galaxy_coordinates;
-
-		Random_Seed		galaxy_seed;
-
-		int				credits;	
-		int				galaxy_number;
-		int				forward_weapon;
-		int				aft_weapon;
-		int				port_weapon;
-		int				starboard_weapon;
-		
-		NSMutableArray*	shipCommodityData;
-		
-		BOOL			has_energy_unit;
-		int				energy_unit;
-		int				shield_booster, shield_enhancer;
-		BOOL			has_docking_computer;
-		BOOL			has_galactic_hyperdrive;
-
-		int				max_missiles;		// int				- no. of missile pylons
-		ShipEntity*		missile_entity[SHIPENTITY_MAX_MISSILES];	// holds the actual missile entities or equivalents
-		
-		int				legal_status;
-		int				market_rnd;
-		int				ship_kills;
-		BOOL			saved;
-		
-		int				compass_mode;
-		
-		double			fuel_leak_rate;
-		
-		// keys!
-		int key_roll_left;
-		int key_roll_right;
-		int key_pitch_forward;
-		int key_pitch_back;
-		int key_increase_speed;
-		int key_decrease_speed;
-		//
-		int key_inject_fuel;
-		//
-		int key_fire_lasers;
-		int key_target_missile;
-		int key_untarget_missile;
-		int key_launch_missile;
-		int key_ecm;
-		int key_launch_escapepod;
-		int key_energy_bomb;
-		int key_galactic_hyperspace;
-		int key_hyperspace;
-		int key_jumpdrive;
-		int key_dump_cargo;
-		int key_autopilot;
-		int key_autopilot_target;
-		int key_autodock;
-		int key_snapshot;
-		int key_docking_music;
-		int key_scanner_zoom;
-		//
-		int key_map_dump;
-		int key_map_home;
-		int key_map_info;
-		//
-		int key_pausebutton;
-		int key_show_fps;
-		int key_mouse_control;
-		//
-		int key_emergency_hyperdrive;
-		//
-		int key_next_missile;
-		int key_ident_system;
-		//
-		int key_comms_log;
-		//
-		int key_next_compass_mode;
-		//
-		int key_cloaking_device;
-		//
-		int key_contract_info;
-		
-		// save-file
-		NSString* save_path;
-		
-		// position of viewports
-		Vector forwardViewOffset, aftViewOffset, portViewOffset, starboardViewOffset;
-		
-		// DEBUG
-		ParticleEntity* drawDebugParticle;
-		int		debugShipID;
-		
-		// trumbles
-		int n_trumbles;
-		OOTrumble*	trumble[PLAYER_MAX_TRUMBLES];
-		
-		// smart zoom
-		double scanner_zoom_rate;
-
-#if GNUSTEP
-      // Keeping track of joysticks
-      int numSticks;
-      JoystickHandler *stickHandler;
-      BOOL keyboardRollPitchOverride;
-      
-      // For PlayerEntity (StickMapper)
-      int selFunctionIdx;
-      BOOL waitingForStickCallback;
-      NSArray *stickFunctions; 
+#ifdef GNUSTEP
+  // Keeping track of joysticks
+  int						numSticks;
+  JoystickHandler			*stickHandler;
+  BOOL						keyboardRollPitchOverride;
+  
+  // For PlayerEntity (StickMapper)
+  int						selFunctionIdx;
+  BOOL						waitingForStickCallback;
+  NSArray					*stickFunctions; 
 #endif
 }
 
@@ -548,20 +551,6 @@ enum
 - (void) setAlert_flag:(int) flag :(BOOL) value;
 - (int) alert_condition;
 
-- (void) pollControls:(double) delta_t;
-- (void) pollApplicationControls;
-- (void) pollFlightControls:(double) delta_t;
-- (void) pollFlightArrowKeyControls:(double) delta_t;
-- (void) pollGuiArrowKeyControls:(double) delta_t;
-- (BOOL) handleGUIUpDownArrowKeys:(GuiDisplayGen *)gui 
-                                 :(MyOpenGLView *)gameView;
-- (void) pollViewControls;
-- (void) pollGuiScreenControls;
-- (void) pollGameOverControls:(double) delta_t;
-- (void) pollAutopilotControls:(double) delta_t;
-- (void) pollDockedControls:(double) delta_t;
-- (void) pollDemoControls:(double) delta_t;
-
 - (BOOL) mountMissile: (ShipEntity *)missile;
 
 - (BOOL) fireEnergyBomb;
@@ -643,5 +632,7 @@ enum
 - (void) setTrumbleValueFrom:(NSObject*) trumbleValue;
 
 - (void) munge_checksum_with_NSString:(NSString*) str;
+
+- (NSString *)screenModeStringForWidth:(unsigned)inWidth height:(unsigned)inHeight refreshRate:(float)inRate;
 
 @end

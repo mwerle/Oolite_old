@@ -194,9 +194,9 @@
 	};
 	1A41F98A093644F1009360C8 /* PlayerEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {983, 10240}}";
-			sepNavSelRange = "{7321, 11}";
-			sepNavVisRect = "{{0, 4096}, {983, 516}}";
+			sepNavIntBoundsRect = "{{0, 0}, {881, 10192}}";
+			sepNavSelRange = "{8025, 0}";
+			sepNavVisRect = "{{0, 4621}, {720, 822}}";
 		};
 	};
 	1A41F990093644F1009360C8 /* entities.h */ = {
@@ -257,9 +257,9 @@
 	};
 	1A41F9A1093644FF009360C8 /* LoadSave.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1336, 10384}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 0}, {740, 180}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1336, 10400}}";
+			sepNavSelRange = "{561, 0}";
+			sepNavVisRect = "{{0, 0}, {720, 822}}";
 		};
 	};
 	1A41F9A3093644FF009360C8 /* TextureStore.m */ = {
@@ -327,9 +327,16 @@
 	};
 	1A41F9B7093644FF009360C8 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1658, 132112}}";
-			sepNavSelRange = "{1532, 0}";
-			sepNavVisRect = "{{0, 312}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1658, 95472}}";
+			sepNavSelRange = "{31801, 0}";
+			sepNavVisRect = "{{0, 13327}, {720, 822}}";
+		};
+	};
+	1A41F9B8093644FF009360C8 /* PlayerEntity_StickMapper.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {748, 5840}}";
+			sepNavSelRange = "{476, 0}";
+			sepNavVisRect = "{{0, 0}, {720, 822}}";
 		};
 	};
 	1A41FA080936471D009360C8 /* SDLMain.m */ = {
@@ -400,6 +407,20 @@
 		name = "Project Breakpoints";
 		objects = (
 		);
+	};
+	1AE64845093FCC3300F3CADA /* PlayerEntity (Controls).h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {720, 960}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 138}, {720, 822}}";
+		};
+	};
+	1AE64846093FCC3300F3CADA /* PlayerEntity (Controls).m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1651, 35856}}";
+			sepNavSelRange = "{39364, 0}";
+			sepNavVisRect = "{{0, 21282}, {720, 822}}";
+		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Debug;
@@ -509,8 +530,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 155126372;
-			PBXWorkspaceStateSaveDate = 155126372;
+			PBXPerProjectTemplateStateSaveDate = 155175975;
+			PBXWorkspaceStateSaveDate = 155175975;
 		};
 		sourceControlManager = 1A41F9270936432E009360C8 /* Source Control */;
 		userBuildSettings = {
