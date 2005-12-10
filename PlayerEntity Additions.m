@@ -1122,7 +1122,7 @@ static int shipsFound;
 		}
 	}
 	
-	value = [missionVariableString doubleValue];
+	value = [[mission_variables objectForKey:missionVariableString] doubleValue];
 	value += [valueString doubleValue];
 	
 	[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
@@ -1162,7 +1162,7 @@ static int shipsFound;
 		}
 	}
 	
-	value = [missionVariableString doubleValue];
+	value = [[mission_variables objectForKey:missionVariableString] doubleValue];
 	value -= [valueString doubleValue];
 	
 	[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
@@ -1359,7 +1359,7 @@ static int shipsFound;
 				[(ShipEntity*)e1 setFuel: 70];
 				[[(ShipEntity*)e1 getAI] setStateMachine:@"exitingTraderAI.plist"];
 				[[(ShipEntity*)e1 getAI] setState:@"EXIT_SYSTEM"];
-				[[(ShipEntity*)e1 getAI] reactToMessage:[NSString stringWithFormat:@"pauseAI: %d", 3 + ranrot_rand() & 15]];
+				[[(ShipEntity*)e1 getAI] reactToMessage:[NSString stringWithFormat:@"pauseAI: %d", 3 + (ranrot_rand() & 15)]];
 			}
 		}
 	}

@@ -1002,7 +1002,7 @@ Your fair use and other rights are in no way affected by the above.
 		star.x = g_seed.d * hscale + hoffset;
 		star.y = g_seed.b * vscale + voffset;
 
-		double sz = (4.0 + 0.5 * (0x03 | g_seed.f & 0x0f)) / 7.0;
+		double sz = (4.0 + 0.5 * (0x03 | (g_seed.f & 0x0f))) / 7.0;
 		
 		glVertex3f( x + star.x,			y + star.y + sz,	z);
 		glVertex3f( x + star.x + sz,	y + star.y,			z);

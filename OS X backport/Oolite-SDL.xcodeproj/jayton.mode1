@@ -308,7 +308,7 @@
 							<real>177</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>681 57 768 819 0 0 1440 878 </string>
+						<string>822 -5 768 819 0 0 1440 878 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -345,7 +345,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {569, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>681 57 768 819 0 0 1440 878 </string>
+								<string>822 -5 768 819 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -365,7 +365,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {569, 773}}</string>
 								<key>RubberWindowFrame</key>
-								<string>681 57 768 819 0 0 1440 878 </string>
+								<string>822 -5 768 819 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -389,9 +389,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1AE64843093FCC2E00F3CADA</string>
+				<string>1A544B02094A643700200A13</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1AE64844093FCC2E00F3CADA</string>
+				<string>1A544B03094A643700200A13</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -510,7 +510,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>155177219.307533</real>
+	<real>155870497.78369701</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -526,11 +526,10 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>/Users/jayton/Programming/Projects/Oolite/oolite-linux-merge/OS X backport/Oolite-SDL.xcodeproj</string>
-		<string>1AE64893093FD10300F3CADA</string>
 		<string>1A41F9E20936450D009360C8</string>
 	</array>
 	<key>WindowString</key>
-	<string>681 57 768 819 0 0 1440 878 </string>
+	<string>822 -5 768 819 0 0 1440 878 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -573,7 +572,7 @@
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXBuildLogShowsTranscriptDefaultKey</key>
-								<string>{{0, 373}, {1110, 128}}</string>
+								<string>{{0, 346}, {1110, 155}}</string>
 								<key>PBXProjectModuleGUID</key>
 								<string>XCMainBuildResultsModuleGUID</string>
 								<key>PBXProjectModuleLabel</key>
@@ -611,7 +610,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1A41F9E20936450D009360C8</string>
-				<string>1AE64861093FCCFE00F3CADA</string>
+				<string>1A544BE7094A652100200A13</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -923,8 +922,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {491, 168}}</string>
-											<string>{{0, 173}, {491, 270}}</string>
+											<string>{{0, 0}, {367, 168}}</string>
+											<string>{{0, 173}, {367, 270}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -950,7 +949,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1046, 695}}</string>
 								<key>RubberWindowFrame</key>
-								<string>233 22 1046 736 0 0 1440 878 </string>
+								<string>233 26 1046 736 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXRunSessionModule</string>
@@ -973,14 +972,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>1A537B9E093F12E1004D5571</string>
+				<string>1AE648D9093FD32A00F3CADA</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>1A537B9F093F12E1004D5571</string>
+				<string>1AE648DA093FD32A00F3CADA</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
 			<key>WindowString</key>
-			<string>233 22 1046 736 0 0 1440 878 </string>
+			<string>233 26 1046 736 0 0 1440 878 </string>
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>

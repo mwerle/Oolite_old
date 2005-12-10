@@ -891,19 +891,15 @@ static GLfloat	texture_uv_array[10400 * 2];
 
 - (void) setUniverse:(Universe *)univ
 {
-    if (univ)
-    {
-        if (universe)	[universe release];
-        universe = [univ retain];
-		if (atmosphere)
-			[atmosphere setUniverse:univ];
-    }
+    [super setUniverse: univ];
+	if (atmosphere)
+		[atmosphere setUniverse:univ];
 }
 
 - (void) dealloc
 {
     if (atmosphere)
-		[atmosphere dealloc];
+		[atmosphere release];
 	[super dealloc];
 }
 

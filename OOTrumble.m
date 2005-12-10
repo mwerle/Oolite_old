@@ -104,7 +104,15 @@ Your fair use and other rights are in no way affected by the above.
 	GLfloat c1[4] = { 1.0, 1.0, 1.0, 1.0};
     GLfloat c2[4] = { 1.0, 0.0, 0.0, 1.0};
 
-	max_size = 0.90 + 0.50 * ((r0 & 0x38) + (r1 & 0x38) >> 3) / 63.0;	// inheritable
+	// I am missing something. Please clarify the intent of the following statement.
+	// The next statement shift the result of adding two masked values
+	//	max_size = 0.90 + 0.50 * (((r0 & 0x38) + (r1 & 0x38)) >> 3) / 63.0;	// inheritable
+	// The next statement adds masked(r0) to shifted(masked(r1)
+	// 	max_size = 0.90 + 0.50 * ((r0 & 0x38) + ((r1 & 0x38) >> 3)) / 63.0;	// inheritable
+	// Sorry, but I cannot determine what you intended to do here.
+	//
+	// GILES: It's the second one, we're just determining a pseudo random max_size from the first digram
+	max_size = 0.90 + 0.50 * ((r0 & 0x38) + ((r1 & 0x38) >> 3)) / 63.0;	// inheritable
 
 	// seed the random number generator
 	//

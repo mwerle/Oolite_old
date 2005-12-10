@@ -187,16 +187,16 @@
 	};
 	1A41F988093644F1009360C8 /* GameController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 2624}}";
+			sepNavIntBoundsRect = "{{0, 0}, {923, 2624}}";
 			sepNavSelRange = "{1272, 0}";
-			sepNavVisRect = "{{0, 446}, {1217, 822}}";
+			sepNavVisRect = "{{0, 1570}, {720, 822}}";
 		};
 	};
 	1A41F98A093644F1009360C8 /* PlayerEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {881, 10192}}";
-			sepNavSelRange = "{8025, 0}";
-			sepNavVisRect = "{{0, 4621}, {720, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {881, 10224}}";
+			sepNavSelRange = "{2446, 0}";
+			sepNavVisRect = "{{0, 1117}, {720, 822}}";
 		};
 	};
 	1A41F990093644F1009360C8 /* entities.h */ = {
@@ -216,8 +216,8 @@
 	1A41F995093644FF009360C8 /* GameController.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {2288, 14016}}";
-			sepNavSelRange = "{18514, 6}";
-			sepNavVisRect = "{{0, 9718}, {983, 228}}";
+			sepNavSelRange = "{25155, 0}";
+			sepNavVisRect = "{{0, 7393}, {912, 822}}";
 		};
 	};
 	1A41F996093644FF009360C8 /* ResourceManager.m */ = {
@@ -327,9 +327,9 @@
 	};
 	1A41F9B7093644FF009360C8 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1658, 95472}}";
-			sepNavSelRange = "{31801, 0}";
-			sepNavVisRect = "{{0, 13327}, {720, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1658, 95376}}";
+			sepNavSelRange = "{180845, 0}";
+			sepNavVisRect = "{{0, 93516}, {720, 822}}";
 		};
 	};
 	1A41F9B8093644FF009360C8 /* PlayerEntity_StickMapper.m */ = {
@@ -417,9 +417,9 @@
 	};
 	1AE64846093FCC3300F3CADA /* PlayerEntity (Controls).m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1651, 35856}}";
-			sepNavSelRange = "{39364, 0}";
-			sepNavVisRect = "{{0, 21282}, {720, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1651, 35872}}";
+			sepNavSelRange = "{40612, 0}";
+			sepNavVisRect = "{{0, 21361}, {720, 822}}";
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
@@ -530,8 +530,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 155175975;
-			PBXWorkspaceStateSaveDate = 155175975;
+			PBXPerProjectTemplateStateSaveDate = 155870261;
+			PBXWorkspaceStateSaveDate = 155870261;
 		};
 		sourceControlManager = 1A41F9270936432E009360C8 /* Source Control */;
 		userBuildSettings = {

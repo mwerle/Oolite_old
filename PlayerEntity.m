@@ -3148,7 +3148,7 @@ Your fair use and other rights are in no way affected by the above.
 		return;
 	}
 	//cosmetic damage
-	if ((damage_to & 7 == 7)&&(ship_trade_in_factor > 75))
+	if (((damage_to & 7) == 7)&&(ship_trade_in_factor > 75))
 		ship_trade_in_factor--;
 }
 
@@ -4489,7 +4489,7 @@ Your fair use and other rights are in no way affected by the above.
 				[prefs setInteger:3 forKey:@"groolite-min-priority"];
 			}
 			growl_priority_desc = [Groolite priorityDescription:growl_min_priority];
-			[gui setText:[NSString stringWithFormat:@" Show Growl messages: %@ ", growl_priority_desc] forRow:growl_row align:GUI_ALIGN_CENTER];
+			[gui setText:[NSString stringWithFormat:@" Show Growl messages: %@ ", growl_priority_desc] forRow:GUI_ROW_OPTIONS_GROWL align:GUI_ALIGN_CENTER];
 			[gui setKey:GUI_KEY_OK forRow:GUI_ROW_OPTIONS_GROWL];
 		}
 		

@@ -182,48 +182,10 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) setUniverse:(Universe *)univ
 {
-    if (univ)
-    {
-        if (universe)	[universe release];
-        universe = [univ retain];
-    }
-	else
-	{
-        if (universe)	[universe release];
-        universe = nil;
+    [super setUniverse: univ];
+	if (localMarket) {
 		[localMarket release];
 		localMarket = nil;
-    }
-	//
-	// if we have a universal id then we can proceed to set up any
-	// stuff that happens when we get added to the universe
-	//
-	if (universal_id != NO_TARGET)
-	{
-		// set up escorts
-		//
-		if (status == STATUS_IN_FLIGHT)	// just popped into existence
-		{
-			if ((!escortsAreSetUp)&&(n_escorts > 0))
-				[self setUpEscorts];
-		}
-		else
-		{
-			escortsAreSetUp = YES;	// we don't do this ourself!
-		}
-	}
-	
-	//
-	//	set subentities universe
-	//
-	if (sub_entities != nil)
-	{
-		int i;
-		for (i = 0; i < [sub_entities count]; i++)
-		{
-			[(Entity *)[sub_entities objectAtIndex:i] setUniverse:univ];
-			[(Entity *)[sub_entities objectAtIndex:i] setOwner:self];
-		}
 	}
 }
 

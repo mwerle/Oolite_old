@@ -287,7 +287,7 @@ static  Universe	*data_store_universe;
 
 - (void) dealloc
 {
-    if (universe)	[universe release];
+	// universe is a mere reference. It is neither retained nor released.
     if (basefile)	[basefile release];
 	if (collidingEntities)	[collidingEntities release];
 	if (trackLock) [trackLock release];
@@ -307,16 +307,7 @@ static  Universe	*data_store_universe;
 
 - (void) setUniverse:(Universe *)univ
 {
-    if (univ)
-    {
-        if (universe)	[universe release];
-        universe = [univ retain];
-    }
-	else
-	{
-        if (universe)	[universe release];
-        universe = nil;
-    }
+	universe = univ;
 }
 
 - (void) setUniversal_id:(int)uid

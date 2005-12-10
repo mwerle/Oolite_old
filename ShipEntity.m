@@ -224,16 +224,7 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) setUniverse:(Universe *)univ
 {
-    if (univ)
-    {
-        if (universe)	[universe release];
-        universe = [univ retain];
-    }
-	else
-	{
-        if (universe)	[universe release];
-        universe = nil;
-    }
+	[super setUniverse: univ];
 	
 	//
 	// if we have a universal id then we can proceed to set up any

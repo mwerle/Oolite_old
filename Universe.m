@@ -187,20 +187,7 @@ Your fair use and other rights are in no way affected by the above.
 	[player setUpShipFromDictionary:[self getDictionaryForShip:[player ship_desc]]];	// ship desc is the standard cobra at this point
 
 	[player setStatus:STATUS_DEMO];
-	
-	galaxy_seed = [player galaxy_seed];
-	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
+	[self setGalaxy_seed: [player galaxy_seed]];
 	
 	system_seed = [self findSystemAtCoords:[player galaxy_coordinates] withGalaxySeed:galaxy_seed];
 	
@@ -454,20 +441,8 @@ Your fair use and other rights are in no way affected by the above.
 	
 	[[(MyOpenGLView*)gameView gameController] setPlayerFileToLoad:nil];		// reset Quicksave
 
-	galaxy_seed = [player galaxy_seed];
-	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
-	
+	[self setGalaxy_seed: [player galaxy_seed]];
+
 	system_seed = [self findSystemAtCoords:[player galaxy_coordinates] withGalaxySeed:galaxy_seed];
 	
 //	NSLog(@"Galaxy coords are (%f, %f)", [player galaxy_coordinates].x, [player galaxy_coordinates].y);
@@ -1290,7 +1265,7 @@ Your fair use and other rights are in no way affected by the above.
 			
 			if (([trader_ship n_escorts] > 0)&&((ranrot_rand() % 7) < government))	// remove escorts if we feel safe
 			{
-				int nx = [trader_ship n_escorts] - 2 * (1 + ranrot_rand() & 3);	// remove 2,4,6, or 8 escorts
+				int nx = [trader_ship n_escorts] - 2 * (1 + (ranrot_rand() & 3));	// remove 2,4,6, or 8 escorts
 				[trader_ship setN_escorts:(nx > 0) ? nx : 0];
 			}
 			
@@ -1498,7 +1473,7 @@ Your fair use and other rights are in no way affected by the above.
 			
 			if (([trader_ship n_escorts] > 0)&&((ranrot_rand() % 7) < government))	// remove escorts if we feel safe
 			{
-				int nx = [trader_ship n_escorts] - 2 * (1 + ranrot_rand() & 3);	// remove 2,4,6, or 8 escorts
+				int nx = [trader_ship n_escorts] - 2 * (1 + (ranrot_rand() & 3));	// remove 2,4,6, or 8 escorts
 				[trader_ship setN_escorts:(nx > 0) ? nx : 0];
 			}
 			
@@ -2345,7 +2320,7 @@ Your fair use and other rights are in no way affected by the above.
 - (void) game_over
 {
 	PlayerEntity*   player = (PlayerEntity *)[[self entityZero] retain];
-	int i;
+
 	//
 	[self removeAllEntitiesExceptPlayer:NO];	// don't want to restore afterwards
 	//
@@ -2354,21 +2329,9 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	[[(MyOpenGLView *)gameView gameController] loadPlayerIfRequired];
 	//
-	galaxy_seed = [player galaxy_seed];
+	[self setGalaxy_seed: [player galaxy_seed]];
 	system_seed = [self findSystemAtCoords:[player galaxy_coordinates] withGalaxySeed:galaxy_seed];
 	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		if (system_names[i])	[system_names[i] release];
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
 	//
 	if (![self station])
 		[self set_up_space];
@@ -5229,19 +5192,22 @@ Your fair use and other rights are in no way affected by the above.
 - (void) setGalaxy_seed:(Random_Seed) gal_seed
 {
 	int i;
-	galaxy_seed = gal_seed;
+	Random_Seed g_seed = gal_seed;
+
+	if (!equal_seeds(galaxy_seed, gal_seed)) {
+		galaxy_seed = gal_seed;
 	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		if (system_names[i])	[system_names[i] release];
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
+		// systems
+		for (i = 0; i < 256; i++)
+		{
+			systems[i] = g_seed;
+			if (system_names[i])	[system_names[i] release];
+			system_names[i] = [[self getSystemName:g_seed] retain];
+			rotate_seed(&g_seed);
+			rotate_seed(&g_seed);
+			rotate_seed(&g_seed);
+			rotate_seed(&g_seed);
+		}
 	}
 }
 
@@ -5249,24 +5215,11 @@ Your fair use and other rights are in no way affected by the above.
 {
 	NSDictionary*   systemData;
 	PlayerEntity*   player = (PlayerEntity *)[self entityZero];
-	int i;
 	
-	galaxy_seed = [player galaxy_seed];
+	[self setGalaxy_seed: [player galaxy_seed]];
+
 	system_seed = s_seed;
 	target_system_seed = s_seed;
-	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		if (system_names[i])	[system_names[i] release];
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
 	
 	systemData =		[[self generateSystemData:target_system_seed] retain];  // retained
 	int economy =		[(NSNumber *)[systemData objectForKey:KEY_ECONOMY] intValue];

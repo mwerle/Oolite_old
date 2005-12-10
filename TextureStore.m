@@ -309,10 +309,10 @@ void fillSquareImageDataWithBlur(unsigned char * imageBuffer, int width, int npl
 		int p;
 		for (p = 0; p < nplanes - 1; p++)
 		{
-			imageBuffer[ p + nplanes * (y1 * width + x1) ] = 128 | ranrot_rand() & 127;
-			imageBuffer[ p + nplanes * (y1 * width + x2) ] = 128 | ranrot_rand() & 127;
-			imageBuffer[ p + nplanes * (y2 * width + x1) ] = 128 | ranrot_rand() & 127;
-			imageBuffer[ p + nplanes * (y2 * width + x2) ] = 128 | ranrot_rand() & 127;
+			imageBuffer[ p + nplanes * (y1 * width + x1) ] = 128 | (ranrot_rand() & 127);
+			imageBuffer[ p + nplanes * (y1 * width + x2) ] = 128 | (ranrot_rand() & 127);
+			imageBuffer[ p + nplanes * (y2 * width + x1) ] = 128 | (ranrot_rand() & 127);
+			imageBuffer[ p + nplanes * (y2 * width + x2) ] = 128 | (ranrot_rand() & 127);
 		}
 		imageBuffer[ p + nplanes * (y1 * width + x1) ] = i;	// hoping RGBA last plane is alpha
 		imageBuffer[ p + nplanes * (y1 * width + x2) ] = i;
