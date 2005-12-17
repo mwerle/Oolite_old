@@ -509,6 +509,14 @@
 	<array>
 		<string>%@ ejected.</string>
 	</array>
+	<key>@-ready-to-eject</key>
+	<array>
+		<string>Ready to eject %@.</string>
+	</array>
+	<key>ready-to-eject-@</key>
+	<array>
+		<string>Ready to eject %@.</string>
+	</array>
 	<key>@-scooped</key>
 	<array>
 		<string>%@ scooped.</string>
@@ -667,7 +675,7 @@
 	<key>fined</key>
 	<array>
 		<string>You have been fined %d credits.</string>
-		<string>You have been fined %d credits, and made to pick up litter in the main hanger deck.</string>
+		<string>You have been fined %d credits, and made to pick up litter in the main hangar deck.</string>
 		<string>You have been fined %d credits, and are forced to clean up after the [6]oids.</string>
 		<string>You have been fined %d credits, and sent for 'attitude adjustment'.</string>
 	</array>

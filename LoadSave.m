@@ -20,6 +20,7 @@
 #import "OOFileManager.h"
 #import "GameController.h"
 #import "PlayerEntity (Controls).h"
+#import "OOXMLExtensions.h"
 
 @implementation PlayerEntity (LoadSave)
 
@@ -338,7 +339,7 @@
 					return [cdr objectForKey:@"saved_game_path"];
 				else
 				{
-					if ([gameView isCtrlDown]||[gameView isDown:gvMouseDoubleClick])
+					if ([gameView isCommandDown]||[gameView isDown:gvMouseDoubleClick])
 					{
 						// change directory to the selected path
 						NSString* newDir = (NSString*)[cdr objectForKey:@"saved_game_path"];
@@ -405,7 +406,7 @@
    
 	if(([gameView isDown: 13]||[gameView isDown:gvMouseDoubleClick]) && [commanderNameString length])
 	{
-		if ([gameView isCtrlDown]||[gameView isDown:gvMouseDoubleClick])
+		if ([gameView isCommandDown]||[gameView isDown:gvMouseDoubleClick])
 		{
 			int guiSelectedRow=[gui selectedRow];
 			int	idx = (guiSelectedRow - STARTROW) + (currentPage * NUMROWS);
@@ -485,7 +486,7 @@
 		[player_name release];
 	player_name=[cdrName retain];
 
-	if(![[self commanderDataDictionary] writeToFile:savePath atomically:YES])
+	if(![[self commanderDataDictionary] writeOOXMLToFile:savePath atomically:YES])
 	{
 		NSBeep();
 		NSLog(@"***** ERROR: Save to %@ failed!", savePath);

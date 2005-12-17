@@ -44,6 +44,8 @@ Your fair use and other rights are in no way affected by the above.
 #import "PlayerEntity (Sound).h"
 #import "entities.h"
 
+#import "OOXMLExtensions.h"
+
 #import "vector.h"
 #import "GameController.h"
 #import "ResourceManager.h"
@@ -86,6 +88,7 @@ Your fair use and other rights are in no way affected by the above.
 	key_hyperspace = 104;			// 'h'
 	key_jumpdrive = 106;			// 'j'
 	key_dump_cargo = 100;			// 'd'
+	key_rotate_cargo = 82;			// 'R'
 	key_autopilot = 99;				// 'c'
 	//
 	key_autopilot_target = 67;		// 'C'
@@ -135,6 +138,7 @@ Your fair use and other rights are in no way affected by the above.
 	if ([kdic objectForKey:@"key_hyperspace"])		key_hyperspace = [(NSNumber *)[kdic objectForKey:@"key_hyperspace"] intValue];
 	if ([kdic objectForKey:@"key_jumpdrive"])		key_jumpdrive = [(NSNumber *)[kdic objectForKey:@"key_jumpdrive"] intValue];
 	if ([kdic objectForKey:@"key_dump_cargo"])		key_dump_cargo = [(NSNumber *)[kdic objectForKey:@"key_dump_cargo"] intValue];
+	if ([kdic objectForKey:@"key_rotate_cargo"])	key_rotate_cargo = [(NSNumber *)[kdic objectForKey:@"key_rotate_cargo"] intValue];
 	if ([kdic objectForKey:@"key_autopilot"])		key_autopilot = [(NSNumber *)[kdic objectForKey:@"key_autopilot"] intValue];
 	if ([kdic objectForKey:@"key_autodock"])		key_autodock = [(NSNumber *)[kdic objectForKey:@"key_autodock"] intValue];
 	if ([kdic objectForKey:@"key_snapshot"])		key_snapshot = [(NSNumber *)[kdic objectForKey:@"key_snapshot"] intValue];
@@ -465,6 +469,9 @@ Your fair use and other rights are in no way affected by the above.
 	[result setObject:[NSNumber numberWithInt:final_checksum] forKey:@"checksum"];
 		
 	//NSLog(@"Player Dictionary :\n%@",[result description]);
+	
+	//DEBUG TEST
+//	NSLog(@"DEBUG TESTING OOXML Export Dictionary:-\n%@", [result OOXMLdescription]);
 
 	return [NSDictionary dictionaryWithDictionary:[result autorelease]];
 }
@@ -3035,6 +3042,34 @@ Your fair use and other rights are in no way affected by the above.
 	return result;
 }
 
+- (void) rotateCargo
+{
+	int n_cargo = [cargo count];
+	if (n_cargo == 0)
+		return;
+	ShipEntity* pod = (ShipEntity*)[[cargo objectAtIndex:0] retain];
+	int current_contents = [pod getCommodityType];
+	int contents = [pod getCommodityType];
+	int rotates = 0;
+	do	{
+		[cargo removeObjectAtIndex:0];	// take it from the eject position
+		[cargo addObject:pod];	// move it to the last position
+		[pod release];
+		pod = (ShipEntity*)[[cargo objectAtIndex:0] retain];
+		contents = [pod getCommodityType];
+		rotates++;
+	}	while ((contents == current_contents)&&(rotates < n_cargo));
+	[pod release];
+	if (contents != CARGO_NOT_CARGO)
+	{
+		[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-ready-to-eject]" forSystem:system_seed],[universe nameForCommodity:contents]] forCount:3.0];
+	}
+	else
+	{
+		[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[ready-to-eject-@]" forSystem:system_seed],[pod name]] forCount:3.0];
+	}
+}
+
 - (int) getBounty		// overrides returning 'bounty'
 {
 	return legal_status;
@@ -3598,7 +3633,7 @@ Your fair use and other rights are in no way affected by the above.
 		[myException raise];
 		return;
 	}
-	if (![[self commanderDataDictionary] writeToFile:filename atomically:YES])
+	if (![[self commanderDataDictionary] writeOOXMLToFile:filename atomically:YES])
 	{
 		NSBeep();
 		NSLog(@"***** ERROR: Save to %@ failed!", filename);
@@ -3647,7 +3682,7 @@ Your fair use and other rights are in no way affected by the above.
 		if (player_name)	[player_name release];
 		player_name = [new_name retain];
 		
-		if (![[self commanderDataDictionary] writeToFile:[sp filename] atomically:YES])
+		if (![[self commanderDataDictionary] writeOOXMLToFile:[sp filename] atomically:YES])
 		{
 			NSBeep();
 			NSLog(@"***** ERROR: Save to %@ failed!", [sp filename]);

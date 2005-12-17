@@ -753,14 +753,17 @@ Your fair use and other rights are in no way affected by the above.
 //		debug = YES;
 		
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
-		int i;
-		for (i = 0; i < [script_actions count]; i++)
-		{
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-		}
+		
+		[player scriptActions:script_actions forTarget: nil];
+		
+//		int i;
+//		for (i = 0; i < [script_actions count]; i++)
+//		{
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
+//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
+//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
+//		}
 		
 //		debug = NO;
 	}
@@ -1051,14 +1054,17 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		PlayerEntity* player = (PlayerEntity*)[self entityZero];
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
-		int i;
-		for (i = 0; i < [script_actions count]; i++)
-		{
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-		}
+		
+		[player scriptActions: script_actions forTarget: nil];
+		
+//		int i;
+//		for (i = 0; i < [script_actions count]; i++)
+//		{
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
+//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
+//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
+//		}
 	}
 	
 }

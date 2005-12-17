@@ -1236,16 +1236,8 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		//scripting
 		if ([script_actions count])
 		{
-			int i;
 			[(PlayerEntity *)ship setScript_target:self];
-			for (i = 0; i < [script_actions count]; i++)
-			{
-				NSObject*	action = [script_actions objectAtIndex:i];
-				if ([action isKindOfClass:[NSDictionary class]])
-					[(PlayerEntity *)ship checkCouplet:(NSDictionary *)action onEntity:ship];
-				if ([action isKindOfClass:[NSString class]])
-					[(PlayerEntity *)ship scriptAction:(NSString *)action onEntity:ship];
-			}
+			[(PlayerEntity *)ship scriptActions: script_actions forTarget: ship];
 		}
 	}
 			

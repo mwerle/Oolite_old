@@ -410,6 +410,7 @@ enum
 	int						key_hyperspace;
 	int						key_jumpdrive;
 	int						key_dump_cargo;
+	int						key_rotate_cargo;
 	int						key_autopilot;
 	int						key_autopilot_target;
 	int						key_autodock;
@@ -558,6 +559,8 @@ enum
 
 - (BOOL) fireMainWeapon;
 - (int) weaponForView:(int) view;
+
+- (void) rotateCargo;
 
 - (void) enterGalacticWitchspace;
 - (void) enterWormhole:(WormholeEntity*) w_hole;

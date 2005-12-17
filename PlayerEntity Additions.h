@@ -50,6 +50,7 @@ Your fair use and other rights are in no way affected by the above.
 @interface PlayerEntity (Scripting)
 
 - (void) checkScript;
+- (void) scriptActions:(NSArray*) some_actions forTarget:(ShipEntity*) a_target;
 - (BOOL) checkCouplet:(NSDictionary *) couplet onEntity:(Entity *) entity;
 - (void) scriptAction:(NSString *) scriptAction onEntity:(Entity *) entity;
 - (BOOL) scriptTestCondition:(NSString *) scriptCondition;
@@ -81,6 +82,15 @@ Your fair use and other rights are in no way affected by the above.
 - (NSString *) sunWillGoNova_bool;		// returns whether the sun is going to go nova
 
 - (NSString *) missionChoice_string;	// returns nil or the key for the chosen option
+
+- (NSString *) dockedStationName_string;	// returns 'NONE' if the player isn't docked, [station name] if it is, 'UNKNOWN' otherwise
+
+- (NSString *) systemGovernment_string;
+- (NSNumber *) systemGovernment_number;
+- (NSNumber *) systemEconomy_number;
+- (NSNumber *) systemTechLevel_number;
+- (NSNumber *) systemPopulation_number;
+- (NSNumber *) systemProductivity_number;
 
 /*-----------------------------------------------------*/
 

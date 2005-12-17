@@ -237,8 +237,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -263,7 +261,7 @@
 						<dict>
 							<key>PBXSmartGroupTreeModuleColumnWidthsKey</key>
 							<array>
-								<real>177</real>
+								<real>207</real>
 							</array>
 							<key>PBXSmartGroupTreeModuleColumnsKey_v4</key>
 							<array>
@@ -289,7 +287,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {177, 760}}</string>
+							<string>{{0, 0}, {207, 760}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -301,19 +299,19 @@
 					<key>GeometryConfiguration</key>
 					<dict>
 						<key>Frame</key>
-						<string>{{0, 0}, {194, 778}}</string>
+						<string>{{0, 0}, {224, 778}}</string>
 						<key>GroupTreeTableConfiguration</key>
 						<array>
 							<string>MainColumn</string>
-							<real>177</real>
+							<real>207</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>822 -5 768 819 0 0 1440 878 </string>
+						<string>672 59 768 819 0 0 1440 878 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
 					<key>Proportion</key>
-					<string>194pt</string>
+					<string>224pt</string>
 				</dict>
 				<dict>
 					<key>Dock</key>
@@ -343,9 +341,9 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {569, 0}}</string>
+								<string>{{0, 0}, {539, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>822 -5 768 819 0 0 1440 878 </string>
+								<string>672 59 768 819 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -353,6 +351,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -363,9 +363,9 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 5}, {569, 773}}</string>
+								<string>{{0, 5}, {539, 773}}</string>
 								<key>RubberWindowFrame</key>
-								<string>822 -5 768 819 0 0 1440 878 </string>
+								<string>672 59 768 819 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -374,7 +374,7 @@
 						</dict>
 					</array>
 					<key>Proportion</key>
-					<string>569pt</string>
+					<string>539pt</string>
 				</dict>
 			</array>
 			<key>Name</key>
@@ -389,9 +389,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1A544B02094A643700200A13</string>
+				<string>1AB4E09F0954DC5A00C46CE2</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1A544B03094A643700200A13</string>
+				<string>1AB4E0A00954DC5A00C46CE2</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -510,7 +510,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>155870497.78369701</real>
+	<real>156556377.606444</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -526,10 +526,9 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>/Users/jayton/Programming/Projects/Oolite/oolite-linux-merge/OS X backport/Oolite-SDL.xcodeproj</string>
-		<string>1A41F9E20936450D009360C8</string>
 	</array>
 	<key>WindowString</key>
-	<string>822 -5 768 819 0 0 1440 878 </string>
+	<string>672 59 768 819 0 0 1440 878 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>

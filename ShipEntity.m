@@ -978,14 +978,9 @@ Your fair use and other rights are in no way affected by the above.
 			PlayerEntity* player = (PlayerEntity*)[universe entityZero];
 			[player setScript_target:self];
 			NSArray * setup_actions = (NSArray *)[shipdict objectForKey:KEY_SETUP_ACTIONS];
-			int i;
-			for (i = 0; i < [setup_actions count]; i++)
-			{
-				if ([[setup_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-					[player checkCouplet:(NSDictionary *)[setup_actions objectAtIndex:i] onEntity:self];
-				if ([[setup_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-					[player scriptAction:(NSString *)[setup_actions objectAtIndex:i] onEntity:self];
-			}
+			
+			[player scriptActions: setup_actions forTarget: self];
+
 		}
 	}
 	
@@ -1463,6 +1458,21 @@ BOOL ship_canCollide (ShipEntity* ship)
 	[self manageCollisions];
 	[self saveToLastFrame];
 
+	//
+	// reset any inadvertant legal mishaps
+	//
+	if (scan_class == CLASS_POLICE)
+	{
+		if (bounty > 0)
+			bounty = 0;
+		ShipEntity* targEnt = (ShipEntity*)[universe entityForUniversalID:primaryTarget];
+		if ((targEnt)&&(targEnt->scan_class == CLASS_POLICE))
+		{
+			primaryTarget = NO_TARGET;
+			[shipAI reactToMessage:@"TARGET_LOST"];
+		}
+	}
+	//
 	
 	if (trackCloseContacts)
 	{
@@ -1591,10 +1601,8 @@ BOOL ship_canCollide (ShipEntity* ship)
 	//scripting
 	if ((status == STATUS_IN_FLIGHT)&&([launch_actions count]))
 	{
-		int i;
 		[(PlayerEntity *)[universe entityZero] setScript_target:self];
-		for (i = 0; i < [launch_actions count]; i++)
-			[(PlayerEntity *)[universe entityZero] scriptAction:(NSString *)[launch_actions objectAtIndex:i] onEntity:self];
+		[(PlayerEntity *)[universe entityZero] scriptActions: launch_actions forTarget: self];
 		[launch_actions removeAllObjects];
 	}
 	
@@ -3344,17 +3352,11 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 	//scripting
 	if ([death_actions count])
 	{
-		int i;
 		PlayerEntity* player = (PlayerEntity *)[universe entityZero];
+		
 		[player setScript_target:self];
-		for (i = 0; i < [death_actions count]; i++)
-		{
-			NSObject* action = [death_actions objectAtIndex:i];
-			if ([action isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)action onEntity:self];
-			if ([action isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)action onEntity:self];
-		}
+		[player scriptActions: death_actions forTarget: self];
+		
 		[death_actions removeAllObjects];
 	}
 	
@@ -3636,17 +3638,11 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	//scripting
 	if ([death_actions count])
 	{
-		int i;
 		PlayerEntity* player = (PlayerEntity *)[universe entityZero];
+		
 		[player setScript_target:self];
-		for (i = 0; i < [death_actions count]; i++)
-		{
-			NSObject* action = [death_actions objectAtIndex:i];
-			if ([action isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)action onEntity:self];
-			if ([action isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)action onEntity:self];
-		}
+		[player scriptActions: death_actions forTarget: self];
+		
 		[death_actions removeAllObjects];
 	}
 	
@@ -5728,17 +5724,11 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 				//scripting
 				if ([actions count])
 				{
-					int i;
 					PlayerEntity* player = (PlayerEntity *)[universe entityZero];
+					
 					[player setScript_target:self];
-					for (i = 0; i < [actions count]; i++)
-					{
-						if ([[actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-							[player checkCouplet:	(NSDictionary *)[actions objectAtIndex:i]	onEntity:other];
-						if ([[actions objectAtIndex:i] isKindOfClass:[NSString class]])
-							[player scriptAction:	(NSString *)	[actions objectAtIndex:i]	onEntity:other];
-					}
-//						[(PlayerEntity *)[universe entityZero] scriptAction:(NSString *)[actions objectAtIndex:i] onEntity:other];
+					[player scriptActions: actions forTarget: other];
+					
 				}
 //				NSLog(@"DEBUG Scooped scripted item %@ %@ %d", other, [other name], [other universal_id]);
 				if (isPlayer)
