@@ -1,3 +1,5 @@
+#ifndef _VECTOR_H
+#define _VECTOR_H
 /*
 
 Provides utility routines for Vectors, Quaternions, rotation matrices, and conversion to OpenGL transformation matrices
@@ -152,3 +154,6 @@ void	quaternion_rotate_about_axis(struct quaternion *quat, Vector axis, GLfloat 
 // normalise
 //
 void	quaternion_normalise(struct quaternion *quat);
+
+#endif
+

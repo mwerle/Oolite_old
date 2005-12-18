@@ -42,6 +42,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "PlayerEntity.h"
 #import "TextureStore.h"
 #import "ResourceManager.h"
+#import "OOSound.h"
 
 
 @implementation OOTrumble

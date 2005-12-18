@@ -43,6 +43,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "Universe.h"
 #import "ResourceManager.h"
 #import "AI.h"
+#import "OOSound.h"
 
 #ifdef GNUSTEP
 #import "Comparison.h"

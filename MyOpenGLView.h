@@ -36,8 +36,11 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 #import "OOCocoa.h"
-#import "OOOpenGl.h"
+#import "OOOpenGL.h"
 
+#ifdef GNUSTEP
+#include <SDL/SDL.h>
+#endif
 
 #define MAX_CLEAR_DEPTH		100000000.0
 // 100 000 km.

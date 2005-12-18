@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
  * This is called from a couple of places, and having it here saves one more
  * AppKit dependency.
  */
-void NSBeep()
-{
-}
+//void NSBeep()
+//{
+//}
+

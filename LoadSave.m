@@ -21,6 +21,7 @@
 #import "GameController.h"
 #import "PlayerEntity (Controls).h"
 #import "OOXMLExtensions.h"
+#import "OOSound.h"
 
 @implementation PlayerEntity (LoadSave)
 

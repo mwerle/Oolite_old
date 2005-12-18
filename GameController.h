@@ -96,7 +96,9 @@ extern int debug;
 	NSDictionary			*originalDisplayMode;
 	NSDictionary			*fullscreenDisplayMode;
 
+#ifndef GNUSTEP
 	NSOpenGLContext			*fullScreenContext;
+#endif
 
 	BOOL					stayInFullScreenMode;
 
@@ -110,6 +112,7 @@ extern int debug;
 	BOOL					game_is_paused;
 }
 
+- (void) applicationDidFinishLaunching: (NSNotification *)notification;
 - (BOOL) game_is_paused;
 - (void) pause_game;
 - (void) unpause_game;

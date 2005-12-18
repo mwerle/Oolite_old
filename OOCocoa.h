@@ -1,7 +1,7 @@
 // Import OpenStep main headers and define some Macisms and other compatibility stuff.
 
 #if defined(GNUSTEP) && !defined(OOLITE_SDL_MAC)
-
+#include <stdint.h>
 #define Boolean unsigned char
 #define Byte unsigned char
 #define true 1
