@@ -107,7 +107,7 @@ int OOXMLindentation_level = 0;
 {	
 	NSString* indent = @"";
 	indent = [indent stringByPaddingToLength:OOXMLindentation_level withString:@"\t" startingAtIndex:0];
-	NSString* num_type = [NSString stringWithFormat:@"%s", [self objCType]];
+	NSString* num_type = [[NSString stringWithFormat:@"%s", [self objCType]] lowercaseString];
 	
 	if ([num_type isEqual:@"c"])	// bool
 	{
