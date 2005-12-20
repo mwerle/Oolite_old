@@ -73,8 +73,10 @@ Your fair use and other rights are in no way affected by the above.
 	SDLImage			*texImage;
 #endif
 	NSSize				imageSize;
-	NSData				*textureData;
 	GLuint				texName;
+	
+	unsigned char		*texBytes;
+	BOOL				freeTexBytes;
 	
 	int					texture_h = 4;
 	int					texture_w = 4;
@@ -170,7 +172,8 @@ Your fair use and other rights are in no way affected by the above.
 		
 		if ((texture_w > image_w)||(texture_h > image_h))	// we need to scale the image to the texture dimensions
 		{
-			unsigned char textureBuffer[tex_bytes];
+			texBytes = malloc(tex_bytes);
+			freeTexBytes = YES;
 			
 			// do bilinear scaling
 			int x, y, n;
@@ -218,37 +221,36 @@ Your fair use and other rights are in no way affected by the above.
 					{
 						acc = py0 * (px0 * imageBuffer[ xy00 + n] + px1 * imageBuffer[ xy10 + n])
 							+ py1 * (px0 * imageBuffer[ xy01 + n] + px1 * imageBuffer[ xy11 + n]);
-						textureBuffer[ texi++] = (char)acc;	// float -> char
+						texBytes[ texi++] = (char)acc;	// float -> char
 					}
 				}			
 			}
-			textureData = [NSData dataWithBytes:textureBuffer length: tex_bytes];	// copies the data
 		}
 		else
 		{
 			// no scaling required - we will use the image data directly
-			textureData = [NSData dataWithBytes:imageBuffer length: im_bytes];	// copies the data
+			texBytes = imageBuffer;
+			freeTexBytes = NO;
 		}
-		
-		
 		
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glGenTextures(1, &texName);			// get a new unique texture name
-		glBindTexture(GL_TEXTURE_2D, texName);	// initialise it
+		glBindTexture(GL_TEXTURE_2D, texName);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// adjust this
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// adjust this
 		
 		if (n_planes == 4)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, [textureData bytes]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBytes);
 		else
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGB, GL_UNSIGNED_BYTE, [textureData bytes]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGB, GL_UNSIGNED_BYTE, texBytes);
+		
+		if (freeTexBytes) free(texBytes);
 		
 		// add to dictionary
 		//
-		[texProps setObject:textureData forKey:@"textureData"];
 		[texProps setObject:[NSNumber numberWithInt:texName] forKey:@"texName"];
 		[texProps setObject:[NSNumber numberWithInt:texture_w] forKey:@"width"];
 		[texProps setObject:[NSNumber numberWithInt:texture_h] forKey:@"height"];
