@@ -123,9 +123,9 @@ int OOXMLindentation_level = 0;
 	if ([num_type isEqual:@"d"])	// double
 		return [NSString stringWithFormat:@"%@<real>%lf</real>", indent, [self doubleValue]];
 	
-	if ([num_type isEqual:@"i"]||[num_type isEqual:@"q"])	// integer
+	if ([num_type isEqual:@"i"]||[num_type isEqual:@"q"]||[num_type isEqual:@"l"])	// integer
 		return [NSString stringWithFormat:@"%@<integer>%d</integer>", indent, [self intValue]];
-	
+
 	return [NSString stringWithFormat:@"%@<!-- NSNumber --><%@>%@</%@>", indent, num_type, [self description], num_type];
 }
 
