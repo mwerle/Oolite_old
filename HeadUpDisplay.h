@@ -38,16 +38,9 @@ Any of these conditions can be waived if you get permission from the copyright h
 Your fair use and other rights are in no way affected by the above.
 
 */
-//
-
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#import <OpenGL/glu.h>
-#endif
 
 #import <Foundation/Foundation.h>
+#import "OOOpenGL.h"
 
 #import "vector.h"
 #import "MyOpenGLView.h"

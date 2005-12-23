@@ -1,0 +1,13 @@
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
+
+#include "OOOpenGL.h"
+#include <SDL/SDL.h>
+#include <math.h>
+
+
+#define GNUSTEP				1
+#define OOLITE_SDL_MAC		1
+#define LOADSAVEGUI
+#define HAVE_SOUND

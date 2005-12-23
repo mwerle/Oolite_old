@@ -39,8 +39,8 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
-//#include <ppc_intrinsics.h>
 
 #include "vector.h"
 #include "legacy_random.h"

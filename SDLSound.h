@@ -14,6 +14,9 @@
 
 #define KEY_VOLUME_CONTROL @"volume_control"
 
+#define MAX_CHANNELS 16
+
+
 @interface OOSound : NSObject
 {
 	BOOL isPlaying;
@@ -28,11 +31,13 @@
 + (float) masterVolume;
 + (void) setMasterVolume: (float) fraction;
 
-- (id) initWithContentsOfFile:(NSString*) filepath byReference:(BOOL) ref;
+- (id) initWithContentsOfFile:(NSString*) filepath;
 - (BOOL) pause;
 - (BOOL) isPlaying;
 - (BOOL) play;
 - (BOOL) stop;
 - (BOOL) resume;
+
++ (void)update;
 
 @end

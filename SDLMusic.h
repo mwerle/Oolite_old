@@ -8,6 +8,7 @@
 #include "SDL.h"
 #include "SDL_mixer.h"
 
+
 @interface OOMusic : NSObject
 {
     // The SDL_mixer music structure encapsulated by an instance of OOMusic.

@@ -108,7 +108,6 @@ float char_widths[128] = {
 //	printf("\n\n");
 	
 //	// init sprites
-#ifndef WIN32
 	compassSprite = [[OpenGLSprite alloc]   initWithImage:[ResourceManager imageNamed:COMPASS_IMAGE inFolder:@"Images"]
 											cropRectangle:NSMakeRect(0, 0, COMPASS_SIZE, COMPASS_SIZE)
 											size:NSMakeSize(COMPASS_HALF_SIZE, COMPASS_HALF_SIZE)];			// alloc retains
@@ -124,24 +123,7 @@ float char_widths[128] = {
 														cropRectangle:NSMakeRect(w1*i, 0, w1, h1)
 														size:NSMakeSize(16, 16)];	// alloc retains
 	}
-#else
-	compassSprite = [[OpenGLSprite alloc]   initWithSurface:[ResourceManager surfaceNamed:COMPASS_IMAGE inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, COMPASS_SIZE, COMPASS_SIZE)
-											size:NSMakeSize(COMPASS_HALF_SIZE, COMPASS_HALF_SIZE)];			// alloc retains
-	aegisSprite = [[OpenGLSprite alloc]   initWithSurface:[ResourceManager surfaceNamed:AEGIS_IMAGE inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, 32, 32)
-											size:NSMakeSize(32, 32)];	// alloc retains
-	SDLImage *zoomLevelImage = [ResourceManager surfaceNamed:ZOOM_LEVELS_IMAGE inFolder:@"Images"];
-	int w1 = [zoomLevelImage size].width / SCANNER_ZOOM_LEVELS;
-	int h1 = [zoomLevelImage size].height;
-	for (i = 0; i < SCANNER_ZOOM_LEVELS; i++)
-	{
-		zoomLevelSprite[i] = [[OpenGLSprite alloc]   initWithSurface:zoomLevelImage
-														cropRectangle:NSMakeRect(w1*i, 0, w1, h1)
-														size:NSMakeSize(16, 16)];	// alloc retains
-	}
-#endif
-
+	
 	// init arrays
 	dialArray = [[NSMutableArray alloc] initWithCapacity:16];   // alloc retains
 	legendArray = [[NSMutableArray alloc] initWithCapacity:16]; // alloc retains
@@ -215,7 +197,6 @@ GLuint ascii_texture_name;
 	if ([info objectForKey:IMAGE_KEY])
 	{
 		//NSLog(@"DEBUG adding Legend %@",[info objectForKey:IMAGE_KEY]);
-#ifndef WIN32
 		NSImage			*legendImage = [ResourceManager imageNamed:(NSString *)[info objectForKey:IMAGE_KEY] inFolder:@"Images"];
 		NSSize			imageSize = [legendImage size];
 		NSSize			spriteSize = imageSize;
@@ -225,18 +206,6 @@ GLuint ascii_texture_name;
 			spriteSize.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] intValue];
 		OpenGLSprite *legendSprite = [[OpenGLSprite alloc] initWithImage:legendImage
 										cropRectangle:NSMakeRect(0, 0, imageSize.width, imageSize.height) size:spriteSize]; // retained
-#else
-		SDLImage		*legendImage = [ResourceManager surfaceNamed:(NSString *)[info objectForKey:IMAGE_KEY] inFolder:@"Images"];
-		NSSize			imageSize = [legendImage size];
-		NSSize			spriteSize = imageSize;
-		if ([info objectForKey:WIDTH_KEY])
-			spriteSize.width = [(NSNumber *)[info objectForKey:WIDTH_KEY] intValue];
-		if ([info objectForKey:HEIGHT_KEY])
-			spriteSize.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] intValue];
-
-		OpenGLSprite *legendSprite = [[OpenGLSprite alloc] initWithSurface:legendImage
-										cropRectangle:NSMakeRect(0, 0, imageSize.width, imageSize.height) size:spriteSize]; // retained
-#endif
 		NSMutableDictionary *legendDict = [NSMutableDictionary dictionaryWithDictionary:info];
 		[legendDict setObject:legendSprite forKey:SPRITE_KEY];
 		[legendArray addObject:legendDict];																	
@@ -1916,7 +1885,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 	for (i = 0; i < length; i++)
 	{
 		ch = [text characterAtIndex:i];
-		if (ch & 0xFC00 == 0xD800)
+		if ((ch & 0xFC00) == 0xD800)
 		{
 			// This is a high surrogate. NSStrings don’t automagically handle surrogate pairs
 			// for us for historical reasons.
@@ -1924,7 +1893,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 			{
 				// Check if next is a low surrogate
 				next = [text characterAtIndex:i + 1];
-				if (next & 0xFC00 == 0xDC00)
+				if ((next & 0xFC00) == 0xDC00)
 				{
 					// It is; merge the surrogate pair into a code point in ch and skip
 					++i;
@@ -2007,6 +1976,15 @@ static const char *toAscii(unsigned inCodePoint)
 		
 		case 0x2606:	// White star
 			return "-";
+		
+		case 0x266D:	// Musical flat sign
+			return "b";
+		
+		case 0x266E:	// Musical natural sign
+			return "=";
+		
+		case 0x266F:	// Musical sharp sign
+			return "#";
 		
 		default:
 			return "?";

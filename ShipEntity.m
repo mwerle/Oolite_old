@@ -224,16 +224,7 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) setUniverse:(Universe *)univ
 {
-    if (univ)
-    {
-        if (universe)	[universe release];
-        universe = [univ retain];
-    }
-	else
-	{
-        if (universe)	[universe release];
-        universe = nil;
-    }
+	[super setUniverse: univ];
 	
 	//
 	// if we have a universal id then we can proceed to set up any
@@ -987,14 +978,9 @@ Your fair use and other rights are in no way affected by the above.
 			PlayerEntity* player = (PlayerEntity*)[universe entityZero];
 			[player setScript_target:self];
 			NSArray * setup_actions = (NSArray *)[shipdict objectForKey:KEY_SETUP_ACTIONS];
-			int i;
-			for (i = 0; i < [setup_actions count]; i++)
-			{
-				if ([[setup_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-					[player checkCouplet:(NSDictionary *)[setup_actions objectAtIndex:i] onEntity:self];
-				if ([[setup_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-					[player scriptAction:(NSString *)[setup_actions objectAtIndex:i] onEntity:self];
-			}
+			
+			[player scriptActions: setup_actions forTarget: self];
+
 		}
 	}
 	
@@ -1444,26 +1430,27 @@ BOOL ship_canCollide (ShipEntity* ship)
 
 - (void) update:(double) delta_t
 {
-	double  damping = 0.5 * delta_t;
-	double	confidenceFactor;
-	double	targetCR;
-
-   // this all prevents a sigfpe (division by zero)
-   int      missile_chance=0;
-   int      rhs=(int)(32 * 0.1 / delta_t);
-   if(rhs)
-   {
-      missile_chance=1+(ranrot_rand() % rhs);
-   }
-   //
-	double	hurt_factor = 16 * pow(energy/max_energy, 4.0);
-	double	last_success_factor = success_factor;
+	double		damping = 0.5 * delta_t;
+	double		confidenceFactor;
+	double		targetCR;
+	int			missile_chance;
 	//
-	BOOL	canBurn = has_fuel_injection && (fuel > 1);	// was &&(fuel > 0)
-	BOOL	isUsingAfterburner = canBurn && (flight_speed > max_flight_speed);
+	double		hurt_factor = 16 * pow(energy/max_energy, 4.0);
+	double		last_success_factor = success_factor;
 	//
-	double	max_available_speed = (canBurn)? max_flight_speed * AFTERBURNER_FACTOR : max_flight_speed;
+	BOOL		canBurn = has_fuel_injection && (fuel > 1);	// was &&(fuel > 0)
+	BOOL		isUsingAfterburner = canBurn && (flight_speed > max_flight_speed);
 	//
+	double		max_available_speed = (canBurn)? max_flight_speed * AFTERBURNER_FACTOR : max_flight_speed;
+	//
+	
+	#if __POWERPC__ || defined(NO_DIV_ZERO_EXCEPTION)
+		missile_chance = 1 + (ranrot_rand() % (int)( 32 * 0.1 / delta_t));
+	#else
+		int      rhs = 32 * 0.1 / delta_t;
+		if(rhs) missile_chance = 1 + (ranrot_rand() % rhs);
+		else missile_chance = 0;
+	#endif
 	
 	//
 	// deal with collisions
@@ -1471,6 +1458,21 @@ BOOL ship_canCollide (ShipEntity* ship)
 	[self manageCollisions];
 	[self saveToLastFrame];
 
+	//
+	// reset any inadvertant legal mishaps
+	//
+	if (scan_class == CLASS_POLICE)
+	{
+		if (bounty > 0)
+			bounty = 0;
+		ShipEntity* targEnt = (ShipEntity*)[universe entityForUniversalID:primaryTarget];
+		if ((targEnt)&&(targEnt->scan_class == CLASS_POLICE))
+		{
+			primaryTarget = NO_TARGET;
+			[shipAI reactToMessage:@"TARGET_LOST"];
+		}
+	}
+	//
 	
 	if (trackCloseContacts)
 	{
@@ -1599,10 +1601,8 @@ BOOL ship_canCollide (ShipEntity* ship)
 	//scripting
 	if ((status == STATUS_IN_FLIGHT)&&([launch_actions count]))
 	{
-		int i;
 		[(PlayerEntity *)[universe entityZero] setScript_target:self];
-		for (i = 0; i < [launch_actions count]; i++)
-			[(PlayerEntity *)[universe entityZero] scriptAction:(NSString *)[launch_actions objectAtIndex:i] onEntity:self];
+		[(PlayerEntity *)[universe entityZero] scriptActions: launch_actions forTarget: self];
 		[launch_actions removeAllObjects];
 	}
 	
@@ -3352,17 +3352,11 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 	//scripting
 	if ([death_actions count])
 	{
-		int i;
 		PlayerEntity* player = (PlayerEntity *)[universe entityZero];
+		
 		[player setScript_target:self];
-		for (i = 0; i < [death_actions count]; i++)
-		{
-			NSObject* action = [death_actions objectAtIndex:i];
-			if ([action isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)action onEntity:self];
-			if ([action isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)action onEntity:self];
-		}
+		[player scriptActions: death_actions forTarget: self];
+		
 		[death_actions removeAllObjects];
 	}
 	
@@ -3644,17 +3638,11 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	//scripting
 	if ([death_actions count])
 	{
-		int i;
 		PlayerEntity* player = (PlayerEntity *)[universe entityZero];
+		
 		[player setScript_target:self];
-		for (i = 0; i < [death_actions count]; i++)
-		{
-			NSObject* action = [death_actions objectAtIndex:i];
-			if ([action isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)action onEntity:self];
-			if ([action isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)action onEntity:self];
-		}
+		[player scriptActions: death_actions forTarget: self];
+		
 		[death_actions removeAllObjects];
 	}
 	
@@ -5736,17 +5724,11 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 				//scripting
 				if ([actions count])
 				{
-					int i;
 					PlayerEntity* player = (PlayerEntity *)[universe entityZero];
+					
 					[player setScript_target:self];
-					for (i = 0; i < [actions count]; i++)
-					{
-						if ([[actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-							[player checkCouplet:	(NSDictionary *)[actions objectAtIndex:i]	onEntity:other];
-						if ([[actions objectAtIndex:i] isKindOfClass:[NSString class]])
-							[player scriptAction:	(NSString *)	[actions objectAtIndex:i]	onEntity:other];
-					}
-//						[(PlayerEntity *)[universe entityZero] scriptAction:(NSString *)[actions objectAtIndex:i] onEntity:other];
+					[player scriptActions: actions forTarget: other];
+					
 				}
 //				NSLog(@"DEBUG Scooped scripted item %@ %@ %d", other, [other name], [other universal_id]);
 				if (isPlayer)

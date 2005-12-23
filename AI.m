@@ -105,9 +105,11 @@ Your fair use and other rights are in no way affected by the above.
 - (void) preserveCurrentStateMachine
 {
 	NSMutableDictionary *pickledMachine = [NSMutableDictionary dictionaryWithCapacity:3];
-	[pickledMachine setObject:stateMachine forKey:@"stateMachine"];
-	[pickledMachine setObject:currentState forKey:@"currentState"];
-	[pickledMachine setObject:pendingMessages forKey:@"pendingMessages"];
+	
+	// use copies because the currently referenced objects might change
+	[pickledMachine setObject:[NSDictionary dictionaryWithDictionary: stateMachine] forKey:@"stateMachine"];
+	[pickledMachine setObject:[NSString stringWithString: currentState] forKey:@"currentState"];
+	[pickledMachine setObject:[NSArray arrayWithArray: pendingMessages] forKey:@"pendingMessages"];
 	
 	if (!ai_stack)
 		ai_stack = [[NSMutableArray alloc] initWithCapacity:8];
@@ -201,10 +203,18 @@ Your fair use and other rights are in no way affected by the above.
 	
 	if (!message)
 		return;
-	
+	//
+	if (!owner)
+		return;
+	//
 	if ([owner universal_id] == NO_TARGET)  // don't think until launched
 		return;
 	//
+	if (!stateMachine)
+		return;
+	//
+	if (![stateMachine objectForKey:currentState])
+		return;
 
 	[aiLock lock];
 	//
@@ -235,7 +245,6 @@ Your fair use and other rights are in no way affected by the above.
 			if ([owner respondsToSelector:_interpretAIMessageSel])
 				[owner performSelector:_interpretAIMessageSel withObject:message];
 		}
-		return;
 	}
 }
 

@@ -55,6 +55,7 @@ Your fair use and other rights are in no way affected by the above.
 	
 	int old_target = primaryTarget;
 	primaryTarget = [[other getPrimaryTarget] universal_id];
+	[(ShipEntity *)[other getPrimaryTarget] markAsOffender:8];	// mark their card
 	[self launchDefenseShip];
 	primaryTarget = old_target;
 
@@ -181,48 +182,10 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) setUniverse:(Universe *)univ
 {
-    if (univ)
-    {
-        if (universe)	[universe release];
-        universe = [univ retain];
-    }
-	else
-	{
-        if (universe)	[universe release];
-        universe = nil;
+    [super setUniverse: univ];
+	if (localMarket) {
 		[localMarket release];
 		localMarket = nil;
-    }
-	//
-	// if we have a universal id then we can proceed to set up any
-	// stuff that happens when we get added to the universe
-	//
-	if (universal_id != NO_TARGET)
-	{
-		// set up escorts
-		//
-		if (status == STATUS_IN_FLIGHT)	// just popped into existence
-		{
-			if ((!escortsAreSetUp)&&(n_escorts > 0))
-				[self setUpEscorts];
-		}
-		else
-		{
-			escortsAreSetUp = YES;	// we don't do this ourself!
-		}
-	}
-	
-	//
-	//	set subentities universe
-	//
-	if (sub_entities != nil)
-	{
-		int i;
-		for (i = 0; i < [sub_entities count]; i++)
-		{
-			[(Entity *)[sub_entities objectAtIndex:i] setUniverse:univ];
-			[(Entity *)[sub_entities objectAtIndex:i] setOwner:self];
-		}
 	}
 }
 
@@ -1078,6 +1041,7 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		if ((ship != self)&&(d2 < 25000000)&&(ship->status != STATUS_DOCKED))	// within 5km
 		{
 			Vector ppos = [self getPortPosition];
+			float time_out = -15.00;	// 15 secs
 			do
 			{
 				isClear = YES;
@@ -1102,6 +1066,14 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 						// okay it's in the way .. give it a wee nudge (0.25s)
 //						NSLog(@"DEBUG [StationEntity clearDockingCorridor] nudging %@", ship);
 						[ship update: 0.25];
+						time_out += 0.25;
+					}
+					if (time_out > 0)
+					{
+						Vector v1 = vector_forward_from_quaternion(port_qrotation);
+						Vector spos = ship->position;
+						spos.x += 3000.0 * v1.x;	spos.y += 3000.0 * v1.y;	spos.z += 3000.0 * v1.z; 
+						[ship setPosition:spos]; // move 3km out of the way
 					}
 				}
 			} while (!isClear);
@@ -1264,16 +1236,8 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		//scripting
 		if ([script_actions count])
 		{
-			int i;
 			[(PlayerEntity *)ship setScript_target:self];
-			for (i = 0; i < [script_actions count]; i++)
-			{
-				NSObject*	action = [script_actions objectAtIndex:i];
-				if ([action isKindOfClass:[NSDictionary class]])
-					[(PlayerEntity *)ship checkCouplet:(NSDictionary *)action onEntity:ship];
-				if ([action isKindOfClass:[NSString class]])
-					[(PlayerEntity *)ship scriptAction:(NSString *)action onEntity:ship];
-			}
+			[(PlayerEntity *)ship scriptActions: script_actions forTarget: ship];
 		}
 	}
 			

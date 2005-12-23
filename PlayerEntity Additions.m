@@ -43,6 +43,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "Universe.h"
 #import "ResourceManager.h"
 #import "AI.h"
+#import "OOSound.h"
 
 #ifdef GNUSTEP
 #import "Comparison.h"
@@ -67,14 +68,21 @@ static NSString * mission_key;
 		NSString *missionTitle = (NSString *)[[script allKeys] objectAtIndex:i];
 		NSArray *mission = (NSArray *)[script objectForKey:missionTitle];
 		mission_key = missionTitle;
-		int j;
-		for (j = 0; j < [mission count]; j++)
-		{
-			if ([[mission objectAtIndex:j] isKindOfClass:[NSDictionary class]])
-				[self checkCouplet:(NSDictionary *)[mission objectAtIndex:j] onEntity:self];
-			if ([[mission objectAtIndex:j] isKindOfClass:[NSString class]])
-				[self scriptAction:(NSString *)[mission objectAtIndex:j] onEntity:self];
-		}
+		[self scriptActions: mission forTarget: self];
+	}
+}
+
+- (void) scriptActions:(NSArray*) some_actions forTarget:(ShipEntity*) a_target
+{
+	PlayerEntity* player = (PlayerEntity *)[universe entityZero];
+	int i;
+	for (i = 0; i < [some_actions count]; i++)
+	{
+		NSObject* action = [some_actions objectAtIndex:i];
+		if ([action isKindOfClass:[NSDictionary class]])
+			[player checkCouplet:(NSDictionary *)action onEntity: a_target];
+		if ([action isKindOfClass:[NSString class]])
+			[player scriptAction:(NSString *)action onEntity: a_target];
 	}
 }
 
@@ -82,6 +90,7 @@ static NSString * mission_key;
 {
 	NSArray *conditions = (NSArray *)[couplet objectForKey:@"conditions"];
 	NSArray *actions = (NSArray *)[couplet objectForKey:@"do"];
+	NSArray *else_actions = (NSArray *)[couplet objectForKey:@"else"];
 	BOOL success = YES;
 	int i;
 	if (conditions == nil)
@@ -116,6 +125,25 @@ static NSString * mission_key;
 			}
 		}
 	}
+	// now check if there's an 'else' to do if the couplet is false
+	if ((!success) && (else_actions))
+	{
+		if (![else_actions isKindOfClass:[NSArray class]])
+		{
+			NSLog(@"SCRIPT ERROR \"else_actions = %@\" is not an array.", [else_actions description]);
+			NSBeep();
+		}
+		else
+		{
+			for (i = 0; i < [else_actions count]; i++)
+			{
+				if ([[else_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
+					[self checkCouplet:(NSDictionary *)[else_actions objectAtIndex:i] onEntity:entity];
+				if ([[else_actions objectAtIndex:i] isKindOfClass:[NSString class]])
+					[self scriptAction:(NSString *)[else_actions objectAtIndex:i] onEntity:entity];
+			}
+		}
+	}
 	return success;
 }
 
@@ -134,7 +162,6 @@ static NSString * mission_key;
 	is used to set a mission variable to the given string_expression
 	
 	*/
-//	NSMutableArray*	tokens = [NSMutableArray arrayWithArray:[scriptAction componentsSeparatedByString:@" "]];
 	NSMutableArray*	tokens = [Entity scanTokensFromString:scriptAction];
 	NSString*   selectorString = nil;
 	NSString*	valueString = nil;
@@ -599,6 +626,74 @@ static int shipsFound;
 {
 	return missionChoice;
 }
+
+- (NSString *) dockedStationName_string	// returns 'NONE' if the player isn't docked, [station name] if it is, 'UNKNOWN' otherwise
+{
+	if (status != STATUS_DOCKED)
+		return @"NONE";
+	if (docked_station)
+		return [docked_station name];
+	return @"UNKNOWN";
+}
+
+- (NSString *) systemGovernment_string
+{
+	NSDictionary *systeminfo = [universe generateSystemData:system_seed];
+	int government = [(NSNumber *)[systeminfo objectForKey:KEY_GOVERNMENT] intValue]; // 0 .. 7 (0 anarchic .. 7 most stable)
+	switch (government) // oh, that we could...
+	{
+		case 0:
+			return @"Anarchy";
+		case 1:
+			return @"Feudal";
+		case 2:
+			return @"Multi-Government";
+		case 3:
+			return @"Dictatorship";
+		case 4:
+			return @"Communist";
+		case 5:
+			return @"Confederacy";
+		case 6:
+			return @"Democracy";
+		case 7:
+			return @"Corporate State";
+	}
+	return @"UNKNOWN";
+}
+
+- (NSNumber *) systemGovernment_number
+{
+	NSDictionary *systeminfo = [universe generateSystemData:system_seed];
+	return (NSNumber *)[systeminfo objectForKey:KEY_GOVERNMENT];
+}
+
+- (NSNumber *) systemEconomy_number
+{
+	NSDictionary *systeminfo = [universe generateSystemData:system_seed];
+	return (NSNumber *)[systeminfo objectForKey:KEY_ECONOMY];
+}
+
+- (NSNumber *) systemTechLevel_number
+{
+	NSDictionary *systeminfo = [universe generateSystemData:system_seed];
+	return (NSNumber *)[systeminfo objectForKey:KEY_TECHLEVEL];
+}
+
+- (NSNumber *) systemPopulation_number
+{
+	NSDictionary *systeminfo = [universe generateSystemData:system_seed];
+	return (NSNumber *)[systeminfo objectForKey:KEY_POPULATION];
+}
+
+- (NSNumber *) systemProductivity_number
+{
+	NSDictionary *systeminfo = [universe generateSystemData:system_seed];
+	return (NSNumber *)[systeminfo objectForKey:KEY_PRODUCTIVITY];
+}
+
+
+
 
 /*-----------------------------------------------------*/
 
@@ -1122,7 +1217,7 @@ static int shipsFound;
 		}
 	}
 	
-	value = [missionVariableString doubleValue];
+	value = [[mission_variables objectForKey:missionVariableString] doubleValue];
 	value += [valueString doubleValue];
 	
 	[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
@@ -1162,7 +1257,7 @@ static int shipsFound;
 		}
 	}
 	
-	value = [missionVariableString doubleValue];
+	value = [[mission_variables objectForKey:missionVariableString] doubleValue];
 	value -= [valueString doubleValue];
 	
 	[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
@@ -1290,15 +1385,15 @@ static int shipsFound;
 
 - (void) setMissionMusic: (NSString *)value
 {
-#ifdef GNUSTEP
-  // TODO: do something
-#else
-	if (missionMusic)   [missionMusic release];
-	if ([[value lowercaseString] isEqual:@"none"])
+	[missionMusic release];
+	if (NSOrderedSame == [value caseInsensitiveCompare:@"none"])
+	{
 		missionMusic = nil;
+	}
 	else
-		missionMusic =  [[ResourceManager movieFromFilesNamed:value inFolder:@"Music"] retain];
-#endif
+	{
+		missionMusic =  [[ResourceManager ooMusicNamed:value inFolder:@"Music"] retain];
+	}
 }
 
 - (void) setMissionImage: (NSString *)value
@@ -1359,7 +1454,7 @@ static int shipsFound;
 				[(ShipEntity*)e1 setFuel: 70];
 				[[(ShipEntity*)e1 getAI] setStateMachine:@"exitingTraderAI.plist"];
 				[[(ShipEntity*)e1 getAI] setState:@"EXIT_SYSTEM"];
-				[[(ShipEntity*)e1 getAI] reactToMessage:[NSString stringWithFormat:@"pauseAI: %d", 3 + ranrot_rand() & 15]];
+				[[(ShipEntity*)e1 getAI] reactToMessage:[NSString stringWithFormat:@"pauseAI: %d", 3 + (ranrot_rand() & 15)]];
 			}
 		}
 	}
@@ -1472,29 +1567,6 @@ static int shipsFound;
 
 - (void) debugMessage:(NSString *)args
 {
-//	NSString*   valueString;
-//	int i;
-//	NSMutableArray*	tokens = [Entity scanTokensFromString:args];
-//
-//	for (i = 0; i < [tokens  count]; i++)
-//	{
-//		valueString = (NSString *)[tokens objectAtIndex:i];
-//
-//		if ([mission_variables objectForKey:valueString])
-//		{
-//			[tokens replaceObjectAtIndex:i withObject:[mission_variables objectForKey:valueString]];
-//		}
-//	
-//		if (([valueString hasSuffix:@"_number"])||([valueString hasSuffix:@"_bool"])||([valueString hasSuffix:@"_string"]))
-//		{
-//			SEL value_selector = NSSelectorFromString(valueString);
-//			if ([self respondsToSelector:value_selector])
-//			{
-//				[tokens replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"%@", [self performSelector:value_selector]]];
-//			}
-//		}
-//	}
-//	NSLog(@"SCRIPT debugMessage: %@", [tokens componentsJoinedByString:@" "]);
 	NSLog(@"SCRIPT debugMessage: %@", [self replaceVariablesInString: args]);
 }
 

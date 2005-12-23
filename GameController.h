@@ -36,21 +36,20 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 
-#ifdef GNUSTEP
-#import <Foundation/Foundation.h>
-//#import <AppKit/AppKit.h>
-//#import <AppKit/NSOpenGL.h>
-//#include <X11/Xlib.h>
-#else
-#import <Cocoa/Cocoa.h>
-#endif
+#import "OOCocoa.h"
 
 #define MODE_WINDOWED		100
 #define MODE_FULL_SCREEN	200
 
 #define DISPLAY_MIN_COLOURS	32
-#define DISPLAY_MIN_WIDTH  800	
+#ifndef GNUSTEP
+#define DISPLAY_MIN_WIDTH	640
+#define DISPLAY_MIN_HEIGHT	480
+#else
+// *** Is there a reason for this difference? -- Jens
+#define DISPLAY_MIN_WIDTH	800
 #define DISPLAY_MIN_HEIGHT	600
+#endif
 #define DISPLAY_MAX_WIDTH	2400
 #define DISPLAY_MAX_HEIGHT	1800
 
@@ -60,85 +59,71 @@ Your fair use and other rights are in no way affected by the above.
 
 @class Universe, MyOpenGLView, TextureStore;
 
-// dajt: is defined as BOOL in main.m
 extern int debug;
-
-#ifdef GNUSTEP
-#define IBOutlet /**/
-#define IBAction void
-#endif
 
 @interface GameController : NSObject
 {
 #ifndef GNUSTEP
-	IBOutlet NSTextField	*splashProgressTextField;
+    IBOutlet NSTextField	*splashProgressTextField;
     IBOutlet NSView			*splashView;
     IBOutlet NSWindow		*gameWindow;
-    IBOutlet NSWindow      *fsGameWindow;
+#else
+	NSRect					fsGeometry;
+	MyOpenGLView			*switchView;
 #endif
+	IBOutlet MyOpenGLView	*gameView;
 
-	NSRect  fsGeometry;
+	Universe				*universe;
 
-    IBOutlet MyOpenGLView   *gameView;
-    IBOutlet MyOpenGLView  *switchView;
+	NSTimeInterval			last_timeInterval;
+	double					delta_t;
 
-    Universe	*universe;
+	int						my_mouse_x, my_mouse_y;
 
-    NSTimeInterval		last_timeInterval;
-    double		delta_t;
-    
-	int		my_mouse_x, my_mouse_y;
+	NSString				*playerFileDirectory;
+	NSString				*playerFileToLoad;
+	NSMutableArray			*expansionPathsToInclude;
 
-#ifdef GNUSTEP
-   // TODO: What should go here?
-   // dajt: CGMouseDelta is just an integer - we can use a Cocoa compat header file to define it
-#else   
-	CGMouseDelta mouse_dx, mouse_dy;
-#endif
-  
-   NSString *playerFileDirectory; 
-	NSString	*playerFileToLoad;
-	NSMutableArray*	expansionPathsToInclude;
-	
-    NSTimer		*timer;
-	
+	NSTimer					*timer;
+
 	/*  GDC example code */
-	
-    NSMutableArray         *displayModes;
 
-    unsigned int  width, height;
-    unsigned int  colorBits;
-    unsigned int  depthBits;
-    unsigned int  refresh;
-    BOOL          fullscreen;
-    NSDictionary *originalDisplayMode;
-    NSDictionary *fullscreenDisplayMode;
+	NSMutableArray			*displayModes;
+
+	unsigned int			width, height;
+	unsigned int			refresh;
+	BOOL					fullscreen;
+	NSDictionary			*originalDisplayMode;
+	NSDictionary			*fullscreenDisplayMode;
+
 #ifndef GNUSTEP
-    NSOpenGLContext *fullScreenContext;
+	NSOpenGLContext			*fullScreenContext;
 #endif
-	BOOL		stayInFullScreenMode;
+
+	BOOL					stayInFullScreenMode;
 
 	/*  end of GDC */
-	
-	TextureStore	*oldTextureStore;
-	
-	SEL			pauseSelector;
-	NSObject*	pauseTarget;
-	
-	BOOL		game_is_paused;
-	
+
+	TextureStore			*oldTextureStore;
+
+	SEL						pauseSelector;
+	NSObject				*pauseTarget;
+
+	BOOL					game_is_paused;
 }
 
+- (void) applicationDidFinishLaunching: (NSNotification *)notification;
 - (BOOL) game_is_paused;
 - (void) pause_game;
 - (void) unpause_game;
 
+#ifndef GNUSTEP
 - (IBAction) goFullscreen:(id) sender;
-- (void) exitFullScreenMode;
-- (BOOL) inFullScreenMode;
-#ifdef GNUSTEP
+#else
 - (void) setFullScreenMode:(BOOL)fsm;
 #endif
+- (void) exitFullScreenMode;
+- (BOOL) inFullScreenMode;
 
 - (void) pauseFullScreenModeToPerform:(SEL) selector onTarget:(id) target;
 - (void) exitApp;
@@ -152,9 +137,6 @@ extern int debug;
 
 - (NSString *) playerFileToLoad;
 - (void) setPlayerFileToLoad:(NSString *)filename;
-
-// dajt: added to make things a bit neater
-- (void) applicationDidFinishLaunching: (NSNotification*) notification;
 
 - (NSString *) playerFileDirectory;
 - (void) setPlayerFileDirectory:(NSString *)filename;

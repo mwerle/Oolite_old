@@ -42,11 +42,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "MyOpenGLView.h"
 #import "TextureStore.h"
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/OpenGL.h>
-#endif
+#import "OOOpenGL.h"
 
 @implementation GameController
 

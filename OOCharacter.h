@@ -52,7 +52,7 @@ Your fair use and other rights are in no way affected by the above.
 	int			insuranceCredits;
 }
 
-- (id) initWithGenSeed:(Random_Seed) g_seed andSystemSeed:(Random_Seed) s_seed;
+- (id) initWithGenSeed:(Random_Seed) g_seed andOriginalSystemSeed:(Random_Seed) s_seed;
 - (id) initWithRole:(NSString*) role andOriginalSystemSeed:(Random_Seed) s_seed;
 
 - (NSString*)	name;
@@ -63,12 +63,12 @@ Your fair use and other rights are in no way affected by the above.
 - (int)			legalStatus;
 - (int)			insuranceCredits;
 
-- setName: (NSString*) value;
-- setShortDescription: (NSString*) value;
-- setLongDescription: (NSString*) value;
-- setOriginSystemSeed: (Random_Seed) value;
-- setGenSeed: (Random_Seed) value;
-- setLegalStatus: (int) value;
-- setInsuranceCredits: (int) value;
+- (void) setName: (NSString*) value;
+- (void) setShortDescription: (NSString*) value;
+- (void) setLongDescription: (NSString*) value;
+- (void) setOriginSystemSeed: (Random_Seed) value;
+- (void) setGenSeed: (Random_Seed) value;
+- (void) setLegalStatus: (int) value;
+- (void) setInsuranceCredits: (int) value;
 
 @end

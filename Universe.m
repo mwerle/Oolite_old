@@ -37,26 +37,18 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#import <OpenGL/glu.h>
-#endif
-
+#import "OOOpenGL.h"
 #import "Universe.h"
-
 #import "entities.h"
-
 #import "MyOpenGLView.h"
 #import "GameController.h"
 #import "ResourceManager.h"
 #import "TextureStore.h"
 #import "OpenGLSprite.h"
 #import "AI.h"
-
 #import "GuiDisplayGen.h"
 #import "HeadUpDisplay.h"
+#import "OOSound.h"
 
 #define MAX_NUMBER_OF_ENTITIES				200
 #define MAX_NUMBER_OF_SOLAR_SYSTEM_ENTITIES 20
@@ -92,12 +84,10 @@ Your fair use and other rights are in no way affected by the above.
 //	[PlanetEntity resetBaseVertexArray];
 	
 	reducedDetail = NO;
-
-   // TODO: Speech, but I doubt we'll have it with GNUstep
-#ifndef GNUSTEP   
+	
+	#ifndef GNUSTEP
 	//// speech stuff
 	//
-//	speechChannel = nil;
 	speechSynthesizer = [[NSSpeechSynthesizer alloc] init];
 	//
 	//Jester Speech Begin
@@ -105,7 +95,7 @@ Your fair use and other rights are in no way affected by the above.
 	//Jester Speech End
 	//
 	////
-#endif   
+	#endif
 	
  	dumpCollisionInfo = NO;
 	next_universal_id = 100;	// start arbitrarily above zero
@@ -142,9 +132,6 @@ Your fair use and other rights are in no way affected by the above.
 	message_gui = [[GuiDisplayGen alloc] initWithPixelSize:NSMakeSize( 480, 160) Columns:1 Rows:8 RowHeight:20 RowStart:20 Title:nil];
 	[message_gui setCurrentRow:7];
 	[message_gui setCharacterSize:NSMakeSize(16,20)];	// slightly narrower characters
-	
-//	// TEST
-//	[message_gui setBackgroundColor:[NSColor colorWithCalibratedRed:0.0 green:0.1 blue:0.9 alpha:0.5]];
 	
 	//
 	comm_log_gui = [[GuiDisplayGen alloc] initWithPixelSize:NSMakeSize( 360, 120) Columns:1 Rows:10 RowHeight:12 RowStart:12 Title:nil];
@@ -200,20 +187,7 @@ Your fair use and other rights are in no way affected by the above.
 	[player setUpShipFromDictionary:[self getDictionaryForShip:[player ship_desc]]];	// ship desc is the standard cobra at this point
 
 	[player setStatus:STATUS_DEMO];
-	
-	galaxy_seed = [player galaxy_seed];
-	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
+	[self setGalaxy_seed: [player galaxy_seed]];
 	
 	system_seed = [self findSystemAtCoords:[player galaxy_coordinates] withGalaxySeed:galaxy_seed];
 	
@@ -274,11 +248,10 @@ Your fair use and other rights are in no way affected by the above.
     if (demo_ships)				[demo_ships release];
     if (gameView)				[gameView release];
 
-#ifndef GNUSTEP
-	//Jester Speech Begin
+	#ifndef GNUSTEP
 	if (speechArray)			[speechArray release];
-	//Jester Speech End
-#endif
+	if (speechSynthesizer)		[speechSynthesizer release];
+	#endif
 	
 	if (local_planetinfo_overrides)
 								[local_planetinfo_overrides release];
@@ -331,11 +304,12 @@ Your fair use and other rights are in no way affected by the above.
 	if (![Entity dataStore])
 		[Entity setDataStore:self];
 	//
-#ifndef GNUSTEP	
+	
+#ifndef GNUSTEP
 	//// speech stuff
 	//
 	if (speechArray)
-		[speechArray release];
+		[speechArray autorelease];
 	speechArray = [[ResourceManager arrayFromFilesNamed:@"speech_pronunciation_guide.plist" inFolder:@"Config" andMerge:YES] retain];
 	//
 	////
@@ -369,8 +343,6 @@ Your fair use and other rights are in no way affected by the above.
 		[textureStore autorelease];
 	textureStore = [[TextureStore alloc] init];	// alloc retains
 	//
-	if (cursorSprite)
-		[cursorSprite autorelease];
 #ifndef WIN32
 	cursorSprite = [[OpenGLSprite alloc]   initWithImage:[ResourceManager imageNamed:@"cursor.png" inFolder:@"Images"]
 											cropRectangle:NSMakeRect(0, 0, 128, 128)
@@ -469,20 +441,8 @@ Your fair use and other rights are in no way affected by the above.
 	
 	[[(MyOpenGLView*)gameView gameController] setPlayerFileToLoad:nil];		// reset Quicksave
 
-	galaxy_seed = [player galaxy_seed];
-	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
-	
+	[self setGalaxy_seed: [player galaxy_seed]];
+
 	system_seed = [self findSystemAtCoords:[player galaxy_coordinates] withGalaxySeed:galaxy_seed];
 	
 //	NSLog(@"Galaxy coords are (%f, %f)", [player galaxy_coordinates].x, [player galaxy_coordinates].y);
@@ -793,14 +753,17 @@ Your fair use and other rights are in no way affected by the above.
 //		debug = YES;
 		
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
-		int i;
-		for (i = 0; i < [script_actions count]; i++)
-		{
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-		}
+		
+		[player scriptActions:script_actions forTarget: nil];
+		
+//		int i;
+//		for (i = 0; i < [script_actions count]; i++)
+//		{
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
+//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
+//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
+//		}
 		
 //		debug = NO;
 	}
@@ -1091,14 +1054,17 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		PlayerEntity* player = (PlayerEntity*)[self entityZero];
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
-		int i;
-		for (i = 0; i < [script_actions count]; i++)
-		{
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-		}
+		
+		[player scriptActions: script_actions forTarget: nil];
+		
+//		int i;
+//		for (i = 0; i < [script_actions count]; i++)
+//		{
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
+//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
+//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
+//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
+//		}
 	}
 	
 }
@@ -1305,7 +1271,7 @@ Your fair use and other rights are in no way affected by the above.
 			
 			if (([trader_ship n_escorts] > 0)&&((ranrot_rand() % 7) < government))	// remove escorts if we feel safe
 			{
-				int nx = [trader_ship n_escorts] - 2 * (1 + ranrot_rand() & 3);	// remove 2,4,6, or 8 escorts
+				int nx = [trader_ship n_escorts] - 2 * (1 + (ranrot_rand() & 3));	// remove 2,4,6, or 8 escorts
 				[trader_ship setN_escorts:(nx > 0) ? nx : 0];
 			}
 			
@@ -1513,7 +1479,7 @@ Your fair use and other rights are in no way affected by the above.
 			
 			if (([trader_ship n_escorts] > 0)&&((ranrot_rand() % 7) < government))	// remove escorts if we feel safe
 			{
-				int nx = [trader_ship n_escorts] - 2 * (1 + ranrot_rand() & 3);	// remove 2,4,6, or 8 escorts
+				int nx = [trader_ship n_escorts] - 2 * (1 + (ranrot_rand() & 3));	// remove 2,4,6, or 8 escorts
 				[trader_ship setN_escorts:(nx > 0) ? nx : 0];
 			}
 			
@@ -2360,7 +2326,7 @@ Your fair use and other rights are in no way affected by the above.
 - (void) game_over
 {
 	PlayerEntity*   player = (PlayerEntity *)[[self entityZero] retain];
-	int i;
+
 	//
 	[self removeAllEntitiesExceptPlayer:NO];	// don't want to restore afterwards
 	//
@@ -2369,21 +2335,9 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	[[(MyOpenGLView *)gameView gameController] loadPlayerIfRequired];
 	//
-	galaxy_seed = [player galaxy_seed];
+	[self setGalaxy_seed: [player galaxy_seed]];
 	system_seed = [self findSystemAtCoords:[player galaxy_coordinates] withGalaxySeed:galaxy_seed];
 	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		if (system_names[i])	[system_names[i] release];
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
 	//
 	if (![self station])
 		[self set_up_space];
@@ -2898,30 +2852,40 @@ Your fair use and other rights are in no way affected by the above.
 
 - (NSDictionary *) getDictionaryForShip:(NSString *) desc
 {
-	if (![shipdata objectForKey:desc])
+	id result = [[[shipdata objectForKey:desc] copy] autorelease];
+	if (nil == result)
 	{
 		NSLog(@"***** Universe couldn't find a dictionary for a ship with description '%@'",desc);
-		// throw an exception here...
-		NSException* myException = [NSException
-			exceptionWithName: OOLITE_EXCEPTION_SHIP_NOT_FOUND
-			reason:[NSString stringWithFormat:@"No ship called '%@' could be found in the Oolite folder.", desc]
-			userInfo:nil];
-		[myException raise];
-		return nil;
-	}
-	else
-		return [NSDictionary dictionaryWithDictionary:(NSDictionary *)[shipdata objectForKey:desc]];	// is autoreleased
+		// throw an exception here...	 
+		NSException* myException = [NSException	 
+			exceptionWithName: OOLITE_EXCEPTION_SHIP_NOT_FOUND	 
+			reason:[NSString stringWithFormat:@"No ship called '%@' could be found in the Oolite folder.", desc]	 
+			userInfo:nil];	 
+		[myException raise];	 
+		return nil;	}
+	return result;
 }
 
 - (int) maxCargoForShip:(NSString *) desc
 {
 	int result = 0;
-	if ([self getDictionaryForShip:desc])
+	NSDictionary* dict = nil;
+	
+	NS_DURING
+		dict = [self getDictionaryForShip:desc];
+	NS_HANDLER
+		if ([[localException name] isEqual:OOLITE_EXCEPTION_SHIP_NOT_FOUND])
+			dict = nil;
+		else
+			[localException raise];
+	NS_ENDHANDLER
+			
+	if (dict)
 	{
-		NSDictionary* dict = [self getDictionaryForShip:desc];
 		if ([dict objectForKey:@"max_cargo"])
 			result = [(NSNumber *)[dict objectForKey:@"max_cargo"]   intValue];
 	}
+	
 	return result;
 }
 
@@ -2978,17 +2942,13 @@ Your fair use and other rights are in no way affected by the above.
 		int co_type, co_amount, qr;
 		
 		// select a random point in the histogram
-      // TODO: find out why total_quantity is sometimes zero.
-      // oolite-linux: prevent the SIGFPE if total_quantity is zero
-      if(total_quantity)
-      {
-		   qr = ranrot_rand() % total_quantity;
-      }
-      else
-      {
-         qr = 0;
-      }
-
+		#if __POWERPC__ || defined(NO_DIV_ZERO_EXCEPTION)
+			qr = ranrot_rand() % total_quantity;
+		#else
+			if (0 != total_quantity) qr = ranrot_rand() % total_quantity;
+			else qr = 0;
+		#endif
+		
 		co_type = 0;
 		while (qr > 0)
 		{
@@ -4914,13 +4874,11 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) addMessage:(NSString *) text forCount:(int) count
 {
-#ifndef GNUSTEP
-	PlayerEntity* player = (PlayerEntity *)[self entityZero];
-#endif   
 	if (![currentMessage isEqual:text])
-    {		
+	{
+	#ifndef GNUSTEP
+		PlayerEntity* player = (PlayerEntity *)[self entityZero];
 		//speech synthesis
-#ifndef GNUSTEP      
 		if ([player speech_on])
 		{
 			NSString* systemName = [self generateSystemName:system_seed];
@@ -4954,7 +4912,7 @@ Your fair use and other rights are in no way affected by the above.
 			[self startSpeakingString:spoken_text];
 			
 		}
-#endif // ifndef GNUSTEP...      
+	#endif	// !def GNUSTEP
 		
 		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
 		
@@ -5240,19 +5198,22 @@ Your fair use and other rights are in no way affected by the above.
 - (void) setGalaxy_seed:(Random_Seed) gal_seed
 {
 	int i;
-	galaxy_seed = gal_seed;
+	Random_Seed g_seed = gal_seed;
+
+	if (!equal_seeds(galaxy_seed, gal_seed)) {
+		galaxy_seed = gal_seed;
 	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		if (system_names[i])	[system_names[i] release];
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
+		// systems
+		for (i = 0; i < 256; i++)
+		{
+			systems[i] = g_seed;
+			if (system_names[i])	[system_names[i] release];
+			system_names[i] = [[self getSystemName:g_seed] retain];
+			rotate_seed(&g_seed);
+			rotate_seed(&g_seed);
+			rotate_seed(&g_seed);
+			rotate_seed(&g_seed);
+		}
 	}
 }
 
@@ -5260,24 +5221,11 @@ Your fair use and other rights are in no way affected by the above.
 {
 	NSDictionary*   systemData;
 	PlayerEntity*   player = (PlayerEntity *)[self entityZero];
-	int i;
 	
-	galaxy_seed = [player galaxy_seed];
+	[self setGalaxy_seed: [player galaxy_seed]];
+
 	system_seed = s_seed;
 	target_system_seed = s_seed;
-	
-	// systems
-	Random_Seed g_seed = galaxy_seed;
-	for (i = 0; i < 256; i++)
-	{
-		systems[i] = g_seed;
-		if (system_names[i])	[system_names[i] release];
-		system_names[i] = [[self getSystemName:g_seed] retain];
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-		rotate_seed(&g_seed);
-	}
 	
 	systemData =		[[self generateSystemData:target_system_seed] retain];  // retained
 	int economy =		[(NSNumber *)[systemData objectForKey:KEY_ECONOMY] intValue];
@@ -6522,9 +6470,23 @@ double estimatedTimeForJourney(double distance, int hops)
 		int super_rand2 = ship_seed.b * 0x10000 + ship_seed.d * 0x100 + ship_seed.f;
 		ranrot_srand(super_rand2);
 		
-		if ((days_until_sale > 0.0) && (days_until_sale < 30.0) && (ship_techlevel < techlevel) && (randf() < chance))
+		NSDictionary* ship_base_dict = nil;
+		
+		NS_DURING
+			ship_base_dict= [self getDictionaryForShip:ship_key];
+		NS_HANDLER
+			if ([[localException name] isEqual: OOLITE_EXCEPTION_SHIP_NOT_FOUND])
+			{
+				NSLog(@"***** Oolite Ship Not Found Exception : '%@' in [Universe shipsForSaleInSystem:atTime:] *****", [localException reason]);
+				ship_base_dict = nil;
+			}
+			else
+				[localException raise];
+		NS_ENDHANDLER
+		
+		if ((days_until_sale > 0.0) && (days_until_sale < 30.0) && (ship_techlevel < techlevel) && (randf() < chance) && (ship_base_dict != nil))
 		{			
-			NSMutableDictionary* ship_dict = [NSMutableDictionary dictionaryWithDictionary:[self getDictionaryForShip:ship_key]];
+			NSMutableDictionary* ship_dict = [NSMutableDictionary dictionaryWithDictionary:ship_base_dict];
 			NSMutableString* description = [NSMutableString stringWithCapacity:256];
 			NSMutableString* short_description = [NSMutableString stringWithCapacity:256];
 			int price = [(NSNumber*)[ship_info objectForKey:KEY_PRICE] intValue];
@@ -6723,7 +6685,6 @@ double estimatedTimeForJourney(double distance, int hops)
 		rotate_seed(&ship_seed);
 		rotate_seed(&ship_seed);
 		rotate_seed(&ship_seed);
-	
 	}
 	
 	NSArray* shipsForSale = [resultDictionary allKeys];
@@ -7248,11 +7209,13 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 - (void) setDisplayCursor:(BOOL) value
 {
 	displayCursor = value;
+	
 #ifdef GNUSTEP
 	if ([gameView inFullScreenMode])
 	{
 		if (displayCursor == YES)
 		{
+			// *** Is the query actually necessary or meaningful? -- Jens
 			if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
 				SDL_ShowCursor(SDL_ENABLE);
 		}
@@ -7331,9 +7294,6 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 - (void) startSpeakingString:(NSString *) text
 {
 #ifndef GNUSTEP
-//	if (speechChannel == nil)
-//		NewSpeechChannel(NULL,&speechChannel);
-//	SpeakText(speechChannel,[text UTF8String],[text length]);
 	if ([OOSound respondsToSelector:@selector(masterVolume)])
 		[speechSynthesizer startSpeakingString:[NSString stringWithFormat:@"[[volm %.3f]]%@", [OOSound masterVolume], text]];
 	else
@@ -7344,19 +7304,16 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 - (void) stopSpeaking
 {
 #ifndef GNUSTEP
-//	if (speechChannel == nil)
-//		NewSpeechChannel(NULL,&speechChannel);
-//	StopSpeech(speechChannel);
 	[speechSynthesizer stopSpeaking];
 #endif
 }
 //
 - (BOOL) isSpeaking
 {
-#ifdef GNUSTEP
-   return 0;
-#else
+#ifndef GNUSTEP
 	return [speechSynthesizer isSpeaking];
+#else
+	return NO;
 #endif
 }
 //

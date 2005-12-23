@@ -14,6 +14,7 @@
 //
 
 #import "PlayerEntity_StickMapper.h"
+#import "PlayerEntity (Controls).h"
 #import "JoystickHandler.h"
 
 @implementation PlayerEntity (StickMapper)

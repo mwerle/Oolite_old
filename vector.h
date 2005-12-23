@@ -1,3 +1,5 @@
+#ifndef _VECTOR_H
+#define _VECTOR_H
 /*
 
 Provides utility routines for Vectors, Quaternions, rotation matrices, and conversion to OpenGL transformation matrices
@@ -37,14 +39,8 @@ Any of these conditions can be waived if you get permission from the copyright h
 Your fair use and other rights are in no way affected by the above.
 
 */
-#ifndef VECTOR_H
-#define VECTOR_H
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#endif
+#import "OOOpenGL.h"
 
 struct vector
 {

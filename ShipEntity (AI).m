@@ -947,7 +947,8 @@ WormholeEntity*	whole;
 			
 		default :
 			//NSLog(@"%@ %d responding to distress message from %@ %d", name, universal_id, [other name], [other universal_id]);
-			if ([roles isEqual:@"police"]||[roles isEqual:@"interceptor"]||[roles isEqual:@"wingman"])
+//			if ([roles isEqual:@"police"]||[roles isEqual:@"interceptor"]||[roles isEqual:@"wingman"])
+			if ((scan_class == CLASS_POLICE)||[roles isEqual:@"police"]||[roles isEqual:@"interceptor"]||[roles isEqual:@"wingman"])
 				[(ShipEntity *)[universe entityForUniversalID:found_target] markAsOffender:8];  // you have been warned!!
 			[shipAI reactToMessage:@"ACCEPT_DISTRESS_CALL"];
 			break;

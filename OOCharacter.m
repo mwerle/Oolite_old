@@ -101,37 +101,37 @@ Your fair use and other rights are in no way affected by the above.
 	return insuranceCredits;
 }
 
-- setName: (NSString*) value
+- (void) setName: (NSString*) value
 {
 	if (name)
 		[name autorelease];
 	name = [value retain];
 }
-- setShortDescription: (NSString*) value
+- (void) setShortDescription: (NSString*) value
 {
 	if (shortDescription)
 		[shortDescription autorelease];
 	shortDescription = [value retain];
 }
-- setLongDescription: (NSString*) value
+- (void) setLongDescription: (NSString*) value
 {
 	if (longDescription)
 		[longDescription autorelease];
 	longDescription = [value retain];
 }
-- setOriginSystemSeed: (Random_Seed) value
+- (void) setOriginSystemSeed: (Random_Seed) value
 {
 	originSystemSeed = value;
 }
-- setGenSeed: (Random_Seed) value
+- (void) setGenSeed: (Random_Seed) value
 {
 	genSeed = value;
 }
-- setLegalStatus: (int) value
+- (void) setLegalStatus: (int) value
 {
 	legalStatus = value;
 }
-- setInsuranceCredits: (int) value
+- (void) setInsuranceCredits: (int) value
 {
 	insuranceCredits = value;
 }

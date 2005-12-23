@@ -37,14 +37,9 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#ifdef LINUX
-#include "oolite-linux.h"
-#else
-#import <OpenGL/gl.h>
-#endif
-
 #import "PlanetEntity.h"
 #import "entities.h"
+#import "OOOpenGL.h"
 
 #import "AI.h"
 #import "Universe.h"
@@ -896,19 +891,15 @@ static GLfloat	texture_uv_array[10400 * 2];
 
 - (void) setUniverse:(Universe *)univ
 {
-    if (univ)
-    {
-        if (universe)	[universe release];
-        universe = [univ retain];
-		if (atmosphere)
-			[atmosphere setUniverse:univ];
-    }
+    [super setUniverse: univ];
+	if (atmosphere)
+		[atmosphere setUniverse:univ];
 }
 
 - (void) dealloc
 {
     if (atmosphere)
-		[atmosphere dealloc];
+		[atmosphere release];
 	[super dealloc];
 }
 
