@@ -847,7 +847,7 @@ NSMutableDictionary*	surface_cache;
 						if (foundPreamble)
 							element.content = [ResourceManager decodeString:preamble];
 						else
-							element.content = nil;
+							element.content = @"";
 						done = YES;
 					}
 					else
