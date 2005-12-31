@@ -340,7 +340,11 @@
 					return [cdr objectForKey:@"saved_game_path"];
 				else
 				{
+#ifdef GNUSTEP              
+					if ([gameView isCtrlDown]||[gameView isDown:gvMouseDoubleClick])
+#else                 
 					if ([gameView isCommandDown]||[gameView isDown:gvMouseDoubleClick])
+#endif                 
 					{
 						// change directory to the selected path
 						NSString* newDir = (NSString*)[cdr objectForKey:@"saved_game_path"];
@@ -407,7 +411,11 @@
    
 	if(([gameView isDown: 13]||[gameView isDown:gvMouseDoubleClick]) && [commanderNameString length])
 	{
+#ifdef GNUSTEP // Linux/Win32
+      if ([gameView isCtrlDown]||[gameView isDown:gvMouseDoubleClick])
+#else          // OS X
 		if ([gameView isCommandDown]||[gameView isDown:gvMouseDoubleClick])
+#endif        
 		{
 			int guiSelectedRow=[gui selectedRow];
 			int	idx = (guiSelectedRow - STARTROW) + (currentPage * NUMROWS);
@@ -534,7 +542,11 @@
 	          
 	if ([cdr objectForKey:@"isFolder"])
 	{
+#ifdef GNUSTEP
+		NSString *folderDesc=[NSString stringWithFormat: @"Hold Ctrl and press return to open folder: %@", [(NSString *)[cdr objectForKey:@"saved_game_path"] lastPathComponent]];
+#else     
 		NSString *folderDesc=[NSString stringWithFormat: @"Hold command and press return to open folder: %@", [(NSString *)[cdr objectForKey:@"saved_game_path"] lastPathComponent]];
+#endif
             
 		[gui addLongText: folderDesc startingAtRow: CDRDESCROW align: GUI_ALIGN_LEFT];             
 		
@@ -543,7 +555,11 @@
 	
 	if ([cdr objectForKey:@"isParentFolder"])
 	{
+#ifdef GNUSTEP     
+		NSString *folderDesc=[NSString stringWithFormat: @"Hold Ctrl and press return to open parent folder: %@", [(NSString *)[cdr objectForKey:@"saved_game_path"] lastPathComponent]];
+#else      
 		NSString *folderDesc=[NSString stringWithFormat: @"Hold command and press return to open parent folder: %@", [(NSString *)[cdr objectForKey:@"saved_game_path"] lastPathComponent]];
+#endif
             
 		[gui addLongText: folderDesc startingAtRow: CDRDESCROW align: GUI_ALIGN_LEFT];             
 		
