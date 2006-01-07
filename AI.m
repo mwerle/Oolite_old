@@ -44,23 +44,31 @@ Your fair use and other rights are in no way affected by the above.
 
 @implementation AI
 
-- (id) init
-{    
-    self = [super init];
-    //
-	ai_stack = [[NSMutableArray alloc] initWithCapacity:8];
-	//
-	pendingMessages = [[NSMutableArray alloc] initWithCapacity:16]; // alloc retains
-	//
-	nextThinkTime = 0.0;
-	//
+- (id) prepare
+{
 	aiLock = [[NSLock alloc] init];
+	//
+	[aiLock lock];	// protect from asynchronous access
+	//
+	ai_stack = [[NSMutableArray alloc] init];	// retained
+	//
+	pendingMessages = [[NSMutableArray alloc] init];	// retained
+	//
+	nextThinkTime = [[NSDate distantFuture] timeIntervalSinceNow];	// don't think for a while
 	//
 	thinkTimeInterval = AI_THINK_INTERVAL;
 	//
-	stateMachine = nil;
+	stateMachine = nil;	// no initial brain
 	//
-    return self;
+	[aiLock unlock];	// okay now we're ready...
+	//
+	return self;
+}
+
+- (id) init
+{    
+    self = [super init];
+    return [self prepare];
 }
 
 - (void) dealloc
@@ -84,13 +92,13 @@ Your fair use and other rights are in no way affected by the above.
 {    
     self = [super init];
     //
-	pendingMessages = [[NSMutableArray alloc] initWithCapacity:16]; // alloc retains
+	[self prepare];
 	//
-	aiLock = [[NSLock alloc] init];
+	if (smName)
+		[self setStateMachine:smName];
 	//
-	[self setStateMachine:smName];
-	//
-	currentState = [stateName retain];
+	if (stateName)
+		currentState = [stateName retain];
 	//
     return self;
 }
@@ -104,6 +112,9 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) preserveCurrentStateMachine
 {
+	if (!stateMachine)
+		return;
+	
 	NSMutableDictionary *pickledMachine = [NSMutableDictionary dictionaryWithCapacity:3];
 	
 	// use copies because the currently referenced objects might change
@@ -156,12 +167,16 @@ Your fair use and other rights are in no way affected by the above.
     //
 	[aiLock lock];
 	//
-    if (stateMachine)
+	NSDictionary* newSM = [ResourceManager dictionaryFromFilesNamed:smName inFolder:@"AIs" andMerge:NO];
+	//
+	if (newSM)
 	{
 		[self preserveCurrentStateMachine];
-		[stateMachine release];
-    }
-	stateMachine = [[ResourceManager dictionaryFromFilesNamed:smName inFolder:@"AIs" andMerge:NO] retain];
+		if (stateMachine)
+			[stateMachine release];	// release old state machine
+		stateMachine = [newSM retain];
+		nextThinkTime = 0.0;	// think at next tick
+	}
 	//
 	[aiLock unlock];
 	//
@@ -304,15 +319,21 @@ Your fair use and other rights are in no way affected by the above.
 		return;
 	//
 	
+	if (!stateMachine)  // don't think until launched
+		return;
+	//
+	
 	[self reactToMessage:@"UPDATE"];
 
 	[aiLock lock];
-	if (pendingMessages)
+	if ([pendingMessages retain])
 	{
 		//NSLog(@"debug1");
-		ms_list = [NSArray arrayWithArray:pendingMessages];
+		if ([pendingMessages count] > 0)
+			ms_list = [NSArray arrayWithArray:pendingMessages];
 		//NSLog(@"debug2");
 		[pendingMessages removeAllObjects];
+		[pendingMessages release];
 	}
 	[aiLock unlock];
 	
@@ -341,6 +362,9 @@ Your fair use and other rights are in no way affected by the above.
 
 - (double) nextThinkTime
 {
+	if (!stateMachine)
+		return [[NSDate distantFuture] timeIntervalSinceNow];
+
 	return nextThinkTime;
 }
 

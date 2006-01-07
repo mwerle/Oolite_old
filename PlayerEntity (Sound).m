@@ -46,6 +46,8 @@
 		afterburner2Sound =	[[ResourceManager ooSoundNamed:@"afterburner2.ogg" inFolder:@"Sounds"] retain];
 		//
 		witchAbortSound =	[[ResourceManager ooSoundNamed:@"witchabort.ogg" inFolder:@"Sounds"] retain];
+		//
+		fuelScoopSound =	[[ResourceManager ooSoundNamed:@"scoop.ogg" inFolder:@"Sounds"] retain];
 		
 		themeMusic =		[[ResourceManager ooMusicNamed:@"OoliteTheme.ogg" inFolder:@"Music"] retain];
 		missionMusic =		[[ResourceManager ooMusicNamed:@"OoliteTheme.ogg" inFolder:@"Music"] retain];
@@ -94,6 +96,9 @@
 		
 		[witchAbortSound release];
 		witchAbortSound = nil;
+		
+		[fuelScoopSound release];
+		fuelScoopSound = nil;
 		
 		
 		[themeMusic release];

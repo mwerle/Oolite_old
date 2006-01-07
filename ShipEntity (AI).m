@@ -226,13 +226,19 @@ Your fair use and other rights are in no way affected by the above.
 - (void) scanForLoot
 {
 	/*-- Locates the nearest debris in range --*/
-	if ((!isStation)&&(!has_scoop))
+	if (!has_scoop)
 	{
 		[shipAI message:@"NOTHING_FOUND"];		//can't collect loot if you have no scoop!
 		return;
 	}
+	if (isStation)
+	{
+		[shipAI message:@"NOTHING_FOUND"];		//can't collect loot if you're a station
+		return;
+	}
 	if (!universe)
 		return;
+	BOOL isPolice = (scan_class == CLASS_POLICE);
 	int			ent_count =		universe->n_entities;
 	Entity**	uni_entities =	universe->sortedEntities;	// grab the public sorted list
 	Entity*		my_entities[ent_count];
@@ -249,11 +255,14 @@ Your fair use and other rights are in no way affected by the above.
 		ShipEntity* other = (ShipEntity *)my_entities[i];
 		if ((other->scan_class == CLASS_CARGO)&&([other getCargoType] != CARGO_NOT_CARGO))
 		{
-			double d2 = distance2( position, other->position);
-			if (d2 < found_d2)
+			if ((!isPolice) || ([other getCommodityType] == 3)) // police only rescue lifepods and slaves
 			{
-				found_d2 = d2;
-				found_target = [other universal_id];
+				double d2 = distance2( position, other->position);
+				if (d2 < found_d2)
+				{
+					found_d2 = d2;
+					found_target = [other universal_id];
+				}
 			}
 		}
 	}
@@ -1517,7 +1526,7 @@ WormholeEntity*	whole;
 	for (i = 0; i < ship_count; i++)
 	{
 		ShipEntity* thing = (ShipEntity *)my_entities[i];
-		if ([[thing roles] isEqual:@"boulder"])
+		if ([[thing roles] rangeOfString:@"boulder"].location != NSNotFound)
 		{
 			double d2 = distance2( position, thing->position);
 			if (d2 < found_d2)
@@ -1532,7 +1541,7 @@ WormholeEntity*	whole;
 		for (i = 0; i < ship_count; i++)
 		{
 			ShipEntity* thing = (ShipEntity *)my_entities[i];
-			if ([[thing roles] isEqual:@"asteroid"])
+			if ([[thing roles] rangeOfString:@"asteroid"].location != NSNotFound)
 			{
 				double d2 = distance2( position, thing->position);
 				if (d2 < found_d2)

@@ -1087,6 +1087,8 @@ Your fair use and other rights are in no way affected by the above.
 	save_path = nil;
 	
 	[self setUpTrumbles];
+	
+	suppressTargetLost = NO;
 }
 
 - (void) setUpShipFromDictionary:(NSDictionary *) dict
@@ -1105,6 +1107,13 @@ Your fair use and other rights are in no way affected by the above.
 		max_flight_roll = [(NSNumber *)[dict objectForKey:@"max_flight_roll"] doubleValue];
 	if ([dict objectForKey:@"max_flight_pitch"])
 		max_flight_pitch = [(NSNumber *)[dict objectForKey:@"max_flight_pitch"] doubleValue];
+	//
+	// set control factors..
+	//
+	roll_delta =		2.0 * max_flight_roll;
+	pitch_delta =		2.0 * max_flight_pitch;
+    //
+
 	//
 	if ([dict objectForKey:@"thrust"])
 	{
@@ -1413,29 +1422,20 @@ Your fair use and other rights are in no way affected by the above.
 
 		//// velocity stuff
 		//
-		velocity.x += momentum.x / mass;	momentum.x = 0;
-		velocity.y += momentum.y / mass;	momentum.y = 0;
-		velocity.z += momentum.z / mass;	momentum.z = 0;
+		position.x += delta_t * velocity.x;
+		position.y += delta_t * velocity.y;
+		position.z += delta_t * velocity.z;
 		//
-		position.x += delta_t*velocity.x;
-		position.y += delta_t*velocity.y;
-		position.z += delta_t*velocity.z;
-		//
-		if (velocity.x > 0.0)
-			velocity.x -= (velocity.x > delta_t*thrust) ? delta_t*thrust : velocity.x;
-		if (velocity.y > 0.0)
-			velocity.y -= (velocity.y > delta_t*thrust) ? delta_t*thrust : velocity.y;
-		if (velocity.z > 0.0)
-			velocity.z -= (velocity.z > delta_t*thrust) ? delta_t*thrust : velocity.z;
-		if (velocity.x < 0.0)
-			velocity.x -= (velocity.x < -delta_t*thrust) ? -delta_t*thrust : velocity.x;
-		if (velocity.y < 0.0)
-			velocity.y -= (velocity.y < -delta_t*thrust) ? -delta_t*thrust : velocity.y;
-		if (velocity.z < 0.0)
-			velocity.z -= (velocity.z < -delta_t*thrust) ? -delta_t*thrust : velocity.z;
-		//
-//		if ((velocity.x != 0)||(velocity.y != 0)||(velocity.z != 0))
-//			NSLog(@"Player velocity [ %.3f, %.3f, %.3f]", velocity.x, velocity.y, velocity.z);
+		GLfloat velmag = sqrt(magnitude2(velocity));
+		if (velmag)
+		{
+			GLfloat velmag2 = velmag - delta_t * thrust;
+			if (velmag2 < 0.0)
+				velmag2 = 0.0;
+			velocity.x *= velmag2 / velmag;
+			velocity.y *= velmag2 / velmag;
+			velocity.z *= velmag2 / velmag;
+		}
 		//
 		////
 		
@@ -1554,8 +1554,15 @@ Your fair use and other rights are in no way affected by the above.
 				(e->scan_class == CLASS_NO_DRAW)||						// checking scanClass checks for cloaked ships
 				((e->isShip)&&(!has_military_scanner_filter)&&([(ShipEntity*)e isJammingScanning])))	// checks for activated jammer
 			{
-				[universe addMessage:[universe expandDescription:@"[target-lost]" forSystem:system_seed] forCount:3.0];
-				[self boop];
+				if (!suppressTargetLost)
+				{
+					[universe addMessage:[universe expandDescription:@"[target-lost]" forSystem:system_seed] forCount:3.0];
+					[self boop];
+				}
+				else
+				{
+					suppressTargetLost = NO;
+				}
 				primaryTarget = NO_TARGET;
 				missile_status = MISSILE_STATUS_SAFE;
 			}
@@ -1777,6 +1784,8 @@ Your fair use and other rights are in no way affected by the above.
 			{
 				fuel ++;
 				fuel_accumulator -= 1.0;
+				if (fuel & 0x01)	// every other unit
+					[fuelScoopSound play];
 			}
 			if (fuel > 70)	fuel = 70;
 			[universe displayMessage:@"Fuel Scoop Active" forCount:1.0];
@@ -2741,7 +2750,7 @@ Your fair use and other rights are in no way affected by the above.
 		case WEAPON_BEAM_LASER :
 		case WEAPON_MINING_LASER :
 		case WEAPON_MILITARY_LASER :
-			[self fireLaserShot];
+			[self fireLaserShotInDirection:[universe viewDir]];
 			return YES;
 			break;
 		case WEAPON_THARGOID_LASER :
@@ -3176,10 +3185,14 @@ Your fair use and other rights are in no way affected by the above.
 		if (!system_name)
 			return;
 		[universe clearPreviousMessage];
-		[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-destroyed]" forSystem:system_seed],system_name] forCount:4.5];
 		[self removeEquipment:system_key];
 		if (![universe strict])
+		{
+			[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-damaged]" forSystem:system_seed],system_name] forCount:4.5];
 			[self add_extra_equipment:[NSString stringWithFormat:@"%@_DAMAGED", system_key]];	// for possible future repair
+		}
+		else
+			[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-destroyed]" forSystem:system_seed],system_name] forCount:4.5];
 		return;
 	}
 	//cosmetic damage
@@ -3400,6 +3413,9 @@ Your fair use and other rights are in no way affected by the above.
 {	
 	status = STATUS_ENTERING_WITCHSPACE;
 	
+	if (primaryTarget != NO_TARGET)
+		primaryTarget = NO_TARGET;
+		
 	hyperspeed_engaged = NO;
 	
 	[hud setScannerZoom:1.0];
@@ -3464,6 +3480,9 @@ Your fair use and other rights are in no way affected by the above.
 	
 	hyperspeed_engaged = NO;
 	
+	if (primaryTarget != NO_TARGET)
+		primaryTarget = NO_TARGET;
+		
 	//
 	//	reset the compass
 	//
@@ -3505,6 +3524,9 @@ Your fair use and other rights are in no way affected by the above.
 	
 	hyperspeed_engaged = NO;
 	
+	if (primaryTarget != NO_TARGET)
+		primaryTarget = NO_TARGET;
+		
 	[hud setScannerZoom:1.0];
 	scanner_zoom_rate = 0.0;
 
@@ -5990,6 +6012,11 @@ OOSound* burnersound;
 	{
 		return [NSString stringWithFormat:@" Fullscreen: %d x %d ", inWidth, inHeight];
 	}
+}
+
+- (void) suppressTargetLost
+{
+	suppressTargetLost = YES;
 }
 
 @end

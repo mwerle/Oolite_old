@@ -1023,7 +1023,7 @@ static  Universe	*data_store_universe;
 	NSData* vdata = (NSData*)[dict objectForKey:@"vertices"];
 	NSData* ndata = (NSData*)[dict objectForKey:@"normals"];
 	NSData* fdata = (NSData*)[dict objectForKey:@"faces"];
-	if (vdata && ndata && fdata)
+	if ((vdata) && (ndata) && (fdata))
 	{
 		Vector* vbytes = (Vector*)[vdata bytes];
 		Vector* nbytes = (Vector*)[ndata bytes];
@@ -1041,7 +1041,7 @@ static  Universe	*data_store_universe;
 	}
 	else
 	{
-		NSLog(@"ERROR setModelFromData: %@ FAILED", dict);
+		NSLog(@"ERROR setModelFromData: FAILED");
 		// should throw an oolite-fatal-exception here
 		NSException* myException = [NSException
 			exceptionWithName: OOLITE_EXCEPTION_FATAL

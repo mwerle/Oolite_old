@@ -75,6 +75,7 @@ BOOL always_include_addons;
 + (void) addExternalPath:(NSString *)filename;
 
 + (NSDictionary *) dictionaryFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername andMerge:(BOOL) mergeFiles;
++ (NSDictionary *) dictionaryFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername andMerge:(BOOL) mergeFiles smart:(BOOL) smartMerge;
 + (NSArray *) arrayFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername andMerge:(BOOL) mergeFiles;
 
 + (OOSound *) ooSoundNamed:(NSString *)filename inFolder:(NSString *)foldername;

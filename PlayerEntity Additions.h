@@ -55,6 +55,8 @@ Your fair use and other rights are in no way affected by the above.
 - (void) scriptAction:(NSString *) scriptAction onEntity:(Entity *) entity;
 - (BOOL) scriptTestCondition:(NSString *) scriptCondition;
 
+- (NSDictionary*) mission_variables;
+
 /*-----------------------------------------------------*/
 
 - (NSString *) mission_string;
@@ -72,9 +74,12 @@ Your fair use and other rights are in no way affected by the above.
 - (NSNumber *) pseudoFixedD100_number;
 
 - (NSNumber *) clock_number;			// returns the game time in seconds
+- (NSNumber *) clock_secs_number;		// returns the game time in seconds
 - (NSNumber *) clock_mins_number;		// returns the game time in minutes
 - (NSNumber *) clock_hours_number;		// returns the game time in hours
 - (NSNumber *) clock_days_number;		// returns the game time in days
+
+- (NSNumber *) fuel_level_number;		// returns the fuel level in LY
 
 - (NSString *) dockedAtMainStation_bool;
 - (NSString *) foundEquipment_bool;
@@ -114,6 +119,8 @@ Your fair use and other rights are in no way affected by the above.
 - (void) useSpecialCargo:(NSString *)descriptionString;
 
 - (void) testForEquipment:(NSString *)equipString;  //eg. EQ_NAVAL_ENERGY_UNIT
+
+- (void) awardFuel:(NSString *)valueString;	// add to fuel up to 7.0 LY
 
 - (void) messageShipAIs:(NSString *)roles_message;
 - (void) ejectItem:(NSString *)item_key;

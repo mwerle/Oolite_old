@@ -41,6 +41,7 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "ResourceManager.h"
 #import "ScannerExtension.h"
+#import "MutableDictionaryExtension.h"
 #import "OOSound.h"
 
 
@@ -291,6 +292,11 @@ NSMutableDictionary*	surface_cache;
 
 + (NSDictionary *) dictionaryFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername andMerge:(BOOL) mergeFiles
 {
+	return [ResourceManager dictionaryFromFilesNamed:filename inFolder:foldername andMerge:mergeFiles smart:NO];
+}
+
++ (NSDictionary *) dictionaryFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername andMerge:(BOOL) mergeFiles smart:(BOOL) smartMerge
+{
 	NSMutableArray *results = [NSMutableArray arrayWithCapacity:16];
 	NSMutableArray *fpaths = [ResourceManager paths];
 	int i;
@@ -371,7 +377,12 @@ NSMutableDictionary*	surface_cache;
 	else
 	{
 		for (i = 0; i < [results count]; i++)
-			[result addEntriesFromDictionary:(NSDictionary *)[results objectAtIndex:i]];
+		{
+			if (smartMerge)
+				[result mergeEntriesFromDictionary:(NSDictionary *)[results objectAtIndex:i]];
+			else
+				[result addEntriesFromDictionary:(NSDictionary *)[results objectAtIndex:i]];
+		}
 	}	
 	//
 	if (result)

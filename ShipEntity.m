@@ -67,7 +67,6 @@ Your fair use and other rights are in no way affected by the above.
     quaternion_into_gl_matrix(q_rotation, rotMatrix);
 	//
 	velocity = make_vector( 0.0, 0.0, 0.0);
-	momentum = make_vector( 0.0, 0.0, 0.0);
 	quaternion_set_identity(&subentity_rotational_velocity);
 	//
 	v_forward   = vector_forward_from_quaternion(q_rotation);
@@ -407,7 +406,6 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	position = make_vector( 0.0, 0.0, 0.0);
 	velocity = make_vector( 0.0, 0.0, 0.0);
-	momentum = make_vector( 0.0, 0.0, 0.0);
 	quaternion_set_identity(&subentity_rotational_velocity);
 	//
 	zero_distance = SCANNER_MAX_RANGE2 * 2.0;   // beyond scanner range to avoid the momentary blip
@@ -2462,26 +2460,24 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 {
 	double max_available_speed = (has_fuel_injection && (fuel > 1))? max_flight_speed * AFTERBURNER_FACTOR : max_flight_speed;
 	
-	velocity.x += momentum.x / mass;	momentum.x = 0;
-	velocity.y += momentum.y / mass;	momentum.y = 0;
-	velocity.z += momentum.z / mass;	momentum.z = 0;
-
 	position.x += delta_t*velocity.x;
 	position.y += delta_t*velocity.y;
 	position.z += delta_t*velocity.z;
 	
-	if (velocity.x > 0.0)
-		velocity.x -= (velocity.x > delta_t*thrust) ? delta_t*thrust : velocity.x;
-	if (velocity.y > 0.0)
-		velocity.y -= (velocity.y > delta_t*thrust) ? delta_t*thrust : velocity.y;
-	if (velocity.z > 0.0)
-		velocity.z -= (velocity.z > delta_t*thrust) ? delta_t*thrust : velocity.z;
-	if (velocity.x < 0.0)
-		velocity.x -= (velocity.x < -delta_t*thrust) ? -delta_t*thrust : velocity.x;
-	if (velocity.y < 0.0)
-		velocity.y -= (velocity.y < -delta_t*thrust) ? -delta_t*thrust : velocity.y;
-	if (velocity.z < 0.0)
-		velocity.z -= (velocity.z < -delta_t*thrust) ? -delta_t*thrust : velocity.z;
+	//
+	if (thrust)
+	{
+		GLfloat velmag = sqrt(magnitude2(velocity));
+		if (velmag)
+		{
+			GLfloat velmag2 = velmag - delta_t * thrust;
+			if (velmag2 < 0.0)
+				velmag2 = 0.0;
+			velocity.x *= velmag2 / velmag;
+			velocity.y *= velmag2 / velmag;
+			velocity.z *= velmag2 / velmag;
+		}
+	}
 
 	if (condition == CONDITION_TUMBLE)  return; //testing
 
@@ -3128,12 +3124,14 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 		{
 			Entity *e2 = [targets objectAtIndex:i];
 			Vector p2 = e2->position;
+			double ecr = e2->collision_radius;
 			p2.x -= position.x;	p2.y -= position.y;	p2.z -= position.z;
-			double d2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
+			double d2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z - ecr*ecr;
 			double damage = weapon_energy*desired_range/d2;
 			[e2 takeEnergyDamage:damage from:self becauseOf:[self owner]];
-			//if ((e2)&&(e2->isShip))
-			//	//NSLog(@"Doing %.1f damage to %@ %d",damage,[(ShipEntity *)e2 name],[(ShipEntity *)e2 universal_id]);
+			
+//			if ((e2)&&(e2->isShip))
+//				NSLog(@"DEBUG Doing %.1f damage to %@ %d",damage,[(ShipEntity *)e2 name],[(ShipEntity *)e2 universal_id]);
 		}
 	}
 }
@@ -3150,9 +3148,10 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 			if (e2->isShip)
 			{
 				Vector p2 = e2->position;
+				double ecr = e2->collision_radius;
 				p2.x -= position.x;	p2.y -= position.y;	p2.z -= position.z;
-				double d2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
-				while (d2 == 0.0)
+				double d2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z - ecr*ecr;
+				while (d2 <= 0.0)
 				{
 					p2 = make_vector( randf() - 0.5, randf() - 0.5, randf() - 0.5);
 					d2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
@@ -3597,10 +3596,9 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 		sub_entities = nil;
 	}
 
-	// EXPERIMENT with momentum from explosions
-	desired_range = collision_radius * 2.0;
-	[self dealMomentumWithinDesiredRange: mass * 0.025];
-
+	// momentum from explosions
+	desired_range = collision_radius * 2.5;
+	[self dealMomentumWithinDesiredRange: 0.125 * mass];
 
 	//
 	if (!isPlayer)
@@ -4556,7 +4554,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 		case WEAPON_BEAM_LASER :
 		case WEAPON_MINING_LASER :
 		case WEAPON_MILITARY_LASER :
-			[self fireLaserShot];
+			[self fireLaserShotInDirection: VIEW_FORWARD];
 			fired = YES;
 			break;
 			
@@ -4704,94 +4702,94 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	}
 }
 
-- (BOOL) fireLaserShot
-{
-	ParticleEntity  *shot;
-	int				direction = VIEW_FORWARD;
-	double			range_limit2 = weapon_range*weapon_range;
-	target_laser_hit = NO_TARGET;
-	
-	Vector			laserPortOffset = forwardWeaponOffset;
-	Vector			aimOffset = make_vector( 0, 0, 0);
-	
-	if (isPlayer)		// only the player has weapons on other facings
-	{
-		direction = [universe viewDir];					// set the weapon facing here
-		switch(direction)
-		{
-			case VIEW_AFT:
-				laserPortOffset = aftWeaponOffset;
-				break;
-			case VIEW_PORT:
-				laserPortOffset = portWeaponOffset;
-				break;
-			case VIEW_STARBOARD:
-				laserPortOffset = starboardWeaponOffset;
-				break;
-			default:
-				laserPortOffset = forwardWeaponOffset;
-		}
-		aimOffset = [(PlayerEntity*)self viewOffset];
-	}
-	
-	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction offset:aimOffset];
-	
-	shot = [[ParticleEntity alloc] initLaserFromShip:self view:direction offset:laserPortOffset];	// alloc retains!
-	
-	[shot setColor:laser_color];
-	[shot setScanClass: CLASS_NO_DRAW];
-	if (target_laser_hit != NO_TARGET)
-	{
-		Entity *victim = [universe entityForUniversalID:target_laser_hit];
-		if (victim)
-		{
-			Vector p0 = shot->position;
-			Vector p1 = victim->position;
-			if (victim->isShip)
-			{
-				ShipEntity* ship_hit = ((ShipEntity*)victim); 
-				ShipEntity* subent = ship_hit->subentity_taking_damage;
-				if ((subent) && [ship_hit->sub_entities containsObject:subent])
-				{
-					if (ship_hit->isFrangible)
-					{
-						p1 = [subent absolutePositionForSubentity];
-						victim = subent;
-						// do 1% bleed-through damage...
-						[ship_hit takeEnergyDamage: 0.01 * weapon_energy from:subent becauseOf:self];
-					}
-				}
-			}
-			//
-			double dist2 = distance2( p0, p1);
-			if ((victim->isShip)&&(dist2 < range_limit2))
-			{
-				[(ShipEntity *)victim takeEnergyDamage:weapon_energy from:self becauseOf:self];	// a very palpable hit
-				[shot setCollisionRadius:sqrt(dist2)];	// so it's drawn to the right size
-				
-				// calculate where to draw flash
-				double cr = shot->collision_radius - victim->collision_radius;
-				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
-				Vector p0 = shot->position;
-				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;
-				ParticleEntity* laserFlash = [[ParticleEntity alloc] initFlashSize:1.0 FromPosition: p0 Color:laser_color];
-				[laserFlash setVelocity:[victim getVelocity]];
-				[universe addEntity:laserFlash];
-				[laserFlash release];
-			}
-		}
-	}
-	[universe addEntity:shot];
-	[shot release]; //release
-	
-	shot_time = 0.0;
-	
-	// random laser over-heating for AI ships
-	if ((!isPlayer)&&((ranrot_rand() & 255) < weapon_energy)&&(![self isMining]))
-		shot_time -= (randf() * weapon_energy);
-	
-	return YES;
-}
+//- (BOOL) fireLaserShot
+//{
+//	ParticleEntity  *shot;
+//	int				direction = VIEW_FORWARD;
+//	double			range_limit2 = weapon_range*weapon_range;
+//	target_laser_hit = NO_TARGET;
+//	
+//	Vector			laserPortOffset = forwardWeaponOffset;
+//	Vector			aimOffset = make_vector( 0, 0, 0);
+//	
+//	if (isPlayer)		// only the player has weapons on other facings
+//	{
+//		direction = [universe viewDir];					// set the weapon facing here
+//		switch(direction)
+//		{
+//			case VIEW_AFT:
+//				laserPortOffset = aftWeaponOffset;
+//				break;
+//			case VIEW_PORT:
+//				laserPortOffset = portWeaponOffset;
+//				break;
+//			case VIEW_STARBOARD:
+//				laserPortOffset = starboardWeaponOffset;
+//				break;
+//			default:
+//				laserPortOffset = forwardWeaponOffset;
+//		}
+//		aimOffset = [(PlayerEntity*)self viewOffset];
+//	}
+//	
+//	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction offset:aimOffset];
+//	
+//	shot = [[ParticleEntity alloc] initLaserFromShip:self view:direction offset:laserPortOffset];	// alloc retains!
+//	
+//	[shot setColor:laser_color];
+//	[shot setScanClass: CLASS_NO_DRAW];
+//	if (target_laser_hit != NO_TARGET)
+//	{
+//		Entity *victim = [universe entityForUniversalID:target_laser_hit];
+//		if (victim)
+//		{
+//			Vector p0 = shot->position;
+//			Vector p1 = victim->position;
+//			if (victim->isShip)
+//			{
+//				ShipEntity* ship_hit = ((ShipEntity*)victim); 
+//				ShipEntity* subent = ship_hit->subentity_taking_damage;
+//				if ((subent) && [ship_hit->sub_entities containsObject:subent])
+//				{
+//					if (ship_hit->isFrangible)
+//					{
+//						p1 = [subent absolutePositionForSubentity];
+//						victim = subent;
+//						// do 1% bleed-through damage...
+//						[ship_hit takeEnergyDamage: 0.01 * weapon_energy from:subent becauseOf:self];
+//					}
+//				}
+//			}
+//			//
+//			double dist2 = distance2( p0, p1);
+//			if ((victim->isShip)&&(dist2 < range_limit2))
+//			{
+//				[(ShipEntity *)victim takeEnergyDamage:weapon_energy from:self becauseOf:self];	// a very palpable hit
+//				[shot setCollisionRadius:sqrt(dist2)];	// so it's drawn to the right size
+//				
+//				// calculate where to draw flash
+//				double cr = shot->collision_radius - victim->collision_radius;
+//				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
+//				Vector p0 = shot->position;
+//				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;
+//				ParticleEntity* laserFlash = [[ParticleEntity alloc] initFlashSize:1.0 FromPosition: p0 Color:laser_color];
+//				[laserFlash setVelocity:[victim getVelocity]];
+//				[universe addEntity:laserFlash];
+//				[laserFlash release];
+//			}
+//		}
+//	}
+//	[universe addEntity:shot];
+//	[shot release]; //release
+//	
+//	shot_time = 0.0;
+//	
+//	// random laser over-heating for AI ships
+//	if ((!isPlayer)&&((ranrot_rand() & 255) < weapon_energy)&&(![self isMining]))
+//		shot_time -= (randf() * weapon_energy);
+//	
+//	return YES;
+//}
 
 - (BOOL) fireSubentityLaserShot: (double) range
 {
@@ -4972,9 +4970,28 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	vel.y = v_forward.y * flight_speed;
 	vel.z = v_forward.z * flight_speed;
 
-	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction];
+	Vector	aimOffset = make_vector( 0, 0, 0);
+	Vector	laserPortOffset = forwardWeaponOffset;
+	
+	switch(direction)
+	{
+		case VIEW_AFT:
+			laserPortOffset = aftWeaponOffset;
+			break;
+		case VIEW_PORT:
+			laserPortOffset = portWeaponOffset;
+			break;
+		case VIEW_STARBOARD:
+			laserPortOffset = starboardWeaponOffset;
+			break;
+		default:
+			laserPortOffset = forwardWeaponOffset;
+	}
 
-	shot = [[ParticleEntity alloc] initLaserFromShip:self view:direction];	// alloc retains!
+	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction offset:aimOffset];
+	
+	shot = [[ParticleEntity alloc] initLaserFromShip:self view:direction offset:laserPortOffset];	// alloc retains!
+	
 	[shot setColor:laser_color];
 	[shot setScanClass: CLASS_NO_DRAW];
 	[shot setVelocity: vel];
@@ -5004,6 +5021,23 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 			Vector p0 = shot->position;
 			Vector p1 = victim->position;
 			p1.x -= p0.x;	p1.y -= p0.y;	p1.z -= p0.z;
+			
+			if (victim->isShip)
+			{
+				ShipEntity* ship_hit = ((ShipEntity*)victim); 
+				ShipEntity* subent = ship_hit->subentity_taking_damage;
+				if ((subent) && [ship_hit->sub_entities containsObject:subent])
+				{
+					if (ship_hit->isFrangible)
+					{
+						p1 = [subent absolutePositionForSubentity];
+						victim = subent;
+						// do 1% bleed-through damage...
+						[ship_hit takeEnergyDamage: 0.01 * weapon_energy from:subent becauseOf:self];
+					}
+				}
+			}
+
 			double dist2 = magnitude2(p1);
 			if ((victim->isShip)&&(dist2 < range_limit2))
 			{
@@ -5532,7 +5566,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 - (BOOL) collideWithShip:(ShipEntity *)other
 {
 	Vector  loc, opos, pos;
-	double  inc1, dam1;
+	double  inc1, dam1, dam2;
 	
 //	NSLog(@"DEBUG %@ %d colliding with other %@ %d", name, universal_id, [other name], [other universal_id]);
 	if (!other)
@@ -5548,15 +5582,12 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 		opos = other->position;
 	loc = opos;
 	loc.x -= position.x;	loc.y -= position.y;	loc.z -= position.z;
-	double back_dist = 0.5 * (actual_radius + other->actual_radius - sqrt(magnitude2(loc)));
 	
 	if (loc.x||loc.y||loc.z)
 		loc = unit_vector(&loc);
 	else
 		loc.z = 1.0;
-	
-	Vector back = make_vector( back_dist * loc.x, back_dist * loc.y, back_dist * loc.z);
-	
+		
 	inc1 = (v_forward.x*loc.x)+(v_forward.y*loc.y)+(v_forward.z*loc.z);
 	
 	if ([self canScoop:other])
@@ -5570,20 +5601,6 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 		return NO;
 	}
 	
-	// back-off minimum distance
-	if (isSubentity)
-	{
-		pos = position;
-		[self setPosition: pos.x - 2.0 * back.x :pos.y - 2.0 * back.y :pos.z - 2.0 * back.z];
-	}
-	else
-	{
-		pos = position;
-		[self setPosition: pos.x - back.x :pos.y - back.y :pos.z - back.z];
-		pos = other->position;
-		[other setPosition: pos.x + back.x :pos.y + back.y :pos.z + back.z];
-	}
-	
 	// find velocity along line of centers
 	// 
 	// momentum = mass x velocity
@@ -5591,47 +5608,102 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	//
 	GLfloat m1 = mass;			// mass of self
 	GLfloat m2 = [other mass];	// mass of other
-	//
-	Vector	vel1 =	[self getVelocity];	
-	Vector	vel2 =	[other getVelocity];
+
+	// starting velocities:
+	Vector	vel1b =	[self getVelocity];	
+	// calculate other's velocity relative to self
+	Vector	v =	[other getVelocity];
 	if (isSubentity)
 	{
 		if (parent)
-			vel2 = [parent getVelocity];
+			v = [parent getVelocity];
 		else
-			vel2 = make_vector( 0, 0, 0);
+			v = make_vector( 0, 0, 0);
 	}
+	
+	v = make_vector( v.x - vel1b.x, v.y - v.y, v.z - vel1b.z);
 	//
-	GLfloat	v1 = dot_product( vel1, loc);	// velocity of self in direction of line of centers
-	GLfloat	v2 = dot_product( vel2, loc);	// velocity of other in direction of line of centers
+	GLfloat	v2b = dot_product( v, loc);			// velocity of other along loc before collision
 	//
-	GLfloat v1a = (2 * m2 * v2 + (m1 - m2) * v1) / ( m1 + m2);	// velocity of self along loc after elastic collision
-	GLfloat v2a = v1 - v2 + v1a;								// velocity of other along loc after elastic collision
+	GLfloat v1a = sqrt(v2b * v2b * m2 / m1);	// velocity of self along loc after elastic collision
+	if (v2b < 0)	v1a = -v1a;					// in same direction as v2b
 	//
-	Vector vel1a = make_vector( vel1.x + (v1a - v1) * loc.x, vel1.y + (v1a - v1) * loc.y, vel1.z + (v1a - v1) * loc.z);
-	Vector vel2a = make_vector( vel2.x + (v2a - v2) * loc.x, vel2.y + (v2a - v2) * loc.y, vel2.z + (v2a - v2) * loc.z);
+//	if ((isPlayer)||(other->isPlayer))
+//	{
+//		NSLog(@"DEBUG Collision between %@ and %@", self, other);
+//		NSLog(@"DEBUG relative velocities before:\t%.3f\t%.3f", 0.0f, v2b);
+//		NSLog(@"DEBUG relative velocities after :\t%.3f\t%.3f", v1a, 0.0f);
+//	}
 	//
+	/// calculate adjustments to velocity after collision
+	Vector vel1a = make_vector( v1a * loc.x, v1a * loc.y, v1a * loc.z);
+	Vector vel2a = make_vector( -v2b * loc.x, -v2b * loc.y, -v2b * loc.z);
+	
 	if (isSubentity)
 	{
-		[self setVelocity:vel1a];
+		[self adjustVelocity:vel1a];
 		if (parent)
-			[parent setVelocity:vel2a];
+			[parent adjustVelocity:vel2a];
 	}
 	else
 	{
-		[self setVelocity:vel1a];
-		[other setVelocity:vel2a];
+		[self adjustVelocity:vel1a];
+		[other adjustVelocity:vel2a];
 	}
 	//
-	// convert some velocity into damage energy
+	// convert change in velocity into damage energy (KE)
 	//
-	dam1 = (m1 + m2) * (v1 - v2) * (v1 - v2) / 100000000;
+	dam1 = m2 * v2b * v2b / 50000000;
+	dam2 = m1 * v2b * v2b / 50000000;
 	//
-	[self	takeScrapeDamage: dam1 from:other];
-	if ((isSubentity) && (parent) && !(parent->isFrangible))
-		[parent takeScrapeDamage: dam1 from:self];
-	else
-		[other	takeScrapeDamage: dam1 from:self];
+//	if ((isPlayer)||(other->isPlayer))
+//	{
+//		NSLog(@"DEBUG collision damage to %@: %.4f", self, dam1);
+//		NSLog(@"DEBUG collision damage to %@: %.4f\n\n", other, dam2);
+//	}
+	//
+	BOOL selfDestroyed = (dam1 > energy);
+	BOOL otherDestroyed = (dam2 > [other getEnergy]);
+	//
+	if (dam1 > 0.05)
+	{
+		[self	takeScrapeDamage: dam1 from:other];
+		if (selfDestroyed)	// inelastic! - take xplosion velocity damage instead
+		{
+			vel2a.x = -vel2a.x;	vel2a.y = -vel2a.y;	vel2a.z = -vel2a.z;
+			[other adjustVelocity:vel2a];
+		}
+	}
+	//
+	if (dam2 > 0.05)
+	{
+		if ((isSubentity) && (parent) && !(parent->isFrangible))
+			[parent takeScrapeDamage: dam2 from:self];
+		else
+			[other	takeScrapeDamage: dam2 from:self];
+		if (otherDestroyed)	// inelastic! - take explosion velocity damage instead
+		{
+			vel1a.x = -vel1a.x;	vel1a.y = -vel1a.y;	vel1a.z = -vel1a.z;
+			[other adjustVelocity:vel1a];
+		}
+	}
+	
+//	NSLog(@"DEBUG back-off distance is %.3fm\n\n", back_dist);
+	//
+	if ((!selfDestroyed)&&(!otherDestroyed))
+	{
+		float t = 10.0 * [universe getTimeDelta];	// 10 ticks
+		//
+		pos = self->position;
+		opos = other->position;
+		//
+		Vector pos1a = make_vector(pos.x + t * v1a * loc.x, pos.y + t * v1a * loc.y, pos.z + t * v1a * loc.z); 
+		Vector pos2a = make_vector(opos.x - t * v2b * loc.x, opos.y - t * v2b * loc.y, opos.z - t * v2b * loc.z);
+		//
+		[self setPosition:pos1a];
+		[other setPosition:pos2a];
+	}
+	
 	//
 	// remove self from other's collision list
 	//
@@ -5651,11 +5723,18 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	return v;
 }
 
+- (void) adjustVelocity:(Vector) xVel
+{
+	velocity.x += xVel.x;
+	velocity.y += xVel.y;
+	velocity.z += xVel.z;
+}
+
 - (void) addImpactMoment:(Vector) moment fraction:(GLfloat) howmuch
 {
-	momentum.x += howmuch * moment.x; 
-	momentum.y += howmuch * moment.y; 
-	momentum.z += howmuch * moment.z;
+	velocity.x += howmuch * moment.x / mass; 
+	velocity.y += howmuch * moment.y / mass; 
+	velocity.z += howmuch * moment.z / mass;
 }
 
 - (BOOL) canScoop:(ShipEntity*)other
@@ -5690,6 +5769,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 
 - (void) scoopUp:(ShipEntity *)other
 {
+	if (!other)
+		return;
 	int		co_type,co_amount;
 	switch ([other getCargoType])
 	{
@@ -5757,12 +5838,13 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 		}
 		[cargo addObject:other];
 		[other setStatus:STATUS_IN_HOLD];					// prevents entity from being recycled!
-//		[[other collisionArray] removeObject:self];			// so it can't be scooped twice!
 		[shipAI message:@"CARGO_SCOOPED"];
 		if ([cargo count] == max_cargo)
 			[shipAI message:@"HOLD_FULL"];
 	}
 	[[other collisionArray] removeObject:self];			// so it can't be scooped twice!
+	if (isPlayer)
+		[(PlayerEntity*)self suppressTargetLost];
 	[universe removeEntity:other];
 }
 

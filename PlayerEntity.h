@@ -339,6 +339,7 @@ enum
 	OOSound					*afterburner1Sound;
 	OOSound					*afterburner2Sound;
 	OOSound					*witchAbortSound;
+	OOSound					*fuelScoopSound;
 	
 	OOSoundReferencePoint	*refPoint;
 	OOSoundSource			*interfaceBeepSource;
@@ -455,6 +456,10 @@ enum
 	
 	// smart zoom
 	double					scanner_zoom_rate;
+	
+	// smart target lst reports
+	BOOL					suppressTargetLost;
+
 
 #ifdef GNUSTEP
   // Keeping track of joysticks
@@ -637,5 +642,7 @@ enum
 - (void) munge_checksum_with_NSString:(NSString*) str;
 
 - (NSString *)screenModeStringForWidth:(unsigned)inWidth height:(unsigned)inHeight refreshRate:(float)inRate;
+
+- (void) suppressTargetLost;
 
 @end

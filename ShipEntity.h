@@ -298,7 +298,6 @@ Your fair use and other rights are in no way affected by the above.
 		
 		int		thanked_ship_id;			// last ship thanked
 		
-		Vector	momentum;					// accumulates impacts
 		Vector	collision_vector;			// direction of colliding thing.
 		
 		// beacons
@@ -495,7 +494,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb);
 - (BOOL) fireAftWeapon:(double) range;
 - (BOOL) fireTurretCannon:(double) range;
 - (void) setLaserColor:(NSColor *) color;
-- (BOOL) fireLaserShot;
+//- (BOOL) fireLaserShot;
 - (BOOL) fireSubentityLaserShot: (double) range;
 - (BOOL) fireDirectLaserShot;
 - (BOOL) fireLaserShotInDirection: (int) direction;
@@ -512,6 +511,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb);
 
 - (void) manageCollisions;
 - (BOOL) collideWithShip:(ShipEntity *)other;
+- (void) adjustVelocity:(Vector) xVel;
 - (void) addImpactMoment:(Vector) moment fraction:(GLfloat) howmuch;
 - (BOOL) canScoop:(ShipEntity *)other;
 - (void) scoopUp:(ShipEntity *)other;

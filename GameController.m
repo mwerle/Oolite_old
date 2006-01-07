@@ -466,6 +466,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 	}
 #endif   
 	//
+	[OOSound update];
 }
 
 - (void) startAnimationTimer
@@ -501,12 +502,13 @@ static int _compareModes(id arg1, id arg2, void *context)
     CGDisplayErr err;
     long oldSwapInterval;
     long newSwapInterval;
+	CGMouseDelta mouse_dx, mouse_dy;
 	
 	// empty the event queue and strip all keys - stop problems with hangover keys
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSEvent *event;
-		while (event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES]);
+		while ((event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES]));
 		[pool release];
 		[gameView clearKeys];
 	}
@@ -538,12 +540,21 @@ static int _compareModes(id arg1, id arg2, void *context)
 
 			// Specify that we want a full-screen OpenGL context.
 			NSOpenGLPFAFullScreen,
+//			// and that we want a windowed OpenGL context.
+//			NSOpenGLPFAWindow,
 
 			// We may be on a multi-display system (and each screen may be driven by a different renderer), so we need to specify which screen we want to take over.
 			// For this demo, we'll specify the main screen.
 			NSOpenGLPFAScreenMask, CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay),
 
+			// Specifying "NoRecovery" gives us a context that cannot fall back to the software renderer.
+			//This makes the View-based context a compatible with the fullscreen context, enabling us to use the "shareContext"
+			// feature to share textures, display lists, and other OpenGL objects between the two.
+			NSOpenGLPFANoRecovery,
+			
 			// Attributes Common to FullScreen and non-FullScreen
+			NSOpenGLPFACompliant,
+			
 			NSOpenGLPFAColorSize, 32,
 			NSOpenGLPFADepthSize, 32,
 			NSOpenGLPFADoubleBuffer,
@@ -625,7 +636,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 
 			// Check for and process input events.
 			NSEvent *event;
-			while (event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES])
+			while ((event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES]))
 			{
 				switch ([event type])
 				{
@@ -644,6 +655,9 @@ static int _compareModes(id arg1, id arg2, void *context)
 						break;
 					
 					case NSMouseMoved:
+					case NSLeftMouseDragged:
+//					case NSRightMouseDragged:	// avoid conflict with NSRightMouseDown
+					case NSOtherMouseDragged:
 						CGGetLastMouseDelta(&mouse_dx, &mouse_dy);
 						if (past_first_mouse_delta)
 						{

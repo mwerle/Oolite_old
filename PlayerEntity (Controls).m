@@ -145,6 +145,7 @@ static BOOL target_missile_pressed;
 static BOOL ident_pressed;
 static BOOL safety_pressed;
 static BOOL cloak_pressed;
+static BOOL rotateCargo_pressed;
 static int				saved_view_direction;
 static double			saved_script_time;
 static NSTimeInterval	time_last_frame;
@@ -452,8 +453,19 @@ static NSTimeInterval	time_last_frame;
 			if (([gameView isDown:key_dump_cargo] || joyButtonState[BUTTON_JETTISON])&&([cargo count] > 0))
 			{
 				if ([self dumpCargo] != CARGO_NOT_CARGO)
-					[self beep];;
+					[self beep];
 			}
+			//
+			//  shoot 'R'   // Rotate Cargo
+			//
+			if ([gameView isDown:key_rotate_cargo])
+			{
+				if ((!rotateCargo_pressed)&&([cargo count] > 0))
+					[self rotateCargo];
+				rotateCargo_pressed = YES;
+			}
+			else
+				rotateCargo_pressed = NO;
 			//
 			// autopilot 'c'
 			//
@@ -681,7 +693,7 @@ static NSTimeInterval	time_last_frame;
 						[self deactivateCloakingDevice];
 						[universe addMessage:[universe expandDescription:@"[cloak-off]" forSystem:system_seed] forCount:2];
 					}
-					//         
+					//   
 					if (cloaking_device_active)
 						[self beep];
 					else
@@ -1350,7 +1362,7 @@ static BOOL queryPressed;
 					int displayModeIndex = [controller indexOfCurrentDisplayMode];
 					if (displayModeIndex == NSNotFound)
 					{
-						NSLog(@"***** couldn't find current display mode switching to native display resolution");
+						NSLog(@"***** couldn't find current display mode switching to basic 640x480");
 						displayModeIndex = 0;
 					}
 					else
@@ -1774,6 +1786,8 @@ static BOOL queryPressed;
 	}
 }
 
+static BOOL zoom_pressed;
+
 - (void) pollViewControls
 {
 #ifdef LOADSAVEGUI
@@ -1833,11 +1847,20 @@ static BOOL queryPressed;
 		if (!scanner_zoom_rate)
 		{
 			if ([hud scanner_zoom] < 5.0)
-				scanner_zoom_rate = SCANNER_ZOOM_RATE_UP;
+			{
+				if (([hud scanner_zoom] > 1.0)||(!zoom_pressed))
+					scanner_zoom_rate = SCANNER_ZOOM_RATE_UP;
+			}
 			else
-				scanner_zoom_rate = SCANNER_ZOOM_RATE_DOWN;		
+			{
+				if (!zoom_pressed)	// must release and re-press zoom to zoom back down..
+					scanner_zoom_rate = SCANNER_ZOOM_RATE_DOWN;
+			}
 		}
+		zoom_pressed = YES;
 	}
+	else
+		zoom_pressed = NO;
 	//
 	// Compass mode '/'
 	//

@@ -411,6 +411,11 @@ static NSString * mission_key;
 }
 
 
+- (NSDictionary*) mission_variables
+{
+	return mission_variables;
+}
+
 /*-----------------------------------------------------*/
 
 - (NSArray*) missionsList
@@ -585,6 +590,11 @@ static int shipsFound;
 
 - (NSNumber *) clock_number				// returns the game time in seconds
 {
+	return [NSNumber numberWithDouble:ship_clock];
+}
+
+- (NSNumber *) clock_secs_number		// returns the game time in seconds
+{
 	return [NSNumber numberWithInt:floor(ship_clock)];
 }
 
@@ -601,6 +611,11 @@ static int shipsFound;
 - (NSNumber *) clock_days_number		// returns the game time in days
 {
 	return [NSNumber numberWithInt:floor(ship_clock / 86400.0)];
+}
+
+- (NSNumber *) fuel_level_number		// returns the fuel level in LY
+{
+	return [NSNumber numberWithFloat:floor(0.1 * fuel)];
 }
 
 
@@ -953,6 +968,15 @@ static int shipsFound;
 - (void) testForEquipment:(NSString *)equipString	//eg. EQ_NAVAL_ENERGY_UNIT
 {
 	found_equipment = [self has_extra_equipment:equipString];
+}
+
+- (void) awardFuel:(NSString *)valueString	// add to fuel up to 7.0 LY
+{
+	fuel += 10 * [valueString floatValue];
+	if (fuel > 70)
+		fuel = 70;
+	if (fuel < 0)
+		fuel = 0;
 }
 
 - (void) messageShipAIs:(NSString *)roles_message

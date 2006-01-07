@@ -63,6 +63,8 @@ extern int debug;
 	
 }
 
+- (id) prepare;
+
 - (id) initWithStateMachine:(NSString *) smName andState:(NSString *) stateName;
 
 - (void) setOwner:(ShipEntity *)ship;

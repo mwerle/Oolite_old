@@ -158,7 +158,7 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	descriptions = [[ResourceManager dictionaryFromFilesNamed:@"descriptions.plist" inFolder:@"Config" andMerge:YES] retain];
 	//
-	planetinfo = [[ResourceManager dictionaryFromFilesNamed:@"planetinfo.plist" inFolder:@"Config" andMerge:YES] retain];
+	planetinfo = [[ResourceManager dictionaryFromFilesNamed:@"planetinfo.plist" inFolder:@"Config" andMerge:YES smart:YES] retain];
 	//
 	local_planetinfo_overrides = [[NSMutableDictionary alloc] initWithCapacity:8];
 	//
@@ -398,11 +398,11 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	if (descriptions)
 		[descriptions autorelease];
-	descriptions = [[ResourceManager dictionaryFromFilesNamed:@"descriptions.plist" inFolder:@"Config" andMerge:YES] retain];
+	descriptions = [[ResourceManager dictionaryFromFilesNamed:@"descriptions.plist" inFolder:@"Config" andMerge:YES ] retain];
 	//
 	if (planetinfo)
 		[planetinfo autorelease];
-	planetinfo = [[ResourceManager dictionaryFromFilesNamed:@"planetinfo.plist" inFolder:@"Config" andMerge:YES] retain];
+	planetinfo = [[ResourceManager dictionaryFromFilesNamed:@"planetinfo.plist" inFolder:@"Config" andMerge:YES smart:YES] retain];
 	//
 	if (missiontext)
 		[missiontext autorelease];
@@ -5050,10 +5050,14 @@ Your fair use and other rights are in no way affected by the above.
 				if (thing->isShip)
 				{
 					AI* theShipsAI = [(ShipEntity *)thing getAI];
-					if ((universal_time > [theShipsAI nextThinkTime])||([theShipsAI nextThinkTime] == 0.0))
+					if (theShipsAI)
 					{
-						[theShipsAI setNextThinkTime:universal_time + [theShipsAI thinkTimeInterval]];
-						[theShipsAI think];
+						double thinkTime = [theShipsAI nextThinkTime];
+						if ((universal_time > thinkTime)||(thinkTime == 0.0))
+						{
+							[theShipsAI setNextThinkTime:universal_time + [theShipsAI thinkTimeInterval]];
+							[theShipsAI think];
+						}
 					}
 				}
 			}
@@ -6982,6 +6986,17 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 - (NSString *) expandDescription:(NSString *) desc forSystem:(Random_Seed)s_seed;
 {
 	NSMutableString*	partial = [NSMutableString stringWithString:desc];
+	NSMutableDictionary* all_descriptions = [NSMutableDictionary dictionaryWithDictionary:descriptions];
+	
+	////
+	// add in mission_variables
+	NSDictionary* mission_vars = [(PlayerEntity*)[self entityZero] mission_variables];
+	NSEnumerator* missVarsEnum = [mission_vars keyEnumerator];
+	id key;
+	while (key = [missVarsEnum nextObject])
+		[all_descriptions setObject:[NSArray arrayWithObject:[mission_vars objectForKey:key]] forKey:key];
+	//
+	////
 	
 	while ([partial rangeOfString:@"["].location != NSNotFound)
 	{
@@ -6994,10 +7009,10 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 		after = [partial substringWithRange:NSMakeRange(p2,[partial length] - p2)];
 		middle = [partial substringWithRange:NSMakeRange(p1 + 1 , p2 - p1 - 2)];
 		
-		// check descriptions for an array that's keyed to middle
-		if ([[descriptions objectForKey:middle] isKindOfClass:[NSArray class]])
+		// check all_descriptions for an array that's keyed to middle
+		if ([[all_descriptions objectForKey:middle] isKindOfClass:[NSArray class]])
 		{
-			NSArray* choices = (NSArray*)[descriptions objectForKey:middle];
+			NSArray* choices = (NSArray*)[all_descriptions objectForKey:middle];
 			rnd = gen_rnd_number() % [choices count];
 			part = [NSString stringWithString:(NSString *)[choices objectAtIndex:rnd]];
 		}
@@ -7014,7 +7029,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 			if (rnd >= 0x99) opt++;
 			if (rnd >= 0xCC) opt++;
 			
-			part = (NSString *)[(NSArray *)[(NSArray *)[descriptions objectForKey:@"system_description"] objectAtIndex:sub] objectAtIndex:opt];
+			part = (NSString *)[(NSArray *)[(NSArray *)[all_descriptions objectForKey:@"system_description"] objectAtIndex:sub] objectAtIndex:opt];
 		}
 		
 		partial = [NSMutableString stringWithFormat:@"%@%@%@",before,part,after];
