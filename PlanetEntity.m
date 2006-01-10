@@ -45,6 +45,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "Universe.h"
 #import "TextureStore.h"
 #import "MyOpenGLView.h"
+#import "ShipEntity (AI).h"
 
 #define LIM500  500.0*500.0 * NO_DRAW_DISTANCE_FACTOR*NO_DRAW_DISTANCE_FACTOR
 #define LIM4K   4000.0*4000.0 * NO_DRAW_DISTANCE_FACTOR*NO_DRAW_DISTANCE_FACTOR
@@ -946,11 +947,18 @@ static GLfloat	texture_uv_array[10400 * 2];
 		return NO;
 	if (other->isShip)
 	{
-		if ([(ShipEntity *)other reportAImessages])
+		ShipEntity *ship = (ShipEntity *)other;
+		if ([[ship roles] isEqual:@"shuttle"])
 		{
-			ShipEntity *ship = (ShipEntity *)other;
+			[ship landOnPlanet];
+			if ([ship reportAImessages])
+				NSLog(@"DEBUG %@ landed on planet %@", other, self);
+			return NO;
+		}
+		if ([ship reportAImessages])
+		{
 			Vector p1 = ship->position;
-			NSLog(@"%@ %d collided with planet at (%.1f,%.1f,%.1f)",[ship name], [ship universal_id], p1.x,p1.y,p1.z);
+			NSLog(@"DEBUG %@ %d collided with planet at (%.1f,%.1f,%.1f)",[ship name], [ship universal_id], p1.x,p1.y,p1.z);
 		}
 	}
 	

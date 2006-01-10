@@ -6985,16 +6985,40 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 
 - (NSString *) expandDescription:(NSString *) desc forSystem:(Random_Seed)s_seed;
 {
+	PlayerEntity*		player = (PlayerEntity*)[self entityZero];
 	NSMutableString*	partial = [NSMutableString stringWithString:desc];
 	NSMutableDictionary* all_descriptions = [NSMutableDictionary dictionaryWithDictionary:descriptions];
 	
 	////
-	// add in mission_variables
-	NSDictionary* mission_vars = [(PlayerEntity*)[self entityZero] mission_variables];
-	NSEnumerator* missVarsEnum = [mission_vars keyEnumerator];
-	id key;
-	while (key = [missVarsEnum nextObject])
-		[all_descriptions setObject:[NSArray arrayWithObject:[mission_vars objectForKey:key]] forKey:key];
+	// add in mission_variables if required
+	if ([desc rangeOfString:@"[mission_"].location != NSNotFound)
+	{
+		NSDictionary* mission_vars = [player mission_variables];
+		NSEnumerator* missVarsEnum = [mission_vars keyEnumerator];
+		id key;
+		while (key = [missVarsEnum nextObject])
+			[all_descriptions setObject:[NSArray arrayWithObject:[mission_vars objectForKey:key]] forKey:key];
+	}
+	//
+	////
+	
+	////
+	// add in player info if required
+	if ([desc rangeOfString:@"[commander_"].location != NSNotFound)
+	{
+		NSDictionary*		playerinfo = [player commanderDataDictionary];
+		// commander's name
+		[all_descriptions setObject:[NSArray arrayWithObject:[playerinfo objectForKey:@"player_name"]] forKey:@"commander_name"];
+		// one or two word description of ship
+		[all_descriptions setObject:[NSArray arrayWithObject:[player name]] forKey:@"commander_shipname"];
+		// ranking from Hamless to ELITE
+		int rating = [player getRatingFromKills: [[playerinfo objectForKey:@"ship_kills"] intValue]];
+		[all_descriptions setObject:[NSArray arrayWithObject:[(NSArray *)[descriptions objectForKey:@"rating"] objectAtIndex:rating]] forKey:@"commander_rank"];
+		// legal status
+		int legal_status = [[playerinfo objectForKey:@"legal_status"] intValue];
+		int legal_index = 0 + (legal_status <= 50) ? 1 : 2;
+		[all_descriptions setObject:[NSArray arrayWithObject:[(NSArray *)[descriptions objectForKey:@"legal_status"] objectAtIndex:legal_index]] forKey:@"commander_legal_status"];
+	}
 	//
 	////
 	
@@ -7310,7 +7334,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 {
 #ifndef GNUSTEP
 	if ([OOSound respondsToSelector:@selector(masterVolume)])
-		[speechSynthesizer startSpeakingString:[NSString stringWithFormat:@"[[volm %.3f]]%@", [OOSound masterVolume], text]];
+		[speechSynthesizer startSpeakingString:[NSString stringWithFormat:@"[[volm %.3f]]%@", 0.3333333f * [OOSound masterVolume], text]];
 	else
 		[speechSynthesizer startSpeakingString:text];
 #endif

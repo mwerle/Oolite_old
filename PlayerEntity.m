@@ -371,7 +371,7 @@ Your fair use and other rights are in no way affected by the above.
 			[missile_roles addObject:@"NONE"];
 	}
 	[result setObject:missile_roles forKey:@"missile_roles"];
-	[self safe_all_missiles];
+//	[self safe_all_missiles];	// affects missile_status!!
 	//
 	[result setObject:[NSNumber numberWithInt:[self calc_missiles]]		forKey:@"missiles"];
 	//
@@ -3043,6 +3043,12 @@ Your fair use and other rights are in no way affected by the above.
 
 - (int) dumpCargo
 {
+	if (flight_speed > 4.0 * max_flight_speed)
+	{
+		[universe addMessage:[universe expandDescription:@"[hold-locked]" forSystem:system_seed] forCount:3.0];
+		return CARGO_NOT_CARGO;
+	}
+	
 	int result = [super dumpCargo];
 	if (result != CARGO_NOT_CARGO)
 	{
@@ -3077,6 +3083,22 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[ready-to-eject-@]" forSystem:system_seed],[pod name]] forCount:3.0];
 	}
+	// now scan through the remaining 1..(n_cargo - rotates) places moving similar cargo to the last place
+	// this means the cargo gets to be sorted as it is rotated through
+	int i;
+	for (i = 1; i < (n_cargo - rotates); i++)
+	{
+		pod = (ShipEntity*)[cargo objectAtIndex:i];
+		if ([pod getCommodityType] == current_contents)
+		{
+			[pod retain];
+			[cargo removeObjectAtIndex:i--];
+			[cargo addObject:pod];
+			[pod release];
+			rotates++;
+		}
+	}
+	//
 }
 
 - (int) getBounty		// overrides returning 'bounty'

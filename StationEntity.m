@@ -1523,7 +1523,8 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		[[shuttle_ship getAI] setStateMachine:@"fallingShuttleAI.plist"];
 		[self addShipToLaunchQueue:shuttle_ship];
 
-		//NSLog(@"%@ Prepping shuttle: %@ %d for launch.", [self name], [shuttle_ship name], [shuttle_ship universal_id]);
+//		NSLog(@"%@ Prepping shuttle: %@ %d for launch.", [self name], [shuttle_ship name], [shuttle_ship universal_id]);
+//		[shuttle_ship setReportAImessages:YES];	//DEBUG
 		
 		[shuttle_ship release];
 	}

@@ -183,6 +183,8 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	[self setTrackCloseContacts:NO];
 	//
+	isNearPlanetSurface = NO;
+	//
 	return self;
 }
 
@@ -519,6 +521,8 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	[self setTrackCloseContacts:NO];
 	//
+	isNearPlanetSurface = NO;
+	//
 }
 
 - (id) initWithDictionary:(NSDictionary *) dict
@@ -565,6 +569,8 @@ Your fair use and other rights are in no way affected by the above.
 	isShip = YES;
 	//
 	isFrangible = YES;
+	//
+	isNearPlanetSurface = NO;
 	//
 	return self;
 }
@@ -2834,9 +2840,22 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 	// check planet
 	Vector p1 = the_planet->position;
 	double cr = the_planet->collision_radius;
+	double cr2 = cr * cr;
 	int result = AEGIS_NONE;
 	p1.x -= position.x;	p1.y -= position.y;	p1.z -= position.z;
-	double d2 = p1.x*p1.x + p1.y*p1.y + p1.z*p1.z - cr * cr * 9.0; // 3x radius of planet
+	double d2 = p1.x*p1.x + p1.y*p1.y + p1.z*p1.z;
+	// check if nearing surface
+	//
+//	if (reportAImessages)
+//		NSLog(@"DEBUG reporting altitude d2(%.2f) - cr2(%.2f) = %.2f", d2, cr2, d2 - cr2);
+	BOOL wasNearPlanetSurface = isNearPlanetSurface;
+	isNearPlanetSurface = (d2 - cr2 < 3600000.0);
+	if ((!wasNearPlanetSurface)&&(isNearPlanetSurface))
+		[shipAI reactToMessage:@"APPROACHING_SURFACE"];
+	if ((wasNearPlanetSurface)&&(!isNearPlanetSurface))
+		[shipAI reactToMessage:@"LEAVING_SURFACE"];
+	//
+	d2 -= cr2 * 9.0; // to 3x radius of planet
 	if (d2 < 0.0)
 		result = AEGIS_CLOSE_TO_PLANET;
 	// check station
@@ -5616,7 +5635,12 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	if (isSubentity)
 	{
 		if (parent)
+		{
 			v = [parent getVelocity];
+			// if the subentity is rotating (subentity_rotational_velocity is not 1 0 0 0)
+			// we should calculate the tangential velocity from the other's position
+			// relative to our absolute position and add that in. For now this is a TODO
+		}
 		else
 			v = make_vector( 0, 0, 0);
 	}
@@ -5639,17 +5663,13 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	Vector vel1a = make_vector( v1a * loc.x, v1a * loc.y, v1a * loc.z);
 	Vector vel2a = make_vector( -v2b * loc.x, -v2b * loc.y, -v2b * loc.z);
 	
-	if (isSubentity)
-	{
-		[self adjustVelocity:vel1a];
-		if (parent)
-			[parent adjustVelocity:vel2a];
-	}
+	// apply change in velocity
+	if ((isSubentity)&&(parent))
+		[parent adjustVelocity:vel1a];	// move the parent not the subentity
 	else
-	{
 		[self adjustVelocity:vel1a];
-		[other adjustVelocity:vel2a];
-	}
+	[other adjustVelocity:vel2a];
+	
 	//
 	// convert change in velocity into damage energy (KE)
 	//

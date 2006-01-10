@@ -1603,11 +1603,7 @@ static BOOL queryPressed;
 								for (i = 0; i < yours; i++)
 									[self trySellingCommodity:item];
 								//NSLog(@"... you sold %d.", yours);
-#ifdef HAVE_SOUND                        
-								if ([sellSound isPlaying])
-									[sellSound stop];
-								[sellSound play];
-#endif                        
+								[self playInterfaceBeep:kInterfaceBeep_Sell];
 								[self setGuiToMarketScreen];
 							}
 							else			// buy as much as possible
@@ -1745,10 +1741,7 @@ static BOOL queryPressed;
 								[self setGuiToStatusScreen];
 							}
 						}
-						else
-						{
 							[self boop];
-						}
 					}
 					selectPressed = YES;
 				}
@@ -2091,24 +2084,22 @@ static BOOL toggling_music;
 - (void) pollDockedControls:(double) delta_t
 {
 #ifdef LOADSAVEGUI
-   if(pollControls)
-   {
+	if(pollControls)
+	{
 #endif     
-      MyOpenGLView  *gameView = (MyOpenGLView *)[universe gameView];
-      if (([gameView isDown:gvFunctionKey1])||([gameView isDown:gvNumberKey1]))   // look for the f1 key
-      {
-         [universe set_up_universe_from_station]; // launch!
-         if (!docked_station)
-            docked_station = [universe station];
-         //NSLog(@"Leaving dock (%@)...%@",docked_station,[docked_station name]);
-         [self leaveDock:docked_station];
-         [universe setDisplayCursor:NO];
-#ifdef HAVE_SOUND      
-         [breakPatternSound play];
-#endif      
-      }
+		MyOpenGLView  *gameView = (MyOpenGLView *)[universe gameView];
+		if (([gameView isDown:gvFunctionKey1])||([gameView isDown:gvNumberKey1]))   // look for the f1 key
+		{
+			[universe set_up_universe_from_station]; // launch!
+			if (!docked_station)
+				docked_station = [universe station];
+			//NSLog(@"Leaving dock (%@)...%@",docked_station,[docked_station name]);
+			[self leaveDock:docked_station];
+			[universe setDisplayCursor:NO];
+			[self playBreakPattern];
+		}
 #ifdef LOADSAVEGUI      
-   }
+	}
 #endif   
 	//
 	//  text displays

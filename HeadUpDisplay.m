@@ -381,7 +381,9 @@ static BOOL hostiles;
 	GLfloat off_scope2 = (siz.width > siz.height) ? siz.width * siz.width : siz.height * siz.height;
 	
 	//
-	if ([[player universe] viewDir] != VIEW_DOCKED)
+	int p_status = player->status;
+
+	if ((p_status == STATUS_IN_FLIGHT)||(p_status == STATUS_AUTOPILOT_ENGAGED)||(p_status == STATUS_LAUNCHING)||(p_status == STATUS_WITCHSPACE_COUNTDOWN))
 	{
 		double upscale = scanner_zoom*1.25/scanner_scale;
 		off_scope2 /= upscale * upscale;

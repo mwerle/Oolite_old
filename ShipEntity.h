@@ -313,6 +313,9 @@ Your fair use and other rights are in no way affected by the above.
 		// close contact / collision tracking
 		BOOL					trackCloseContacts;
 		NSMutableDictionary*	closeContactsInfo;
+		
+		// check for landing on planet
+		BOOL					isNearPlanetSurface;
 
 		// DEBUGGING
 		int debug_condition;

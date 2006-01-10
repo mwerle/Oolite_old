@@ -231,6 +231,12 @@ Your fair use and other rights are in no way affected by the above.
 		[shipAI message:@"NOTHING_FOUND"];		//can't collect loot if you have no scoop!
 		return;
 	}
+	if ([cargo count] >= max_cargo)
+	{
+		[shipAI message:@"HOLD_FULL"];		//can't collect loot if holds are full!
+		[shipAI message:@"NOTHING_FOUND"];		//can't collect loot if holds are full!
+		return;
+	}
 	if (isStation)
 	{
 		[shipAI message:@"NOTHING_FOUND"];		//can't collect loot if you're a station
@@ -556,16 +562,19 @@ Your fair use and other rights are in no way affected by the above.
 	if (the_planet)
 	{
 		Vector p_pos = the_planet->position;
-		double p_cr = 250.0 + the_planet->collision_radius;   // 250m from the surface
+		double p_cr = the_planet->collision_radius;   // 200m above the surface
 		Vector p1 = vector_between( p_pos, position);
-		Vector v1 = make_vector (randf() - 0.5, randf() - 0.5, randf() - 0.5);	// arbitrary vector
+//		Vector v1 = make_vector (randf() - 0.5, randf() - 0.5, randf() - 0.5);	// arbitrary random vector
 		p1 = unit_vector(&p1);			// vector towards ship
-		v1 = unit_vector(&v1);
-		v1 = cross_product( v1, p1);	// vector 90° to p1
-		p1 = make_vector ( v1.x + p1.x + p1.x, v1.y + p1.y + p1.y, v1.z + p1.z + p1.z);
+		p1.x += 0.5 * (randf() - 0.5);
+		p1.y += 0.5 * (randf() - 0.5);
+		p1.z += 0.5 * (randf() - 0.5);
+//		v1 = unit_vector(&v1);
+//		v1 = cross_product( v1, p1);	// vector 90° to p1
+//		p1 = make_vector ( v1.x + p1.x + p1.x, v1.y + p1.y + p1.y, v1.z + p1.z + p1.z);
 		p1 = unit_vector(&p1); 
 		destination = make_vector( p_pos.x + p1.x * p_cr, p_pos.y + p1.y * p_cr, p_pos.z + p1.z * p_cr);	// on surface
-		desired_range = 250.0;   // +250m from the destination
+		desired_range = collision_radius + 50.0;   // +50m from the destination
 	}
 }
 

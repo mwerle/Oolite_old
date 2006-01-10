@@ -1306,6 +1306,8 @@ static int shipsFound;
 	//
 	GuiDisplayGen   *gui =  [universe gui];
 	NSString		*text = (NSString *)[[universe missiontext] objectForKey:textKey];
+	text = [universe expandDescription:text forSystem:system_seed];
+	text = [self replaceVariablesInString: text];
 	//NSLog(@"::::: Adding text '%@':\n'%@'", textKey, text);
 	NSArray			*paras = [text componentsSeparatedByString:@"\\n"];
 	if (text)
@@ -1347,6 +1349,8 @@ static int shipsFound;
 	{
 		NSString* choice_key = (NSString *)[choice_keys objectAtIndex:i];
 		NSString* choice_text = [NSString stringWithFormat:@" %@ ",[choices_dict objectForKey:choice_key]];
+		choice_text = [universe expandDescription:choice_text forSystem:system_seed];
+		choice_text = [self replaceVariablesInString: choice_text];
 		[gui setText:choice_text forRow:choices_row align: GUI_ALIGN_CENTER];
 		[gui setKey:choice_key forRow:choices_row];
 		[gui setColor:[NSColor yellowColor] forRow:choices_row];
