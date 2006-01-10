@@ -365,12 +365,12 @@
                 "missionChoice_string undefined"
             ); 
             do = (
-                setGuiToMissionScreen,
 				"showShipModel: none",
-				"setMissionImage: none",
-                "set: mission_trumbles OFFER_MADE", 
+                "setMissionImage: trumblebox.png", 
+                setGuiToMissionScreen,
                 "addMissionText: trumble_offer", 
-                "setMissionChoices: trumble_offer_yesno"
+                "setMissionChoices: trumble_offer_yesno",
+                "set: mission_trumbles OFFER_MADE"
             ); 
         }, 
         {
@@ -381,6 +381,7 @@
             ); 
             do = (
                 setGuiToStatusScreen, 
+                "setMissionImage: none", 
                 "set: mission_trumbles TRUMBLE_BOUGHT", 
                 "awardCredits: -30", 
                 "awardEquipment: EQ_TRUMBLE"
@@ -394,6 +395,7 @@
             ); 
             do = (
             	setGuiToStatusScreen,
+                "setMissionImage: none", 
             	"set: mission_trumbles NOT_NOW",
             	resetMissionChoice
             ); 

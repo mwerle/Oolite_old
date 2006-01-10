@@ -521,6 +521,15 @@
 	<array>
 		<string>%@ scooped.</string>
 	</array>
+	<key>hold-locked</key>
+	<array>
+		<string>Cargo ejection system offline (speed too high).</string>
+	</array>
+	<!-- holds full -->
+	<key>hold-full</key>
+	<array>
+		<string>Cargo holds full.</string>
+	</array>
 	<!-- cloaking device .. -->
 	<key>cloak-on</key>
 	<array>
@@ -533,11 +542,6 @@
 	<key>cloak-low-juice</key>
 	<array>
 		<string>Not enough energy to activate cloaking device.</string>
-	</array>
-	<!-- holds full -->
-	<key>hold-full</key>
-	<array>
-		<string>Cargo holds full.</string>
 	</array>
 	<!-- Assorted messages sent out by ships etc.. -->
 	<!--	%H - homeworld
@@ -690,6 +694,10 @@
 		<string>Trumbles have eaten a cargopod of %@.</string>
 	</array>
 	<!-- internal damage -->
+	<key>@-damaged</key>
+	<array>
+		<string>%@ damaged.</string>
+	</array>
 	<key>@-destroyed</key>
 	<array>
 		<string>%@ destroyed.</string>
