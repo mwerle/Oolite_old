@@ -521,6 +521,10 @@
 	<array>
 		<string>%@ scooped.</string>
 	</array>
+	<key>fuel-scoop-active</key>
+	<array>
+		<string>Fuel scoop active.</string>
+	</array>
 	<key>hold-locked</key>
 	<array>
 		<string>Cargo ejection system offline (speed too high).</string>

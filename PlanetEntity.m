@@ -1410,8 +1410,8 @@ void drawBallVertices (double radius, int step, double z_distance)
 	if (radius >= z_distance) // inside the sphere
 		return;
 	int i;
-	double s, c;
-	double r = radius * z_distance / sqrt( z_distance * z_distance - radius * radius); 
+	GLfloat s, c;
+	GLfloat r = radius * z_distance / sqrt( z_distance * z_distance - radius * radius); 
 	glVertex3i( 0, 0, 0);
 	for ( i = 0; i < 360; i += step )
 	{
@@ -1427,18 +1427,18 @@ void drawCorona (double inner_radius, double outer_radius, int step, double z_di
 	if (inner_radius >= z_distance) // inside the sphere
 		return;
 	int i;
-	double s0, c0, s1, c1;
+	GLfloat s0, c0, s1, c1;
 	
 	double r = inner_radius;
 	double c = outer_radius;
 	double z = z_distance;
 	double x = sqrt( z * z - r * r);
 	
-	double r1 = r * x / z;
-	double z1 = r * r / z;
+	GLfloat r1 = r * x / z;
+	GLfloat z1 = r * r / z;
 	
-	double r0 = c * x / z;
-	double z0 = c * r / z;
+	GLfloat r0 = c * x / z;
+	GLfloat z0 = c * r / z;
 	
 //	NSLog(@"DEBUG r1 = %.4f  z1 = %.4f  r0 = %.4f  z0 = %.4f", r1, z1, r0, z0);
 	
@@ -1469,18 +1469,18 @@ void drawActiveCorona (double inner_radius, double outer_radius, int step, doubl
 	
 	NSRange activity = NSMakeRange(0.34, 1.0);
 	
-	double s0, c0, s1, c1;
+	GLfloat s0, c0, s1, c1;
 	
 	double r = inner_radius;
 	double c = outer_radius;
 	double z = z_distance;
 	double x = sqrt( z * z - r * r);
 	
-	double r1 = r * x / z;
-	double z1 = r * r / z;
+	GLfloat r1 = r * x / z;
+	GLfloat z1 = r * r / z;
 	
-	double r0 = c * x / z;
-	double z0 = c * r / z;
+	GLfloat r0 = c * x / z;
+	GLfloat z0 = c * r / z;
 	
 //	NSLog(@"DEBUG r1 = %.4f  z1 = %.4f  r0 = %.4f  z0 = %.4f", r1, z1, r0, z0);
 

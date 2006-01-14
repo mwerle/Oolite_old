@@ -734,7 +734,6 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		NSArray *subs = (NSArray *)[dict objectForKey:@"subentities"];
 		for (i = 0; i < [subs count]; i++)
 		{
-//			NSArray* details = [(NSString *)[subs objectAtIndex:i] componentsSeparatedByString:@" "];
 			NSArray* details = [Entity scanTokensFromString:(NSString *)[subs objectAtIndex:i]];
 			if (([details count] == 8)&&([(NSString *)[details objectAtIndex:0] isEqual:@"dock"]))
 			{

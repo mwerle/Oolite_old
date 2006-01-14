@@ -2730,6 +2730,13 @@ Your fair use and other rights are in no way affected by the above.
 		NSDictionary*	shipDict = (NSDictionary *)[shipdata objectForKey:[shipKeys objectAtIndex:i]];
 		NSArray*		shipRoles = [Entity scanTokensFromString:(NSString *)[shipDict objectForKey:@"roles"]];
 		
+		if ([shipDict objectForKey:@"conditions"])
+		{
+			PlayerEntity* player = (PlayerEntity*)[self entityZero];
+			if ((player) && (player->isPlayer) && (![player checkCouplet: shipDict onEntity: player]))
+				shipRoles = [NSArray array];	// empty array - ship does not meet conditions listed
+		}
+		
 //		NSLog(@"... checking if %@ contains a %@", [shipRoles description], desc);
 		
 		for (j = 0; j < [shipRoles count]; j++)
@@ -2758,7 +2765,7 @@ Your fair use and other rights are in no way affected by the above.
 		
 //				NSLog(@"... ... putative_roles = '%@' desc = '%@' isEqual = %@", putative_roles, desc, ([putative_roles isEqual:desc])? @":YES:" : @":NO:");
 		
-				if ([putative_roles isEqual:desc])
+				if ([putative_roles isEqual:desc] && (chance > 0.0))
 				{
 					[foundShips addObject:	[shipKeys objectAtIndex:i]];
 					[foundChance addObject:	[NSNumber numberWithFloat:chance]];
@@ -3029,6 +3036,8 @@ Your fair use and other rights are in no way affected by the above.
 {
 	NSMutableArray  *accumulator = [NSMutableArray arrayWithCapacity:how_many];
 	int commodity_type = [self commodityForName: commodity_name];
+	if (commodity_type == NSNotFound)
+		return [NSArray array]; // empty array
 	int commodity_units = [self unitsForCommodity:commodity_type];
 	int how_much = how_many;
 	while (how_much > 0)
@@ -4164,7 +4173,7 @@ Your fair use and other rights are in no way affected by the above.
 	return result;
 }
 
-- (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir
+- (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir rangeFound:(GLfloat*)range_ptr
 {
 	BOOL isSubentity = NO;
 	ShipEntity  *hit_entity = nil;
@@ -4308,7 +4317,8 @@ Your fair use and other rights are in no way affected by the above.
 		result = [hit_entity universal_id];
 		if ((hit_subentity)&&[hit_entity->sub_entities containsObject:hit_subentity])
 			hit_entity->subentity_taking_damage = hit_subentity;
-			
+		if (range_ptr != nil)
+			range_ptr[0] = (GLfloat)nearest;
 	}
 	//
 //	if (debug_laser)
@@ -4320,7 +4330,7 @@ Your fair use and other rights are in no way affected by the above.
 	return result;
 }
 
-- (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir offset:(Vector) offset
+- (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir offset:(Vector) offset rangeFound:(GLfloat*)range_ptr
 {
 	BOOL isSubentity = NO;
 	ShipEntity  *hit_entity = nil;
@@ -4469,7 +4479,8 @@ Your fair use and other rights are in no way affected by the above.
 		result = [hit_entity universal_id];
 		if ((hit_subentity)&&[hit_entity->sub_entities containsObject:hit_subentity])
 			hit_entity->subentity_taking_damage = hit_subentity;
-			
+		if (range_ptr != nil)
+			range_ptr[0] = (GLfloat)nearest;
 	}
 	//
 //	if (debug_laser)

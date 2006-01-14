@@ -104,9 +104,9 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	Vector v_up = vector_up_from_quaternion(q_rotation);
 	Vector v_forward = vector_forward_from_quaternion(q_rotation);
 	Vector v_right = vector_right_from_quaternion(q_rotation);
-	double fs = [ship flight_speed];
+	GLfloat fs = [ship flight_speed];
 	velocity = make_vector( v_forward.x * fs, v_forward.y * fs, v_forward.z * fs);
-	double distance;
+	GLfloat distance;
 	switch (view)
 	{
 		case VIEW_FORWARD :
@@ -168,7 +168,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	Vector v_up = vector_up_from_quaternion(q_rotation);
 	Vector v_forward = vector_forward_from_quaternion(q_rotation);
 	Vector v_right = vector_right_from_quaternion(q_rotation);
-	double fs = [ship flight_speed];
+	GLfloat fs = [ship flight_speed];
 	velocity = make_vector( v_forward.x * fs, v_forward.y * fs, v_forward.z * fs);
 	
 //	NSLog(@"DEBUG firing laser with offset [ %.3f, %.3f, %.3f]", offset.x, offset.y, offset.z);
@@ -227,9 +227,9 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	Vector v_up = vector_up_from_quaternion(q_rotation);
 	Vector v_forward = vector_forward_from_quaternion(q_rotation);
 	Vector v_right = vector_right_from_quaternion(q_rotation);
-	double fs = [(ShipEntity*)parent flight_speed];
+	GLfloat fs = [(ShipEntity*)parent flight_speed];
 	velocity = make_vector( v_forward.x * fs, v_forward.y * fs, v_forward.z * fs);
-	double distance;
+	GLfloat distance;
 	switch (view)
 	{
 		case VIEW_FORWARD :
@@ -306,12 +306,12 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	if ([values count] != 6)
 		return nil;
 	Vector offset, scale;
-	offset.x = [(NSString *)[values objectAtIndex:0] doubleValue];
-	offset.y = [(NSString *)[values objectAtIndex:1] doubleValue];
-	offset.z = [(NSString *)[values objectAtIndex:2] doubleValue];
-	scale.x = [(NSString *)[values objectAtIndex:3] doubleValue];
-	scale.y = [(NSString *)[values objectAtIndex:4] doubleValue];
-	scale.z = [(NSString *)[values objectAtIndex:5] doubleValue];
+	offset.x = [(NSString *)[values objectAtIndex:0] floatValue];
+	offset.y = [(NSString *)[values objectAtIndex:1] floatValue];
+	offset.z = [(NSString *)[values objectAtIndex:2] floatValue];
+	scale.x = [(NSString *)[values objectAtIndex:3] floatValue];
+	scale.y = [(NSString *)[values objectAtIndex:4] floatValue];
+	scale.z = [(NSString *)[values objectAtIndex:5] floatValue];
 	
 	self = [super init];
     //
@@ -991,7 +991,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	if (time_counter > activation_time)
 	{
 		// do ecm stuff
-		double radius = 0.5 * activation_time * SCANNER_MAX_RANGE;
+		GLfloat radius = 0.5 * activation_time * SCANNER_MAX_RANGE;
 		if (radius > SCANNER_MAX_RANGE)
 			radius = SCANNER_MAX_RANGE;
 		NSArray* targets = [universe getEntitiesWithinRange:radius ofEntity:self];
@@ -1044,9 +1044,9 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	//
 	// end of new billboard routine
 	
-	double tf = time_counter / duration;
-	double stf = tf * tf;
-	double expansion_speed = 0.0;
+	GLfloat tf = time_counter / duration;
+	GLfloat stf = tf * tf;
+	GLfloat expansion_speed = 0.0;
 	if (time_counter > 0)
 		expansion_speed = 240 + 10 / (tf * tf);
 	if (expansion_speed > 1000.0)
@@ -1188,8 +1188,6 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 		GLfloat alf = 1.0 - time_counter / du;
 		if (alf < 0.0)	alf = 0.0;
 		if (alf > 1.0)	alf = 1.0;
-//		faces[i].green *= alf;
-//		faces[i].blue *= alf;
 		faces[i].normal.z = alf;
 		vertices[i].x += vertex_normal[i].x * delta_t;
 		vertices[i].y += vertex_normal[i].y * delta_t;
@@ -1203,8 +1201,8 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 
 - (void) updateFlash:(double) delta_t
 {
-	double tf = duration * 0.667;
-	double tf1 = duration - tf;
+	GLfloat tf = duration * 0.667;
+	GLfloat tf1 = duration - tf;
 	
 	// move as necessary
 	position.x += velocity.x * delta_t;
@@ -1244,14 +1242,14 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	Frame zero;
 	zero.q_rotation = ship->q_rotation;
 	int dam = [ship damage];
-	double flare_length = [ship speed_factor];
+	GLfloat flare_length = [ship speed_factor];
 
 	if (!flare_length)	// don't draw if there's no fire!
 		return;
 
-	double flare_factor = flare_length * ex_emissive[3];
-	double red_factor = flare_length * ex_emissive[0] * (ranrot_rand() % 11) * 0.1;	// random fluctuations
-	double green_factor = flare_length * ex_emissive[1];
+	GLfloat flare_factor = flare_length * ex_emissive[3];
+	GLfloat red_factor = flare_length * ex_emissive[0] * (ranrot_rand() % 11) * 0.1;	// random fluctuations
+	GLfloat green_factor = flare_length * ex_emissive[1];
 
 	if (flare_length > 1.0)	// afterburner!
 	{
@@ -1523,8 +1521,8 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 {
     int viewdir;
 	
-	double  xx = size.width / 2.0;
-	double  yy = size.height / 2.0;
+	GLfloat	xx = 0.5 * size.width;
+	GLfloat	yy = 0.5 * size.height;
 	
 	if (alpha < 0.0)
         alpha = 0.0;	// clamp the alpha value
@@ -1655,9 +1653,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	if (!ship)
 		return;
 	
-	double flare_length = [ship speed_factor];
-
-	if (!flare_length)	// don't draw if there's no fire!
+	if ([ship speed_factor] <= 0.0)	// don't draw if there's no fire!
 		return;
 
 	glPopMatrix();	// restore absolute positioning

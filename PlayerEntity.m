@@ -1337,6 +1337,7 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) update:(double) delta_t
 {
+	int i;
 	// update flags
 	//
 	has_moved = ((position.x != last_position.x)||(position.y != last_position.y)||(position.z != last_position.z));
@@ -1405,6 +1406,14 @@ Your fair use and other rights are in no way affected by the above.
 
 	[self pollControls:delta_t];
 	
+	// update trumbles (moved from end of update: to here)
+	OOTrumble** trumbles = [self trumbleArray];
+	for (i = [self n_trumbles] ; i > 0; i--)
+	{
+		OOTrumble* trum = trumbles[i - 1];
+		[trum updateTrumble:delta_t];
+	}
+
 	if ((status == STATUS_DEMO)&&(gui_screen != GUI_SCREEN_INTRO1)&&(gui_screen != GUI_SCREEN_INTRO2)&&(gui_screen != GUI_SCREEN_MISSION)&&(gui_screen != GUI_SCREEN_SHIPYARD))
 		[self setGuiToIntro1Screen];	//set up demo mode
 	
@@ -1576,7 +1585,6 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	// check each unlaunched missile's target still exists and is in-range
 	//
-	int i;
 	for (i = 0; i < max_missiles; i++)
 	{
 		if ((missile_entity[i])&&([missile_entity[i] getPrimaryTargetID] != NO_TARGET))
@@ -1612,14 +1620,6 @@ Your fair use and other rights are in no way affected by the above.
 				[self beep];
 			}
 		}
-	}
-	
-	// update trumbles (moved from drawTrumbles
-	OOTrumble** trumbles = [self trumbleArray];
-	for (i = [self n_trumbles]; i > 0; i--)
-	{
-		OOTrumble* trum = trumbles[i - 1];
-		[trum updateTrumble:delta_t];
 	}
 }
 
@@ -1788,7 +1788,7 @@ Your fair use and other rights are in no way affected by the above.
 					[fuelScoopSound play];
 			}
 			if (fuel > 70)	fuel = 70;
-			[universe displayMessage:@"Fuel Scoop Active" forCount:1.0];
+			[universe displayCountdownMessage:[universe expandDescription:@"[fuel-scoop-active]" forSystem:system_seed] forCount:1.0];
 		}
 	}
 	
@@ -1915,6 +1915,7 @@ Your fair use and other rights are in no way affected by the above.
 		}
 		[hud setScannerZoom:z1];
 	}
+	
 }
 
 - (void) applyRoll:(GLfloat) roll1 andClimb:(GLfloat) climb1
@@ -3206,6 +3207,8 @@ Your fair use and other rights are in no way affected by the above.
 		}
 		if (!system_name)
 			return;
+		// set the following so removeEquipment works on the right entity
+		[self setScript_target:self];
 		[universe clearPreviousMessage];
 		[self removeEquipment:system_key];
 		if (![universe strict])

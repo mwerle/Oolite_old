@@ -928,7 +928,7 @@ NSMutableDictionary*	surface_cache;
 + (NSObject*) parseXMLPropertyList:(NSString*)xmlString
 {
 	NSScanner* scanner = [NSScanner scannerWithString:xmlString];
-	OOXMLElement xml;
+	OOXMLElement xml = { nil, nil };
 	NS_DURING
 		xml = [ResourceManager parseOOXMLElement:scanner upTo:@"ROOT"];
 	NS_HANDLER

@@ -1424,10 +1424,15 @@ BOOL ship_canCollide (ShipEntity* ship)
 {
 	if (!subent)
 		return;
+
 //	double old_cr = collision_radius;
-	double distance = sqrt(magnitude2(subent->position)) + subent->collision_radius;
+//	NSLog(@"DEBUG adding %@ at (%.2f %.2f %.2f) cr:%.2f to %@'s collision radius %.2f",
+//		subent, subent->position.x, subent->position.y, subent->position.z, [subent findCollisionRadius], self, collision_radius);
+
+	double distance = sqrt(magnitude2(subent->position)) + [subent findCollisionRadius];
 	if (distance > collision_radius)
 		collision_radius = distance;
+
 //	NSLog(@"DEBUG - Added the collision radius of %@ to %@ (was %.2fm now %.2fm)", subent, self, old_cr, collision_radius);
 }
 
@@ -4721,99 +4726,12 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	}
 }
 
-//- (BOOL) fireLaserShot
-//{
-//	ParticleEntity  *shot;
-//	int				direction = VIEW_FORWARD;
-//	double			range_limit2 = weapon_range*weapon_range;
-//	target_laser_hit = NO_TARGET;
-//	
-//	Vector			laserPortOffset = forwardWeaponOffset;
-//	Vector			aimOffset = make_vector( 0, 0, 0);
-//	
-//	if (isPlayer)		// only the player has weapons on other facings
-//	{
-//		direction = [universe viewDir];					// set the weapon facing here
-//		switch(direction)
-//		{
-//			case VIEW_AFT:
-//				laserPortOffset = aftWeaponOffset;
-//				break;
-//			case VIEW_PORT:
-//				laserPortOffset = portWeaponOffset;
-//				break;
-//			case VIEW_STARBOARD:
-//				laserPortOffset = starboardWeaponOffset;
-//				break;
-//			default:
-//				laserPortOffset = forwardWeaponOffset;
-//		}
-//		aimOffset = [(PlayerEntity*)self viewOffset];
-//	}
-//	
-//	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction offset:aimOffset];
-//	
-//	shot = [[ParticleEntity alloc] initLaserFromShip:self view:direction offset:laserPortOffset];	// alloc retains!
-//	
-//	[shot setColor:laser_color];
-//	[shot setScanClass: CLASS_NO_DRAW];
-//	if (target_laser_hit != NO_TARGET)
-//	{
-//		Entity *victim = [universe entityForUniversalID:target_laser_hit];
-//		if (victim)
-//		{
-//			Vector p0 = shot->position;
-//			Vector p1 = victim->position;
-//			if (victim->isShip)
-//			{
-//				ShipEntity* ship_hit = ((ShipEntity*)victim); 
-//				ShipEntity* subent = ship_hit->subentity_taking_damage;
-//				if ((subent) && [ship_hit->sub_entities containsObject:subent])
-//				{
-//					if (ship_hit->isFrangible)
-//					{
-//						p1 = [subent absolutePositionForSubentity];
-//						victim = subent;
-//						// do 1% bleed-through damage...
-//						[ship_hit takeEnergyDamage: 0.01 * weapon_energy from:subent becauseOf:self];
-//					}
-//				}
-//			}
-//			//
-//			double dist2 = distance2( p0, p1);
-//			if ((victim->isShip)&&(dist2 < range_limit2))
-//			{
-//				[(ShipEntity *)victim takeEnergyDamage:weapon_energy from:self becauseOf:self];	// a very palpable hit
-//				[shot setCollisionRadius:sqrt(dist2)];	// so it's drawn to the right size
-//				
-//				// calculate where to draw flash
-//				double cr = shot->collision_radius - victim->collision_radius;
-//				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
-//				Vector p0 = shot->position;
-//				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;
-//				ParticleEntity* laserFlash = [[ParticleEntity alloc] initFlashSize:1.0 FromPosition: p0 Color:laser_color];
-//				[laserFlash setVelocity:[victim getVelocity]];
-//				[universe addEntity:laserFlash];
-//				[laserFlash release];
-//			}
-//		}
-//	}
-//	[universe addEntity:shot];
-//	[shot release]; //release
-//	
-//	shot_time = 0.0;
-//	
-//	// random laser over-heating for AI ships
-//	if ((!isPlayer)&&((ranrot_rand() & 255) < weapon_energy)&&(![self isMining]))
-//		shot_time -= (randf() * weapon_energy);
-//	
-//	return YES;
-//}
 
 - (BOOL) fireSubentityLaserShot: (double) range
 {
 	ParticleEntity  *shot;
 	int				direction = VIEW_FORWARD;
+	GLfloat			hit_at_range;
 	target_laser_hit = NO_TARGET;
 		
 	if (forward_weapon_type == WEAPON_NONE)
@@ -4828,7 +4746,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	if (range > weapon_range)
 		return NO;
 	
-	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction];
+	hit_at_range = weapon_range;
+	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction rangeFound: &hit_at_range];
 	
 //	NSLog(@"DEBUG target hit by SubEntityLaserShot: %d %@", target_laser_hit, [universe entityForUniversalID:target_laser_hit]);
 	
@@ -4865,7 +4784,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 				[shot setCollisionRadius:sqrt(dist2)];	// so it's drawn to the right size
 				
 				// calculate where to draw flash
-				double cr = shot->collision_radius - victim->collision_radius;
+//				double cr = shot->collision_radius - victim->collision_radius;
+				double cr = hit_at_range;
 				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
 				Vector p0 = shot->position;
 				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;
@@ -4888,6 +4808,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 {
 //	NSLog(@"DEBUG %@ %d laser fired direct shot on %@ %d", name, universal_id, [(ShipEntity*)[self getPrimaryTarget] name], primaryTarget);
 	
+	GLfloat			hit_at_range;
 	Entity*	my_target = [self getPrimaryTarget];
 	if (!my_target)
 		return NO;
@@ -4910,7 +4831,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	
 	Quaternion q_save = q_rotation;	// save rotation
 	q_rotation = q_laser;			// face in direction of laser
-	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:VIEW_FORWARD];
+	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:VIEW_FORWARD rangeFound: &hit_at_range];
 	q_rotation = q_save;			// restore rotation
 
 	Vector  vel = make_vector( v_forward.x * flight_speed, v_forward.y * flight_speed, v_forward.z * flight_speed);
@@ -4955,7 +4876,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 				[shot setCollisionRadius:sqrt(dist2)];
 
 				// calculate where to draw flash
-				double cr = shot->collision_radius - victim->collision_radius;
+//				double cr = shot->collision_radius - victim->collision_radius;
+				double cr = hit_at_range;
 				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
 				Vector p0 = shot->position;
 				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;
@@ -4982,6 +4904,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 {
 	ParticleEntity  *shot;
 	double			range_limit2 = weapon_range*weapon_range;
+	GLfloat			hit_at_range;
 	Vector  vel;
 	target_laser_hit = NO_TARGET;
 	
@@ -5007,7 +4930,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 			laserPortOffset = forwardWeaponOffset;
 	}
 
-	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction offset:aimOffset];
+	target_laser_hit = [universe getFirstEntityHitByLaserFromEntity:self inView:direction offset:aimOffset rangeFound: &hit_at_range];
 	
 	shot = [[ParticleEntity alloc] initLaserFromShip:self view:direction offset:laserPortOffset];	// alloc retains!
 	
@@ -5064,7 +4987,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 				[shot setCollisionRadius:sqrt(dist2)];
 				
 				// calculate where to draw flash
-				double cr = shot->collision_radius - victim->collision_radius;
+//				double cr = shot->collision_radius - victim->collision_radius;
+				double cr = hit_at_range;
 				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
 				Vector p0 = shot->position;
 				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;

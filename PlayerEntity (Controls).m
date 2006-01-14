@@ -106,19 +106,23 @@ Your fair use and other rights are in no way affected by the above.
 //					NSLog(@"DEBUG playing docking music");
 					[dockingMusic play];
 				}
-				if ([dockingMusic isPaused])
-				{
-//					NSLog(@"DEBUG resuming docking music");
-					[dockingMusic resume];
-				}
+//				if ([dockingMusic isPaused])
+//				{
+////					NSLog(@"DEBUG resuming docking music");
+//					[dockingMusic resume];
+//				}
 			}
 			else
 			{
-				if ([dockingMusic isPlaying] && ![dockingMusic isPaused])
+				if ([dockingMusic isPlaying])
 				{
-//					NSLog(@"DEBUG pausing docking music");
-					[dockingMusic pause];
+					[dockingMusic stop];
 				}
+//				if ([dockingMusic isPlaying] && ![dockingMusic isPaused])
+//				{
+////					NSLog(@"DEBUG pausing docking music");
+//					[dockingMusic pause];
+//				}
 			}
 		}
 		else
