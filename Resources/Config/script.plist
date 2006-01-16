@@ -239,6 +239,10 @@
     ); 
     nova = (
         {
+            conditions = ("status_string equal STATUS_IN_FLIGHT", "sunGoneNova_bool equal YES"); 
+            do = (sendAllShipsAway); 
+        }, 
+        {
             conditions = ("galaxy_number equal 3", "mission_novacount undefined"); 
             do = ("set: mission_novacount 0"); 
         }, 

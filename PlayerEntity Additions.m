@@ -637,6 +637,11 @@ static int shipsFound;
 	return ([[universe sun] willGoNova])? @"YES" : @"NO";
 }
 
+- (NSString *) sunGoneNova_bool		// returns whether the sun has gone nova
+{
+	return ([[universe sun] goneNova])? @"YES" : @"NO";
+}
+
 - (NSString *) missionChoice_string		// returns nil or the key for the chosen option
 {
 	return missionChoice;

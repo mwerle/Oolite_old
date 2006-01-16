@@ -1593,6 +1593,8 @@ static  Universe	*data_store_universe;
 
 - (BoundingBox) findBoundingBoxRelativeTo:(Entity *)other InVectors:(Vector) _i :(Vector) _j :(Vector) _k
 {
+	NSLog(@"DEBUG ** DEPRECATED [Entity findBoundingBoxRelativeTo:(Entity *)other InVectors:(Vector) _i :(Vector) _j :(Vector) _k] CALLED **");
+	
 	Vector pv, rv;
 	Vector  rpos = position;
 	Vector  opv = (other)? other->position : rpos;
@@ -1618,6 +1620,8 @@ static  Universe	*data_store_universe;
 
 - (BoundingBox) findBoundingBoxRelativeToPosition:(Vector)opv InVectors:(Vector) _i :(Vector) _j :(Vector) _k
 {
+	NSLog(@"DEBUG ** DEPRECATED [Entity findBoundingBoxRelativeToPosition:(Vector)opv InVectors:(Vector) _i :(Vector) _j :(Vector) _k] CALLED **");
+	
 	Vector pv, rv;
 	Vector  rpos = position;
 	rpos.x -= opv.x;	rpos.y -= opv.y;	rpos.z -= opv.z;

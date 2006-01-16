@@ -514,7 +514,7 @@ static NSTimeInterval	time_last_frame;
 			if (([gameView isDown:key_autopilot_target])&&(has_docking_computer)&&(![self isBeeping]))   // look for the 'c' key
 			{
 				Entity* primeTarget = [self getPrimaryTarget];
-				if ((primeTarget)&&(primeTarget->isStation))
+				if ((primeTarget)&&(primeTarget->isStation)&&[primeTarget isKindOfClass:[StationEntity class]])
 				{
 					targetStation = primaryTarget;
 					primaryTarget = NO_TARGET;

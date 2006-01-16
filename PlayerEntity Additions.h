@@ -85,6 +85,7 @@ Your fair use and other rights are in no way affected by the above.
 - (NSString *) foundEquipment_bool;
 
 - (NSString *) sunWillGoNova_bool;		// returns whether the sun is going to go nova
+- (NSString *) sunGoneNova_bool;		// returns whether the sun has gone nova
 
 - (NSString *) missionChoice_string;	// returns nil or the key for the chosen option
 

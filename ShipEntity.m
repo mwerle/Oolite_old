@@ -4317,8 +4317,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	Vector  relativePosition;	
 	GLfloat  d_forward, d_up, d_right;
 	
-	Entity*	primeTarget = [self getPrimaryTarget];
-	BOOL	we_are_docking = ((primeTarget)&&(primeTarget->isStation));
+	BOOL	we_are_docking = (nil != dockingInstructions);
 	
 	double  damping = 0.5 * delta_t;
 	double  rate2 = 4.0 * delta_t;
@@ -4408,37 +4407,45 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	if (we_are_docking && docking_match_rotation && (d_forward > max_cos))
 	{
 		/* we are docking and need to consider the rotation/orientation of the docking port */
-		Vector up_vec = [(StationEntity *)[self getPrimaryTarget] portUpVector];
-		double cosTheta = dot_product(up_vec, v_up);	// == cos of angle between up vectors
-		double sinTheta = dot_product(up_vec, v_right);
 		
-		double station_roll = [(StationEntity *)[self getPrimaryTarget] flight_roll];
+//		NSLog(@"DEBUG DOCKING MATCH ROTATION %@ targetStation = %d %@ primaryTarget = %d %@",
+//			self, targetStation, [universe entityForUniversalID:targetStation], primaryTarget, [universe entityForUniversalID:primaryTarget]);
+		StationEntity* station_for_docking = (StationEntity*)[universe entityForUniversalID:targetStation];
 		
-		if (!isPlayer)
+		if ((station_for_docking)&&(station_for_docking->isStation))
 		{
-			station_roll = -station_roll;	// make necessary corrections for a different viewpoint
-			sinTheta = -sinTheta;
-		}
-		
-		if (cosTheta < 0)
-		{
-			cosTheta = -cosTheta;
-			sinTheta = -sinTheta;
-		}
-		
-		if (sinTheta > 0.0)
-		{
-			// increase roll rate
-			stick_roll = cosTheta * cosTheta * station_roll + sinTheta * sinTheta * max_flight_roll;
-		}
-		else
-		{
-			// decrease roll rate
-			stick_roll = cosTheta * cosTheta * station_roll - sinTheta * sinTheta * max_flight_roll;
-		}
+			Vector up_vec = [station_for_docking portUpVector];
+			double cosTheta = dot_product(up_vec, v_up);	// == cos of angle between up vectors
+			double sinTheta = dot_product(up_vec, v_right);
+			
+			double station_roll = [station_for_docking flight_roll];
+			
+			if (!isPlayer)
+			{
+				station_roll = -station_roll;	// make necessary corrections for a different viewpoint
+				sinTheta = -sinTheta;
+			}
+			
+			if (cosTheta < 0)
+			{
+				cosTheta = -cosTheta;
+				sinTheta = -sinTheta;
+			}
+			
+			if (sinTheta > 0.0)
+			{
+				// increase roll rate
+				stick_roll = cosTheta * cosTheta * station_roll + sinTheta * sinTheta * max_flight_roll;
+			}
+			else
+			{
+				// decrease roll rate
+				stick_roll = cosTheta * cosTheta * station_roll - sinTheta * sinTheta * max_flight_roll;
+			}
 
-//		NSLog(@"DEBUG %@ matching rotation .. docking cosTheta %.3f sinTheta %.3f station_roll %.3f stick_roll %.3f",
-//			self, cosTheta, sinTheta, station_roll, stick_roll);
+	//		NSLog(@"DEBUG %@ docking with %@ -- matching rotation .. docking cosTheta %.3f sinTheta %.3f station_roll %.3f stick_roll %.3f",
+	//			self, [self getPrimaryTarget], cosTheta, sinTheta, station_roll, stick_roll);
+		}
 	}
 	
 	// end rule-of-thumb manoeuvres
@@ -5169,20 +5176,23 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 
 	v_eject = unit_vector( &start);
 	
+	vel = make_vector( 0.0f, 0.0f, 0.0f);	// starting velocity
+	
 	// check if start is within bounding box...
 	while (	(start.x > boundingBox.min_x - mcr)&&(start.x < boundingBox.max_x + mcr)&&
 			(start.y > boundingBox.min_y - mcr)&&(start.y < boundingBox.max_y + mcr)&&
 			(start.z > boundingBox.min_z - mcr)&&(start.z < boundingBox.max_z + mcr))
 	{
 		start.x += mcr * v_eject.x;	start.y += mcr * v_eject.y;	start.z += mcr * v_eject.z;
+		vel.x += 10.0f * mcr * v_eject.x;	vel.y += 10.0f * mcr * v_eject.y;	vel.z += 10.0f * mcr * v_eject.z;	// throw it outward a bit harder
 	}
 	
 	if (isPlayer)
 		q1.w = -q1.w;   // player view is reversed remember!
 		
-	vel.x = (flight_speed + throw_speed) * v_forward.x;
-	vel.y = (flight_speed + throw_speed) * v_forward.y;
-	vel.z = (flight_speed + throw_speed) * v_forward.z;
+	vel.x += (flight_speed + throw_speed) * v_forward.x;
+	vel.y += (flight_speed + throw_speed) * v_forward.y;
+	vel.z += (flight_speed + throw_speed) * v_forward.z;
 	
 	origin.x = position.x + v_right.x * start.x + v_up.x * start.y + v_forward.x * start.z;
 	origin.y = position.y + v_right.y * start.x + v_up.y * start.y + v_forward.y * start.z;
@@ -5833,6 +5843,11 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 
 - (void) enterDock:(StationEntity *)station
 {
+	// throw these away now we're docked...
+	if (dockingInstructions)
+		[dockingInstructions autorelease];
+	dockingInstructions = nil;
+	
 	[shipAI message:@"DOCKED"];
 	[station noteDockedShip:self];
 	[universe removeEntity:self];
@@ -6383,7 +6398,6 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 	{
 		// if I'm under attack send a thank-you message to the rescuer
 		//
-//		NSArray* tokens = [ms componentsSeparatedByString:@" "];
 		NSArray* tokens = [Entity scanTokensFromString:ms];
 		int switcher_id = [(NSString*)[tokens objectAtIndex:1] intValue];
 		Entity* switcher = [universe entityForUniversalID:switcher_id];
@@ -6403,46 +6417,31 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 
 - (BoundingBox) findBoundingBoxRelativeTo:(Entity *)other InVectors:(Vector) _i :(Vector) _j :(Vector) _k
 {
-	Vector	pv, rv;
 	Vector  opv = (other)? other->position : position;
-	Vector  rpos = position;
-	rpos.x -= opv.x;	rpos.y -= opv.y;	rpos.z -= opv.z;
-	pv.x = rpos.x + v_right.x * vertices[0].x + v_up.x * vertices[0].y + v_forward.x * vertices[0].z;
-	pv.y = rpos.y + v_right.y * vertices[0].x + v_up.y * vertices[0].y + v_forward.y * vertices[0].z;
-	pv.z = rpos.z + v_right.z * vertices[0].x + v_up.z * vertices[0].y + v_forward.z * vertices[0].z;
-	rv.x = dot_product(_i,pv);
-	rv.y = dot_product(_j,pv);
-	rv.z = dot_product(_k,pv);
-	BoundingBox result;
-	bounding_box_reset_to_vector(&result,rv);
-	int i;
-    for (i = 1; i < n_vertices; i++)
-    {
-		pv.x = rpos.x + v_right.x * vertices[i].x + v_up.x * vertices[i].y + v_forward.x * vertices[i].z;
-		pv.y = rpos.y + v_right.y * vertices[i].x + v_up.y * vertices[i].y + v_forward.y * vertices[i].z;
-		pv.z = rpos.z + v_right.z * vertices[i].x + v_up.z * vertices[i].y + v_forward.z * vertices[i].z;
-		rv.x = dot_product(_i,pv);
-		rv.y = dot_product(_j,pv);
-		rv.z = dot_product(_k,pv);
-		bounding_box_add_vector(&result,rv);
-    }
-	
-	return result;
+	return [self findBoundingBoxRelativeToPosition:opv InVectors:_i :_j :_k];
 }
 
 - (BoundingBox) findBoundingBoxRelativeToPosition:(Vector)opv InVectors:(Vector) _i :(Vector) _j :(Vector) _k
 {
 	Vector	pv, rv;
 	Vector  rpos = position;
-	rpos.x -= opv.x;	rpos.y -= opv.y;	rpos.z -= opv.z;
+	rpos.x -= opv.x;	rpos.y -= opv.y;	rpos.z -= opv.z;	// model origin relative to opv
 	rv.x = dot_product(_i,rpos);
 	rv.y = dot_product(_j,rpos);
-	rv.z = dot_product(_k,rpos);
-	pv.x = rpos.x + v_right.x * vertices[0].x + v_up.x * vertices[0].y + v_forward.x * vertices[0].z;
-	pv.y = rpos.y + v_right.y * vertices[0].x + v_up.y * vertices[0].y + v_forward.y * vertices[0].z;
-	pv.z = rpos.z + v_right.z * vertices[0].x + v_up.z * vertices[0].y + v_forward.z * vertices[0].z;
+	rv.z = dot_product(_k,rpos);	// model origin rel to opv in ijk
 	BoundingBox result;
-	bounding_box_reset_to_vector(&result,rv);
+	if (n_vertices < 1)
+		bounding_box_reset_to_vector(&result,rv);
+	else
+	{
+		pv.x = rpos.x + v_right.x * vertices[0].x + v_up.x * vertices[0].y + v_forward.x * vertices[0].z;
+		pv.y = rpos.y + v_right.y * vertices[0].x + v_up.y * vertices[0].y + v_forward.y * vertices[0].z;
+		pv.z = rpos.z + v_right.z * vertices[0].x + v_up.z * vertices[0].y + v_forward.z * vertices[0].z;	// vertices[0] position rel to opv
+		rv.x = dot_product(_i,pv);
+		rv.y = dot_product(_j,pv);
+		rv.z = dot_product(_k,pv);	// vertices[0] position rel to opv in ijk
+		bounding_box_reset_to_vector(&result,rv);
+    }
 	int i;
     for (i = 1; i < n_vertices; i++)
     {

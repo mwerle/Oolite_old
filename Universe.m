@@ -4332,6 +4332,8 @@ Your fair use and other rights are in no way affected by the above.
 
 - (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir offset:(Vector) offset rangeFound:(GLfloat*)range_ptr
 {
+//	BOOL debug_laser = e1->isPlayer;
+
 	BOOL isSubentity = NO;
 	ShipEntity  *hit_entity = nil;
 	ShipEntity  *hit_subentity = nil;
@@ -4394,16 +4396,20 @@ Your fair use and other rights are in no way affected by the above.
 	}
 	f1 = vector_forward_from_quaternion(q1);
 	r1 = vector_right_from_quaternion(q1);
+	//
 	for (i = 0; i < ship_count; i++)
 	{
 		ShipEntity *e2 = my_entities[i];
 		
+//		debug_laser = ((e1->isPlayer) && ([(ShipEntity*)e1 getPrimaryTargetID] == [e2 universal_id]));
+
 //		if (debug_laser)
 //			NSLog(@"DEBUG >>>>> %@", e2);
 		
 		// check outermost bounding sphere
 		GLfloat cr = e2->collision_radius;
-		Vector rpos = make_vector( e2->position.x - p0.x, e2->position.y - p0.y, e2->position.z - p0.z);
+//		Vector rpos = make_vector( e2->position.x - p0.x, e2->position.y - p0.y, e2->position.z - p0.z);
+		Vector rpos = vector_between( p0, e2->position);
 		Vector v_off = make_vector( dot_product( rpos, r1), dot_product( rpos, u1), dot_product( rpos, f1));
 		if ((v_off.z > 0.0)&&(v_off.z < nearest + cr)								// ahead AND within range
 			&&(v_off.x < cr)&&(v_off.x > -cr)&&(v_off.y < cr)&&(v_off.y > -cr)		// AND not off to one side or another
@@ -4411,12 +4417,7 @@ Your fair use and other rights are in no way affected by the above.
 		{
 			//  within the bounding sphere - do further tests
 //			if (debug_laser)
-//				NSLog(@"DEBUG LASER within outermost bounding sphere of %@", e2);
-			// find any subentities for later testing
-			int n_subs = 0;
-			NSArray* subs = e2->sub_entities;
-			if (subs)
-				n_subs = [subs count];
+//				NSLog(@"DEBUG LASER within outermost bounding sphere %2f of %@", cr, e2);
 			// check bounding spheres of main model and subentities
 			// main model
 			GLfloat ar = e2->actual_radius;
@@ -4425,7 +4426,7 @@ Your fair use and other rights are in no way affected by the above.
 				&&(v_off.x*v_off.x + v_off.y*v_off.y < ar*ar))							// AND not off to both sides
 			{
 //				if (debug_laser)
-//					NSLog(@"DEBUG LASER within actual bounding sphere of %@", e2);
+//					NSLog(@"DEBUG LASER within actual bounding sphere %.2f of %@", ar, e2);
 				// check bounding box of main model
 				BoundingBox arbb = [e2 findBoundingBoxRelativeToPosition:p0 InVectors:r1 :u1 :f1];
 				if ((arbb.min_x < 0.0)&&(arbb.max_x > 0.0)&&(arbb.min_y < 0.0)&&(arbb.max_y > 0.0)&&(arbb.min_z > 0.0)&&(arbb.min_z < nearest))
@@ -4435,6 +4436,11 @@ Your fair use and other rights are in no way affected by the above.
 					nearest = arbb.min_z;
 				}
 			}
+			// find any subentities for testing
+			int n_subs = 0;
+			NSArray* subs = e2->sub_entities;
+			if (subs)
+				n_subs = [subs count];
 			if ((hit_entity != e2)&&(n_subs))	// didn't hit main body but there are subs to chcek
 			{
 //				if (debug_laser)
@@ -4472,7 +4478,15 @@ Your fair use and other rights are in no way affected by the above.
 				}
 			}
 		}
+//		else
+//		{
+//			if (debug_laser)
+//			{
+//				NSLog(@"DEBUG LASER MISSED v_off = (%.2f, %.2f, %.2f) cr = %.2f", v_off.x, v_off.y, v_off.z, cr);
+//			}
+//		}
 	}
+
 	//
 	if (hit_entity)
 	{
