@@ -236,14 +236,13 @@ static NSString * mission_key;
 	comma separated numeric constants (eg "planet_number oneof 1,5,9,12,14,234").
 
 	*/
-//	NSArray*	tokens = [scriptCondition componentsSeparatedByString:@" "];
 	NSArray*	tokens = [Entity scanTokensFromString:scriptCondition];
 	NSString*   selectorString = nil;
 	NSString*	comparisonString = nil;
 	NSString*	valueString = nil;
 	SEL			_selector;
 	int			comparator = COMPARISON_NO;
-	
+		
 	if (debug)
 		NSLog(@"DEBUG ::::: scriptTestCondition: \"%@\"", scriptCondition);
 	
@@ -310,7 +309,7 @@ static NSString * mission_key;
 	{
 		NSString *result = [self performSelector:_selector];
 		if (debug)
-			NSLog(@"DEBUG ..... comparing \"%@\" to \"%@\"", result, valueString);
+			NSLog(@"DEBUG ..... comparing \"%@\" (%@) to \"%@\" (%@)", result, [result class], valueString, [valueString class]);
 		switch (comparator)
 		{
 			case COMPARISON_UNDEFINED :
@@ -346,7 +345,7 @@ static NSString * mission_key;
 	// test number values (method returns NSNumber*)
 	if ([selectorString hasSuffix:@"_number"])
 	{
-		NSNumber *result = [self performSelector:_selector];
+		NSNumber *result = [NSNumber numberWithDouble:[[self performSelector:_selector] doubleValue]];
 // +dajt: black ops
 		if (comparator == COMPARISON_ONEOF)
 		{
@@ -373,7 +372,7 @@ static NSString * mission_key;
 			NSNumber *value = [NSNumber numberWithDouble:[valueString doubleValue]];
 			
 			if (debug)
-				NSLog(@"DEBUG ..... comparing \"%@\" to \"%@\"", result, value);
+				NSLog(@"DEBUG ..... comparing \"%@\" (%@) to \"%@\" (%@)", result, [result class], value, [value class]);
 			
 			switch (comparator)
 			{

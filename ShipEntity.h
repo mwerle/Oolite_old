@@ -216,6 +216,7 @@ Your fair use and other rights are in no way affected by the above.
 		
 		int		likely_cargo;			// likely amount of cargo (for merchantmen, this is what is spilled as loot)
 		int		max_cargo;				// capacity of cargo hold
+		int		extra_cargo;			// capacity of cargo hold extension (if any)
 		int		bounty;					// bounty (if any)
 		int		cargo_type;				// if this is scooped, this is indicates contents
 		int		cargo_flag;				// indicates contents for merchantmen
@@ -547,6 +548,8 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role);
 - (void) abortDocking;
 
 - (void) broadcastThargoidDestroyed;
+
+- (void) broadcastHitByLaserFrom:(ShipEntity*) aggressor_ship;
 
 - (NSArray *) shipsInGroup:(int) ship_group_id;
 

@@ -136,6 +136,7 @@ Your fair use and other rights are in no way affected by the above.
 	[shipAI setState:@"GLOBAL"];
 	//
 	max_cargo = RAIDER_MAX_CARGO;
+	extra_cargo = 15;
 	likely_cargo = 0;
 	cargo_type = 0;
 	cargo = [[NSMutableArray alloc] initWithCapacity:max_cargo]; // alloc retains;
@@ -468,6 +469,7 @@ Your fair use and other rights are in no way affected by the above.
 	[shipAI setState:@"GLOBAL"];
 	//
 	max_cargo = 0;
+	extra_cargo = 15;
 	likely_cargo = 0;
 	cargo_type = 0;
 	cargo_flag = CARGO_FLAG_NONE;
@@ -763,6 +765,10 @@ Your fair use and other rights are in no way affected by the above.
 		max_cargo = [(NSNumber *)[shipdict objectForKey:@"max_cargo"] intValue];
 	if ([shipdict objectForKey:@"likely_cargo"])
 		likely_cargo = [(NSNumber *)[shipdict objectForKey:@"likely_cargo"] intValue];
+	if ([dict objectForKey:@"extra_cargo"])
+		extra_cargo = [(NSNumber*)[dict objectForKey:@"extra_cargo"] intValue];
+	else
+		extra_cargo = 15;
 	//
 	if ([shipdict objectForKey:@"cargo_carried"])
 	{
@@ -3236,9 +3242,15 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 		primaryAggressor = [hunter universal_id];
 		found_target = primaryAggressor;
 		
+		// firing on an innocent ship is an offence
+		[self broadcastHitByLaserFrom: hunter];
+		
 		// tell ourselves we've been attacked
 		if (energy > 0)
 			[shipAI reactToMessage:@"ATTACKED"];	// note use the reactToMessage: method NOT the think-delayed message: method
+		
+		// firing on an innocent ship is an offence
+		[self broadcastHitByLaserFrom:(ShipEntity*) other];
 		
 		// tell our group we've been attacked
 		if (group_id != NO_TARGET)
@@ -3332,7 +3344,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 			condition = CONDITION_IDLE;
 			frustration = 0.0;
 			[self launchEscapeCapsule];
-			[self setScanClass: CLASS_NEUTRAL];			// we're unmanned now!
+			[self setScanClass: CLASS_CARGO];			// we're unmanned now!
 			thrust = thrust * 0.5;
 			desired_speed = 0.0;
 			max_flight_speed = 0.0;
@@ -5525,11 +5537,11 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	if (!other)
 		return NO;
 	
-	ShipEntity* parent = (ShipEntity*)[other owner];
-	BOOL isSubentity = ((parent)&&(parent != other)&&([parent->sub_entities containsObject:other]));
+	ShipEntity* otherParent = (ShipEntity*)[other owner];
+	BOOL otherIsSubentity = ((otherParent)&&(otherParent != other)&&([otherParent->sub_entities containsObject:other]));
 	
 	// calculate line of centers using centres
-	if (isSubentity)
+	if (otherIsSubentity)
 		opos = [other absolutePositionForSubentity];
 	else
 		opos = other->position;
@@ -5553,6 +5565,10 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 		[other scoopUp:self];
 		return NO;
 	}
+	if (universal_id == NO_TARGET)
+		return NO;
+	if (other->universal_id == NO_TARGET)
+		return NO;
 	
 	// find velocity along line of centers
 	// 
@@ -5566,11 +5582,11 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	Vector	vel1b =	[self getVelocity];	
 	// calculate other's velocity relative to self
 	Vector	v =	[other getVelocity];
-	if (isSubentity)
+	if (otherIsSubentity)
 	{
-		if (parent)
+		if (otherParent)
 		{
-			v = [parent getVelocity];
+			v = [otherParent getVelocity];
 			// if the subentity is rotating (subentity_rotational_velocity is not 1 0 0 0)
 			// we should calculate the tangential velocity from the other's position
 			// relative to our absolute position and add that in. For now this is a TODO
@@ -5579,42 +5595,60 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 			v = make_vector( 0, 0, 0);
 	}
 	
-	v = make_vector( v.x - vel1b.x, v.y - v.y, v.z - vel1b.z);
+	//
+	v = make_vector( vel1b.x - v.x, vel1b.y - v.y, vel1b.z - v.z);	// velocity of self relative to other
+	
 	//
 	GLfloat	v2b = dot_product( v, loc);			// velocity of other along loc before collision
 	//
 	GLfloat v1a = sqrt(v2b * v2b * m2 / m1);	// velocity of self along loc after elastic collision
-	if (v2b < 0)	v1a = -v1a;					// in same direction as v2b
-	//
-//	if ((isPlayer)||(other->isPlayer))
+	if (v2b < 0.0f)	v1a = -v1a;					// in same direction as v2b
+	
+	
+	// are they moving apart at over 1m/s already?
+	if (v2b < 0.0f)
+	{
+		if (v2b < -1.0f)
+		{
+//			NSLog(@"MOVING APART! %@ >%.3f %.3f< %@", self, sqrt(distance2(position, opos)), v2b, other);
+			return NO;
+		}
+		else
+		{
+//			NSLog(@"MOVING APART TOO SLOW! %@ >%.3f %.3f< %@", self, sqrt(distance2(position, opos)), v2b, other);
+			position = make_vector( position.x - loc.x, position.y - loc.y, position.z - loc.z);	// adjust self position
+			v = make_vector( 0.0f, 0.0f, 0.0f);	// go for the 1m/s solution
+		}
+	}
+//	else
 //	{
-//		NSLog(@"DEBUG Collision between %@ and %@", self, other);
-//		NSLog(@"DEBUG relative velocities before:\t%.3f\t%.3f", 0.0f, v2b);
-//		NSLog(@"DEBUG relative velocities after :\t%.3f\t%.3f", v1a, 0.0f);
+//		NSLog(@"MOVING CLOSER %@ >%.3f %.3f< %@", self, sqrt(distance2(position, opos)), v2b, other);
 //	}
 	//
-	/// calculate adjustments to velocity after collision
-	Vector vel1a = make_vector( v1a * loc.x, v1a * loc.y, v1a * loc.z);
-	Vector vel2a = make_vector( -v2b * loc.x, -v2b * loc.y, -v2b * loc.z);
+	
+	// convert change in velocity into damage energy (KE)
+	//
+	dam1 = m2 * v2b * v2b / 50000000;
+	dam2 = m1 * v2b * v2b / 50000000;
+		
+	// calculate adjustments to velocity after collision
+	Vector vel1a = make_vector( -v1a * loc.x, -v1a * loc.y, -v1a * loc.z);
+	Vector vel2a = make_vector( v2b * loc.x, v2b * loc.y, v2b * loc.z);
+	
+	if (magnitude2(v) <= 0.1)	// virtually no relative velocity - we must provide at least 1m/s to avoid conjoined objects
+	{
+			vel1a = make_vector( -loc.x, -loc.y, -loc.z);
+			vel2a = make_vector( loc.x, loc.y, loc.z);
+	}
 	
 	// apply change in velocity
-	if ((isSubentity)&&(parent))
-		[parent adjustVelocity:vel1a];	// move the parent not the subentity
+	if ((otherIsSubentity)&&(otherParent))
+		[otherParent adjustVelocity:vel1a];	// move the otherParent not the subentity
 	else
 		[self adjustVelocity:vel1a];
 	[other adjustVelocity:vel2a];
 	
 	//
-	// convert change in velocity into damage energy (KE)
-	//
-	dam1 = m2 * v2b * v2b / 50000000;
-	dam2 = m1 * v2b * v2b / 50000000;
-	//
-//	if ((isPlayer)||(other->isPlayer))
-//	{
-//		NSLog(@"DEBUG collision damage to %@: %.4f", self, dam1);
-//		NSLog(@"DEBUG collision damage to %@: %.4f\n\n", other, dam2);
-//	}
 	//
 	BOOL selfDestroyed = (dam1 > energy);
 	BOOL otherDestroyed = (dam2 > [other getEnergy]);
@@ -5631,8 +5665,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	//
 	if (dam2 > 0.05)
 	{
-		if ((isSubentity) && (parent) && !(parent->isFrangible))
-			[parent takeScrapeDamage: dam2 from:self];
+		if ((otherIsSubentity) && (otherParent) && !(otherParent->isFrangible))
+			[otherParent takeScrapeDamage: dam2 from:self];
 		else
 			[other	takeScrapeDamage: dam2 from:self];
 		if (otherDestroyed)	// inelastic! - take explosion velocity damage instead
@@ -5937,7 +5971,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 
 - (void) markAsOffender:(int)offence_value
 {
-	if (![roles isEqual:@"police"])
+//	if (![roles isEqual:@"police"])
+	if (scan_class != CLASS_POLICE)
 		bounty |= offence_value;
 }
 
@@ -6259,6 +6294,47 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 		[my_entities[i] release];		//	released
 }
 
+- (void) broadcastHitByLaserFrom:(ShipEntity*) aggressor_ship
+{
+	/*-- If you're clean, locates all police and stations in range and tells them OFFENCE_COMMITTED --*/
+//	NSLog(@"DEBUG IN [%@ broadcastHitByLaserFrom:%@]", self, aggressor_ship);
+	if (!universe)
+		return;
+	if (bounty)
+		return;
+	if (!aggressor_ship)
+		return;
+	if (	(scan_class == CLASS_NEUTRAL)||
+			(scan_class == CLASS_STATION)||
+			(scan_class == CLASS_BUOY)||
+			(scan_class == CLASS_POLICE)||
+			(scan_class == CLASS_MILITARY)||
+			(scan_class == CLASS_PLAYER))	// only for active ships...
+	{
+//		NSLog(@"DEBUG IN [%@ broadcastHitByLaserFrom:%@]", self, aggressor_ship);
+		int			ent_count =		universe->n_entities;
+		Entity**	uni_entities =	universe->sortedEntities;	// grab the public sorted list
+		Entity*		my_entities[ent_count];
+		int i;
+		int ship_count = 0;
+		StationEntity* mainStation = [universe station];
+		for (i = 0; i < ent_count; i++)
+			if ((uni_entities[i]->isShip)&&((uni_entities[i]->scan_class == CLASS_POLICE)||(uni_entities[i] == mainStation)))
+				my_entities[ship_count++] = [uni_entities[i] retain];		//	retained
+		//
+		for (i = 0; i < ship_count ; i++)
+		{
+			ShipEntity* ship = (ShipEntity *)my_entities[i];
+			if (((ship == mainStation) && (within_station_aegis)) || (distance2( position, ship->position) < SCANNER_MAX_RANGE2))
+			{
+//				NSLog(@"DEBUG SENDING %@'s AI \"OFFENCE_COMMITTED\"", ship);
+				[ship setFound_target: aggressor_ship];
+				[[ship getAI] reactToMessage: @"OFFENCE_COMMITTED"];
+			}
+			[my_entities[i] release];		//	released
+		}
+	}
+}
 - (NSArray *) shipsInGroup:(int) ship_group_id
 {
 	//-- Locates all the ships with this particular group id --//

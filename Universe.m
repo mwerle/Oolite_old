@@ -1634,9 +1634,9 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		ShipEntity*	asteroid;
 		int n_rocks = 2 + (ranrot_rand() % 5);
-		launch_pos.x = spawnPos.x + SCANNER_MAX_RANGE*(gen_rnd_number()/256.0 - 0.5);
-		launch_pos.y = spawnPos.y + SCANNER_MAX_RANGE*(gen_rnd_number()/256.0 - 0.5);
-		launch_pos.z = spawnPos.z + SCANNER_MAX_RANGE*(gen_rnd_number()/256.0 - 0.5);
+		launch_pos.x = spawnPos.x + SCANNER_MAX_RANGE * (randf() - randf());
+		launch_pos.y = spawnPos.y + SCANNER_MAX_RANGE * (randf() - randf());
+		launch_pos.z = spawnPos.z + SCANNER_MAX_RANGE * (randf() - randf());
 		asteroid = [self getShipWithRole:@"asteroid"];   // retain count = 1
 		if (asteroid)
 		{
@@ -1663,9 +1663,9 @@ Your fair use and other rights are in no way affected by the above.
 		//debug
 		//NSLog(@"DEBUG ... adding rock-hermit");
 		StationEntity*	hermit;
-		launch_pos.x = spawnPos.x + 0.5 * SCANNER_MAX_RANGE * ((ranrot_rand() & 255)/256.0 - 0.5);
-		launch_pos.y = spawnPos.y + 0.5 * SCANNER_MAX_RANGE * ((ranrot_rand() & 255)/256.0 - 0.5);
-		launch_pos.z = spawnPos.z + 0.5 * SCANNER_MAX_RANGE * ((ranrot_rand() & 255)/256.0 - 0.5);
+		launch_pos.x = spawnPos.x + 0.5 * SCANNER_MAX_RANGE * (randf() - randf());
+		launch_pos.y = spawnPos.y + 0.5 * SCANNER_MAX_RANGE * (randf() - randf());
+		launch_pos.z = spawnPos.z + 0.5 * SCANNER_MAX_RANGE * (randf() - randf());
 		hermit = (StationEntity *)[self getShipWithRole:@"rockhermit"];   // retain count = 1
 		if (hermit)
 		{
@@ -6892,10 +6892,13 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 		max_cargo = [(NSNumber*)[dict objectForKey:@"max_cargo"] intValue];
 	if (max_cargo)
 	{
+		int extra_cargo = 15;
+		if ([dict objectForKey:@"extra_cargo"])
+			extra_cargo = [(NSNumber*)[dict objectForKey:@"extra_cargo"] intValue];
 		[desc appendFormat:@" Cargo capacity %dt", max_cargo];
 		BOOL canExpand = ([allOptions rangeOfString:@"EQ_CARGO_BAY"].location != NSNotFound);
 		if (canExpand)
-			[desc appendFormat:@" (expandable to %dt at most starports)", max_cargo + 15];
+			[desc appendFormat:@" (expandable to %dt at most starports)", max_cargo + extra_cargo];
 		[desc appendString:@"."];
 	}
 

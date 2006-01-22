@@ -1156,6 +1156,10 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	if ([dict objectForKey:@"max_cargo"])
 		max_cargo = [(NSNumber *)[dict objectForKey:@"max_cargo"] intValue];
+	if ([dict objectForKey:@"extra_cargo"])
+		extra_cargo = [(NSNumber*)[dict objectForKey:@"extra_cargo"] intValue];
+	else
+		extra_cargo = 15;
 	//
 	// A HACK!! - must do this before the model is set
 	if ([dict objectForKey:@"smooth"])
@@ -1281,9 +1285,7 @@ Your fair use and other rights are in no way affected by the above.
 	if (specialCargo)			[specialCargo release];
 	
 	if (save_path)				[save_path release];
-	
-	if (cdrDetailArray)			[cdrDetailArray release];
-	
+		
 	[self destroySound];
 	
 	int i;
@@ -2811,6 +2813,12 @@ Your fair use and other rights are in no way affected by the above.
 			[damageSound stop];
 		[damageSound play];
 #endif      
+	}
+	
+	// firing on an innocent ship is an offence
+	if ((other)&&(other->isShip))
+	{
+		[self broadcastHitByLaserFrom:(ShipEntity*) other];
 	}
 		
 	if (d_forward >= 0)
@@ -5661,8 +5669,13 @@ static int last_outfitting_index;
 {
 	int original_hold_size = [universe maxCargoForShip:ship_desc];
 	//
+	if ([shipinfoDictionary objectForKey:@"extra_cargo"])
+		extra_cargo = [(NSNumber*)[shipinfoDictionary objectForKey:@"extra_cargo"] intValue];
+	else
+		extra_cargo = 15;
+	//
 	if ([self has_extra_equipment:@"EQ_CARGO_BAY"])
-		max_cargo = original_hold_size + 15 - max_passengers * 5;
+		max_cargo = original_hold_size + extra_cargo - max_passengers * 5;
 	//
 	has_escape_pod = [self has_extra_equipment:@"EQ_ESCAPE_POD"];
 	has_scoop = [self has_extra_equipment:@"EQ_FUEL_SCOOPS"];

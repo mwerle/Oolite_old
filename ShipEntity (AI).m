@@ -1516,6 +1516,24 @@ WormholeEntity*	whole;
 		[shipAI message:@"TARGET_MARKED"];
 }
 
+- (void) markTargetForOffence:(NSString*) valueString
+{
+	if ((isStation)||(scan_class == CLASS_POLICE))
+	{
+		ShipEntity* ship = (ShipEntity*)[self getPrimaryTarget];
+		if ((!ship)||(ship->status == STATUS_DEAD)||(ship->status == STATUS_DOCKED))
+		{
+			primaryTarget = NO_TARGET;
+			[shipAI reactToMessage:@"TARGET_LOST"];
+			return;
+		}
+		NSString* finalValue = [universe expandDescription:valueString forSystem:[universe systemSeed]];	// expand values
+//		NSLog(@"DEBUG GOING TO [%@ markAsOffender:%d] bounty: %d", ship, [finalValue intValue], [ship legal_status]);
+		[ship markAsOffender:[finalValue intValue]];
+//		NSLog(@"DEBUG %@ BOUNTY NOW %d", ship, [ship legal_status]);
+	}
+}
+
 - (void) scanForRocks
 {
 	/*-- Locates the all boulders and asteroids in range and selects one of up to 16 --*/
