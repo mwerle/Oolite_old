@@ -215,6 +215,8 @@ Your fair use and other rights are in no way affected by the above.
 
 	if (crew)				[crew release];
 	
+	if (lastRadioMessage)	[lastRadioMessage autorelease];
+
 	[super dealloc];
 }
 
@@ -524,6 +526,10 @@ Your fair use and other rights are in no way affected by the above.
 	[self setTrackCloseContacts:NO];
 	//
 	isNearPlanetSurface = NO;
+	//
+	if (lastRadioMessage)
+		[lastRadioMessage autorelease];
+	lastRadioMessage = nil;
 	//
 }
 
@@ -6365,6 +6371,10 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 {
 	if (!other_ship)
 		return;
+	if ((lastRadioMessage) && (message_time > 0.0) && [message_text isEqual:lastRadioMessage])
+		return;	// don't send the same message too often
+	[lastRadioMessage autorelease];
+	lastRadioMessage = [message_text retain];
 	Vector delta = other_ship->position;
 	delta.x -= position.x;  delta.y -= position.y;  delta.z -= position.z;
 	double d2 = delta.x*delta.x + delta.y*delta.y + delta.z*delta.z;
@@ -6389,7 +6399,6 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 	very_random_seed.f = rand() & 255;
 	seed_RNG_only_for_planet_description(very_random_seed);
 	NSString* expandedMessage = [universe expandDescription:localExpandedMessage forSystem:[universe systemSeed]];
-
 	[self setCommsMessageColor];
 	[other_ship receiveCommsMessage:[NSString stringWithFormat:@"%@:\n %@", name, expandedMessage]];
 	if (other_ship->isPlayer)

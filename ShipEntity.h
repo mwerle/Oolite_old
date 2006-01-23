@@ -317,6 +317,8 @@ Your fair use and other rights are in no way affected by the above.
 		
 		// check for landing on planet
 		BOOL					isNearPlanetSurface;
+		
+		NSString*				lastRadioMessage;
 
 		// DEBUGGING
 		int debug_condition;
