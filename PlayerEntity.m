@@ -1383,21 +1383,29 @@ Your fair use and other rights are in no way affected by the above.
 	// scripting
 	if (script_time > script_time_check)
 	{
-		switch (gui_screen)
+		if (status == STATUS_IN_FLIGHT)	// check as we're flying
 		{
-			// screens from which it's safe to jump to the mission screen
-			case GUI_SCREEN_CONTRACTS:
-			case GUI_SCREEN_EQUIP_SHIP:
-			case GUI_SCREEN_INVENTORY:
-			case GUI_SCREEN_LONG_RANGE_CHART:
-			case GUI_SCREEN_MANIFEST:
-			case GUI_SCREEN_SHIPYARD:
-			case GUI_SCREEN_SHORT_RANGE_CHART:
-			case GUI_SCREEN_STATUS:
-			case GUI_SCREEN_SYSTEM_DATA:		
-				[self checkScript];
-				script_time_check += script_time_interval;
-				break;
+			[self checkScript];
+			script_time_check += script_time_interval;
+		}
+		else	// check at other times
+		{
+			switch (gui_screen)
+			{
+				// screens from which it's safe to jump to the mission screen
+				case GUI_SCREEN_CONTRACTS:
+				case GUI_SCREEN_EQUIP_SHIP:
+				case GUI_SCREEN_INVENTORY:
+				case GUI_SCREEN_LONG_RANGE_CHART:
+				case GUI_SCREEN_MANIFEST:
+				case GUI_SCREEN_SHIPYARD:
+				case GUI_SCREEN_SHORT_RANGE_CHART:
+				case GUI_SCREEN_STATUS:
+				case GUI_SCREEN_SYSTEM_DATA:		
+					[self checkScript];
+					script_time_check += script_time_interval;
+					break;
+			}
 		}
 	}
 	

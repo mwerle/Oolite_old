@@ -169,6 +169,7 @@ Your fair use and other rights are in no way affected by the above.
 - (void) setFuelLeak: (NSString *)value;
 - (void) setSunNovaIn: (NSString *)time_value;
 - (void) launchFromStation;
+- (void) blowUpStation;
 - (void) sendAllShipsAway;
 
 - (void) addPlanet: (NSString *)planetKey;

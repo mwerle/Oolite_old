@@ -1464,6 +1464,11 @@ static int shipsFound;
 	[breakPatternSound play];
 }
 
+- (void) blowUpStation
+{
+	[[universe station] takeEnergyDamage:500000000.0 from:nil becauseOf:nil];	// 500 million should do it!
+}
+
 - (void) sendAllShipsAway
 {
 	if (!universe)

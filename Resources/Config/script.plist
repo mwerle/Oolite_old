@@ -243,6 +243,10 @@
             do = (sendAllShipsAway); 
         }, 
         {
+            conditions = ("status_string equal STATUS_IN_FLIGHT", "sunWillGoNova_bool equal YES"); 
+            do = (sendAllShipsAway); 
+        },
+        {
             conditions = ("galaxy_number equal 3", "mission_novacount undefined"); 
             do = ("set: mission_novacount 0"); 
         }, 
@@ -268,11 +272,8 @@
             ); 
         }, 
         {
-            conditions = ("mission_nova equal 2HRS_TO_ZERO", "status_string equal STATUS_IN_FLIGHT"); 
-            do = (
-                {conditions = ("sunWillGoNova_bool equal NO"); do = ("reset: mission_nova"); }, 
-                {conditions = ("sunWillGoNova_bool equal YES"); do = (sendAllShipsAway); }
-            ); 
+            conditions = ("mission_nova equal 2HRS_TO_ZERO", "status_string equal STATUS_IN_FLIGHT", "sunWillGoNova_bool equal NO"); 
+            do = (sendAllShipsAway); 
         }, 
         {
             conditions = (
@@ -297,6 +298,7 @@
                 "useSpecialCargo: A hold full of %I refugees.", 
                 "setMissionDescription: nova_missiondesc", 
                 launchFromStation, 
+                blowUpStation, 
                 "set: mission_nova NOVA_ESCAPE_HERO", 
                 "setSunNovaIn: 30"
             ); 
