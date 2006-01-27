@@ -72,6 +72,19 @@ static GLfloat	texture_uv_array[10400 * 2];
 
 @implementation PlanetEntity
 
+static BOOL sinTableIsSetup = NO;
+void setUpSinTable()
+{
+	if (!sinTableIsSetup)
+	{
+		int i;
+		for (i = 0; i < 450; i++)
+			sin_value[i] = sin(i * PI / 180);
+		cos_value = &sin_value[90];
+	}
+	sinTableIsSetup = YES;
+}
+
 - (id) init
 {
 	int		i;
@@ -84,8 +97,7 @@ static GLfloat	texture_uv_array[10400 * 2];
 	//
     collision_radius = 25000.0; //  25km across
 	//
-	for (i = 0; i < 360; i++)
-		sin_value[i] = sin(i * PI / 180);
+	setUpSinTable();
 	//
 	scan_class = CLASS_NO_DRAW;
 	//
@@ -160,8 +172,7 @@ static GLfloat	texture_uv_array[10400 * 2];
 	lim8k =		LIM8K;
 	lim16k =	LIM16K;
 	//
-	for (i = 0; i < 360; i++)
-		sin_value[i] = sin(i * PI / 180);
+	setUpSinTable();
 	//
 	scan_class = CLASS_NO_DRAW;
 	//
@@ -1396,7 +1407,7 @@ void drawBall (double radius, int step, double z_distance)
 	for ( i = 0; i < 360; i += step )
 	{
 		s = r * sin_value[i];
-		c = r * sin_value[(i + 90) % 360];
+		c = r * cos_value[i];
 		glVertex3f(s,c,0.0);
 	}
 	glVertex3f( 0.0, r, 0.0);	//repeat the zero value to close
@@ -1416,7 +1427,7 @@ void drawBallVertices (double radius, int step, double z_distance)
 	for ( i = 0; i < 360; i += step )
 	{
 		s = r * sin_value[i];
-		c = r * sin_value[(i + 90) % 360];
+		c = r * cos_value[i];
 		glVertex3f(s,c,0.0);
 	}
 	glVertex3f( 0.0, r, 0.0);	//repeat the zero value to close
@@ -1446,11 +1457,11 @@ void drawCorona (double inner_radius, double outer_radius, int step, double z_di
 	for ( i = 0; i < 360; i += step )
 	{
 		s1 = r1 * sin_value[i];
-		c1 = r1 * sin_value[(i + 90) % 360];
+		c1 = r1 * cos_value[i];
 		glColor4fv(col4v1);
 		glVertex3f( s1, c1, -z1);
 		s0 = r0 * sin_value[i];
-		c0 = r0 * sin_value[(i + 90) % 360];
+		c0 = r0 * cos_value[i];
 		glColor4fv(col4v2);
 		glVertex3f( s0, c0, -z0);
 	}
@@ -1494,12 +1505,12 @@ void drawActiveCorona (double inner_radius, double outer_radius, int step, doubl
 		rv2 = (1.0 - corona_stage) * rvalue[i + rv + 2] + corona_stage * rvalue[i + rv + 362];
 		
 		s1 = r1 * sin_value[i];
-		c1 = r1 * sin_value[(i + 90) % 360];
+		c1 = r1 * cos_value[i];
 		glColor4f( col4v1[0] * (activity.location + rv0*activity.length), col4v1[1] * (activity.location + rv1*activity.length), col4v1[2] * (activity.location + rv2*activity.length), col4v1[3]);
 		glVertex3f( s1, c1, -z1);
 		
 		s0 = r0 * sin_value[i];
-		c0 = r0 * sin_value[(i + 90) % 360];
+		c0 = r0 * cos_value[i];
 		glColor4f( col4v1[0], col4v1[1], col4v1[2], 0);
 		glVertex3f( s0, c0, -z0);
 	}

@@ -44,6 +44,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "ResourceManager.h"
 #import "OpenGLSprite.h"
 #import "PlayerEntity.h"
+#import "PlanetEntity.h"
 #import "Universe.h"
 #import "TextureStore.h"
 #import "OOTrumble.h"
@@ -78,8 +79,10 @@ float char_widths[128] = {
 	
 	line_width = 1.0;
 	
-	for (i = 0; i < 360; i++)
-		sin_value[i] = sin(i * PI / 180);	// also used by PlanetEntity, but can't hurt to init it here too!
+//	for (i = 0; i < 450; i++)
+//		sin_value[i] = sin(i * PI / 180);
+//	cos_value = &sin_value[90];
+	setUpSinTable();
 	
 //	int ch;
 //    NSMutableDictionary *stringAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -2123,10 +2126,10 @@ void drawOval( double x, double y, double z, NSSize siz, int step)
 	int i;
 	GLfloat ww = 0.5 * siz.width;
 	GLfloat hh = 0.5 * siz.height;
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_LINE_STRIP);
 	for (i = 0; i < 360; i += step)
-		glVertex3f(x + ww * sin_value[i], y + hh * sin_value[(i + 90) % 360], z);
-//	glVertex3f(x, y + hh, z);
+		glVertex3f(x + ww * sin_value[i], y + hh * cos_value[i], z);
+	glVertex3f(x, y + hh, z);
 	glEnd();
 	return;
 }
@@ -2139,7 +2142,7 @@ void drawFilledOval( double x, double y, double z, NSSize siz, int step)
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f( x, y, z);
 	for (i = 0; i < 360; i += step)
-		glVertex3f(x + ww * sin_value[i], y + hh * sin_value[(i + 90) % 360], z);
+		glVertex3f(x + ww * sin_value[i], y + hh * cos_value[i], z);
 	glVertex3f(x, y + hh, z);
 	glEnd();
 	return;
@@ -2155,7 +2158,7 @@ void drawSpecialOval( double x, double y, double z, NSSize siz, int step, GLfloa
 	for (i = 0; i < 360; i += step)
 	{
 		glColor4f( color4v[0], color4v[1], color4v[2], fabs(sin_value[i] * color4v[3]));
-		glVertex3f(x + ww * sin_value[i], y + hh * sin_value[(i + 90) % 360], z);
+		glVertex3f(x + ww * sin_value[i], y + hh * cos_value[i], z);
 	}
 	glEnd();
 	return;

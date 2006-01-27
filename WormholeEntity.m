@@ -300,6 +300,7 @@ void drawWormholeCorona (double inner_radius, double outer_radius, int step, dou
 	for ( i = 0; i < 360; i += step )
 	{
 		j += step;
+		while (j > 360) j-=360;
 		
 		rv0 = randf();
 		rv1 = randf();
@@ -307,12 +308,12 @@ void drawWormholeCorona (double inner_radius, double outer_radius, int step, dou
 		q = activity.location + rv0 * activity.length;
 		
 		s0 = r0 * sin_value[i];
-		c0 = r0 * sin_value[(i + 90) % 360];
+		c0 = r0 * cos_value[i];
 		glColor4f( col4v1[0] * q, col4v1[1] * q, col4v1[2] * q, col4v1[3] * rv0);
 		glVertex3f( s0, c0, 0.0);
 
 		s1 = r1 * sin_value[j] * 0.5 * (1.0 + rv1);
-		c1 = r1 * sin_value[(j + 90) % 360] * 0.5 * (1.0 + rv1);
+		c1 = r1 * cos_value[j] * 0.5 * (1.0 + rv1);
 		glColor4f( col4v1[0], col4v1[1], col4v1[2], 0.0);
 		glVertex3f( s1, c1, 0.0);
 		
@@ -324,12 +325,12 @@ void drawWormholeCorona (double inner_radius, double outer_radius, int step, dou
 	q = activity.location + rv0 * activity.length;
 	
 	s0 = r0 * sin_value[0];
-	c0 = r0 * sin_value[90];
+	c0 = r0 * cos_value[0];
 	glColor4f( col4v1[0] * q, col4v1[1] * q, col4v1[2] * q, col4v1[3] * rv0);
 	glVertex3f( s0, c0, 0.0);
 
 	s1 = r1 * sin_value[half_step] * 0.5 * (1.0 + rv1);
-	c1 = r1 * sin_value[half_step + 90] * 0.5 * (1.0 + rv1);
+	c1 = r1 * cos_value[half_step] * 0.5 * (1.0 + rv1);
 	glColor4f( col4v1[0], col4v1[1], col4v1[2], 0.0);
 	glVertex3f( s1, c1, 0.0);
 	

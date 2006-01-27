@@ -4806,11 +4806,12 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 			if ((victim->isShip)&&(dist2 < weapon_range*weapon_range))
 			{
 				[(ShipEntity *)victim takeEnergyDamage:weapon_energy from:self becauseOf:parent];	// a very palpable hit
-				[shot setCollisionRadius:sqrt(dist2)];	// so it's drawn to the right size
+//				[shot setCollisionRadius:sqrt(dist2)];	// so it's drawn to the right size
 				
 				// calculate where to draw flash
 //				double cr = shot->collision_radius - victim->collision_radius;
 				double cr = hit_at_range;
+				[shot setCollisionRadius: cr];
 				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
 				Vector p0 = shot->position;
 				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;
@@ -4898,11 +4899,12 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 			if ((victim->isShip)&&(dist2 < range_limit2))
 			{
 				[(ShipEntity *)victim takeEnergyDamage:weapon_energy from:self becauseOf:self];	// a very palpable hit
-				[shot setCollisionRadius:sqrt(dist2)];
+//				[shot setCollisionRadius:sqrt(dist2)];
 
 				// calculate where to draw flash
 //				double cr = shot->collision_radius - victim->collision_radius;
 				double cr = hit_at_range;
+				[shot setCollisionRadius: cr];
 				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
 				Vector p0 = shot->position;
 				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;
@@ -5009,11 +5011,12 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 			if ((victim->isShip)&&(dist2 < range_limit2))
 			{
 				[(ShipEntity *)victim takeEnergyDamage:weapon_energy from:self becauseOf:self];	// a very palpable hit
-				[shot setCollisionRadius:sqrt(dist2)];
+//				[shot setCollisionRadius:sqrt(dist2)];
 				
 				// calculate where to draw flash
 //				double cr = shot->collision_radius - victim->collision_radius;
 				double cr = hit_at_range;
+				[shot setCollisionRadius: cr];
 				Vector vd = vector_forward_from_quaternion(shot->q_rotation);
 				Vector p0 = shot->position;
 				p0.x += vd.x * cr;	p0.y += vd.y * cr;	p0.z += vd.z * cr;

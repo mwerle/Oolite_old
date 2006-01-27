@@ -107,11 +107,13 @@ typedef struct
 }
 
 // straight c
-double		sin_value[360];
+double		sin_value[450];
+double		*cos_value;
 double		corona_speed_factor;	// multiply delta_t by this before adding it to corona_stage
 double		corona_stage;			// 0.0 -> 1.0
 GLfloat		rvalue[729];			// stores random values for adjusting colors in the corona
 	
+void setUpSinTable();
 
 - (id) initAsSunWithColor:(NSColor *) sun_color;
 - (id) initAsAtmosphereForPlanet:(PlanetEntity *) planet;
