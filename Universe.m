@@ -2663,6 +2663,7 @@ Your fair use and other rights are in no way affected by the above.
 		if (entity->isShip)
 		{
 			ShipEntity* ship = (ShipEntity*)entity;
+			[ship reinit];
 			[[ship getAI] setOwner: nil];					//  save ai misreporting
 			[ship setAI: nil];	// remove it.
 		}
@@ -4317,6 +4318,8 @@ Your fair use and other rights are in no way affected by the above.
 		result = [hit_entity universal_id];
 		if ((hit_subentity)&&[hit_entity->sub_entities containsObject:hit_subentity])
 			hit_entity->subentity_taking_damage = hit_subentity;
+		else
+			hit_entity->subentity_taking_damage = nil;
 		if (range_ptr != nil)
 			range_ptr[0] = (GLfloat)nearest;
 	}

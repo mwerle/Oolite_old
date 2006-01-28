@@ -177,6 +177,7 @@ Your fair use and other rights are in no way affected by the above.
 	isShip = YES;
 	//
 	isFrangible = YES;
+	subentity_taking_damage = nil;
 	//
 	dockingInstructions = nil;
 	//
@@ -514,6 +515,7 @@ Your fair use and other rights are in no way affected by the above.
 	isShip = YES;
 	//
 	isFrangible = YES;
+	subentity_taking_damage = nil;
 	//
 	if (dockingInstructions)
 		[dockingInstructions autorelease];
@@ -577,6 +579,7 @@ Your fair use and other rights are in no way affected by the above.
 	isShip = YES;
 	//
 	isFrangible = YES;
+	subentity_taking_damage = nil;
 	//
 	isNearPlanetSurface = NO;
 	//
@@ -933,6 +936,7 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	if ([shipdict objectForKey:@"frangible"])	// if an object has frangible == YES then it can have its subentities shot away!
 		isFrangible = [(NSNumber *)[shipdict objectForKey:@"frangible"] boolValue];
+	subentity_taking_damage = nil;
 	//	
 	if ([shipdict objectForKey:@"laser_color"])
 	{
