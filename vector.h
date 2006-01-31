@@ -51,9 +51,18 @@ struct vector
 
 struct boundingBox
 {
-	GLfloat min_x, max_x;
-	GLfloat min_y, max_y;
-	GLfloat min_z, max_z;
+	struct vector min;
+	struct vector max;
+};
+
+struct triangle_3v
+{
+	struct vector v[3];
+};
+
+struct triangle_4v
+{
+	struct vector v[4];	// v0 v1 v2 and vnormal
 };
 
 typedef struct vector Matrix[3];
@@ -61,6 +70,8 @@ typedef struct vector Matrix[3];
 typedef struct vector Vector;
 
 typedef struct boundingBox BoundingBox;
+
+typedef struct triangle_4v Triangle;
 
 typedef GLfloat	gl_matrix[16];
 
@@ -154,6 +165,9 @@ void	quaternion_rotate_about_axis(struct quaternion *quat, Vector axis, GLfloat 
 // normalise
 //
 void	quaternion_normalise(struct quaternion *quat);
+
+Vector		calculateNormalForTriangle(struct triangle_4v * tri);
+Triangle	make_triangle(Vector v0, Vector v1, Vector v2);
 
 #endif
 

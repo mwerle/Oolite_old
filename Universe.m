@@ -2109,27 +2109,27 @@ Your fair use and other rights are in no way affected by the above.
 		int h0 = howMany / 2;
 		int h1 = howMany - h0;
 		// split the bounding box into two along its longest dimension
-		GLfloat lx = bbox.max_x - bbox.min_x;
-		GLfloat ly = bbox.max_y - bbox.min_y;
-		GLfloat lz = bbox.max_z - bbox.min_z;
+		GLfloat lx = bbox.max.x - bbox.min.x;
+		GLfloat ly = bbox.max.y - bbox.min.y;
+		GLfloat lz = bbox.max.z - bbox.min.z;
 		BoundingBox bbox0 = bbox;
 		BoundingBox bbox1 = bbox;
 		if ((lx > lz)&&(lx > ly))	// longest dimension is x
 		{
-			bbox0.min_x += 0.5 * lx;
-			bbox1.max_x -= 0.5 * lx;
+			bbox0.min.x += 0.5 * lx;
+			bbox1.max.x -= 0.5 * lx;
 		}
 		else
 		{
 			if (ly > lz)	// longest dimension is y
 			{
-				bbox0.min_y += 0.5 * ly;
-				bbox1.max_y -= 0.5 * ly;
+				bbox0.min.y += 0.5 * ly;
+				bbox1.max.y -= 0.5 * ly;
 			}
 			else			// longest dimension is z
 			{
-				bbox0.min_z += 0.5 * lz;
-				bbox1.max_z -= 0.5 * lz;
+				bbox0.min.z += 0.5 * lz;
+				bbox1.max.z -= 0.5 * lz;
 			}
 		}
 		// place half the ships into each bounding box
@@ -2137,10 +2137,10 @@ Your fair use and other rights are in no way affected by the above.
 	}
 	
 	//	randomise within the bounding box (biased towards the center of the box)
-	Vector pos = make_vector(bbox.min_x, bbox.min_y, bbox.min_z);
-	pos.x += 0.5 * (randf() + randf()) * (bbox.max_x - bbox.min_x);
-	pos.y += 0.5 * (randf() + randf()) * (bbox.max_y - bbox.min_y);
-	pos.z += 0.5 * (randf() + randf()) * (bbox.max_z - bbox.min_z);
+	Vector pos = make_vector(bbox.min.x, bbox.min.y, bbox.min.z);
+	pos.x += 0.5 * (randf() + randf()) * (bbox.max.x - bbox.min.x);
+	pos.y += 0.5 * (randf() + randf()) * (bbox.max.y - bbox.min.y);
+	pos.z += 0.5 * (randf() + randf()) * (bbox.max.z - bbox.min.z);
 	
 	//
 	ShipEntity  *ship;
@@ -4189,7 +4189,7 @@ Your fair use and other rights are in no way affected by the above.
 	if ((e1)&&(e1->isShip)&&(parent)&&(parent != e1)&&(parent->isShip)&&([parent->sub_entities containsObject:e1]))
 	{	// we're a subentity!
 		BoundingBox bbox = [e1 getBoundingBox];
-		Vector midfrontplane = make_vector( 0.5 * (bbox.max_x + bbox.min_x), 0.5 * (bbox.max_y + bbox.min_y), bbox.max_z);
+		Vector midfrontplane = make_vector( 0.5 * (bbox.max.x + bbox.min.x), 0.5 * (bbox.max.y + bbox.min.y), bbox.max.z);
 		p0 = [(ShipEntity*)e1 absolutePositionForSubentityOffset:midfrontplane];
 		q1 = parent->q_rotation;
 		if (parent->isPlayer)
@@ -4267,11 +4267,11 @@ Your fair use and other rights are in no way affected by the above.
 //					NSLog(@"DEBUG LASER within actual bounding sphere of %@", e2);
 				// check bounding box of main model
 				BoundingBox arbb = [e2 findBoundingBoxRelativeToPosition:p0 InVectors:r1 :u1 :f1];
-				if ((arbb.min_x < 0.0)&&(arbb.max_x > 0.0)&&(arbb.min_y < 0.0)&&(arbb.max_y > 0.0)&&(arbb.min_z > 0.0)&&(arbb.min_z < nearest))
+				if ((arbb.min.x < 0.0)&&(arbb.max.x > 0.0)&&(arbb.min.y < 0.0)&&(arbb.max.y > 0.0)&&(arbb.min.z > 0.0)&&(arbb.min.z < nearest))
 				{
 					hit_subentity = nil;
 					hit_entity = e2;
-					nearest = arbb.min_z;
+					nearest = arbb.min.z;
 				}
 			}
 			if ((hit_entity != e2)&&(n_subs))	// didn't hit main body but there are subs to chcek
@@ -4298,13 +4298,13 @@ Your fair use and other rights are in no way affected by the above.
 //								NSLog(@"DEBUG LASER within actual bounding sphere of %@", se3);
 							// check subentity bounding box
 							BoundingBox sebb = [se3 findSubentityBoundingBoxRelativeToPosition:p0 inVectors:r1 :u1 :f1];
-							if ((sebb.min_x < 0.0)&&(sebb.max_x > 0.0)&&(sebb.min_y < 0.0)&&(sebb.max_y > 0.0)&&(sebb.min_z > 0.0)&&(sebb.min_z < nearest))
+							if ((sebb.min.x < 0.0)&&(sebb.max.x > 0.0)&&(sebb.min.y < 0.0)&&(sebb.max.y > 0.0)&&(sebb.min.z > 0.0)&&(sebb.min.z < nearest))
 							{
 //								if (debug_laser)
 //									NSLog(@"DEBUG Laser hits subentity %@ of %@", se3, e2);
 								hit_subentity = se3;
 								hit_entity = e2;
-								nearest = sebb.min_z;
+								nearest = sebb.min.z;
 							}
 						}
 					}
@@ -4350,7 +4350,7 @@ Your fair use and other rights are in no way affected by the above.
 	if ((e1)&&(e1->isShip)&&(parent)&&(parent != e1)&&(parent->isShip)&&([parent->sub_entities containsObject:e1]))
 	{	// we're a subentity!
 		BoundingBox bbox = [e1 getBoundingBox];
-		Vector midfrontplane = make_vector( 0.5 * (bbox.max_x + bbox.min_x), 0.5 * (bbox.max_y + bbox.min_y), bbox.max_z);
+		Vector midfrontplane = make_vector( 0.5 * (bbox.max.x + bbox.min.x), 0.5 * (bbox.max.y + bbox.min.y), bbox.max.z);
 		p0 = [(ShipEntity*)e1 absolutePositionForSubentityOffset:midfrontplane];
 		q1 = parent->q_rotation;
 		if (parent->isPlayer)
@@ -4432,11 +4432,11 @@ Your fair use and other rights are in no way affected by the above.
 //					NSLog(@"DEBUG LASER within actual bounding sphere %.2f of %@", ar, e2);
 				// check bounding box of main model
 				BoundingBox arbb = [e2 findBoundingBoxRelativeToPosition:p0 InVectors:r1 :u1 :f1];
-				if ((arbb.min_x < 0.0)&&(arbb.max_x > 0.0)&&(arbb.min_y < 0.0)&&(arbb.max_y > 0.0)&&(arbb.min_z > 0.0)&&(arbb.min_z < nearest))
+				if ((arbb.min.x < 0.0)&&(arbb.max.x > 0.0)&&(arbb.min.y < 0.0)&&(arbb.max.y > 0.0)&&(arbb.min.z > 0.0)&&(arbb.min.z < nearest))
 				{
 					hit_subentity = nil;
 					hit_entity = e2;
-					nearest = arbb.min_z;
+					nearest = arbb.min.z;
 				}
 			}
 			// find any subentities for testing
@@ -4468,13 +4468,13 @@ Your fair use and other rights are in no way affected by the above.
 //								NSLog(@"DEBUG LASER within actual bounding sphere of %@", se3);
 							// check subentity bounding box
 							BoundingBox sebb = [se3 findSubentityBoundingBoxRelativeToPosition:p0 inVectors:r1 :u1 :f1];
-							if ((sebb.min_x < 0.0)&&(sebb.max_x > 0.0)&&(sebb.min_y < 0.0)&&(sebb.max_y > 0.0)&&(sebb.min_z > 0.0)&&(sebb.min_z < nearest))
+							if ((sebb.min.x < 0.0)&&(sebb.max.x > 0.0)&&(sebb.min.y < 0.0)&&(sebb.max.y > 0.0)&&(sebb.min.z > 0.0)&&(sebb.min.z < nearest))
 							{
 //								if (debug_laser)
 //									NSLog(@"DEBUG Laser hits subentity %@ of %@", se3, e2);
 								hit_subentity = se3;
 								hit_entity = e2;
-								nearest = sebb.min_z;
+								nearest = sebb.min.z;
 							}
 						}
 					}

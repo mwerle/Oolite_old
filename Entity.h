@@ -97,7 +97,7 @@ Your fair use and other rights are in no way affected by the above.
 #include "vector.h"
 #include "legacy_random.h"
 
-@class Universe;
+@class Universe, Geometry;
 
 
 struct face
@@ -307,6 +307,7 @@ extern int debug;
 - (Vector) relative_position;
 - (NSComparisonResult) compareZeroDistance:(Entity *)otherEntity;
 
+- (Geometry*) getGeometry;
 - (BoundingBox) getBoundingBox;
 
 - (GLfloat) mass;

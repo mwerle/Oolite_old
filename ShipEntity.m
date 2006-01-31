@@ -1215,13 +1215,13 @@ BOOL ship_canCollide (ShipEntity* ship)
 		BoundingBox arbb = [other findBoundingBoxRelativeTo:self InVectors: v_right: v_up: v_forward];
 		
 		// construct 6 rectangles based on the sides of the possibly overlapping bounding boxes
-		NSRect  other_x_rect = NSMakeRect(arbb.min_z, arbb.min_y, arbb.max_z - arbb.min_z, arbb.max_y - arbb.min_y);
-		NSRect  other_y_rect = NSMakeRect(arbb.min_x, arbb.min_z, arbb.max_x - arbb.min_x, arbb.max_z - arbb.min_z);
-		NSRect  other_z_rect = NSMakeRect(arbb.min_x, arbb.min_y, arbb.max_x - arbb.min_x, arbb.max_y - arbb.min_y);
+		NSRect  other_x_rect = NSMakeRect(arbb.min.z, arbb.min.y, arbb.max.z - arbb.min.z, arbb.max.y - arbb.min.y);
+		NSRect  other_y_rect = NSMakeRect(arbb.min.x, arbb.min.z, arbb.max.x - arbb.min.x, arbb.max.z - arbb.min.z);
+		NSRect  other_z_rect = NSMakeRect(arbb.min.x, arbb.min.y, arbb.max.x - arbb.min.x, arbb.max.y - arbb.min.y);
 
-		NSRect  ship_x_rect = NSMakeRect(boundingBox.min_z, boundingBox.min_y, boundingBox.max_z - boundingBox.min_z, boundingBox.max_y - boundingBox.min_y);
-		NSRect  ship_y_rect = NSMakeRect(boundingBox.min_x, boundingBox.min_z, boundingBox.max_x - boundingBox.min_x, boundingBox.max_z - boundingBox.min_z);
-		NSRect  ship_z_rect = NSMakeRect(boundingBox.min_x, boundingBox.min_y, boundingBox.max_x - boundingBox.min_x, boundingBox.max_y - boundingBox.min_y);
+		NSRect  ship_x_rect = NSMakeRect(boundingBox.min.z, boundingBox.min.y, boundingBox.max.z - boundingBox.min.z, boundingBox.max.y - boundingBox.min.y);
+		NSRect  ship_y_rect = NSMakeRect(boundingBox.min.x, boundingBox.min.z, boundingBox.max.x - boundingBox.min.x, boundingBox.max.z - boundingBox.min.z);
+		NSRect  ship_z_rect = NSMakeRect(boundingBox.min.x, boundingBox.min.y, boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y);
 
 		if (NSIntersectsRect(ship_x_rect,other_x_rect) && NSIntersectsRect(ship_y_rect,other_y_rect) && NSIntersectsRect(ship_z_rect,other_z_rect))
 			return YES;
@@ -1236,12 +1236,12 @@ BOOL ship_canCollide (ShipEntity* ship)
 		Vector	r_pos = other->position;
 		double	cr = other->collision_radius;
 		r_pos.x -= position.x;	r_pos.y -= position.y;	r_pos.z -= position.z;
-		if	((r_pos.x + cr > boundingBox.min_x)&&
-				(r_pos.x - cr < boundingBox.max_x)&&
-				(r_pos.y + cr > boundingBox.min_y)&&
-				(r_pos.y - cr < boundingBox.max_y)&&
-				(r_pos.z + cr > boundingBox.min_z)&&
-				(r_pos.z - cr < boundingBox.max_z))
+		if	((r_pos.x + cr > boundingBox.min.x)&&
+				(r_pos.x - cr < boundingBox.max.x)&&
+				(r_pos.y + cr > boundingBox.min.y)&&
+				(r_pos.y - cr < boundingBox.max.y)&&
+				(r_pos.z + cr > boundingBox.min.z)&&
+				(r_pos.z - cr < boundingBox.max.z))
 			return YES;
 		else
 			return NO;
@@ -1256,7 +1256,7 @@ BOOL ship_canCollide (ShipEntity* ship)
 	BoundingBox sebb = [self findSubentityBoundingBox];
 		
 //	NSLog(@"DEBUG bounding box for subentity: %@ [%.1fm %.1fm]x [%.1fm %.1fm]y [%.1fm %.1fm]z", self,
-//		sebb.min_x, sebb.max_x, sebb.min_y, sebb.max_y, sebb.min_z, sebb.max_z);
+//		sebb.min.x, sebb.max.x, sebb.min.y, sebb.max.y, sebb.min.z, sebb.max.z);
 	
 	if (other->isShip)
 	{
@@ -1273,15 +1273,15 @@ BOOL ship_canCollide (ShipEntity* ship)
 		BoundingBox arbb = [other findBoundingBoxRelativeTo:parent InVectors: i: j: k];
 		
 //		NSLog(@"DEBUG bounding box for other: %@ [%.1fm %.1fm]x [%.1fm %.1fm]y [%.1fm %.1fm]z", other,
-//			arbb.min_x, arbb.max_x, arbb.min_y, arbb.max_y, arbb.min_z, arbb.max_z);
+//			arbb.min.x, arbb.max.x, arbb.min.y, arbb.max.y, arbb.min.z, arbb.max.z);
 	
 		// construct 6 rectangles based on the sides of the possibly overlapping bounding boxes
-		NSRect  x_rect = NSMakeRect(sebb.min_z, sebb.min_y, sebb.max_z - sebb.min_z, sebb.max_y - sebb.min_y);
-		NSRect  y_rect = NSMakeRect(sebb.min_x, sebb.min_z, sebb.max_x - sebb.min_x, sebb.max_z - sebb.min_z);
-		NSRect  z_rect = NSMakeRect(sebb.min_x, sebb.min_y, sebb.max_x - sebb.min_x, sebb.max_y - sebb.min_y);
-		NSRect  other_x_rect = NSMakeRect(arbb.min_z, arbb.min_y, arbb.max_z - arbb.min_z, arbb.max_y - arbb.min_y);
-		NSRect  other_y_rect = NSMakeRect(arbb.min_x, arbb.min_z, arbb.max_x - arbb.min_x, arbb.max_z - arbb.min_z);
-		NSRect  other_z_rect = NSMakeRect(arbb.min_x, arbb.min_y, arbb.max_x - arbb.min_x, arbb.max_y - arbb.min_y);
+		NSRect  x_rect = NSMakeRect(sebb.min.z, sebb.min.y, sebb.max.z - sebb.min.z, sebb.max.y - sebb.min.y);
+		NSRect  y_rect = NSMakeRect(sebb.min.x, sebb.min.z, sebb.max.x - sebb.min.x, sebb.max.z - sebb.min.z);
+		NSRect  z_rect = NSMakeRect(sebb.min.x, sebb.min.y, sebb.max.x - sebb.min.x, sebb.max.y - sebb.min.y);
+		NSRect  other_x_rect = NSMakeRect(arbb.min.z, arbb.min.y, arbb.max.z - arbb.min.z, arbb.max.y - arbb.min.y);
+		NSRect  other_y_rect = NSMakeRect(arbb.min.x, arbb.min.z, arbb.max.x - arbb.min.x, arbb.max.z - arbb.min.z);
+		NSRect  other_z_rect = NSMakeRect(arbb.min.x, arbb.min.y, arbb.max.x - arbb.min.x, arbb.max.y - arbb.min.y);
 		
 //		NSLog(@"DEBUG intersects in x:%@: y:%@: z:%@",
 //			NSIntersectsRect(x_rect,other_x_rect)? @"YES": @"NO ",
@@ -1301,12 +1301,12 @@ BOOL ship_canCollide (ShipEntity* ship)
 		Vector	r_pos = other->position;
 		double	cr = other->collision_radius;
 		r_pos.x -= position.x;	r_pos.y -= position.y;	r_pos.z -= position.z;
-		if	((r_pos.x + cr > sebb.min_x)&&
-				(r_pos.x - cr < sebb.max_x)&&
-				(r_pos.y + cr > sebb.min_y)&&
-				(r_pos.y - cr < sebb.max_y)&&
-				(r_pos.z + cr > sebb.min_z)&&
-				(r_pos.z - cr < sebb.max_z))
+		if	((r_pos.x + cr > sebb.min.x)&&
+				(r_pos.x - cr < sebb.max.x)&&
+				(r_pos.y + cr > sebb.min.y)&&
+				(r_pos.y - cr < sebb.max.y)&&
+				(r_pos.z + cr > sebb.min.z)&&
+				(r_pos.z - cr < sebb.max.z))
 			return YES;
 		else
 			return NO;
@@ -1331,7 +1331,7 @@ BOOL ship_canCollide (ShipEntity* ship)
     }
 	
 //	NSLog(@"DEBUG subentity bounding box for %@ of %@ is [%.1fm %.1fm]x [%.1fm %.1fm]y [%.1fm %.1fm]z", self, [self owner],
-//		result.min_x, result.max_x, result.min_y, result.max_y, result.min_z, result.max_z);
+//		result.min.x, result.max.x, result.min.y, result.max.y, result.min.z, result.max.z);
 	
 	return result;
 }
@@ -2340,7 +2340,7 @@ BOOL ship_canCollide (ShipEntity* ship)
 - (Vector) getViewpointPosition
 {
 	Vector	viewpoint = position;
-	float	nose = boundingBox.max_z - 36.0;
+	float	nose = boundingBox.max.z - 36.0;
 	viewpoint.x += nose * v_forward.x;	viewpoint.y += nose * v_forward.y;	viewpoint.z += nose * v_forward.z;
 	return viewpoint;
 }
@@ -3386,7 +3386,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 	Vector v;
 	Quaternion q;
 	int speed_low = 200;
-	int n_alloys = floor((boundingBox.max_z - boundingBox.min_z) / 50.0);
+	int n_alloys = floor((boundingBox.max.z - boundingBox.min.z) / 50.0);
 	
 	if (status == STATUS_DEAD)
 	{
@@ -3663,9 +3663,9 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 Vector randomPositionInBoundingBox(BoundingBox bb)
 {
 	Vector result;
-	result.x = bb.min_x + randf() * (bb.max_x - bb.min_x);
-	result.y = bb.min_y + randf() * (bb.max_y - bb.min_y);
-	result.z = bb.min_z + randf() * (bb.max_z - bb.min_z);
+	result.x = bb.min.x + randf() * (bb.max.x - bb.min.x);
+	result.y = bb.min.y + randf() * (bb.max.y - bb.min.y);
+	result.z = bb.min.z + randf() * (bb.max.z - bb.min.z);
 	return result;
 }
 
@@ -5049,9 +5049,9 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	Vector  vel;
 	Vector  origin = position;
 	
-	GLfloat lr	= randf() * (boundingBox.max_x - boundingBox.min_x) + boundingBox.min_x;
-	GLfloat ud	= randf() * (boundingBox.max_y - boundingBox.min_y) + boundingBox.min_y;
-	GLfloat fb	= randf() * boundingBox.max_z + boundingBox.min_z;	// rear section only
+	GLfloat lr	= randf() * (boundingBox.max.x - boundingBox.min.x) + boundingBox.min.x;
+	GLfloat ud	= randf() * (boundingBox.max.y - boundingBox.min.y) + boundingBox.min.y;
+	GLfloat fb	= randf() * boundingBox.max.z + boundingBox.min.z;	// rear section only
 	
 	origin.x += fb * v_forward.x;
 	origin.y += fb * v_forward.y;
@@ -5065,8 +5065,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	origin.y += lr * v_right.y;
 	origin.z += lr * v_right.z;
 	
-	float	w = boundingBox.max_x - boundingBox.min_x;
-	float	h = boundingBox.max_y - boundingBox.min_y;
+	float	w = boundingBox.max.x - boundingBox.min.x;
+	float	h = boundingBox.max.y - boundingBox.min.y;
 	float	m = (w < h) ? 0.25 * w: 0.25 * h;
 	
 	float	sz = m * (1 + randf() + randf());	// half minimum dimension on average
@@ -5167,8 +5167,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	
 	// default launching position
 	start.x = 0.0;						// in the middle
-	start.y = boundingBox.min_y - 4.0;	// 4m below bounding box
-	start.z = boundingBox.max_z + 1.0;	// 1m ahead of bounding box
+	start.y = boundingBox.min.y - 4.0;	// 4m below bounding box
+	start.z = boundingBox.max.z + 1.0;	// 1m ahead of bounding box
 	// custom launching position
 	if ([shipinfoDictionary objectForKey:@"missile_launch_position"])
 	{
@@ -5204,9 +5204,9 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	vel = make_vector( 0.0f, 0.0f, 0.0f);	// starting velocity
 	
 	// check if start is within bounding box...
-	while (	(start.x > boundingBox.min_x - mcr)&&(start.x < boundingBox.max_x + mcr)&&
-			(start.y > boundingBox.min_y - mcr)&&(start.y < boundingBox.max_y + mcr)&&
-			(start.z > boundingBox.min_z - mcr)&&(start.z < boundingBox.max_z + mcr))
+	while (	(start.x > boundingBox.min.x - mcr)&&(start.x < boundingBox.max.x + mcr)&&
+			(start.y > boundingBox.min.y - mcr)&&(start.y < boundingBox.max.y + mcr)&&
+			(start.z > boundingBox.min.z - mcr)&&(start.z < boundingBox.max.z + mcr))
 	{
 		start.x += mcr * v_eject.x;	start.y += mcr * v_eject.y;	start.z += mcr * v_eject.z;
 		vel.x += 10.0f * mcr * v_eject.x;	vel.y += 10.0f * mcr * v_eject.y;	vel.z += 10.0f * mcr * v_eject.z;	// throw it outward a bit harder
@@ -5253,7 +5253,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	Vector  origin = position;
 	Vector  start;
 	start.x = 0.0;						// in the middle
-	start.y = boundingBox.min_y - 10.0;	// 10m below bounding box
+	start.y = boundingBox.min.y - 10.0;	// 10m below bounding box
 	start.z = 1.0;	// 1m ahead of bounding box
 	double  throw_speed = 500.0;
 	Quaternion q1 = q_rotation;
@@ -5443,7 +5443,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	// default launching position
 	start.x = 0.0;						// in the middle
 	start.y = 0.0;						//
-	start.z = boundingBox.min_z - jcr;	// 1m behind of bounding box
+	start.z = boundingBox.min.z - jcr;	// 1m behind of bounding box
 		
 	// custom launching position
 	if ([shipinfoDictionary objectForKey:@"aft_eject_position"])
@@ -5454,9 +5454,9 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	v_eject = unit_vector( &start);
 	
 	// check if start is within bounding box...
-	while (	(start.x > boundingBox.min_x - jcr)&&(start.x < boundingBox.max_x + jcr)&&
-			(start.y > boundingBox.min_y - jcr)&&(start.y < boundingBox.max_y + jcr)&&
-			(start.z > boundingBox.min_z - jcr)&&(start.z < boundingBox.max_z + jcr))
+	while (	(start.x > boundingBox.min.x - jcr)&&(start.x < boundingBox.max.x + jcr)&&
+			(start.y > boundingBox.min.y - jcr)&&(start.y < boundingBox.max.y + jcr)&&
+			(start.z > boundingBox.min.z - jcr)&&(start.z < boundingBox.max.z + jcr))
 	{
 		start.x += jcr * v_eject.x;	start.y += jcr * v_eject.y;	start.z += jcr * v_eject.z;
 	}

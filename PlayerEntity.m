@@ -2554,8 +2554,8 @@ Your fair use and other rights are in no way affected by the above.
 
 	// default launching position
 	start.x = 0.0;						// in the middle
-	start.y = boundingBox.min_y - 4.0;	// 4m below bounding box
-	start.z = boundingBox.max_z + 1.0;	// 1m ahead of bounding box
+	start.y = boundingBox.min.y - 4.0;	// 4m below bounding box
+	start.z = boundingBox.max.z + 1.0;	// 1m ahead of bounding box
 	// custom launching position
 	if ([shipinfoDictionary objectForKey:@"missile_launch_position"])
 	{
@@ -2577,9 +2577,9 @@ Your fair use and other rights are in no way affected by the above.
 	v_eject = unit_vector( &start);
 	
 	// check if start is within bounding box...
-	while (	(start.x > boundingBox.min_x - mcr)&&(start.x < boundingBox.max_x + mcr)&&
-			(start.y > boundingBox.min_y - mcr)&&(start.y < boundingBox.max_y + mcr)&&
-			(start.z > boundingBox.min_z - mcr)&&(start.z < boundingBox.max_z + mcr))
+	while (	(start.x > boundingBox.min.x - mcr)&&(start.x < boundingBox.max.x + mcr)&&
+			(start.y > boundingBox.min.y - mcr)&&(start.y < boundingBox.max.y + mcr)&&
+			(start.z > boundingBox.min.z - mcr)&&(start.z < boundingBox.max.z + mcr))
 	{
 		start.x += mcr * v_eject.x;	start.y += mcr * v_eject.y;	start.z += mcr * v_eject.z;
 	}
@@ -3031,7 +3031,7 @@ Your fair use and other rights are in no way affected by the above.
 	flight_pitch = 0.2 * (randf() - 0.5);
 	flight_roll = 0.2 * (randf() - 0.5);
 
-	double sheight = (boundingBox.max_y - boundingBox.min_y);
+	double sheight = (boundingBox.max.y - boundingBox.min.y);
 	position.x -= sheight * v_up.x;
 	position.y -= sheight * v_up.y;
 	position.z -= sheight * v_up.z;
@@ -5795,13 +5795,13 @@ OOSound* burnersound;
 
 - (void) setDefaultViewOffsets
 {
-	float halfLength = 0.5 * (boundingBox.max_z - boundingBox.min_z);
-	float halfWidth = 0.5 * (boundingBox.max_x - boundingBox.min_x);
+	float halfLength = 0.5 * (boundingBox.max.z - boundingBox.min.z);
+	float halfWidth = 0.5 * (boundingBox.max.x - boundingBox.min.x);
 	
-	forwardViewOffset = make_vector( 0.0, 0.0, boundingBox.max_z - halfLength);
-	aftViewOffset = make_vector( 0.0, 0.0, boundingBox.min_z + halfLength);
-	portViewOffset = make_vector( boundingBox.min_x + halfWidth, 0.0, 0.0);
-	starboardViewOffset = make_vector( boundingBox.max_x - halfWidth, 0.0, 0.0);
+	forwardViewOffset = make_vector( 0.0, 0.0, boundingBox.max.z - halfLength);
+	aftViewOffset = make_vector( 0.0, 0.0, boundingBox.min.z + halfLength);
+	portViewOffset = make_vector( boundingBox.min.x + halfWidth, 0.0, 0.0);
+	starboardViewOffset = make_vector( boundingBox.max.x - halfWidth, 0.0, 0.0);
 }
 
 - (Vector) viewOffset
@@ -5822,13 +5822,13 @@ OOSound* burnersound;
 
 - (void) setDefaultWeaponOffsets
 {
-	float halfLength = 0.5 * (boundingBox.max_z - boundingBox.min_z);
-	float halfWidth = 0.5 * (boundingBox.max_x - boundingBox.min_x);
+	float halfLength = 0.5 * (boundingBox.max.z - boundingBox.min.z);
+	float halfWidth = 0.5 * (boundingBox.max.x - boundingBox.min.x);
 		
-	forwardWeaponOffset = make_vector( 0.0, -5.0, boundingBox.max_z - halfLength);
-	aftWeaponOffset = make_vector( 0.0, -5.0, boundingBox.min_z + halfLength);
-	portWeaponOffset = make_vector( boundingBox.min_x + halfWidth, -5.0, 0.0);
-	starboardWeaponOffset = make_vector( boundingBox.max_x - halfWidth, -5.0, 0.0);
+	forwardWeaponOffset = make_vector( 0.0, -5.0, boundingBox.max.z - halfLength);
+	aftWeaponOffset = make_vector( 0.0, -5.0, boundingBox.min.z + halfLength);
+	portWeaponOffset = make_vector( boundingBox.min.x + halfWidth, -5.0, 0.0);
+	starboardWeaponOffset = make_vector( boundingBox.max.x - halfWidth, -5.0, 0.0);
 }
 
 - (void) setUpTrumbles

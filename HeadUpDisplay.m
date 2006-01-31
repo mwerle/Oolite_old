@@ -607,7 +607,14 @@ static BOOL hostiles;
 	StationEntity*	the_station = [[player universe] station];
 	Entity*			the_target = [player getPrimaryTarget];
 	Entity*			the_next_beacon = [[player universe] entityForUniversalID:[player nextBeaconID]];
-	if (([[player universe] viewDir] != VIEW_DOCKED)&&(the_sun)&&(the_planet))
+	int				p_status = player->status;
+//	if (([[player universe] viewDir] != VIEW_DOCKED)&&(the_sun)&&(the_planet))
+	if	(((p_status == STATUS_IN_FLIGHT)
+		||(p_status == STATUS_AUTOPILOT_ENGAGED)
+		||(p_status == STATUS_LAUNCHING)
+		||(p_status == STATUS_WITCHSPACE_COUNTDOWN))	// be in the right mode
+		&&(the_sun)
+		&&(the_planet))									// and be in a system
 	{
 		Vector relativePosition;
 		if ([player compass_mode] == COMPASS_MODE_BASIC)
@@ -666,7 +673,6 @@ static BOOL hostiles;
 		if ([player compass_mode] == COMPASS_MODE_BASIC)
 		{
 			NSSize oldblipsize = NSMakeSize( 6, 6);
-//			[self drawCompassPlanetBlipAt:relativePosition Alpha:alpha];
 			[self drawCompassPlanetBlipAt:relativePosition Size:oldblipsize Alpha:alpha];
 		}
 		else

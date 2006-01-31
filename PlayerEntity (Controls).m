@@ -1839,7 +1839,7 @@ static BOOL zoom_pressed;
 	//
 	// Zoom scanner 'z'
 	//
-	if ([gameView isDown:key_scanner_zoom]) // look for the 'z' key
+	if ([gameView isDown:key_scanner_zoom] && ([gameView allowingStringInput] == gvStringInputNo)) // look for the 'z' key
 	{
 		if (!scanner_zoom_rate)
 		{

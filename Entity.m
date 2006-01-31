@@ -40,6 +40,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "Entity.h"
 
 #import "vector.h"
+#import "Geometry.h"
 #import "Universe.h"
 #import "GameController.h"
 #import "TextureStore.h"
@@ -384,6 +385,12 @@ static  Universe	*data_store_universe;
 	collision_radius = [self findCollisionRadius];
 	actual_radius = collision_radius;
 	//NSLog(@"Entity with model '%@' collision radius set to %f",modelName, collision_radius);
+	
+	// TESTING
+	Geometry* geometry = [self getGeometry];
+	NSLog(@"DEBUG in Entity setModel:%@ has geometry %@", modelName, geometry);
+	//
+	
 	//
 	[mypool release];
 }
@@ -423,6 +430,21 @@ static  Universe	*data_store_universe;
 		return NSOrderedAscending;
 	else
 		return NSOrderedDescending;
+}
+
+- (Geometry*) getGeometry
+{
+	Geometry* result = [[Geometry alloc] initWithCapacity: n_faces];
+	int i;
+	for (i = 0; i < n_faces; i++)
+	{
+		Triangle tri;
+		tri.v[0] = vertices[faces[i].vertex[0]];
+		tri.v[1] = vertices[faces[i].vertex[1]];
+		tri.v[2] = vertices[faces[i].vertex[2]];
+		[result addTriangle: tri];
+	}
+	return [result autorelease];
 }
 
 - (BoundingBox) getBoundingBox
@@ -1570,22 +1592,22 @@ static  Universe	*data_store_universe;
 		bounding_box_add_vector(&boundingBox,vertices[i]);
     }
 	
-	length_longest_axis = boundingBox.max_x - boundingBox.min_x;
-	if (boundingBox.max_y - boundingBox.min_y > length_longest_axis)
-		length_longest_axis = boundingBox.max_y - boundingBox.min_y;
-	if (boundingBox.max_z - boundingBox.min_z > length_longest_axis)
-		length_longest_axis = boundingBox.max_z - boundingBox.min_z;
+	length_longest_axis = boundingBox.max.x - boundingBox.min.x;
+	if (boundingBox.max.y - boundingBox.min.y > length_longest_axis)
+		length_longest_axis = boundingBox.max.y - boundingBox.min.y;
+	if (boundingBox.max.z - boundingBox.min.z > length_longest_axis)
+		length_longest_axis = boundingBox.max.z - boundingBox.min.z;
 	
-	length_shortest_axis = boundingBox.max_x - boundingBox.min_x;
-	if (boundingBox.max_y - boundingBox.min_y < length_shortest_axis)
-		length_shortest_axis = boundingBox.max_y - boundingBox.min_y;
-	if (boundingBox.max_z - boundingBox.min_z < length_shortest_axis)
-		length_shortest_axis = boundingBox.max_z - boundingBox.min_z;
+	length_shortest_axis = boundingBox.max.x - boundingBox.min.x;
+	if (boundingBox.max.y - boundingBox.min.y < length_shortest_axis)
+		length_shortest_axis = boundingBox.max.y - boundingBox.min.y;
+	if (boundingBox.max.z - boundingBox.min.z < length_shortest_axis)
+		length_shortest_axis = boundingBox.max.z - boundingBox.min.z;
 	
 	d_squared = (length_longest_axis + length_shortest_axis) * (length_longest_axis + length_shortest_axis) * 0.25; // square of average length
 	no_draw_distance = d_squared * NO_DRAW_DISTANCE_FACTOR * NO_DRAW_DISTANCE_FACTOR;	// no longer based on the collision radius
 	
-	mass =	(boundingBox.max_x - boundingBox.min_x) * (boundingBox.max_y - boundingBox.min_y) * (boundingBox.max_z - boundingBox.min_z);
+	mass =	(boundingBox.max.x - boundingBox.min.x) * (boundingBox.max.y - boundingBox.min.y) * (boundingBox.max.z - boundingBox.min.z);
 	
 	return sqrt(result);
 }

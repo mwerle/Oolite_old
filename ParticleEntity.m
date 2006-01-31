@@ -110,22 +110,22 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	switch (view)
 	{
 		case VIEW_FORWARD :
-			distance = [ship getBoundingBox].max_z;
+			distance = [ship getBoundingBox].max.z;
 			position.x += distance * v_forward.x;	position.y += distance * v_forward.y;	position.z += distance * v_forward.z;
 			break;
 		case VIEW_AFT :
 			quaternion_rotate_about_axis(&q_rotation, v_up, PI);
-			distance = [ship getBoundingBox].min_z;
+			distance = [ship getBoundingBox].min.z;
 			position.x += distance * v_forward.x;	position.y += distance * v_forward.y;	position.z += distance * v_forward.z;
 			break;
 		case VIEW_PORT :
 			quaternion_rotate_about_axis(&q_rotation, v_up, PI/2.0);
-			distance = [ship getBoundingBox].min_x;
+			distance = [ship getBoundingBox].min.x;
 			position.x += distance * v_right.x;	position.y += distance * v_right.y;	position.z += distance * v_right.z;
 			break;
 		case VIEW_STARBOARD :
 			quaternion_rotate_about_axis(&q_rotation, v_up, -PI/2.0);
-			distance = [ship getBoundingBox].max_x;
+			distance = [ship getBoundingBox].max.x;
 			position.x += distance * v_right.x;	position.y += distance * v_right.y;	position.z += distance * v_right.z;
 			break;
 	}
@@ -219,7 +219,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
     //
 	status = STATUS_EFFECT;
 	BoundingBox bbox = [subent getBoundingBox];
-	Vector midfrontplane = make_vector( 0.5 * (bbox.max_x + bbox.min_x), 0.5 * (bbox.max_y + bbox.min_y), bbox.max_z);
+	Vector midfrontplane = make_vector( 0.5 * (bbox.max.x + bbox.min.x), 0.5 * (bbox.max.y + bbox.min.y), bbox.max.z);
     position = [subent absolutePositionForSubentityOffset:midfrontplane];
 	q_rotation = parent->q_rotation;
 	if (parent->isPlayer)
@@ -233,22 +233,22 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	switch (view)
 	{
 		case VIEW_FORWARD :
-			distance = [subent getBoundingBox].max_z;
+			distance = [subent getBoundingBox].max.z;
 			position.x += distance * v_forward.x;	position.y += distance * v_forward.y;	position.z += distance * v_forward.z;
 			break;
 		case VIEW_AFT :
 			quaternion_rotate_about_axis(&q_rotation, v_up, PI);
-			distance = [subent getBoundingBox].min_z;
+			distance = [subent getBoundingBox].min.z;
 			position.x += distance * v_forward.x;	position.y += distance * v_forward.y;	position.z += distance * v_forward.z;
 			break;
 		case VIEW_PORT :
 			quaternion_rotate_about_axis(&q_rotation, v_up, PI/2.0);
-			distance = [subent getBoundingBox].min_x;
+			distance = [subent getBoundingBox].min.x;
 			position.x += distance * v_right.x;	position.y += distance * v_right.y;	position.z += distance * v_right.z;
 			break;
 		case VIEW_STARBOARD :
 			quaternion_rotate_about_axis(&q_rotation, v_up, -PI/2.0);
-			distance = [subent getBoundingBox].max_x;
+			distance = [subent getBoundingBox].max.x;
 			position.x += distance * v_right.x;	position.y += distance * v_right.y;	position.z += distance * v_right.z;
 			break;
 	}
