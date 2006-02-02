@@ -313,42 +313,42 @@ void	gl_matrix_into_matrix(GLfloat *glmat, struct vector *mat)
 
 void	bounding_box_add_vector(struct boundingBox *box, Vector vec)
 {
-	if (vec.x < box->min_x)  box->min_x = vec.x;
-	if (vec.x > box->max_x)  box->max_x = vec.x;
-	if (vec.y < box->min_y)  box->min_y = vec.y;
-	if (vec.y > box->max_y)  box->max_y = vec.y;
-	if (vec.z < box->min_z)  box->min_z = vec.z;
-	if (vec.z > box->max_z)  box->max_z = vec.z;
+	if (vec.x < box->min.x)  box->min.x = vec.x;
+	if (vec.x > box->max.x)  box->max.x = vec.x;
+	if (vec.y < box->min.y)  box->min.y = vec.y;
+	if (vec.y > box->max.y)  box->max.y = vec.y;
+	if (vec.z < box->min.z)  box->min.z = vec.z;
+	if (vec.z > box->max.z)  box->max.z = vec.z;
 }
 
 void	bounding_box_add_xyz(struct boundingBox *box, GLfloat x, GLfloat y, GLfloat z)
 {
-	if (x < box->min_x)  box->min_x = x;
-	if (x > box->max_x)  box->max_x = x;
-	if (y < box->min_y)  box->min_y = y;
-	if (y > box->max_y)  box->max_y = y;
-	if (z < box->min_z)  box->min_z = z;
-	if (z > box->max_z)  box->max_z = z;
+	if (x < box->min.x)  box->min.x = x;
+	if (x > box->max.x)  box->max.x = x;
+	if (y < box->min.y)  box->min.y = y;
+	if (y > box->max.y)  box->max.y = y;
+	if (z < box->min.z)  box->min.z = z;
+	if (z > box->max.z)  box->max.z = z;
 }
 
 void	bounding_box_reset(struct boundingBox *box)
 {
-	box->min_x = 0.0;
-	box->max_x = 0.0;
-	box->min_y = 0.0;
-	box->max_y = 0.0;
-	box->min_z = 0.0;
-	box->max_z = 0.0;
+	box->min.x = 0.0;
+	box->max.x = 0.0;
+	box->min.y = 0.0;
+	box->max.y = 0.0;
+	box->min.z = 0.0;
+	box->max.z = 0.0;
 }
 
 void	bounding_box_reset_to_vector(struct boundingBox *box, Vector vec)
 {
-	box->min_x = vec.x;
-	box->max_x = vec.x;
-	box->min_y = vec.y;
-	box->max_y = vec.y;
-	box->min_z = vec.z;
-	box->max_z = vec.z;
+	box->min.x = vec.x;
+	box->max.x = vec.x;
+	box->min.y = vec.y;
+	box->max.y = vec.y;
+	box->min.z = vec.z;
+	box->max.z = vec.z;
 }
 
 /*
@@ -672,4 +672,27 @@ void	quaternion_normalise(struct quaternion *quat)
     quat->x = lv * x;
     quat->y = lv * y;
     quat->z = lv * z;
+}
+
+//
+// calculate a unit normal vector for a triangle_4v storing it in v[3]
+//
+Vector	calculateNormalForTriangle(struct triangle_4v *tri)
+{
+	Vector v01 = vector_between(tri->v[0], tri->v[1]);
+	Vector v12 = vector_between(tri->v[1], tri->v[2]);
+	tri->v[3] = cross_product( unit_vector( &v01), unit_vector( &v12));
+	return tri->v[3];
+}
+//
+// make triangle
+//
+Triangle	make_triangle(Vector v0, Vector v1, Vector v2)
+{
+	Triangle result;
+	result.v[0] = v0;
+	result.v[1] = v1;
+	result.v[2] = v2;
+	calculateNormalForTriangle(&result);
+	return result;
 }
