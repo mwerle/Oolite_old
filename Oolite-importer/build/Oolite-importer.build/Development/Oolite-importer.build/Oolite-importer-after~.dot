@@ -1,0 +1,60 @@
+digraph Oolite-importer {
+   size = "10.000000,8.500000";
+   concentrate = false;
+
+   node [ shape = box, style = filled, color = "0.3 0.5 0.6", fillcolor = "0.3 0.2 0.9", fontname = "Monaco", fontsize = "9" ];
+   n00001 [ label = "Development/Oolite.mdimporter\n89c1882b7c655efcff4855eee168049c\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9", peripheries = 3 ];
+   n00002 [ label = "Contents/Info.plist\n46eb42ff799f4a53aebb548eba3b24b7\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00003 [ label = "Oolite-importer.build/Info.plist\n00000000000000000000000000000000\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00004 [ label = "English.lproj/InfoPlist.strings\n3bcdf03159ffa17c2fe4d41a44ab153c\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00005 [ label = "English.lproj/InfoPlist.strings\n00000000436e3dd400000000000001ec\nUpToDate" ];
+   n00006 [ label = "English.lproj/schema.strings\n0bb65f5bc9209b1e28f3e8a2c3b7bf77\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00007 [ label = "English.lproj/schema.strings\n00000000436e3dd400000000000006fc\nUpToDate" ];
+   n00008 [ label = "Resources/schema.xml\n9facfe03e51afd7147bd53dc9bc9b08f\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00009 [ label = "Oolite-importer/schema.xml\n00000000436e3dd30000000000000659\nUpToDate" ];
+   n00010 [ label = "Resources/Values.plist\nd4b15bd217a9885532e81d0bc26865f9\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00011 [ label = "Oolite-importer/Values.plist\n00000000436e3dd4000000000000011e\nUpToDate" ];
+   n00012 [ label = "ppc/main.o\ned4371e5875c73811a3d85d21eaeb174\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00013 [ label = "Oolite-importer/main.c\n00000000436e3dd400000000000020bb\nUpToDate" ];
+   n00014 [ label = "ppc/GetMetadataForFile.o\n4a2d7c1db4c5be8f14708fbfb81f9a71\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00015 [ label = "Oolite-importer/GetMetadataForFile.m\n00000000436e3dd30000000000001766\nUpToDate" ];
+   n00016 [ label = "MacOS/Oolite\n902a4771212b26cce0f4abe0513961d9\nMissing", color = "0.1 0.5 0.5", fillcolor = "0.1 0.2 0.9" ];
+   n00017 [ label = "Frameworks/CoreFoundation.framework[C]\n00000000435826bb00000000000000cc\nUpToDate" ];
+   n00018 [ label = "Frameworks/CoreServices.framework[C]\n00000000435826c400000000000000ee\nUpToDate" ];
+   n00019 [ label = "Frameworks/Foundation.framework[C]\n00000000435826c900000000000000cc\nUpToDate" ];
+   n00020 [ label = "include/stdarg.h\n000000004358269b00000000000010d9\nUpToDate" ];
+
+   node [ shape = box, style = "filled,bold", color = "0.7 0.5 0.7", fillcolor = "0.7 0.2 1.0", fontname = "Monaco", fontsize = "9" ];
+   c00001 [ label = "PBXCp Info.plist <wt:0>\nwaitCount: 0\n00000000000000000000000000000000\n^ 46eb42ff799f4a53aebb548eba3b24b7\n= 46eb42ff799f4a53aebb548eba3b24b7\nIndirectlyNeedsToRun\nNeeds to run because at least one of the inputs to the command are scheduled to be updated.", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00002 [ label = "CpResource InfoPlist.strings <wt:4>\nwaitCount: 0\n00000000000000000000000000000000\n^ 3bcdf03159ffa17c2fe4d41a44ab153c\n= 3bcdf03159ffa17c2fe4d41a44ab153c\nNeedsToRun\n1 output is missing", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00003 [ label = "CpResource schema.strings <wt:4>\nwaitCount: 0\n00000000000000000000000000000000\n^ 0bb65f5bc9209b1e28f3e8a2c3b7bf77\n= 0bb65f5bc9209b1e28f3e8a2c3b7bf77\nNeedsToRun\n1 output is missing", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00004 [ label = "CpResource schema.xml <wt:4>\nwaitCount: 0\n00000000000000000000000000000000\n^ 9facfe03e51afd7147bd53dc9bc9b08f\n= 9facfe03e51afd7147bd53dc9bc9b08f\nNeedsToRun\n1 output is missing", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00005 [ label = "CpResource Values.plist <wt:4>\nwaitCount: 0\n00000000000000000000000000000000\n^ d4b15bd217a9885532e81d0bc26865f9\n= d4b15bd217a9885532e81d0bc26865f9\nNeedsToRun\n1 output is missing", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00006 [ label = "CompileC main.o <wt:6>\nwaitCount: 0\n00000000436e3dd400000000000020bb\n^ ed4371e5c4324e551a3d85d21eae91cf\n= ed4371e5875c73811a3d85d21eaeb174\nNeedsToRun\n1 output is missing", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00007 [ label = "CompileC GetMetadataForFile.o <wt:6>\nwaitCount: 0\n0000000000361b4800000000000007bf\n^ 4a2d7c1db4f3a5c714708fbfb81f9dce\n= 4a2d7c1db4c5be8f14708fbfb81f9a71\nNeedsToRun\n1 output is missing", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00008 [ label = "Ld Oolite <wt:6>\nwaitCount: 0\na76e0df870c1ebb80e4d0a6da6b12beb\n^ 37444a8951eacd74eeb9a18df7884a32\n= 902a4771212b26cce0f4abe0513961d9\nIndirectlyNeedsToRun\nNeeds to run because at least one of the inputs to the command are scheduled to be updated.", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+   c00009 [ label = "Touch Oolite.mdimporter <wt:11>\nwaitCount: 0\nada70f353ad823d93c0d8d0135bf3a53\n^ 2466871e46bd7d25c345d8efd4d73ecf\n= 89c1882b7c655efcff4855eee168049c\nIndirectlyNeedsToRun\nNeeds to run because at least one of the inputs to the command are scheduled to be updated.", color = "0.6 0.5 0.7", fillcolor = "0.6 0.2 1.0" ];
+
+   edge [ style = solid, color = black, arrowhead = none, arrowtail = normal ];
+   n00001 -> { c00009 };
+   n00002 -> { c00001 };
+   n00004 -> { c00002 };
+   n00006 -> { c00003 };
+   n00008 -> { c00004 };
+   n00010 -> { c00005 };
+   n00012 -> { c00006 };
+   n00014 -> { c00007 };
+   n00016 -> { c00008 };
+   c00001 -> { n00003 };
+   c00002 -> { n00005 n00005 };
+   c00003 -> { n00007 n00007 };
+   c00004 -> { n00009 n00009 };
+   c00005 -> { n00011 n00011 };
+   c00006 -> { n00013 };
+   c00007 -> { n00015 };
+   c00008 -> { n00012 n00014 n00017 n00018 n00019 };
+   c00009 -> { n00002 n00004 n00006 n00008 n00010 n00016 };
+
+   edge [ style = solid, color = gray60, arrowhead = none, arrowtail = normal ];
+   n00015 -> { n00020 };
+}

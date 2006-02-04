@@ -1,0 +1,11 @@
+These versions of the Ogg and Vorbis libraries were built from the
+libogg-1.1.3 and libvorbis 1.1.2 tarballs, available from
+<http://www.xiph.org/>, using the enclosed modified versions of the
+XCode projects included in those tarballs.
+
+LibOgg.a contains libogg, built for ppc and i386 architectures.
+LibVorbisAll.a contains libvorbis, libvorbisfile and libvorbisenc
+built for ppc and i386 architectures.
+
+The ogg and vorbis directories contain header files copied from
+the tarballs.
