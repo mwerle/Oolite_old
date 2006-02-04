@@ -2,6 +2,7 @@
 
 #ifndef GNUSTEP
 
+#include <OpenGL/OpenGL.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>

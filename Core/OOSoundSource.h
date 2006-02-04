@@ -9,6 +9,6 @@
 #if defined(LINUX) || defined(OOLITE_SDL_MAC)
 #import "OOBasicSoundSource.h"
 #else
-#warning No sound source implementation included!
+#import "OOCASoundSource.h"
 #endif
 

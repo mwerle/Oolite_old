@@ -10,6 +10,7 @@
 #import "SDLSound.h"
 #import "SDLMusic.h"
 #else
-#warning No sound implementation included!
+#import "OOCASound.h"
+#import "OOCAMusic.h"
 #endif
 

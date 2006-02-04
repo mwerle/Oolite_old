@@ -313,10 +313,9 @@ static int _compareModes(id arg1, id arg2, void *context)
 }
 
 
-
+#ifdef GNUSTEP
 - (void) applicationDidFinishLaunching: (NSNotification*) notification
 {
-#ifdef GNUSTEP
 	// A bunch of things get allocated while this method runs and an autorelease pool
 	// is required. The one from main had to be released already because we never go
 	// back there under GNUstep.
@@ -324,7 +323,6 @@ static int _compareModes(id arg1, id arg2, void *context)
 	gameView = [MyOpenGLView alloc];
 	[gameView init];
 	[gameView setGameController: self];
-#endif
 
 	//
 	// ensure the gameView is drawn to, so OpenGL is initialised and so textures can initialse.
@@ -367,27 +365,95 @@ static int _compareModes(id arg1, id arg2, void *context)
 	// get the run loop and add the call to doStuff
 	//
    NSTimeInterval ti = 0.01;
-#ifdef GNUSTEP
    timer = [[NSTimer timerWithTimeInterval:ti target:gameView selector:@selector(pollControls:) userInfo:self repeats:YES] retain];
    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-#else   
-   timer = [[NSTimer timerWithTimeInterval:ti target:self selector:@selector(doStuff:) userInfo:self repeats:YES] retain];
-    
-   [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-
-	
-	// set up the window to accept mouseMoved events
-	[gameWindow setAcceptsMouseMovedEvents:YES];
-#endif
 	//
 	[self endSplashScreen];
 
-#ifdef GNUSTEP
 	// Release anything allocated above that is not required.
 	[pool release];
    [[NSRunLoop currentRunLoop] run];
-#endif
 }
+#else
+- (void) applicationDidFinishLaunching: (NSNotification*) notification
+{
+	//
+	// ensure the gameView is drawn to, so OpenGL is initialised and so textures can initialse.
+	//
+	[gameView drawRect:[gameView bounds]];
+	
+	[self beginSplashScreen];
+	[self logProgress:@"initialising..."];
+	//
+	// check user defaults
+	//
+	width = 640;	//  standard screen is 640x480 pixels, 32 bit color, 32 bit z-buffer, refresh rate 75Hz
+	height = 480;
+	refresh = 75;
+	//
+	//NSLog(@"--- loading userdefaults");
+	//
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	//
+	if ([userDefaults objectForKey:@"display_width"])
+		width = [userDefaults integerForKey:@"display_width"];
+	if ([userDefaults objectForKey:@"display_height"])
+		height = [userDefaults integerForKey:@"display_height"];
+	if ([userDefaults objectForKey:@"display_refresh"])
+		refresh = [userDefaults integerForKey:@"display_refresh"];
+	
+	/* GDC example code */
+	
+	[self logProgress:@"getting display modes..."];
+	[self getDisplayModes];
+	
+	/* end GDC */
+	
+	fullscreenDisplayMode = [self findDisplayModeForWidth:width Height:height Refresh:refresh];
+	if (fullscreenDisplayMode == nil)
+	{
+		// set full screen mode to first available mode
+		fullscreenDisplayMode = [displayModes objectAtIndex:0];
+        width = [[fullscreenDisplayMode objectForKey: (NSString *)kCGDisplayWidth] intValue];
+        height = [[fullscreenDisplayMode objectForKey: (NSString *)kCGDisplayHeight] intValue];
+        refresh = [[fullscreenDisplayMode objectForKey: (NSString *)kCGDisplayRefreshRate] intValue];
+	}
+	
+	// moved to before the Universe is created
+	[self logProgress:@"loading selected expansion packs..."];
+	if (expansionPathsToInclude)
+	{
+		int i;
+		for (i = 0; i < [expansionPathsToInclude count]; i++)
+			[ResourceManager addExternalPath: (NSString*)[expansionPathsToInclude objectAtIndex: i]];
+	}
+	
+    // moved here to try to avoid initialising this before having an Open GL context
+	[self logProgress:@"initialising universe..."];
+    universe = [[Universe alloc] init];
+	
+	[universe setGameView:gameView];
+	
+	[self logProgress:@"loading player..."];
+	[self loadPlayerIfRequired];
+	
+	//
+	// get the run loop and add the call to doStuff
+	//
+    NSTimeInterval ti = 0.01;
+    
+    timer = [[NSTimer timerWithTimeInterval:ti target:self selector:@selector(doStuff:) userInfo:self repeats:YES] retain];
+    
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+	
+	
+	// set up the window to accept mouseMoved events
+	[gameWindow setAcceptsMouseMovedEvents:YES];
+	
+	//
+	[self endSplashScreen];
+}
+#endif
 
 - (void) loadPlayerIfRequired
 {

@@ -47,9 +47,14 @@ Your fair use and other rights are in no way affected by the above.
 #import "MyOpenGLView.h"
 #import "OOSound.h"
 #import "LoadSave.h"
+
+// TODO: ifdef HAVE_STICK might be better.
+#ifdef GNUSTEP
 #import "JoystickHandler.h"
 #import "PlayerEntity_StickMapper.h"
-
+#else
+#import "Groolite.h"
+#endif
 
 @implementation PlayerEntity (Controls)
 
@@ -156,14 +161,17 @@ static NSTimeInterval	time_last_frame;
 - (void) pollFlightControls:(double) delta_t
 {
 	MyOpenGLView  *gameView = (MyOpenGLView *)[universe gameView];
-   
+
+#ifdef GNUSTEP   
    // DJS: TODO: Sort where SDL keeps its stuff.
    if(!stickHandler)
    {
       stickHandler=[gameView getStickHandler];
    }
    const BOOL *joyButtonState=[stickHandler getAllButtonStates];
-	BOOL paused = [[gameView gameController] game_is_paused];
+#endif
+   
+    BOOL paused = [[gameView gameController] game_is_paused];
 	double speed_delta = 5.0 * thrust;
 	
 	if (!paused)
@@ -184,7 +192,11 @@ static NSTimeInterval	time_last_frame;
 		if (![universe displayCursor])
 		{
 			//
+#ifdef GNUSTEP
 			if ((joyButtonState[BUTTON_FUELINJECT] || [gameView isDown:key_inject_fuel])&&(has_fuel_injection)&&(!hyperspeed_engaged))
+#else
+			if (([gameView isDown:key_inject_fuel])&&(has_fuel_injection)&&(!hyperspeed_engaged))
+#endif
 			{
 				if ((fuel > 0)&&(!afterburner_engaged))
 				{
@@ -206,7 +218,9 @@ static NSTimeInterval	time_last_frame;
 			if ((!afterburner_engaged)&&(afterburnerSoundLooping))
 				[self stopAfterburnerSound];
 			//
-         // DJS: Thrust can be an axis or a button. Axis takes precidence.
+			
+#ifdef GNUSTEP
+		 // DJS: Thrust can be an axis or a button. Axis takes precidence.
          double reqSpeed=[stickHandler getAxisState: AXIS_THRUST];
          if(reqSpeed == STICK_AXISUNASSIGNED || [stickHandler getNumSticks] == 0)
          {
@@ -241,10 +255,35 @@ static NSTimeInterval	time_last_frame;
                flight_speed -= speed_delta * delta_t;
             }
          } // DJS: end joystick thrust axis
+#else
+		 if (([gameView isDown:key_increase_speed])&&(flight_speed < max_flight_speed)&&(!afterburner_engaged))
+		 {
+			 if (flight_speed < max_flight_speed)
+				 flight_speed += speed_delta * delta_t;
+			 if (flight_speed > max_flight_speed)
+				 flight_speed = max_flight_speed;
+		 }
+		 // ** tgape ** - decrease obviously means no hyperspeed
+		 if (([gameView isDown:key_decrease_speed])&&(!afterburner_engaged))
+		 {
+			 if (flight_speed > 0.0)
+				 flight_speed -= speed_delta * delta_t;
+			 if (flight_speed < 0.0)
+				 flight_speed = 0.0;
+			 // ** tgape ** - decrease obviously means no hyperspeed
+			 hyperspeed_engaged = NO;
+		 }
+#endif
+		 
 			//
 			//  hyperspeed controls
 			//
+		 
+#ifdef GNUSTEP
 			if ([gameView isDown:key_jumpdrive] || joyButtonState[BUTTON_HYPERSPEED])		// 'j'
+#else
+			if ([gameView isDown:key_jumpdrive])		// 'j'	
+#endif
 			{
 				if (!jump_pressed)
 				{
@@ -272,7 +311,12 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'a'
 			//
+#ifdef GNUSTEP
 			if ((([gameView isDown:key_fire_lasers])||((mouse_control_on)&&([gameView isDown:gvMouseLeftButton]))||joyButtonState[BUTTON_FIRE])&&(shot_time > weapon_reload_time))
+#else
+			if ((([gameView isDown:key_fire_lasers])||((mouse_control_on)&&([gameView isDown:gvMouseLeftButton])))&&(shot_time > weapon_reload_time))
+#endif
+				
 			{
 				if ([self fireMainWeapon])
 				{
@@ -301,7 +345,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'm'   // launch missile
 			//
+#ifdef GNUSTEP
 			if ([gameView isDown:key_launch_missile] || joyButtonState[BUTTON_LAUNCHMISSILE])
+#else
+			if ([gameView isDown:key_launch_missile])				
+#endif
 			{
 				// launch here
 				if (!fire_missile_pressed)
@@ -322,7 +370,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'y'   // next target
 			//
+#ifdef GNUSTEP		 
 			if ([gameView isDown:key_next_missile] || joyButtonState[BUTTON_CYCLEMISSILE])
+#else
+			if ([gameView isDown:key_next_missile])
+#endif				
 			{
 				if ((!ident_engaged)&&(!next_target_pressed)&&([self has_extra_equipment:@"EQ_MULTI_TARGET"]))
 				{
@@ -336,7 +388,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'r'   // switch on ident system
 			//
+#ifdef GNUSTEP
 			if ([gameView isDown:key_ident_system] || joyButtonState[BUTTON_ID])
+#else
+			if ([gameView isDown:key_ident_system])
+#endif				
 			{
 				// ident 'on' here
 				if (!ident_pressed)
@@ -354,7 +410,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 't'   // switch on missile targetting
 			//
+#ifdef GNUSTEP
 			if (([gameView isDown:key_target_missile] || joyButtonState[BUTTON_ARMMISSILE])&&(missile_entity[active_missile]))
+#else
+			if ([gameView isDown:key_target_missile] && missile_entity[active_missile])
+#endif				
 			{
 				// targetting 'on' here
 				if (!target_missile_pressed)
@@ -394,7 +454,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'u'   // disarm missile targetting
 			//
+#ifdef GNUSTEP
 			if ([gameView isDown:key_untarget_missile] || joyButtonState[BUTTON_UNARM])
+#else
+			if ([gameView isDown:key_untarget_missile])
+#endif				
 			{
 				if (!safety_pressed)
 				{
@@ -424,7 +488,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'e'   // ECM
 			//
+#ifdef GNUSTEP
 			if (([gameView isDown:key_ecm] || joyButtonState[BUTTON_ECM])&&(has_ecm))
+#else
+			if ([gameView isDown:key_ecm] && has_ecm)
+#endif				
 			{
 				if (!ecm_in_operation)
 				{
@@ -438,7 +506,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'tab'   // Energy bomb
 			//
+#ifdef GNUSTEP				
 			if (([gameView isDown:key_energy_bomb] || joyButtonState[BUTTON_ENERGYBOMB])&&(has_energy_bomb))
+#else			
+			if ([gameView isDown:key_energy_bomb] && has_energy_bomb)
+#endif				
 			{
 				// original energy bomb routine
 				[self fireEnergyBomb];
@@ -447,14 +519,23 @@ static NSTimeInterval	time_last_frame;
 			//
 			//  shoot 'escape'   // Escape pod launch
 			//
+#ifdef GNUSTEP				
 			if (([gameView isDown:key_launch_escapepod] || joyButtonState[BUTTON_ESCAPE])&&(has_escape_pod)&&([universe station]))
+#else
+			if ([gameView isDown:key_launch_escapepod] && has_escape_pod && [universe station])
+#endif				
+				
 			{
 				found_target = [self launchEscapeCapsule];
 			}
 			//
 			//  shoot 'd'   // Dump Cargo
 			//
+#ifdef GNUSTEP				
 			if (([gameView isDown:key_dump_cargo] || joyButtonState[BUTTON_JETTISON])&&([cargo count] > 0))
+#else
+			if ([gameView isDown:key_dump_cargo] && ([cargo count] > 0))
+#endif				
 			{
 				if ([self dumpCargo] != CARGO_NOT_CARGO)
 					[self beep];
@@ -473,7 +554,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			// autopilot 'c'
 			//
+#ifdef GNUSTEP			
 			if (([gameView isDown:key_autopilot] || joyButtonState[BUTTON_DOCKCPU])&&(has_docking_computer)&&(![self isBeeping]))   // look for the 'c' key
+#else
+			if ([gameView isDown:key_autopilot] &&(has_docking_computer)&&(![self isBeeping]))   // look for the 'c' key
+#endif				
 			{
 				if ([self checkForAegis] == AEGIS_IN_DOCKING_RANGE)
 				{
@@ -550,7 +635,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			// autopilot 'D'
 			//
+#ifdef GNUSTEP				
 			if (([gameView isDown:key_autodock] || joyButtonState[BUTTON_DOCKCPUFAST])&&(has_docking_computer)&&(![self isBeeping]))   // look for the 'D' key
+#else
+			if ([gameView isDown:key_autodock] &&(has_docking_computer)&&(![self isBeeping]))   // look for the 'D' key
+#endif				
 			{
 				if ([self checkForAegis] == AEGIS_IN_DOCKING_RANGE)
 				{
@@ -591,7 +680,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			// hyperspace 'h'
 			//
+#ifdef GNUSTEP				
 			if ([gameView isDown:key_hyperspace] || joyButtonState[BUTTON_HYPERDRIVE])   // look for the 'h' key
+#else
+			if ([gameView isDown:key_hyperspace])   // look for the 'h' key
+#endif				
 			{
 				if (!hyperspace_pressed)
 				{
@@ -646,7 +739,11 @@ static NSTimeInterval	time_last_frame;
 			//
 			// Galactic hyperspace 'g'
 			//
+#ifdef GNUSTEP
 			if (([gameView isDown:key_galactic_hyperspace] || joyButtonState[BUTTON_GALACTICDRIVE])&&(has_galactic_hyperdrive))// look for the 'g' key
+#else
+			if ([gameView isDown:key_galactic_hyperspace] &&(has_galactic_hyperdrive))// look for the 'g' key
+#endif				
 			{
 				if (!galhyperspace_pressed)
 				{
@@ -681,7 +778,11 @@ static NSTimeInterval	time_last_frame;
 					//
 			//  shoot '0'   // Cloaking Device
 			//
+#ifdef GNUSTEP			
 			if (([gameView isDown:key_cloaking_device] || joyButtonState[BUTTON_CLOAK]) && has_cloaking_device)
+#else				
+			if ([gameView isDown:key_cloaking_device] && has_cloaking_device)
+#endif				
 			{
 				if (!cloak_pressed)
 				{
@@ -726,8 +827,12 @@ static NSTimeInterval	time_last_frame;
 			[self setGuiToLoadSaveScreen];
 		}
 		//
+#ifdef GNUSTEP		
 		if (gui_screen == GUI_SCREEN_OPTIONS ||
           gui_screen == GUI_SCREEN_STICKMAPPER)
+#else
+		if (gui_screen == GUI_SCREEN_OPTIONS)
+#endif			
 		{
 			NSTimeInterval time_this_frame = [NSDate timeIntervalSinceReferenceDate];
 			double time_delta = time_this_frame - time_last_frame;
@@ -878,6 +983,7 @@ static  BOOL	taking_snapshot;
 	}
 }
 
+#ifdef GNUSTEP
 - (void) pollFlightArrowKeyControls:(double) delta_t
 {
 	MyOpenGLView	*gameView = (MyOpenGLView *)[universe gameView];
@@ -1020,6 +1126,113 @@ static  BOOL	taking_snapshot;
 		}
 	}
 }
+#else		// ifdef GNUSTEP else
+- (void) pollFlightArrowKeyControls:(double) delta_t
+{
+	MyOpenGLView	*gameView = (MyOpenGLView *)[universe gameView];
+	NSPoint			virtualStick =[gameView virtualJoystickPosition];
+	double sensitivity = 2.0;
+	double keyboard_sensitivity = 1.0;
+	virtualStick.x *= sensitivity;
+	virtualStick.y *= sensitivity;
+	double roll_dampner = ROLL_DAMPING_FACTOR * delta_t;
+	double pitch_dampner = PITCH_DAMPING_FACTOR * delta_t;
+	
+	rolling = NO;
+	if (!mouse_control_on)
+	{
+		if ([gameView isDown:key_roll_left])
+		{
+			if (flight_roll > 0.0)  flight_roll = 0.0;
+			[self decrease_flight_roll:delta_t*roll_delta*keyboard_sensitivity];
+			rolling = YES;
+		}
+		if ([gameView isDown:key_roll_right])
+		{
+			if (flight_roll < 0.0)  flight_roll = 0.0;
+			[self increase_flight_roll:delta_t*roll_delta*keyboard_sensitivity];
+			rolling = YES;
+		}
+	}
+	else
+	{
+		double stick_roll = max_flight_roll * virtualStick.x;
+		if (flight_roll < stick_roll)
+		{
+			[self increase_flight_roll:delta_t*roll_delta];
+			if (flight_roll > stick_roll)
+				flight_roll = stick_roll;
+		}
+		if (flight_roll > stick_roll)
+		{
+			[self decrease_flight_roll:delta_t*roll_delta];
+			if (flight_roll < stick_roll)
+				flight_roll = stick_roll;
+		}
+		rolling = (abs(virtualStick.x) > .10);
+	}
+	if (!rolling)
+	{
+		if (flight_roll > 0.0)
+		{
+			if (flight_roll > roll_dampner)	[self decrease_flight_roll:roll_dampner];
+			else	flight_roll = 0.0;
+		}
+		if (flight_roll < 0.0)
+		{
+			if (flight_roll < -roll_dampner)   [self increase_flight_roll:roll_dampner];
+			else	flight_roll = 0.0;
+		}
+	}
+	
+	pitching = NO;
+	if (!mouse_control_on)
+	{
+		if ([gameView isDown:key_pitch_back])
+		{
+			if (flight_pitch < 0.0)  flight_pitch = 0.0;
+			[self increase_flight_pitch:delta_t*pitch_delta*keyboard_sensitivity];
+			pitching = YES;
+		}
+		if ([gameView isDown:key_pitch_forward])
+		{
+			if (flight_pitch > 0.0)  flight_pitch = 0.0;
+			[self decrease_flight_pitch:delta_t*pitch_delta*keyboard_sensitivity];
+			pitching = YES;
+		}
+	}
+	else
+	{
+		double stick_pitch = max_flight_pitch * virtualStick.y;
+		if (flight_pitch < stick_pitch)
+		{
+			[self increase_flight_pitch:delta_t*roll_delta];
+			if (flight_pitch > stick_pitch)
+				flight_pitch = stick_pitch;
+		}
+		if (flight_pitch > stick_pitch)
+		{
+			[self decrease_flight_pitch:delta_t*roll_delta];
+			if (flight_pitch < stick_pitch)
+				flight_pitch = stick_pitch;
+		}
+		pitching = (abs(virtualStick.x) > .10);
+	}
+	if (!pitching)
+	{
+		if (flight_pitch > 0.0)
+		{
+			if (flight_pitch > pitch_dampner)	[self decrease_flight_pitch:pitch_dampner];
+			else	flight_pitch = 0.0;
+		}
+		if (flight_pitch < 0.0)
+		{
+			if (flight_pitch < -pitch_dampner)	[self increase_flight_pitch:pitch_dampner];
+			else	flight_pitch = 0.0;
+		}
+	}
+}
+#endif
 
 static BOOL pling_pressed;
 static BOOL cursor_moving;
@@ -1258,10 +1471,12 @@ static BOOL queryPressed;
 			case GUI_SCREEN_SAVE_OVERWRITE:
 				[self overwriteCommanderInputHandler: gui :gameView];
 				break;
-#endif         
+#endif
+#ifdef GNUSTEP				
       case GUI_SCREEN_STICKMAPPER:
          [self stickMapperInputHandler: gui view: gameView];
          break;
+#endif		  
 
 		case	GUI_SCREEN_OPTIONS :
 			{
@@ -1270,24 +1485,24 @@ static BOOL queryPressed;
 				int load_row =			GUI_ROW_OPTIONS_LOAD;
 				int begin_new_row =	GUI_ROW_OPTIONS_BEGIN_NEW;
 //				int options_row =   GUI_ROW_OPTIONS_OPTIONS;
-#ifndef GNUSTEP            
-				int ootunes_row =	GUI_ROW_OPTIONS_OOTUNES;
-#endif            
 				int strict_row =	GUI_ROW_OPTIONS_STRICT;
 				int detail_row =	GUI_ROW_OPTIONS_DETAIL;
 #ifdef GNUSTEP            
-            // quit only appears in GNUstep as users aren't
-            // used to Cmd-Q equivs. Same goes for window
-            // vs fullscreen.
-            int quit_row = GUI_ROW_OPTIONS_QUIT;
-            int display_style_row = GUI_ROW_OPTIONS_DISPLAYSTYLE;
+				// quit only appears in GNUstep as users aren't
+				// used to Cmd-Q equivs. Same goes for window
+				// vs fullscreen.
+				int quit_row = GUI_ROW_OPTIONS_QUIT;
+				int display_style_row = GUI_ROW_OPTIONS_DISPLAYSTYLE;
+				int stickmap_row = GUI_ROW_OPTIONS_STICKMAPPER;				
 #else
-            // Macintosh only
+				// Macintosh only
+				int ootunes_row =	GUI_ROW_OPTIONS_OOTUNES;				
 				int speech_row =	GUI_ROW_OPTIONS_SPEECH;
+				int growl_row =		GUI_ROW_OPTIONS_GROWL;				
 #endif      
-            int volume_row = GUI_ROW_OPTIONS_VOLUME;      
+				int volume_row = GUI_ROW_OPTIONS_VOLUME;      
 				int display_row =   GUI_ROW_OPTIONS_DISPLAY;
-            int stickmap_row = GUI_ROW_OPTIONS_STICKMAPPER;
+
 				GameController  *controller = [universe gameController];
 				NSArray *modes = [controller displayModes];
 				
@@ -1345,10 +1560,14 @@ static BOOL queryPressed;
 							[self loadPlayer];
 #endif                  
 					}
-               if ([gui selectedRow] == stickmap_row)
-               {
-                  [self setGuiToStickMapperScreen];
-               }
+						
+#ifdef GNUSTEP						
+					if ([gui selectedRow] == stickmap_row)
+					{	
+						[self setGuiToStickMapperScreen];
+					}
+#endif
+						
 					if (([gui selectedRow] == begin_new_row)&&(!disc_operation_in_progress))
 					{
 						disc_operation_in_progress = YES;
@@ -1458,6 +1677,43 @@ static BOOL queryPressed;
 				}
 				else
 					volumeControlPressed = NO;
+				
+#ifndef GNUSTEP
+				if (([gui selectedRow] == growl_row)&&([gameView isDown:gvArrowKeyRight]||[gameView isDown:gvArrowKeyLeft]))
+				{
+					if ((!leftRightKeyPressed)||(script_time > timeLastKeyPress + KEY_REPEAT_INTERVAL))
+					{
+						NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
+						BOOL rightKeyDown = [gameView isDown:gvArrowKeyRight];
+						BOOL leftKeyDown = [gameView isDown:gvArrowKeyLeft];
+						GuiDisplayGen* gui = [universe gui];
+						int growl_min_priority = 3;
+						if ([prefs objectForKey:@"groolite-min-priority"])
+							growl_min_priority = [prefs integerForKey:@"groolite-min-priority"];
+						int new_priority = growl_min_priority;
+						if (rightKeyDown)
+							new_priority--;
+						if (leftKeyDown)
+							new_priority++;
+						if (new_priority < -2)	// sanity check values -2 .. 3
+							new_priority = -2;
+						if (new_priority > 3)
+							new_priority = 3;
+						if (new_priority != growl_min_priority)
+						{
+							growl_min_priority = new_priority;
+							NSString* growl_priority_desc = [Groolite priorityDescription:growl_min_priority];
+							[gui setText:[NSString stringWithFormat:@" Show Growl messages: %@ ", growl_priority_desc] forRow:growl_row align:GUI_ALIGN_CENTER];
+							[gui click];
+							[prefs setInteger:growl_min_priority forKey:@"groolite-min-priority"];
+						}
+						timeLastKeyPress = script_time;
+					}
+					leftRightKeyPressed = YES;
+				}
+				else
+					leftRightKeyPressed = NO;
+#endif
 
 				if (([gui selectedRow] == detail_row)&&(([gameView isDown:gvArrowKeyRight])||([gameView isDown:gvArrowKeyLeft])))
 				{
@@ -1491,7 +1747,7 @@ static BOOL queryPressed;
             // system. The stack trace shows it crashes when it hits
             // the if statement, trying to send the message to one of
             // the things contained.
-				if (([gui selectedRow] == strict_row)&&[gameView isDown:13])
+				if (([gui selectedRow] == strict_row)&& selectKeyPress)
 				{
 					[universe setStrict:![universe strict]];
 				}
@@ -2136,7 +2392,19 @@ static BOOL toggling_music;
 					[self setStatus:STATUS_DOCKED];
 					[universe removeDemoShips];
 					[gui setBackgroundImage:nil];
+#ifdef GNUSTEP					
 					[self setGuiToLoadCommanderScreen];
+#else					
+					if ([[universe gameController] inFullScreenMode])
+						[self setGuiToLoadCommanderScreen];
+					else
+					{
+						[self loadPlayer];
+						[self setGuiToStatusScreen];
+					}
+#endif
+					
+					
 #else               
 					if ([[universe gameController] inFullScreenMode])
 						[[universe gameController] pauseFullScreenModeToPerform:@selector(loadPlayer) onTarget:self];
@@ -2199,12 +2467,10 @@ static BOOL toggling_music;
 					[universe removeDemoShips];
 					[gui setBackgroundImage:nil];
 					[self setGuiToStatusScreen];
-#ifndef GNUSTEP
 					if (missionMusic)
 					{
 						[missionMusic stop];
 					}
-#endif               
 				}
 			}
 			else

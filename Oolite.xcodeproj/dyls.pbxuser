@@ -6,6 +6,24 @@
 			2555DA64091E8F3C00C71505 /* Oolite */,
 		);
 	};
+	25160FBB09953AA30037C2E1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: Growl/Growl.h: No such file or directory";
+		fRef = 25F3E6F00994F466002F25FD /* Groolite.h */;
+		rLen = 1;
+		rLoc = 34;
+		rType = 1;
+	};
+	251611AC099547C90037C2E1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 25F3E6F00994F466002F25FD /* Groolite.h */;
+		name = "Groolite.h: 39";
+		rLen = 0;
+		rLoc = 1048;
+		rType = 0;
+		vrLen = 1121;
+		vrLoc = 94;
+	};
 	2555DA64091E8F3C00C71505 /* Oolite */ = {
 		isa = PBXExecutable;
 		activeArgIndex = 2147483647;
@@ -41,6 +59,38 @@
 	2555DA75091E8F4200C71505 /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	25F3E6380994F07A002F25FD /* entities.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 798}}";
+			sepNavSelRange = "{1165, 23}";
+			sepNavVisRect = "{{0, 236}, {753, 562}}";
+			sepNavWindowFrame = "{{153, 356}, {798, 691}}";
+		};
+	};
+	25F3E63A0994F08A002F25FD /* OOOpenGL.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 562}}";
+			sepNavSelRange = "{115, 0}";
+			sepNavVisRect = "{{0, 0}, {753, 562}}";
+			sepNavWindowFrame = "{{620, 2}, {798, 691}}";
+		};
+	};
+	25F3E6F00994F466002F25FD /* Groolite.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 672}}";
+			sepNavSelRange = "{1048, 0}";
+			sepNavVisRect = "{{0, 110}, {753, 562}}";
+			sepNavWindowFrame = "{{245, 272}, {798, 691}}";
+		};
+	};
+	25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 1358}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 796}, {753, 562}}";
+			sepNavWindowFrame = "{{15, 482}, {798, 691}}";
+		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Development;
@@ -99,8 +149,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 160755617;
-			PBXWorkspaceStateSaveDate = 160755617;
+			PBXPerProjectTemplateStateSaveDate = 160762032;
+			PBXWorkspaceStateSaveDate = 160762032;
+		};
+		perUserProjectItems = {
+			25160FBB09953AA30037C2E1 /* PBXTextBookmark */ = 25160FBB09953AA30037C2E1 /* PBXTextBookmark */;
+			251611AC099547C90037C2E1 /* PBXTextBookmark */ = 251611AC099547C90037C2E1 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 2555DA74091E8F4200C71505 /* Source Control */;
 		userBuildSettings = {
