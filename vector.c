@@ -351,6 +351,15 @@ void	bounding_box_reset_to_vector(struct boundingBox *box, Vector vec)
 	box->max.z = vec.z;
 }
 
+GLfloat	bounding_box_max_radius(BoundingBox bb)
+{
+	GLfloat x = (bb.max.x > -bb.min.x)? bb.max.x: -bb.min.x;
+	GLfloat y = (bb.max.y > -bb.min.y)? bb.max.y: -bb.min.y;
+	GLfloat z = (bb.max.z > -bb.min.z)? bb.max.z: -bb.min.z;
+	GLfloat xy = (x > y)? x: y;
+	return	(xy > z)? xy: z;
+}
+
 /*
 
         QUATERNION MATH ROUTINES
@@ -681,7 +690,7 @@ Vector	calculateNormalForTriangle(struct triangle_4v *tri)
 {
 	Vector v01 = vector_between(tri->v[0], tri->v[1]);
 	Vector v12 = vector_between(tri->v[1], tri->v[2]);
-	tri->v[3] = cross_product( unit_vector( &v01), unit_vector( &v12));
+	tri->v[3] = cross_product( v01, v12);
 	return tri->v[3];
 }
 //

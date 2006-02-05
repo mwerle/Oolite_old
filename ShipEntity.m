@@ -45,6 +45,8 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "AI.h"
 #import "OOCharacter.h"
+#import "Geometry.h"
+#import "Octree.h"
 
 
 @implementation ShipEntity
@@ -225,6 +227,22 @@ Your fair use and other rights are in no way affected by the above.
 {
 	NSString* result = [[NSString alloc] initWithFormat:@"<ShipEntity %@ %d (%@) %@>", name, universal_id, roles, (universe == nil)? @" (not in universe)":@""];
 	return [result autorelease];
+}
+
+static NSMutableDictionary* smallOctreeDict = nil;
+- (void) setModel:(NSString*) modelName
+{
+	[super setModel:modelName];
+	// TESTING
+	if (smallOctreeDict == nil)
+		smallOctreeDict = [[NSMutableDictionary alloc] initWithCapacity:30];
+	if (![smallOctreeDict objectForKey: modelName])
+	{
+		NSLog(@"DEBUG deriving octree for %@ ... model mass is %.2f", modelName, [self mass]);
+		Octree* crudeOctree = [[self getGeometry] findOctreeToDepth: 5];	// depth 5 or 6 seems optimum
+		[smallOctreeDict setObject: crudeOctree forKey: modelName];
+	}
+	octree = (Octree*)[smallOctreeDict objectForKey: modelName];
 }
 
 - (void) setUniverse:(Universe *)univ
@@ -2355,6 +2373,10 @@ BOOL ship_canCollide (ShipEntity* ship)
 
 	if (!translucent)
 		[super drawEntity:immediate:translucent];
+	
+	// test octree drawing
+	if (translucent && (status == STATUS_DEMO) && (octree))
+		[octree drawOctree];
 	//debug
 	//NSLog(@"DEBUG drawn ship (%@ %d)", name, universal_id);
 	
@@ -2375,6 +2397,7 @@ BOOL ship_canCollide (ShipEntity* ship)
 			[se drawSubEntity:immediate:translucent];
 		}
 	}
+	
 	//
 	checkGLErrors([NSString stringWithFormat:@"ShipEntity after drawing Entity (subentities) %@", self]);
 	//

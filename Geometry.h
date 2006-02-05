@@ -40,7 +40,7 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "vector.h"
 
-@class ShipEntity;
+@class ShipEntity, Octree;
 
 @interface Geometry : NSObject
 {
@@ -48,21 +48,29 @@ Your fair use and other rights are in no way affected by the above.
 	int			n_triangles;			// how many triangles in the geometry
 	int			max_triangles;			// how many triangles are allowed in the geometry before expansion
 	Triangle*	triangles;				// pointer to an array of triangles which we'll grow as necessary...
-	BOOL		isConvex;				// set at initialisation
+	BOOL		isConvex;				// set at initialisation to NO
 }
 
 - (id) initWithCapacity:(int) amount;
+
+- (BOOL) isConvex;
+- (void) setConvex:(BOOL) value;
 
 - (void) addTriangle:(Triangle) tri;
 
 - (BOOL) testHasGeometry;
 - (BOOL) testIsConvex;
+- (BOOL) testCornersWithinGeometry:(GLfloat) corner;
+- (GLfloat) findMaxDimensionFromOrigin;
+
+- (Octree*) findOctreeToDepth: (int) depth;
+- (NSObject*) octreeWithinRadius:(GLfloat) octreeRadius toDepth: (int) depth;
 
 - (void) translate:(Vector) offset;
 - (void) scale:(GLfloat) scalar;
 
-- (void) x_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus;
-- (void) y_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus;
-- (void) z_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus;
+- (void) x_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) scale;
+- (void) y_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) scale;
+- (void) z_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) scale;
 
 @end

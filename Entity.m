@@ -366,6 +366,7 @@ static  Universe	*data_store_universe;
 	return [universe entityForUniversalID:owner];
 }
 
+
 - (void) setModel:(NSString *) modelName
 {    
 	// use our own pool to save big memory
@@ -385,12 +386,6 @@ static  Universe	*data_store_universe;
 	collision_radius = [self findCollisionRadius];
 	actual_radius = collision_radius;
 	//NSLog(@"Entity with model '%@' collision radius set to %f",modelName, collision_radius);
-	
-	// TESTING
-	Geometry* geometry = [self getGeometry];
-	NSLog(@"DEBUG in Entity setModel:%@ has geometry %@", modelName, geometry);
-	//
-	
 	//
 	[mypool release];
 }

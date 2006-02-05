@@ -146,7 +146,7 @@ Your fair use and other rights are in no way affected by the above.
 
 #define AIMS_AGGRESSOR_SWITCHED_TARGET	@"AGGRESSOR_SWITCHED_TARGET"
 
-@class StationEntity, ParticleEntity, PlanetEntity, WormholeEntity, AI;
+@class StationEntity, ParticleEntity, PlanetEntity, WormholeEntity, AI, Octree;
 
 @interface ShipEntity : Entity {
 	
@@ -163,6 +163,10 @@ Your fair use and other rights are in no way affected by the above.
 		// navigation
 		//
 		Vector v_forward, v_up, v_right;	// unit vectors derived from the direction faced
+		
+		// collision management
+		//
+		Octree*	octree;	// this is not retained by the ShipEntity but kept in a global dict.
 
 	@protected
 

@@ -113,6 +113,7 @@ void	bounding_box_add_vector(struct boundingBox *box, Vector vec);
 void	bounding_box_add_xyz(struct boundingBox *box, GLfloat x, GLfloat y, GLfloat z);
 void	bounding_box_reset(struct boundingBox *box);
 void	bounding_box_reset_to_vector(struct boundingBox *box, Vector vec);
+GLfloat	bounding_box_max_radius(BoundingBox bb);
 
 // product of two quaternions
 //
