@@ -41,7 +41,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "ResourceManager.h"
 #import "MyOpenGLView.h"
 #import "TextureStore.h"
-
+#import "OOSound.h"
 #import "OOOpenGL.h"
 
 @implementation GameController

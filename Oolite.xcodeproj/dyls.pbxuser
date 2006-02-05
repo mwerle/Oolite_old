@@ -6,13 +6,93 @@
 			2555DA64091E8F3C00C71505 /* Oolite */,
 		);
 	};
-	25160FBB09953AA30037C2E1 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: Growl/Growl.h: No such file or directory";
-		fRef = 25F3E6F00994F466002F25FD /* Groolite.h */;
-		rLen = 1;
-		rLoc = 34;
-		rType = 1;
+	251610D0099544090037C2E1 /* OOCASound.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 826}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 264}, {753, 562}}";
+			sepNavWindowFrame = "{{107, 398}, {798, 691}}";
+		};
+	};
+	251610F5099544380037C2E1 /* PlayerEntity.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1424, 84938}}";
+			sepNavSelRange = "{116989, 11}";
+			sepNavVisRect = "{{0, 55670}, {753, 562}}";
+			sepNavWindowFrame = "{{245, 272}, {798, 691}}";
+		};
+	};
+	251610FA099544380037C2E1 /* PlayerEntity.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {758, 9072}}";
+			sepNavSelRange = "{7191, 0}";
+			sepNavVisRect = "{{0, 3464}, {753, 562}}";
+			sepNavWindowFrame = "{{291, 230}, {798, 691}}";
+		};
+	};
+	251610FD099544380037C2E1 /* PlanetEntity.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1190, 27566}}";
+			sepNavSelRange = "{216, 0}";
+			sepNavVisRect = "{{0, 0}, {753, 562}}";
+			sepNavWindowFrame = "{{222, 293}, {798, 691}}";
+		};
+	};
+	2516110C099544390037C2E1 /* GameController.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1964, 13384}}";
+			sepNavSelRange = "{1299, 0}";
+			sepNavVisRect = "{{0, 479}, {1304, 288}}";
+			sepNavWindowFrame = "{{40, 80}, {798, 691}}";
+		};
+	};
+	25161116099544390037C2E1 /* OOSound.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 562}}";
+			sepNavSelRange = "{335, 0}";
+			sepNavVisRect = "{{0, 0}, {753, 562}}";
+			sepNavWindowFrame = "{{130, 377}, {798, 691}}";
+		};
+	};
+	25161119099544390037C2E1 /* OOFileManager.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 2422}}";
+			sepNavSelRange = "{4567, 0}";
+			sepNavVisRect = "{{0, 1860}, {753, 562}}";
+			sepNavWindowFrame = "{{268, 251}, {798, 691}}";
+		};
+	};
+	2516111A099544390037C2E1 /* OOFileManager.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 562}}";
+			sepNavSelRange = "{694, 0}";
+			sepNavVisRect = "{{0, 0}, {753, 562}}";
+			sepNavWindowFrame = "{{314, 209}, {798, 691}}";
+		};
+	};
+	25161123099544390037C2E1 /* LoadSave.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1148, 9338}}";
+			sepNavSelRange = "{21228, 0}";
+			sepNavVisRect = "{{0, 8762}, {753, 562}}";
+			sepNavWindowFrame = "{{176, 335}, {798, 691}}";
+		};
+	};
+	25161124099544390037C2E1 /* LoadSave.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {854, 714}}";
+			sepNavSelRange = "{1587, 0}";
+			sepNavVisRect = "{{0, 152}, {753, 562}}";
+			sepNavWindowFrame = "{{199, 314}, {798, 691}}";
+		};
+	};
+	25161132099544390037C2E1 /* PlayerEntity (Controls).m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1418, 34804}}";
+			sepNavSelRange = "{66960, 0}";
+			sepNavVisRect = "{{0, 32766}, {753, 562}}";
+			sepNavWindowFrame = "{{90, 231}, {798, 691}}";
+		};
 	};
 	251611AC099547C90037C2E1 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -45,6 +125,8 @@
 		executableUserSymbolLevel = 0;
 		libgmallocEnabled = 0;
 		name = Oolite;
+		savedGlobals = {
+		};
 		sourceDirectories = (
 		);
 	};
@@ -59,6 +141,42 @@
 	2555DA75091E8F4200C71505 /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	258EB88F0996AFD600B55458 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: parse error before 'setStatus'";
+		fRef = 25161132099544390037C2E1 /* PlayerEntity (Controls).m */;
+		rLen = 1;
+		rLoc = 2361;
+		rType = 1;
+	};
+	258EB8940996B17800B55458 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "warning: no '+update' method found";
+		fRef = 2516110C099544390037C2E1 /* GameController.m */;
+		rLen = 1;
+		rLoc = 534;
+		rType = 1;
+	};
+	258EB8950996B17800B55458 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516110C099544390037C2E1 /* GameController.m */;
+		name = "GameController.m: 45";
+		rLen = 0;
+		rLoc = 1299;
+		rType = 0;
+		vrLen = 358;
+		vrLoc = 1127;
+	};
+	258EB89D0996B17B00B55458 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 25161132099544390037C2E1 /* PlayerEntity (Controls).m */;
+		name = "PlayerEntity (Controls).m: 2361";
+		rLen = 0;
+		rLoc = 66960;
+		rType = 0;
+		vrLen = 911;
+		vrLoc = 66539;
 	};
 	25F3E6380994F07A002F25FD /* entities.h */ = {
 		uiCtxt = {
@@ -76,11 +194,19 @@
 			sepNavWindowFrame = "{{620, 2}, {798, 691}}";
 		};
 	};
+	25F3E6BC0994F30A002F25FD /* main.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 562}}";
+			sepNavSelRange = "{79, 0}";
+			sepNavVisRect = "{{0, 0}, {753, 562}}";
+			sepNavWindowFrame = "{{452, 166}, {798, 691}}";
+		};
+	};
 	25F3E6F00994F466002F25FD /* Groolite.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {753, 672}}";
 			sepNavSelRange = "{1048, 0}";
-			sepNavVisRect = "{{0, 110}, {753, 562}}";
+			sepNavVisRect = "{{0, 98}, {753, 562}}";
 			sepNavWindowFrame = "{{245, 272}, {798, 691}}";
 		};
 	};
@@ -91,6 +217,38 @@
 			sepNavVisRect = "{{0, 796}, {753, 562}}";
 			sepNavWindowFrame = "{{15, 482}, {798, 691}}";
 		};
+	};
+	25F4674C0996951E009483BF /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 25F3E6BC0994F30A002F25FD /* main.m */;
+	};
+	25F46751099695D5009483BF /* OoliteApp.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 1036}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 474}, {753, 562}}";
+			sepNavWindowFrame = "{{38, 461}, {798, 691}}";
+		};
+	};
+	25F4676909969808009483BF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 25F3E6BC0994F30A002F25FD /* main.m */;
+		name = "main.m: 7";
+		rLen = 0;
+		rLoc = 121;
+		rType = 0;
+		vrLen = 167;
+		vrLoc = 0;
+	};
+	25F4676A09969808009483BF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 25F3E6F00994F466002F25FD /* Groolite.h */;
+		name = "Groolite.h: 39";
+		rLen = 0;
+		rLoc = 1048;
+		rType = 0;
+		vrLen = 1121;
+		vrLoc = 94;
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Development;
@@ -149,12 +307,18 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 160762032;
-			PBXWorkspaceStateSaveDate = 160762032;
+			PBXPerProjectTemplateStateSaveDate = 160864718;
+			PBXWorkspaceStateSaveDate = 160864718;
 		};
 		perUserProjectItems = {
-			25160FBB09953AA30037C2E1 /* PBXTextBookmark */ = 25160FBB09953AA30037C2E1 /* PBXTextBookmark */;
-			251611AC099547C90037C2E1 /* PBXTextBookmark */ = 251611AC099547C90037C2E1 /* PBXTextBookmark */;
+			251611AC099547C90037C2E1 = 251611AC099547C90037C2E1 /* PBXTextBookmark */;
+			258EB88F0996AFD600B55458 /* PBXTextBookmark */ = 258EB88F0996AFD600B55458 /* PBXTextBookmark */;
+			258EB8940996B17800B55458 /* PBXTextBookmark */ = 258EB8940996B17800B55458 /* PBXTextBookmark */;
+			258EB8950996B17800B55458 /* PBXTextBookmark */ = 258EB8950996B17800B55458 /* PBXTextBookmark */;
+			258EB89D0996B17B00B55458 /* PBXTextBookmark */ = 258EB89D0996B17B00B55458 /* PBXTextBookmark */;
+			25F4674C0996951E009483BF = 25F4674C0996951E009483BF /* PBXBookmark */;
+			25F4676909969808009483BF = 25F4676909969808009483BF /* PBXTextBookmark */;
+			25F4676A09969808009483BF = 25F4676A09969808009483BF /* PBXTextBookmark */;
 		};
 		sourceControlManager = 2555DA74091E8F4200C71505 /* Source Control */;
 		userBuildSettings = {

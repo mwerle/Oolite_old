@@ -265,13 +265,12 @@ enum
 	
 	NSString				*planetSearchString;
 	
-#ifdef LOADSAVEGUI
-	// For GUI/SDL based save screen
+	// For OO-GUI based save screen
 	NSString				*commanderNameString;
 	NSMutableArray			*cdrDetailArray;
 	int						currentPage;
 	BOOL					pollControls;
-#endif   
+    // ...end save screen   
 	
 	StationEntity			*docked_station;
 	

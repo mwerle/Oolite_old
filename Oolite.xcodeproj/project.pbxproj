@@ -330,6 +330,10 @@
 		25F3E8C4099500F1002F25FD /* SoundInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E8C3099500F1002F25FD /* SoundInspector.nib */; };
 		25F3E8EB099502BB002F25FD /* libOgg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F3E8E9099502BB002F25FD /* libOgg.a */; };
 		25F3E8EC099502BB002F25FD /* libVorbisAll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F3E8EA099502BB002F25FD /* libVorbisAll.a */; };
+		25F46752099695D5009483BF /* OoliteApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 25F46750099695D5009483BF /* OoliteApp.h */; };
+		25F46753099695D5009483BF /* OoliteApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F46751099695D5009483BF /* OoliteApp.m */; };
+		25F4676409969672009483BF /* MyOpenGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 25F4676209969672009483BF /* MyOpenGLView.h */; };
+		25F4676509969672009483BF /* MyOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F4676309969672009483BF /* MyOpenGLView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -726,6 +730,10 @@
 		25F3E8C3099500F1002F25FD /* SoundInspector.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = SoundInspector.nib; path = Cocoa/SoundInspector.nib; sourceTree = "<group>"; };
 		25F3E8E9099502BB002F25FD /* libOgg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOgg.a; path = "Cocoa-deps/Ogg Vorbis/libOgg.a"; sourceTree = "<group>"; };
 		25F3E8EA099502BB002F25FD /* libVorbisAll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libVorbisAll.a; path = "Cocoa-deps/Ogg Vorbis/libVorbisAll.a"; sourceTree = "<group>"; };
+		25F46750099695D5009483BF /* OoliteApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OoliteApp.h; path = Cocoa/OoliteApp.h; sourceTree = "<group>"; };
+		25F46751099695D5009483BF /* OoliteApp.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = OoliteApp.m; path = Cocoa/OoliteApp.m; sourceTree = "<group>"; };
+		25F4676209969672009483BF /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MyOpenGLView.h; path = Cocoa/MyOpenGLView.h; sourceTree = "<group>"; };
+		25F4676309969672009483BF /* MyOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = MyOpenGLView.m; path = Cocoa/MyOpenGLView.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -1060,6 +1068,8 @@
 		25161012099543850037C2E1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				25F46750099695D5009483BF /* OoliteApp.h */,
+				25F46751099695D5009483BF /* OoliteApp.m */,
 				251610F5099544380037C2E1 /* PlayerEntity.m */,
 				251610F7099544380037C2E1 /* WormholeEntity.m */,
 				251610F8099544380037C2E1 /* WormholeEntity.h */,
@@ -1126,6 +1136,8 @@
 				25161143099544390037C2E1 /* Universe.m */,
 				25161144099544390037C2E1 /* Universe.h */,
 				25161145099544390037C2E1 /* TextureStore.m */,
+				25F4676209969672009483BF /* MyOpenGLView.h */,
+				25F4676309969672009483BF /* MyOpenGLView.m */,
 				25161017099543850037C2E1 /* Audio */,
 			);
 			name = Classes;
@@ -1281,6 +1293,8 @@
 				25161192099544390037C2E1 /* PlayerEntity (Sound).h in Headers */,
 				25161194099544390037C2E1 /* PlayerEntity Additions.h in Headers */,
 				25161196099544390037C2E1 /* Universe.h in Headers */,
+				25F46752099695D5009483BF /* OoliteApp.h in Headers */,
+				25F4676409969672009483BF /* MyOpenGLView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1670,6 +1684,8 @@
 				25161193099544390037C2E1 /* PlayerEntity (contracts).m in Sources */,
 				25161195099544390037C2E1 /* Universe.m in Sources */,
 				25161197099544390037C2E1 /* TextureStore.m in Sources */,
+				25F46753099695D5009483BF /* OoliteApp.m in Sources */,
+				25F4676509969672009483BF /* MyOpenGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

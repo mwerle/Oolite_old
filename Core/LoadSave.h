@@ -1,4 +1,4 @@
-#ifdef LOADSAVEGUI
+
 //
 // LoadSave.h
 //
@@ -47,4 +47,4 @@
 - (int) findIndexOfCommander: (NSString *)cdrName;
 
 @end
-#endif
+

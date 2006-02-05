@@ -1,4 +1,4 @@
-#ifdef LOADSAVEGUI
+
 //
 // OOFileManager.h
 //
@@ -26,5 +26,5 @@
 - (NSString*)	defaultCommanderPath;
 
 @end
-#endif
+
 

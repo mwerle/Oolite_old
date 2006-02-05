@@ -5,7 +5,6 @@ BOOL debug = NO;
 
 int main(int argc, const char *argv[])
 {
-	printf("Called main()\n");
     return NSApplicationMain(argc, argv);
 }
 

@@ -177,10 +177,8 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	// other keys are SET and cannot be varied
 
-#ifdef LOADSAVEGUI
    // Enable polling
    pollControls=YES;
-#endif
 }
 
 - (void) unloadCargoPods

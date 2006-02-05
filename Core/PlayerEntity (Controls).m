@@ -895,10 +895,8 @@ static  BOOL	m_key_pressed;
 static  BOOL	taking_snapshot;
 - (void) pollApplicationControls
 {
-#ifdef LOADSAVEGUI
    if(!pollControls)
       return;
-#endif
 
 	// does fullscreen / quit / snapshot
 	//
@@ -1314,10 +1312,8 @@ static BOOL queryPressed;
 	if (gui_screen == GUI_SCREEN_LONG_RANGE_CHART)
 		[gameView setStringInput: gvStringInputAlpha];
 		
-#ifdef LOADSAVEGUI
 	if (gui_screen == GUI_SCREEN_SAVE)
-		[gameView setStringInput: gvStringInputAll];
-#endif   
+		[gameView setStringInput: gvStringInputAll];   
 
 	switch (gui_screen)
 	{
@@ -1455,8 +1451,7 @@ static BOOL queryPressed;
 				queryPressed = NO;
 			break;
 
-      // DJS: Farm off load/save screen options to LoadSave.m
-#ifdef LOADSAVEGUI         
+      // DJS: Farm off load/save screen options to LoadSave.m         
 			case GUI_SCREEN_LOAD:
 				commanderFile=[self commanderSelector: gui :gameView];
 				if(commanderFile)
@@ -1471,7 +1466,7 @@ static BOOL queryPressed;
 			case GUI_SCREEN_SAVE_OVERWRITE:
 				[self overwriteCommanderInputHandler: gui :gameView];
 				break;
-#endif
+
 #ifdef GNUSTEP				
       case GUI_SCREEN_STICKMAPPER:
          [self stickMapperInputHandler: gui view: gameView];
@@ -1537,28 +1532,12 @@ static BOOL queryPressed;
 					if (([gui selectedRow] == save_row)&&(!disc_operation_in_progress))
 					{
 						disc_operation_in_progress = YES;
-// DJS: WIP                  
-#ifdef LOADSAVEGUI
-						[self setGuiToSaveCommanderScreen: player_name];
-#else                 
-						if ([[universe gameController] inFullScreenMode])
-							[[universe gameController] pauseFullScreenModeToPerform:@selector(savePlayer) onTarget:self];
-						else
-							[self savePlayer];
-#endif                  
+						[self setGuiToSaveCommanderScreen: player_name];           
 					}
 					if (([gui selectedRow] == load_row)&&(!disc_operation_in_progress))
 					{
 						disc_operation_in_progress = YES;
-// DJS: WIP                  
-#ifdef LOADSAVEGUI
-						[self setGuiToLoadCommanderScreen];
-#else
-						if ([[universe gameController] inFullScreenMode])
-							[[universe gameController] pauseFullScreenModeToPerform:@selector(loadPlayer) onTarget:self];
-						else
-							[self loadPlayer];
-#endif                  
+						[self setGuiToLoadCommanderScreen];    
 					}
 						
 #ifdef GNUSTEP						
@@ -2043,10 +2022,8 @@ static BOOL zoom_pressed;
 
 - (void) pollViewControls
 {
-#ifdef LOADSAVEGUI
    if(!pollControls)
       return;
-#endif
 
 	MyOpenGLView  *gameView = (MyOpenGLView *)[universe gameView];
 	//
@@ -2143,10 +2120,8 @@ static BOOL switching_market_screens;
 static BOOL switching_equipship_screens;
 - (void) pollGuiScreenControls
 {
-#ifdef LOADSAVEGUI
    if(!pollControls)
       return;
-#endif
 
 	MyOpenGLView  *gameView = (MyOpenGLView *)[universe gameView];
 	BOOL docked_okay = (status == STATUS_DOCKED) || ((status == STATUS_DEMO) && (gui_screen == GUI_SCREEN_SHIPYARD));
@@ -2343,10 +2318,8 @@ static BOOL toggling_music;
 
 - (void) pollDockedControls:(double) delta_t
 {
-#ifdef LOADSAVEGUI
 	if(pollControls)
-	{
-#endif     
+	{    
 		MyOpenGLView  *gameView = (MyOpenGLView *)[universe gameView];
 		if (([gameView isDown:gvFunctionKey1])||([gameView isDown:gvNumberKey1]))   // look for the f1 key
 		{
@@ -2357,10 +2330,8 @@ static BOOL toggling_music;
 			[self leaveDock:docked_station];
 			[universe setDisplayCursor:NO];
 			[self playBreakPattern];
-		}
-#ifdef LOADSAVEGUI      
+		}    
 	}
-#endif   
 	//
 	//  text displays
 	//
@@ -2388,7 +2359,6 @@ static BOOL toggling_music;
 						[themeMusic stop];
 					}
 					disc_operation_in_progress = YES;
-#ifdef LOADSAVEGUI
 					[self setStatus:STATUS_DOCKED];
 					[universe removeDemoShips];
 					[gui setBackgroundImage:nil];
@@ -2402,17 +2372,7 @@ static BOOL toggling_music;
 						[self loadPlayer];
 						[self setGuiToStatusScreen];
 					}
-#endif
-					
-					
-#else               
-					if ([[universe gameController] inFullScreenMode])
-						[[universe gameController] pauseFullScreenModeToPerform:@selector(loadPlayer) onTarget:self];
-					else
-						[self loadPlayer];
-					[self setStatus:STATUS_DOCKED];
-					[self setGuiToStatusScreen];
-#endif               
+#endif					
 				}
 			}
 			if (([gameView isDown:110])||([gameView isDown:78]))	//  'nN'
