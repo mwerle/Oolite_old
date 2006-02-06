@@ -90,19 +90,9 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1418, 34804}}";
 			sepNavSelRange = "{66960, 0}";
-			sepNavVisRect = "{{0, 32766}, {753, 562}}";
-			sepNavWindowFrame = "{{90, 231}, {798, 691}}";
+			sepNavVisRect = "{{0, 32767}, {753, 562}}";
+			sepNavWindowFrame = "{{25, 53}, {798, 691}}";
 		};
-	};
-	251611AC099547C90037C2E1 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 25F3E6F00994F466002F25FD /* Groolite.h */;
-		name = "Groolite.h: 39";
-		rLen = 0;
-		rLoc = 1048;
-		rType = 0;
-		vrLen = 1121;
-		vrLoc = 94;
 	};
 	2555DA64091E8F3C00C71505 /* Oolite */ = {
 		isa = PBXExecutable;
@@ -141,42 +131,6 @@
 	2555DA75091E8F4200C71505 /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
-	};
-	258EB88F0996AFD600B55458 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: parse error before 'setStatus'";
-		fRef = 25161132099544390037C2E1 /* PlayerEntity (Controls).m */;
-		rLen = 1;
-		rLoc = 2361;
-		rType = 1;
-	};
-	258EB8940996B17800B55458 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "warning: no '+update' method found";
-		fRef = 2516110C099544390037C2E1 /* GameController.m */;
-		rLen = 1;
-		rLoc = 534;
-		rType = 1;
-	};
-	258EB8950996B17800B55458 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 2516110C099544390037C2E1 /* GameController.m */;
-		name = "GameController.m: 45";
-		rLen = 0;
-		rLoc = 1299;
-		rType = 0;
-		vrLen = 358;
-		vrLoc = 1127;
-	};
-	258EB89D0996B17B00B55458 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 25161132099544390037C2E1 /* PlayerEntity (Controls).m */;
-		name = "PlayerEntity (Controls).m: 2361";
-		rLen = 0;
-		rLoc = 66960;
-		rType = 0;
-		vrLen = 911;
-		vrLoc = 66539;
 	};
 	25F3E6380994F07A002F25FD /* entities.h */ = {
 		uiCtxt = {
@@ -218,10 +172,6 @@
 			sepNavWindowFrame = "{{15, 482}, {798, 691}}";
 		};
 	};
-	25F4674C0996951E009483BF /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 25F3E6BC0994F30A002F25FD /* main.m */;
-	};
 	25F46751099695D5009483BF /* OoliteApp.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {753, 1036}}";
@@ -229,26 +179,6 @@
 			sepNavVisRect = "{{0, 474}, {753, 562}}";
 			sepNavWindowFrame = "{{38, 461}, {798, 691}}";
 		};
-	};
-	25F4676909969808009483BF /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 25F3E6BC0994F30A002F25FD /* main.m */;
-		name = "main.m: 7";
-		rLen = 0;
-		rLoc = 121;
-		rType = 0;
-		vrLen = 167;
-		vrLoc = 0;
-	};
-	25F4676A09969808009483BF /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 25F3E6F00994F466002F25FD /* Groolite.h */;
-		name = "Groolite.h: 39";
-		rLen = 0;
-		rLoc = 1048;
-		rType = 0;
-		vrLen = 1121;
-		vrLoc = 94;
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Development;
@@ -263,6 +193,20 @@
 			2555DA64091E8F3C00C71505 /* Oolite */,
 		);
 		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXErrorsWarningsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXErrorsWarningsDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					300,
+					200,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXErrorsWarningsDataSource_TypeID,
+					PBXErrorsWarningsDataSource_MessageID,
+					PBXErrorsWarningsDataSource_LocationID,
+				);
+			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
 				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
@@ -307,18 +251,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 160864718;
-			PBXWorkspaceStateSaveDate = 160864718;
-		};
-		perUserProjectItems = {
-			251611AC099547C90037C2E1 = 251611AC099547C90037C2E1 /* PBXTextBookmark */;
-			258EB88F0996AFD600B55458 /* PBXTextBookmark */ = 258EB88F0996AFD600B55458 /* PBXTextBookmark */;
-			258EB8940996B17800B55458 /* PBXTextBookmark */ = 258EB8940996B17800B55458 /* PBXTextBookmark */;
-			258EB8950996B17800B55458 /* PBXTextBookmark */ = 258EB8950996B17800B55458 /* PBXTextBookmark */;
-			258EB89D0996B17B00B55458 /* PBXTextBookmark */ = 258EB89D0996B17B00B55458 /* PBXTextBookmark */;
-			25F4674C0996951E009483BF = 25F4674C0996951E009483BF /* PBXBookmark */;
-			25F4676909969808009483BF = 25F4676909969808009483BF /* PBXTextBookmark */;
-			25F4676A09969808009483BF = 25F4676A09969808009483BF /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 160959933;
+			PBXWorkspaceStateSaveDate = 160959933;
 		};
 		sourceControlManager = 2555DA74091E8F4200C71505 /* Source Control */;
 		userBuildSettings = {

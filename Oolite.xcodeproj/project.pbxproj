@@ -734,7 +734,7 @@
 		25F46751099695D5009483BF /* OoliteApp.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = OoliteApp.m; path = Cocoa/OoliteApp.m; sourceTree = "<group>"; };
 		25F4676209969672009483BF /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MyOpenGLView.h; path = Cocoa/MyOpenGLView.h; sourceTree = "<group>"; };
 		25F4676309969672009483BF /* MyOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = MyOpenGLView.m; path = Cocoa/MyOpenGLView.m; sourceTree = "<group>"; };
-		29B97319FDCFA39411CA2CEA /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = MainMenu.nib; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MainMenu.nib; path = Cocoa/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
@@ -1746,8 +1746,8 @@
 		088BB9010974564500399D1A /* Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
+				HEADER_SEARCH_PATHS = "\"Cocoa-deps/Ogg Vorbis\"";
+				LIBRARY_SEARCH_PATHS = "\"Cocoa-deps/Ogg Vorbis\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = "-DLOADSAVEGUI";
 				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
