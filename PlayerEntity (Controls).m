@@ -865,7 +865,10 @@ static  BOOL	taking_snapshot;
 			{
 				mouse_control_on = !mouse_control_on;
 				if (mouse_control_on)
+            {
 					[universe addMessage:[universe expandDescription:@"[mouse-on]" forSystem:system_seed] forCount:3.0];
+               keyboardRollPitchOverride = NO;
+            }
 				else
 					[universe addMessage:[universe expandDescription:@"[mouse-off]" forSystem:system_seed] forCount:3.0];
 			}
