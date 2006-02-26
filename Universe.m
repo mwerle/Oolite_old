@@ -106,11 +106,20 @@ Your fair use and other rights are in no way affected by the above.
 	//
 //	preloadedDataFiles =   [[NSMutableDictionary dictionaryWithCapacity:16] retain];
 	// try finding a cache..
+#ifdef GNUSTEP
+   NSString*   cache_path = [[[[[NSHomeDirectory()
+                        stringByAppendingPathComponent:@"GNUstep"]
+								stringByAppendingPathComponent:@"Library"]
+								stringByAppendingPathComponent:@"Application Support"]
+								stringByAppendingPathComponent:@"Oolite"]
+								stringByAppendingPathComponent:@"cache"];
+#else
 	NSString*	cache_path = [[[[NSHomeDirectory()
 								stringByAppendingPathComponent:@"Library"]
 								stringByAppendingPathComponent:@"Application Support"]
 								stringByAppendingPathComponent:@"Oolite"]
 								stringByAppendingPathComponent:@"cache"];
+#endif
 	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
 	{
 		NSLog(@"DEBUG ** found cache - loading data ...**");
@@ -333,11 +342,19 @@ Your fair use and other rights are in no way affected by the above.
 	if (preloadedDataFiles)
 		[preloadedDataFiles autorelease];
 	// try finding a cache..
+#ifdef GNUSTEP
 	NSString*	cache_path = [[[[NSHomeDirectory()
 								stringByAppendingPathComponent:@"Library"]
 								stringByAppendingPathComponent:@"Application Support"]
 								stringByAppendingPathComponent:@"Oolite"]
 								stringByAppendingPathComponent:@"cache"];
+#else
+	NSString*	cache_path = [[[[NSHomeDirectory()
+								stringByAppendingPathComponent:@"Library"]
+								stringByAppendingPathComponent:@"Application Support"]
+								stringByAppendingPathComponent:@"Oolite"]
+								stringByAppendingPathComponent:@"cache"];
+#endif
 	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
 	{
 		NSLog(@"DEBUG ** found cache - loading data ...**");

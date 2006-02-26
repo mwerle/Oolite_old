@@ -19,6 +19,7 @@ typedef int32_t CGMouseDelta;
 #import "Comparison.h"
 
 typedef char Str255[256];
+
 #endif
 
 #import <math.h>
