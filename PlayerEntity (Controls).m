@@ -865,7 +865,13 @@ static  BOOL	taking_snapshot;
 			{
 				mouse_control_on = !mouse_control_on;
 				if (mouse_control_on)
+            {
 					[universe addMessage:[universe expandDescription:@"[mouse-on]" forSystem:system_seed] forCount:3.0];
+
+               // ensure the keyboard pitch override (intended to lock out the joystick if the
+               // player runs to the keyboard) is reset
+               keyboardRollPitchOverride = NO;
+            }
 				else
 					[universe addMessage:[universe expandDescription:@"[mouse-off]" forSystem:system_seed] forCount:3.0];
 			}
@@ -940,7 +946,8 @@ static  BOOL	taking_snapshot;
 			rolling = YES;
 		}
 	}
-	if((mouse_control_on || numSticks) && !keyboardRollPitchOverride)
+	
+   if((mouse_control_on || numSticks) && !keyboardRollPitchOverride)
 	{
 		double stick_roll = max_flight_roll * virtualStick.x;
 		if (flight_roll < stick_roll)
