@@ -3927,11 +3927,7 @@ double scoopSoundPlayTime = 0.0;
 	else
 	{
 		// try saving the cache now...
-		NSString*	cache_path = [[[[NSHomeDirectory()
-									stringByAppendingPathComponent:@"Library"]
-									stringByAppendingPathComponent:@"Application Support"]
-									stringByAppendingPathComponent:@"Oolite"]
-									stringByAppendingPathComponent:@"cache"];
+		NSString*	cache_path = OOLITE_CACHE;
 		NSLog(@"DEBUG ** saving cache ...**");
 		[[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES];
 		//
@@ -3992,11 +3988,7 @@ double scoopSoundPlayTime = 0.0;
 			[[universe gameController] setPlayerFileDirectory:save_path];
 		}
 		// try saving the cache ...
-		NSString*	cache_path = [[[[NSHomeDirectory()
-									stringByAppendingPathComponent:@"Library"]
-									stringByAppendingPathComponent:@"Application Support"]
-									stringByAppendingPathComponent:@"Oolite"]
-									stringByAppendingPathComponent:@"cache"];
+		NSString*	cache_path = OOLITE_CACHE;
 		NSLog(@"DEBUG ** saving cache ...**");
 		[[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES];
 	}
