@@ -404,7 +404,7 @@ Your fair use and other rights are in no way affected by the above.
 	if ([gameController universe])
 	{
 		Entity* the_sun = [[gameController universe] sun];
-		Vector sun_pos = (the_sun)? the_sun->position : make_vector(0,0,0);
+		Vector sun_pos = (the_sun)? the_sun->position : make_vector(0f,0f,0f);
 		sun_center_position[0] = sun_pos.x;
 		sun_center_position[1] = sun_pos.y;
 		sun_center_position[2] = sun_pos.z;

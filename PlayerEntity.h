@@ -99,6 +99,14 @@ enum
 	GUI_ROW_OPTIONS_END_OF_LIST
 };
 
+enum
+{
+	SCOOP_STATUS_NOT_INSTALLED			= 0,
+	SCOOP_STATUS_FULL_HOLD,
+	SCOOP_STATUS_OKAY,
+	SCOOP_STATUS_ACTIVE
+};
+
 #define GUI_ROW_EQUIPMENT_START			3
 #define GUI_MAX_ROWS_EQUIPMENT			12
 #define GUI_ROW_EQUIPMENT_DETAIL		GUI_ROW_EQUIPMENT_START+GUI_MAX_ROWS_EQUIPMENT+1
@@ -264,6 +272,8 @@ enum
 	int						fps_counter;
 	
 	NSString				*planetSearchString;
+	
+	gl_matrix				playerRotMatrix;
 	
 #ifdef LOADSAVEGUI
 	// For GUI/SDL based save screen
@@ -459,6 +469,9 @@ enum
 	
 	// smart target lst reports
 	BOOL					suppressTargetLost;
+	
+	// smart fuelscoops
+	BOOL					scoopsActive;
 
 
 #ifdef GNUSTEP
@@ -530,6 +543,8 @@ enum
 - (int) dial_missiles;
 - (int) calc_missiles;
 - (int) dial_missile_status;
+
+- (int) dial_fuelscoops_status;
 
 - (NSString*) dial_clock;
 - (NSString*) dial_clock_adjusted;
@@ -644,5 +659,8 @@ enum
 - (NSString *)screenModeStringForWidth:(unsigned)inWidth height:(unsigned)inHeight refreshRate:(float)inRate;
 
 - (void) suppressTargetLost;
+
+- (void) setScoopsActive;
+
 
 @end

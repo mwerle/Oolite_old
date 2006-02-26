@@ -2,7 +2,7 @@
 
 	Oolite
 
-	Octree.m
+	Octree.h
 	
 	Created by Giles Williams on 31/01/2006.
 
@@ -36,26 +36,53 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
-#import <Cocoa/Cocoa.h>
+#import "OOCocoa.h"
 #import "OOOpenGL.h"
 #import "vector.h"
+
+#define	OCTREE_MAX_DEPTH	5
+#define	OCTREE_MIN_RADIUS	1.0
+// 5 or 6 will be the final working resolution
+
+BOOL	debug_octree;
 
 @interface Octree : NSObject
 {
 	GLfloat		radius;
 	int			leafs;
 	int*		octree;
+	BOOL		hasCollision;
+	
+	char*		octree_collision;
 }
 
 - (GLfloat)	radius;
 - (int)		leafs;
 - (int*)	octree;
+- (char*)	octree_collision;
+- (BOOL)	hasCollision;
 
 - (id) initWithRepresentationOfOctree:(GLfloat) octRadius :(NSObject*) octreeArray :(int) leafsize;
+- (id) initWithDictionary:(NSDictionary*) dict;
 
 int copyRepresentationIntoOctree(NSObject* theRep, int* theBuffer, int atLocation, int nextFreeLocation);
 
 - (void) drawOctree;
 - (void) drawOctreeFromLocation:(int) loc :(GLfloat) scale :(Vector) offset;
+
+- (void) drawOctreeCollisions;
+- (void) drawOctreeCollisionFromLocation:(int) loc :(GLfloat) scale :(Vector) offset;
+
+BOOL	isHitByLine(int* octbuffer, char* collbuffer, int level, GLfloat rad, Vector v0, Vector v1, Vector off, int face_hit);
+- (GLfloat) isHitByLine: (Vector) v0: (Vector) v1;
+
+BOOL	isHitBySphere(int* octbuffer, char* collbuffer, int level, GLfloat rad, Vector v0, GLfloat sphere_rad, Vector off);
+- (BOOL) isHitBySphereOrigin: (Vector) v0: (GLfloat) sphere_radius;
+
+BOOL	isHitByOctree(	int* octbuffer, char* collbuffer, int level, GLfloat rad,
+						int* other_octree, int other_level, Vector v0, GLfloat other_rad, Triangle other_ijk, Vector off);
+- (BOOL) isHitByOctree:(Octree*) other withOrigin: (Vector) v0 andIJK: (Triangle) ijk;
+
+- (NSDictionary*) dict;
 
 @end

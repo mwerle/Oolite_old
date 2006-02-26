@@ -56,13 +56,15 @@ Your fair use and other rights are in no way affected by the above.
 #define SCANNER_ZOOM_LEVELS			5
 #define ZOOM_INDICATOR_CENTRE_X		108
 #define ZOOM_INDICATOR_CENTRE_Y		-216
+#define ZOOM_INDICATOR_WIDTH		11.0f
+#define ZOOM_INDICATOR_HEIGHT		14.0f
 #define ZOOM_LEVELS_IMAGE			@"zoom.png"
 
 #define COMPASS_IMAGE			@"compass.png"
 #define COMPASS_CENTRE_X		132
 #define COMPASS_CENTRE_Y		-216
-#define COMPASS_SIZE			64
-#define COMPASS_HALF_SIZE		32
+#define COMPASS_SIZE			56
+#define COMPASS_HALF_SIZE		28
 #define COMPASS_REDDOT_IMAGE	@"reddot.png"
 #define COMPASS_GREENDOT_IMAGE  @"greendot.png"
 #define COMPASS_DOT_SIZE		16
@@ -71,6 +73,8 @@ Your fair use and other rights are in no way affected by the above.
 #define AEGIS_IMAGE				@"aegis.png"
 #define AEGIS_CENTRE_X			-132
 #define AEGIS_CENTRE_Y			-216
+#define AEGIS_WIDTH				24
+#define AEGIS_HEIGHT			24
 
 #define SPEED_BAR_CENTRE_X		200
 #define SPEED_BAR_CENTRE_Y		-145
@@ -151,6 +155,11 @@ Your fair use and other rights are in no way affected by the above.
 #define HIT_INDICATOR_CENTRE_X		200
 #define HIT_INDICATOR_CENTRE_Y		0
 
+#define SCOOPSTATUS_CENTRE_X		-132
+#define SCOOPSTATUS_CENTRE_Y		-152
+#define SCOOPSTATUS_WIDTH			16.0
+#define SCOOPSTATUS_HEIGHT			16.0
+
 #define DIALS_KEY				@"dials"
 #define LEGENDS_KEY				@"legends"
 #define X_KEY					@"x"
@@ -184,15 +193,11 @@ extern int debug;
 @interface HeadUpDisplay : NSObject {
 
 	PlayerEntity*   player;
-
-	OpenGLSprite	*compassSprite;
-	OpenGLSprite	*aegisSprite;
 	
 	NSMutableArray  *legendArray;
 	NSMutableArray  *dialArray;
 	
-	// zoom indicators
-	OpenGLSprite*   zoomLevelSprite[SCANNER_ZOOM_LEVELS];
+	// zoom level
 	double			scanner_zoom;
 	
 	//where to draw it
@@ -247,6 +252,7 @@ extern int debug;
 - (void) drawDirectionCue:(NSDictionary *) info;
 - (void) drawClock:(NSDictionary *) info;
 - (void) drawFPSInfoCounter:(NSDictionary *) info;
+- (void) drawScoopStatus:(NSDictionary *) info;
 
 - (void) drawGreenSurround:(NSDictionary *) info;
 - (void) drawYellowSurround:(NSDictionary *) info;

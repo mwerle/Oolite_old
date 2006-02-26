@@ -1035,7 +1035,7 @@ void setUpSinTable()
 			// new billboard routine (working at last!)
 			PlayerEntity* player = (PlayerEntity*)[universe entityZero];
 			Vector v0 = position;
-			Vector p0 = (player)? player->position: make_vector(0,0,0);
+			Vector p0 = (player)? player->position: make_vector( 0.0f, 0.0f, 0.0f);
 			v0.x -= p0.x;	v0.y -= p0.y;	v0.z -= p0.z; // vector from player to position
 			
 			if (v0.x||v0.y||v0.z)
@@ -1065,7 +1065,7 @@ void setUpSinTable()
 			if (planet_type == PLANET_TYPE_CORONA)
 			{
 				Vector v_sun = [universe sun]->position;
-				Vector v_p = (player)? player->position: make_vector(0,0,0);
+				Vector v_p = (player)? player->position: make_vector( 0.0f, 0.0f, 0.0f);
 				v_sun.x -= v_p.x;	v_sun.y -= v_p.y;	v_sun.z -= v_p.z;
 				if (v_sun.x||v_sun.y||v_sun.z)
 					v_sun = unit_vector(&v_sun);
@@ -1101,7 +1101,7 @@ void setUpSinTable()
 					{
 						NSLog(@"DEBUG NOVA final radius %.1f", collision_radius);
 						// reset at the new size
-						velocity = make_vector( 0, 0, 0);
+						velocity = make_vector( 0.0f, 0.0f, 0.0f);
 						throw_sparks = YES;	// keep throw_sparks at YES to indicate the higher temperature
 					}
 				}
@@ -1762,9 +1762,13 @@ static BOOL last_one_was_textured;
 
 int baseVertexIndexForEdge(int va, int vb, BOOL textured)
 {
-	NSString* key = [NSString stringWithFormat:@"%d:%d", (va < vb)? va:vb, (va < vb)? vb:va];
-	if ([edge_to_vertex objectForKey:key])
-		return [(NSNumber*)[edge_to_vertex objectForKey:key] intValue];
+	NSString* key = [[NSString alloc] initWithFormat:@"%d:%d", (va < vb)? va:vb, (va < vb)? vb:va];
+	NSObject* num = [edge_to_vertex objectForKey:key];
+	if (num)
+	{
+		[key release];
+		return [(NSNumber*)num intValue];
+	}
 	else
 	{
 		int vindex = next_free_vertex++;
@@ -1797,7 +1801,7 @@ int baseVertexIndexForEdge(int va, int vb, BOOL textured)
 
 		// add new edge to the look-up
 		[edge_to_vertex setObject:[NSNumber numberWithInt:vindex] forKey:key];
-		
+		[key release];
 		return vindex;
 	}
 }

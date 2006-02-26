@@ -67,6 +67,7 @@ Your fair use and other rights are in no way affected by the above.
 #define STATUS_EXITING_WITCHSPACE   412
 #define STATUS_ESCAPE_SEQUENCE		500
 #define STATUS_IN_HOLD				600
+#define STATUS_BEING_SCOOPED		700
 #define STATUS_HANDLING_ERROR		999
 
 #define CLASS_NOT_SET	-1
@@ -90,6 +91,8 @@ Your fair use and other rights are in no way affected by the above.
 #define SCANNER_MAX_RANGE   25600.0
 #define SCANNER_MAX_RANGE2  655360000.0
 
+#define CLOSE_COLLISION_CHECK_MAX_RANGE2  1000000000.0
+
 
 #define MODEL_FILE @"CORIOLIS.DAT"
 
@@ -112,7 +115,8 @@ struct face
 	
 	GLint	vertex[MAX_VERTICES_PER_FACE];
 	
-	NSString	*textureFile;
+	Str255		textureFileStr255;
+//	NSString	*textureFile;
 	GLuint	texName;
 	GLfloat	s[MAX_VERTICES_PER_FACE];
 	GLfloat	t[MAX_VERTICES_PER_FACE];
@@ -127,7 +131,7 @@ typedef struct
 	GLfloat	texture_uv_array[ 3 * MAX_FACES_PER_ENTITY * 2];
 	Vector vertex_array[3 * MAX_FACES_PER_ENTITY];
 	Vector normal_array[3 * MAX_FACES_PER_ENTITY];
-	NSString	*textureFile;
+
 	GLuint	texName;
 	
 	int		n_triangles;
@@ -249,7 +253,8 @@ extern int debug;
 	int			n_textures;
 	EntityData	entityData;
 	NSRange		triangle_range[MAX_TEXTURES_PER_ENTITY];
-	NSString*	texture_file[MAX_TEXTURES_PER_ENTITY];
+//	NSString*	texture_file[MAX_TEXTURES_PER_ENTITY];
+	Str255		texture_file[MAX_TEXTURES_PER_ENTITY];
 	GLuint		texture_name[MAX_TEXTURES_PER_ENTITY];
 	
 	BOOL		throw_sparks;
@@ -302,6 +307,7 @@ extern int debug;
 - (void) setPosition:(GLfloat) x:(GLfloat) y:(GLfloat) z;
 - (Vector) getPosition;
 - (Vector) getViewpointPosition;
+- (Vector) getViewpointOffset;
 
 - (double) getZeroDistance;
 - (Vector) relative_position;
@@ -336,6 +342,7 @@ extern int debug;
 - (void) moveForward:(double) amount;
 
 - (GLfloat *) rotationMatrix;
+- (GLfloat *) drawRotationMatrix;
 
 - (BOOL) canCollide;
 - (double) collisionRadius;

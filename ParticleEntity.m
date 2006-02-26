@@ -44,9 +44,10 @@ Your fair use and other rights are in no way affected by the above.
 #import "AI.h"
 #import "TextureStore.h"
 
-@implementation ParticleEntity
 
-static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
+static	Vector	circleVertex[65];		// holds vector coordinates for a unit circle
+
+@implementation ParticleEntity
 
 - (id) init
 {    
@@ -369,7 +370,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	duration = 20.0;
 	position = ship->position;
 	//
-	[self setVelocity:make_vector( 0, 0, 0)];
+	[self setVelocity: make_vector( 0.0f, 0.0f, 0.0f)];
 	//
 	[self setColor:[NSColor blueColor]];
 	//
@@ -453,7 +454,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	for (i = 0 ; i < n_vertices; i++)
 	{
 		int speed = (ranrot_rand() % (speed_high - speed_low)) + speed_low;
-		vertices[i] = make_vector(0,0,0);							// position
+		vertices[i] = make_vector( 0.0f, 0.0f, 0.0f);							// position
 		vertex_normal[i].x = (ranrot_rand() % speed) - speed / 2;	// velocity
 		vertex_normal[i].y = (ranrot_rand() % speed) - speed / 2;
 		vertex_normal[i].z = (ranrot_rand() % speed) - speed / 2;
@@ -505,7 +506,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	for (i = 0 ; i < n_fragments; i++)
 	{
 		GLfloat speed = speed_low + 0.5 * (randf()+randf()) * (speed_high - speed_low);	// speed tends toward mean of speed_high and speed_low
-		vertices[i] = make_vector(0,0,0);	// position
+		vertices[i] = make_vector( 0.0f, 0.0f, 0.0f);	// position
 		vertex_normal[i] = make_vector(randf() - 0.5, randf() - 0.5, randf() - 0.5);
 		vertex_normal[i] = unit_vector(&vertex_normal[i]);
 		vertex_normal[i].x *= speed;	// velocity
@@ -557,7 +558,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	for (i = 0 ; i < n_vertices; i++)
 	{
 		int speed = speed_low + ranrot_rand() % (speed_high - speed_low);
-		vertices[i] = make_vector(0,0,0);
+		vertices[i] = make_vector( 0.0f, 0.0f, 0.0f);
 		vertex_normal[i].x = (ranrot_rand() % speed) - speed / 2;
 		vertex_normal[i].y = (ranrot_rand() % speed) - speed / 2;
 		vertex_normal[i].z = (ranrot_rand() % speed) - speed / 2;
@@ -607,7 +608,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	for (i = 0 ; i < n_fragments; i++)
 	{
 		GLfloat speed = speed_low + 0.5 * (randf()+randf()) * (speed_high - speed_low);	// speed tends toward mean of speed_high and speed_low
-		vertices[i] = make_vector(0,0,0);	// position
+		vertices[i] = make_vector( 0.0f, 0.0f, 0.0f);	// position
 		vertex_normal[i] = make_vector(randf() - 0.5, randf() - 0.5, randf() - 0.5);
 		vertex_normal[i] = unit_vector(&vertex_normal[i]);
 		vertex_normal[i].x *= speed;	// velocity
@@ -670,7 +671,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	//
 	isParticle = YES;
 	//
-	[self setVelocity: make_vector( 0.0, 0.0,0.0)];
+	[self setVelocity: make_vector( 0.0f, 0.0f, 0.0f)];
 	
 //	NSLog(@"DEBUG *FLASH* initialised at [ %.2f, %.2f, %.2f]", fragPos.x, fragPos.y, fragPos.z);
 	
@@ -710,7 +711,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	//
 	isParticle = YES;
 	//
-	[self setVelocity: make_vector( 0.0, 0.0,0.0)];
+	[self setVelocity: make_vector( 0.0f, 0.0f, 0.0f)];
 	
 //	NSLog(@"DEBUG *FLASH* initialised at [ %.2f, %.2f, %.2f]", fragPos.x, fragPos.y, fragPos.z);
 	
@@ -900,9 +901,13 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 						[self initialiseTexture: textureNameString];
 					if (player)
 					{
-						q_rotation = player->q_rotation;					// Really simple billboard routine
-						q_rotation.w = -q_rotation.w;
-						quaternion_into_gl_matrix(q_rotation, rotMatrix);
+						GLfloat* rmix = [player drawRotationMatrix];
+						int i = 0;
+						for (i = 0; i < 16; i++)				// copy the player's rotation
+							rotMatrix[i] = rmix[i];				// Really simple billboard routine
+//						q_rotation = player->q_rotation;		// Really simple billboard routine
+//						q_rotation.w = -q_rotation.w;
+//						quaternion_into_gl_matrix(q_rotation, rotMatrix);
 					}
 				}
 				break;
@@ -1016,7 +1021,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	// new billboard routine (working at last!)
 	Entity*	player = [universe entityZero];
 	Vector v0 = position;
-	Vector p0 = (player)? player->position : make_vector(0,0,0);
+	Vector p0 = (player)? player->position : make_vector( 0.0f, 0.0f, 0.0f);
 	v0.x -= p0.x;	v0.y -= p0.y;	v0.z -= p0.z; // vector from player to position
 	if (v0.x||v0.y||v0.z)
 		v0 = unit_vector(&v0);
@@ -1239,17 +1244,22 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	if (!ship)
 		return;
 	
+	Quaternion shipQrotation = ship->q_rotation;
+	if (ship->isPlayer)	shipQrotation.w = -shipQrotation.w;
+	
 	Frame zero;
-	zero.q_rotation = ship->q_rotation;
+	zero.q_rotation = shipQrotation;
 	int dam = [ship damage];
 	GLfloat flare_length = [ship speed_factor];
 
 	if (!flare_length)	// don't draw if there's no fire!
 		return;
 
-	GLfloat flare_factor = flare_length * ex_emissive[3];
+	GLfloat hyper_fade = 8.0f / (8.0f + flare_length * flare_length * flare_length);
+
+	GLfloat flare_factor = flare_length * ex_emissive[3] * hyper_fade;
 	GLfloat red_factor = flare_length * ex_emissive[0] * (ranrot_rand() % 11) * 0.1;	// random fluctuations
-	GLfloat green_factor = flare_length * ex_emissive[1];
+	GLfloat green_factor = flare_length * ex_emissive[1] * hyper_fade;
 
 	if (flare_length > 1.0)	// afterburner!
 	{
@@ -1266,10 +1276,10 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	
 	if (flare_length < 0.1)   flare_length = 0.1;	
 	Vector currentPos = ship->position;
-	Vector master_i = vector_right_from_quaternion(ship->q_rotation);
+	Vector master_i = vector_right_from_quaternion(shipQrotation);
 	Vector vi,vj,vk;
 	vi = master_i;
-	vj = vector_up_from_quaternion(ship->q_rotation);
+	vj = vector_up_from_quaternion(shipQrotation);
 	vk = cross_product( vi, vj);
 	zero.position = make_vector(	currentPos.x + vi.x * position.x + vj.x * position.y + vk.x * position.z,
 									currentPos.y + vi.y * position.x + vj.y * position.y + vk.y * position.z,
@@ -1491,7 +1501,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 		
 		Vector abspos = position;  // in control of it's own orientation
 		Entity*		father = my_owner;
-		GLfloat*	r_mat = [father rotationMatrix];
+		GLfloat*	r_mat = [father drawRotationMatrix];
 		while (father)
 		{
 			mult_vector_gl_matrix(&abspos, r_mat);
@@ -1501,14 +1511,15 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 				father = [father owner];
 			else
 				father = nil;
-			r_mat = [father rotationMatrix];
+			r_mat = [father drawRotationMatrix];
 		}
 		
 		glPopMatrix();  // restore zero!
 		glPushMatrix();
 				// position and orientation is absolute
 		glTranslatef( abspos.x, abspos.y, abspos.z);
-		glMultMatrixf(rotMatrix);
+//		glMultMatrixf(rotMatrix);
+		glMultMatrixf([[universe entityZero] drawRotationMatrix]);
 		
 		[self drawEntity:immediate :translucent];
 		
@@ -1534,8 +1545,9 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	// movies:
 	// draw data required xx, yy, color_fv[0], color_fv[1], color_fv[2]
 	
+//	glDisable(GL_LIGHTING);
+	
 	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();	
 	
 	glColor4f( color_fv[0], color_fv[1], color_fv[2], alpha);
 	
@@ -1547,7 +1559,7 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	glBegin(GL_QUADS);
 	
 	viewdir = [universe viewDir];
-	
+		
 	switch (viewdir)
 	{
 		case	VIEW_AFT :
@@ -1608,7 +1620,6 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	}
 
 	glEnd();
-	glPopMatrix();
 }
 
 - (void) drawLaser
@@ -1648,8 +1659,9 @@ static Vector   circleVertex[65];		// holds vector coordinates for a unit circle
 	GLuint qstrip2[18] = {	9,	17,	10,	18,	11,	19,	12,	20,	13,	21,	14,	22,	15,	23,	16,	24,	9,	17};	// second quadstrip 28..45
 	GLuint qstrip3[18] = {	17,	25,	18,	26,	19,	27,	20,	28,	21,	29,	22,	30,	23,	31,	24,	32,	17,	25};	// third quadstrip 46..63
 	GLuint tfan2[10] = {	33,	25,	26,	27,	28,	29,	30,	31,	32,	25};	// final fan 64..73
-		
+	
 	ShipEntity  *ship =(ShipEntity *)[universe entityForUniversalID:owner];
+		
 	if (!ship)
 		return;
 	

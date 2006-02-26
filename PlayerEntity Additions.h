@@ -107,6 +107,9 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) commsMessage:(NSString *)valueString;
 
+- (void) consoleMessage3s:(NSString *)valueString;
+- (void) consoleMessage6s:(NSString *)valueString;
+
 - (void) setLegalStatus:(NSString *)valueString;
 - (void) awardCredits:(NSString *)valueString;
 - (void) awardShipKills:(NSString *)valueString;
@@ -129,6 +132,7 @@ Your fair use and other rights are in no way affected by the above.
 - (void) addSystemShips:(NSString *)roles_number_position;
 - (void) addShipsAt:(NSString *)roles_number_system_x_y_z;
 - (void) addShipsAtPrecisely:(NSString *)roles_number_system_x_y_z;
+- (void) addShipsWithinRadius:(NSString *)roles_number_system_x_y_z_r;
 - (void) spawnShip:(NSString *)ship_key;
 - (void) set:(NSString *)missionvariable_value;
 - (void) reset:(NSString *)missionvariable;

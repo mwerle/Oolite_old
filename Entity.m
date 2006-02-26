@@ -239,7 +239,7 @@ static  Universe	*data_store_universe;
     quaternion_set_identity(&q_rotation);
     quaternion_into_gl_matrix(q_rotation, rotMatrix);
     //
-	position = make_vector( 0.0, 0.0, 0.0);
+	position = make_vector( 0.0f, 0.0f, 0.0f);
 	//
 	zero_distance = 0.0;  //  10 km
 	no_draw_distance = 100000.0;  //  10 km
@@ -348,16 +348,17 @@ static  Universe	*data_store_universe;
 - (void) setOwner:(Entity *) ent
 {
 	int	owner_id = [ent universal_id];
-	if (universe)
+	if (!universe)
+	{
+		[self setUniverse:[ent universe]];
+		owner = owner_id;
+	}
+	else
 	{
 		if ([universe entityForUniversalID:owner_id] == ent)	// check to make sure it's kosher
 			owner = owner_id;
 		else
 			owner = NO_TARGET;
-	}
-	else
-	{
-		owner = owner_id;	// if the universe hasn't been initialised yet, trust the sender
 	}
 }
 
@@ -565,6 +566,11 @@ static  Universe	*data_store_universe;
     return rotMatrix;
 }
 
+- (GLfloat *) drawRotationMatrix
+{
+    return rotMatrix;
+}
+
 - (Vector) getPosition
 {
     return position;
@@ -575,6 +581,10 @@ static  Universe	*data_store_universe;
     return position;
 }
 
+- (Vector) getViewpointOffset
+{
+	return make_vector( 0.0f, 0.0f, 0.0f);
+}
 
 - (BOOL) canCollide
 {
@@ -741,14 +751,14 @@ static  Universe	*data_store_universe;
 	{
 		Vector abspos = position;  // STATUS_ACTIVE means it is in control of it's own orientation
 		Entity*		father = my_owner;
-		GLfloat*	r_mat = [father rotationMatrix];
+		GLfloat*	r_mat = [father drawRotationMatrix];
 		while (father)
 		{
 			mult_vector_gl_matrix(&abspos, r_mat);
 			Vector pos = father->position;
 			abspos.x += pos.x;	abspos.y += pos.y;	abspos.z += pos.z;
 			father = [father owner];
-			r_mat = [father rotationMatrix];
+			r_mat = [father drawRotationMatrix];
 		}
 		glPopMatrix();  // one down
 		glPushMatrix();
@@ -773,13 +783,16 @@ static  Universe	*data_store_universe;
     for (fi = 0; fi < n_faces; fi++)
     {        
         // texture
-        if ((faces[fi].texName == 0)&&(faces[fi].textureFile))
+		NSString* texture = [NSString stringWithUTF8String:(char*)faces[fi].textureFileStr255];
+//        if ((faces[fi].texName == 0)&&(faces[fi].textureFile))
+        if ((faces[fi].texName == 0)&&(texture))
         {
             // load texture into Universe texturestore
 //            NSLog(@"Off to load %@",faces[fi].textureFile);
             if (universe)
             {
-                faces[fi].texName = [[universe textureStore] getTextureNameFor:faces[fi].textureFile];
+//                faces[fi].texName = [[universe textureStore] getTextureNameFor:faces[fi].textureFile];
+                faces[fi].texName = [[universe textureStore] getTextureNameFor: texture];
             }
         }
     }
@@ -788,7 +801,8 @@ static  Universe	*data_store_universe;
 	{
 		if (!texture_name[ti])
 		{
-			texture_name[ti] = [[universe textureStore] getTextureNameFor:texture_file[ti]];
+//			texture_name[ti] = [[universe textureStore] getTextureNameFor: texture_file[ti]];
+			texture_name[ti] = [[universe textureStore] getTextureNameFor: [NSString stringWithUTF8String: (char*)texture_file[ti]]];
 //			NSLog(@"DEBUG (initialiseTextures) Processed textureFile : %@ to texName : %d", entityData[ti].textureFile, entityData[ti].texName);
 		}
 	}
@@ -1327,7 +1341,9 @@ static  Universe	*data_store_universe;
 					}
 					else
 					{
-						faces[j].textureFile = [texfile retain];
+//						faces[j].textureFile = [texfile retain];
+						strlcpy( (char*)faces[j].textureFileStr255, [texfile UTF8String], 256);
+//						NSLog(@"DEBUG TEST strlcpy of '%@' result = '%s'", texfile, faces[j].textureFileStr255);
 					}
 					faces[j].texName = 0;
 					
@@ -1483,7 +1499,7 @@ static  Universe	*data_store_universe;
 	}
 	for (i = 0; i < n_vertices; i++)
 	{
-		Vector normal_sum = make_vector( 0, 0, 0);
+		Vector normal_sum = make_vector( 0.0f, 0.0f, 0.0f);
 		for (j = 0; j < n_faces; j++)
 		{
 			BOOL is_shared = ((faces[j].vertex[0] == i)||(faces[j].vertex[1] == i)||(faces[j].vertex[2] == i));
@@ -1511,20 +1527,20 @@ static  Universe	*data_store_universe;
 	int tri_index = 0;
 	int uv_index = 0;
 	int vertex_index = 0;
-//	int normal_index = 0;
-	entityData.textureFile = nil;
 	entityData.texName = 0;
 	
 	texi = 1; // index of first texture
 	
 	for (face = 0; face < n_faces; face++)
 	{
-		NSString* tex_string = faces[face].textureFile;
+//		NSString* tex_string = faces[face].textureFile;
+		NSString* tex_string = [NSString stringWithUTF8String: (char*)faces[face].textureFileStr255];
 		if (![texturesProcessed objectForKey:tex_string])
 		{
 			// do this texture
 			triangle_range[texi].location = tri_index;
-			texture_file[texi] = tex_string;
+//			texture_file[texi] = tex_string;
+			strlcpy( (char*)texture_file[texi], (char*)faces[face].textureFileStr255, 256);
 			texture_name[texi] = faces[face].texName;
 			
 			for (fi = 0; fi < n_faces; fi++)
@@ -1533,7 +1549,9 @@ static  Universe	*data_store_universe;
 				int v;
 				if (!is_smooth_shaded)
 					normal = faces[fi].normal;
-				if ([faces[fi].textureFile isEqual:tex_string])
+//				if ([faces[fi].textureFile isEqual:tex_string])
+//				if ([[NSString stringWithUTF8String: faces[fi].textureFileStr255] isEqual:tex_string])
+				if (strcmp( (char*)faces[fi].textureFileStr255, (char*)faces[face].textureFileStr255) == 0)
 				{
 					for (vi = 0; vi < 3; vi++)
 					{
@@ -1707,8 +1725,11 @@ static  Universe	*data_store_universe;
         result = [NSString stringWithFormat:@"%@\nTEXTURES\n", result];
         for (j = 0; j < n_faces; j++)
         {
-            NSSize	texSize = [[universe textureStore] getSizeOfTexture:faces[j].textureFile];
-            result = [NSString stringWithFormat:@"%@%@\t%d %d", result, faces[j].textureFile, (int)texSize.width, (int)texSize.height];
+//            NSSize	texSize = [[universe textureStore] getSizeOfTexture:faces[j].textureFile];
+//            result = [NSString stringWithFormat:@"%@%@\t%d %d", result, faces[j].textureFile, (int)texSize.width, (int)texSize.height];
+			NSString* texture = [NSString stringWithUTF8String: (char*)faces[j].textureFileStr255];
+            NSSize	texSize = [[universe textureStore] getSizeOfTexture: texture];
+            result = [NSString stringWithFormat:@"%@%@\t%d %d", result, texture, (int)texSize.width, (int)texSize.height];
             for (i = 0; i < faces[j].n_verts; i++)
             {
                 int s = (int)(faces[j].s[i] * texSize.width);
@@ -1779,7 +1800,9 @@ static  Universe	*data_store_universe;
         {
             i = fi[j];
             //fa[i] = faces[i];
-            fa[i].textureFile = [NSString stringWithFormat:@"top_%@", textureFile];
+//            fa[i].textureFile = [NSString stringWithFormat:@"top_%@", textureFile];
+//			strlcpy( (char*)fa[i].textureFileStr255, [fa[i].textureFile UTF8String], 256);
+			strlcpy( (char*)fa[i].textureFileStr255, [[NSString stringWithFormat:@"top_%@", textureFile] UTF8String], 256);
             for (k = 0; k < faces[i].n_verts; k++)
             {
                 float s, t;
@@ -1827,7 +1850,9 @@ static  Universe	*data_store_universe;
         {
             i = fi[j];
             //fa[i] = faces[i];
-            fa[i].textureFile = [NSString stringWithFormat:@"bottom_%@", textureFile];
+//            fa[i].textureFile = [NSString stringWithFormat:@"bottom_%@", textureFile];
+//			strlcpy( (char*)fa[i].textureFileStr255, [fa[i].textureFile UTF8String], 256);
+			strlcpy( (char*)fa[i].textureFileStr255, [[NSString stringWithFormat:@"bottom_%@", textureFile] UTF8String], 256);
             for (k = 0; k < faces[i].n_verts; k++)
             {
                 float s, t;
@@ -1868,7 +1893,9 @@ static  Universe	*data_store_universe;
         {
             i = fi[j];
             //fa[i] = faces[i];
-            fa[i].textureFile = [NSString stringWithFormat:@"right_%@", textureFile];
+//            fa[i].textureFile = [NSString stringWithFormat:@"right_%@", textureFile];
+//			strlcpy( (char*)fa[i].textureFileStr255, [fa[i].textureFile UTF8String], 256);
+			strlcpy( (char*)fa[i].textureFileStr255, [[NSString stringWithFormat:@"right_%@", textureFile] UTF8String], 256);
             for (k = 0; k < faces[i].n_verts; k++)
             {
                 float s, t;
@@ -1909,7 +1936,9 @@ static  Universe	*data_store_universe;
         {
             i = fi[j];
             //fa[i] = faces[i];
-            fa[i].textureFile = [NSString stringWithFormat:@"left_%@", textureFile];
+//            fa[i].textureFile = [NSString stringWithFormat:@"left_%@", textureFile];
+//			strlcpy( (char*)fa[i].textureFileStr255, [fa[i].textureFile UTF8String], 256);
+			strlcpy( (char*)fa[i].textureFileStr255, [[NSString stringWithFormat:@"left_%@", textureFile] UTF8String], 256);
             for (k = 0; k < faces[i].n_verts; k++)
             {
                 float s, t;
@@ -1950,7 +1979,9 @@ static  Universe	*data_store_universe;
         {
             i = fi[j];
             //fa[i] = faces[i];
-            fa[i].textureFile = [NSString stringWithFormat:@"front_%@", textureFile];
+//            fa[i].textureFile = [NSString stringWithFormat:@"front_%@", textureFile];
+//			strlcpy( (char*)fa[i].textureFileStr255, [fa[i].textureFile UTF8String], 256);
+			strlcpy( (char*)fa[i].textureFileStr255, [[NSString stringWithFormat:@"front_%@", textureFile] UTF8String], 256);
             for (k = 0; k < faces[i].n_verts; k++)
             {
                 float s, t;
@@ -1991,7 +2022,9 @@ static  Universe	*data_store_universe;
         {
             i = fi[j];
             //fa[i] = faces[i];
-            fa[i].textureFile = [NSString stringWithFormat:@"back_%@", textureFile];
+//            fa[i].textureFile = [NSString stringWithFormat:@"back_%@", textureFile];
+//			strlcpy( (char*)fa[i].textureFileStr255, [fa[i].textureFile UTF8String], 256);
+			strlcpy( (char*)fa[i].textureFileStr255, [[NSString stringWithFormat:@"back_%@", textureFile] UTF8String], 256);
             for (k = 0; k < faces[i].n_verts; k++)
             {
                 float s, t;
@@ -2007,7 +2040,8 @@ static  Universe	*data_store_universe;
     for (i = 0; i < n_faces; i++)
     {
         NSString *result;
-        faces[i].textureFile = [fa[i].textureFile retain];
+//        faces[i].textureFile = [fa[i].textureFile retain];
+		strlcpy( (char*)faces[i].textureFileStr255, (char*)fa[i].textureFileStr255, 256);
 		faces[i].texName = 0;
         for (j = 0; j < faces[i].n_verts; j++)
         {
@@ -2017,7 +2051,8 @@ static  Universe	*data_store_universe;
             faces[i].s[j] = fa[i].s[j] / maxSize.width;
             faces[i].t[j] = fa[i].t[j] / maxSize.height;
         }
-        result = [NSString stringWithFormat:@"%@\t%d %d", faces[i].textureFile, (int)maxSize.width, (int)maxSize.height];
+//        result = [NSString stringWithFormat:@"%@\t%d %d", faces[i].textureFile, (int)maxSize.width, (int)maxSize.height];
+        result = [NSString stringWithFormat:@"%s\t%d %d", faces[i].textureFileStr255, (int)maxSize.width, (int)maxSize.height];
         //NSLog(@"face[%d] : %@", i, result);
     }
     

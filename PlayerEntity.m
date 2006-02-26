@@ -63,6 +63,9 @@ Your fair use and other rights are in no way affected by the above.
 #import "PlayerEntity_StickMapper.h"
 #endif
 
+// 10m/s forward drift
+#define	OG_ELITE_FORWARD_DRIFT			10.0f
+
 
 @implementation PlayerEntity
 
@@ -254,7 +257,7 @@ Your fair use and other rights are in no way affected by the above.
 				// put each ton in a separate container
 				for (j = 0; j < quantity; j++)
 				{
-					ShipEntity* container = [universe getShipWithRole:@"cargopod"];
+					ShipEntity* container = [universe getShipWithRole:@"1t-cargopod"];
 					if (container)
 					{
 						[container setUniverse:universe];
@@ -330,9 +333,11 @@ Your fair use and other rights are in no way affected by the above.
 
 	NSString *gal_seed = [NSString stringWithFormat:@"%d %d %d %d %d %d",galaxy_seed.a, galaxy_seed.b, galaxy_seed.c, galaxy_seed.d, galaxy_seed.e, galaxy_seed.f]; 
 	NSString *gal_coords = [NSString stringWithFormat:@"%d %d",(int)galaxy_coordinates.x,(int)galaxy_coordinates.y]; 
+	NSString *tgt_coords = [NSString stringWithFormat:@"%d %d",(int)cursor_coordinates.x,(int)cursor_coordinates.y]; 
 	
 	[result setObject:gal_seed		forKey:@"galaxy_seed"];
 	[result setObject:gal_coords	forKey:@"galaxy_coordinates"];
+	[result setObject:tgt_coords	forKey:@"target_coordinates"];
 	//
 	[result setObject:player_name			forKey:@"player_name"];
 	//
@@ -547,6 +552,14 @@ Your fair use and other rights are in no way affected by the above.
 		NSArray *coord_vals = [Entity scanTokensFromString:(NSString *)[dict objectForKey:@"galaxy_coordinates"]];
 		galaxy_coordinates.x = (unsigned char)[(NSString *)[coord_vals objectAtIndex:0] intValue];
 		galaxy_coordinates.y = (unsigned char)[(NSString *)[coord_vals objectAtIndex:1] intValue];
+		cursor_coordinates = galaxy_coordinates;
+	}
+	
+	if ([dict objectForKey:@"target_coordinates"])
+	{
+		NSArray *coord_vals = [Entity scanTokensFromString:(NSString *)[dict objectForKey:@"target_coordinates"]];
+		cursor_coordinates.x = (unsigned char)[(NSString *)[coord_vals objectAtIndex:0] intValue];
+		cursor_coordinates.y = (unsigned char)[(NSString *)[coord_vals objectAtIndex:1] intValue];
 	}
 	
 	if ([dict objectForKey:@"player_name"])
@@ -818,8 +831,7 @@ Your fair use and other rights are in no way affected by the above.
 	//  things...
 	//
 	system_seed = [universe findSystemAtCoords:galaxy_coordinates withGalaxySeed:galaxy_seed];
-	target_system_seed = system_seed;
-	cursor_coordinates = galaxy_coordinates;
+	target_system_seed = [universe findSystemAtCoords:cursor_coordinates withGalaxySeed:galaxy_seed];
 	//
 	
 	// trumble information
@@ -854,6 +866,8 @@ Your fair use and other rights are in no way affected by the above.
 	save_path = nil;
 	//
 	[self setUpSound];
+	//
+	scoopsActive = NO;
 	//
     return self;
 }
@@ -1076,10 +1090,10 @@ Your fair use and other rights are in no way affected by the above.
 	
 	// views
 	//
-	forwardViewOffset = make_vector( 0, 0, 0);
-	aftViewOffset = make_vector( 0, 0, 0);
-	portViewOffset = make_vector( 0, 0, 0);
-	starboardViewOffset = make_vector( 0, 0, 0);
+	forwardViewOffset = make_vector( 0.0f, 0.0f, 0.0f);
+	aftViewOffset = make_vector( 0.0f, 0.0f, 0.0f);
+	portViewOffset = make_vector( 0.0f, 0.0f, 0.0f);
+	starboardViewOffset = make_vector( 0.0f, 0.0f, 0.0f);
 	
 	
 	if (save_path)
@@ -1089,6 +1103,8 @@ Your fair use and other rights are in no way affected by the above.
 	[self setUpTrumbles];
 	
 	suppressTargetLost = NO;
+
+	scoopsActive = NO;
 }
 
 - (void) setUpShipFromDictionary:(NSDictionary *) dict
@@ -1252,8 +1268,126 @@ Your fair use and other rights are in no way affected by the above.
 
 //	NSLog(@"DEBUG in PlayerEntity setUpShipFromDictionary");
 
+	// set weapon offsets
 	[self setDefaultWeaponOffsets];
+	//
+	if ([dict objectForKey:@"weapon_position_forward"])
+		forwardWeaponOffset = [Entity vectorFromString: (NSString *)[dict objectForKey:@"weapon_position_forward"]];
+	if ([dict objectForKey:@"weapon_position_aft"])
+		aftWeaponOffset = [Entity vectorFromString: (NSString *)[dict objectForKey:@"weapon_position_aft"]];
+	if ([dict objectForKey:@"weapon_position_port"])
+		portWeaponOffset = [Entity vectorFromString: (NSString *)[dict objectForKey:@"weapon_position_port"]];
+	if ([dict objectForKey:@"weapon_position_starboard"])
+		starboardWeaponOffset = [Entity vectorFromString: (NSString *)[dict objectForKey:@"weapon_position_starboard"]];
+	//
 
+	if (sub_entities)
+		[sub_entities release];
+	sub_entities = nil;
+
+	// exhaust plumes
+	if ([dict objectForKey:@"exhaust"])
+	{
+		int i;
+		NSArray *plumes = (NSArray *)[dict objectForKey:@"exhaust"];
+		for (i = 0; i < [plumes count]; i++)
+		{
+			ParticleEntity *exhaust = [[ParticleEntity alloc] initExhaustFromShip:self details:(NSString *)[plumes objectAtIndex:i]];
+			[self addExhaust:exhaust];
+			[exhaust release];
+		}
+	}
+		
+	// other subentities
+	if ([dict objectForKey:@"subentities"])
+	{
+		if (universe)
+		{
+//			NSLog(@"DEBUG adding PlayerEntity subentities");
+			int i;
+			NSArray *subs = (NSArray *)[dict objectForKey:@"subentities"];
+			for (i = 0; i < [subs count]; i++)
+			{
+	//			NSArray* details = [(NSString *)[subs objectAtIndex:i] componentsSeparatedByString:@" "];
+				NSArray* details = [Entity scanTokensFromString:(NSString *)[subs objectAtIndex:i]];
+				
+				if ([details count] == 8)
+				{
+					//NSLog(@"DEBUG adding subentity...");
+					Vector sub_pos, ref;
+					Quaternion sub_q;
+					Entity* subent;
+					NSString* subdesc = (NSString *)[details objectAtIndex:0];
+					sub_pos.x = [(NSString *)[details objectAtIndex:1] floatValue];
+					sub_pos.y = [(NSString *)[details objectAtIndex:2] floatValue];
+					sub_pos.z = [(NSString *)[details objectAtIndex:3] floatValue];
+					sub_q.w = [(NSString *)[details objectAtIndex:4] floatValue];
+					sub_q.x = [(NSString *)[details objectAtIndex:5] floatValue];
+					sub_q.y = [(NSString *)[details objectAtIndex:6] floatValue];
+					sub_q.z = [(NSString *)[details objectAtIndex:7] floatValue];
+					
+	//				NSLog(@"DEBUG adding subentity... %@ %f %f %f - %f %f %f %f", subdesc, sub_pos.x, sub_pos.y, sub_pos.z, sub_q.w, sub_q.x, sub_q.y, sub_q.z);
+
+					if ([subdesc isEqual:@"*FLASHER*"])
+					{
+						subent = [[ParticleEntity alloc] init];	// retained
+						[(ParticleEntity*)subent setColor:[NSColor colorWithCalibratedHue: sub_q.w/360.0 saturation:1.0 brightness:1.0 alpha:1.0]];
+						[(ParticleEntity*)subent setDuration: sub_q.x];
+						[(ParticleEntity*)subent setEnergy: 2.0 * sub_q.y];
+						[(ParticleEntity*)subent setSize:NSMakeSize( sub_q.z, sub_q.z)];
+						[(ParticleEntity*)subent setParticleType:PARTICLE_FLASHER];
+						[(ParticleEntity*)subent setStatus:STATUS_EFFECT];
+						[(ParticleEntity*)subent setPosition:sub_pos];
+						[subent setUniverse:universe];
+					}
+					else
+					{
+						quaternion_normalise(&sub_q);
+						
+	//					NSLog(@"DEBUG universe = %@", universe);
+						
+						subent = [universe getShip:subdesc];	// retained
+						
+						if (subent)
+						{
+	//					NSLog(@"DEBUG adding subentity %@ %@ to new %@ at %.3f,%.3f,%.3f", subent, [(ShipEntity*)subent name], name, sub_pos.x, sub_pos.y, sub_pos.z );
+							[(ShipEntity*)subent setStatus:STATUS_INACTIVE];
+							//
+							ref = vector_forward_from_quaternion(sub_q);	// VECTOR FORWARD
+							//
+							[(ShipEntity*)subent setReference: ref];
+							[(ShipEntity*)subent setPosition: sub_pos];
+							[(ShipEntity*)subent setQRotation: sub_q];
+							//
+							if ([[(ShipEntity*)subent roles] isEqual:@"docking-slit"])
+								[subent setStatus:STATUS_EFFECT];			// hack keeps docking slit visible when at reduced detail
+							else
+								[self addSolidSubentityToCollisionRadius:(ShipEntity*)subent];	// hack - ignore docking-slit for collision radius
+						}
+						//
+					}
+					//NSLog(@"DEBUG reference (%.1f,%.1f,%.1f)", ref.x, ref.y, ref.z);
+					if (sub_entities == nil)
+						sub_entities = [[NSArray arrayWithObject:subent] retain];
+					else
+					{
+						NSMutableArray *temp = [NSMutableArray arrayWithArray:sub_entities];
+						[temp addObject:subent];
+						[sub_entities release];
+						sub_entities = [[NSArray arrayWithArray:temp] retain];
+					}
+					
+					[subent setOwner: self];
+					
+	//				NSLog(@"DEBUG added subentity %@ to position %.3f,%.3f,%.3f", subent, subent->position.x, subent->position.y, subent->position.z );
+													
+					[subent release];
+				}
+			}
+//			NSLog(@"DEBUG subentities for player:\n%@\n", sub_entities);
+		}
+	}
+	//
 }
 
 - (void) dealloc
@@ -1337,6 +1471,7 @@ Your fair use and other rights are in no way affected by the above.
 	return NSOrderedDescending;  // always the most near
 }
 
+double scoopSoundPlayTime = 0.0;
 - (void) update:(double) delta_t
 {
 	int i;
@@ -1346,6 +1481,17 @@ Your fair use and other rights are in no way affected by the above.
 	last_position = position;
 	has_rotated = ((q_rotation.w != last_q_rotation.w)||(q_rotation.x != last_q_rotation.x)||(q_rotation.y != last_q_rotation.y)||(q_rotation.z != last_q_rotation.z));
 	last_q_rotation = q_rotation;
+	
+	if (scoopsActive)
+	{
+		scoopSoundPlayTime -= delta_t;
+		if (scoopSoundPlayTime < 0.0)
+		{
+			[fuelScoopSound play];
+			scoopSoundPlayTime = 0.5;
+		}
+		scoopsActive = NO;
+	}
 	
 	// update timers
 	//
@@ -1449,11 +1595,20 @@ Your fair use and other rights are in no way affected by the above.
 		if (velmag)
 		{
 			GLfloat velmag2 = velmag - delta_t * thrust;
-			if (velmag2 < 0.0)
-				velmag2 = 0.0;
+			if (velmag2 < 0.0f)
+				velmag2 = 0.0f;
 			velocity.x *= velmag2 / velmag;
 			velocity.y *= velmag2 / velmag;
 			velocity.z *= velmag2 / velmag;
+			if ([universe strict])
+			{
+				if (velmag2 < OG_ELITE_FORWARD_DRIFT)
+				{
+					velocity.x += delta_t * v_forward.x * OG_ELITE_FORWARD_DRIFT * 20.0;	// add acceleration
+					velocity.y += delta_t * v_forward.y * OG_ELITE_FORWARD_DRIFT * 20.0;
+					velocity.z += delta_t * v_forward.z * OG_ELITE_FORWARD_DRIFT * 20.0;
+				}
+			}
 		}
 		//
 		////
@@ -1787,15 +1942,14 @@ Your fair use and other rights are in no way affected by the above.
 			external_temp *= 100;
 
 		// do Revised sun-skimming check here...
-		if (([self has_extra_equipment:@"EQ_FUEL_SCOOPS"])&&(alt1 > 0.75)&&(fuel < 70))
+		if ((has_scoop)&&(alt1 > 0.75)&&(fuel < 70))
 		{
 			fuel_accumulator += delta_t * flight_speed * 0.010;
+			scoopsActive = YES;
 			while (fuel_accumulator > 1.0)
 			{
 				fuel ++;
 				fuel_accumulator -= 1.0;
-				if (fuel & 0x01)	// every other unit
-					[fuelScoopSound play];
 			}
 			if (fuel > 70)	fuel = 70;
 			[universe displayCountdownMessage:[universe expandDescription:@"[fuel-scoop-active]" forSystem:system_seed] forCount:1.0];
@@ -1926,6 +2080,13 @@ Your fair use and other rights are in no way affected by the above.
 		[hud setScannerZoom:z1];
 	}
 	
+	// update subentities
+	if (sub_entities)
+	{
+		int i;
+		for (i = 0; i < [sub_entities count]; i++)
+			[(Entity *)[sub_entities objectAtIndex:i] update:delta_t];
+	}
 }
 
 - (void) applyRoll:(GLfloat) roll1 andClimb:(GLfloat) climb1
@@ -1952,6 +2113,15 @@ Your fair use and other rights are in no way affected by the above.
 	v_forward.x = rotMatrix[2];
 	v_forward.y = rotMatrix[6];
 	v_forward.z = rotMatrix[10];
+	
+	q_rotation.w = -q_rotation.w;
+	quaternion_into_gl_matrix(q_rotation, playerRotMatrix);	// this is the rotation similar to ordinary ships
+	q_rotation.w = -q_rotation.w;
+}
+
+- (GLfloat *) drawRotationMatrix	// override to provide the 'correct' drawing matrix
+{
+    return playerRotMatrix;
 }
 
 - (void) moveForward:(double) amount
@@ -1972,6 +2142,9 @@ Your fair use and other rights are in no way affected by the above.
 - (Vector) getViewpointPosition
 {
 	Vector	viewpoint = position;
+	if ([universe breakPatternHide])
+		return viewpoint;	// center view for break pattern
+	
 	Vector offset = make_vector ( 0, 0, 0);
 	switch ([universe viewDir])
 	{
@@ -2000,11 +2173,35 @@ Your fair use and other rights are in no way affected by the above.
 	return viewpoint;
 }
 
-- (void) drawEntity:(BOOL) immediate :(BOOL) translucent
+- (Vector) getViewpointOffset
 {
-	checkGLErrors([NSString stringWithFormat:@"after drawing Entity %@", self]);
+	if ([universe breakPatternHide])
+		return make_vector( 0.0f, 0.0f, 0.0f);	// center view for break pattern
+	
+	switch ([universe viewDir])
+	{
+		case VIEW_FORWARD:
+			return forwardViewOffset;
+		case VIEW_AFT:
+			return aftViewOffset;
+		case VIEW_PORT:
+			return portViewOffset;
+		case VIEW_STARBOARD:
+			return starboardViewOffset;
+	}
+	
+	return make_vector( 0.0f, 0.0f, 0.0f);
 }
 
+- (void) drawEntity:(BOOL) immediate :(BOOL) translucent
+{
+	if ((status == STATUS_DEAD)||(status == STATUS_DEMO)||(status == STATUS_DOCKED)||[universe breakPatternHide])
+		return;	// don't draw
+	
+	[super drawEntity: immediate : translucent];
+
+	checkGLErrors([NSString stringWithFormat:@"after drawing PlayerEntity %@", self]);
+}
 
 - (BOOL) massLocked
 {
@@ -2206,6 +2403,20 @@ Your fair use and other rights are in no way affected by the above.
 - (int) dial_missile_status
 {
 	return missile_status;
+}
+
+- (int) dial_fuelscoops_status
+{
+	if (has_scoop)
+	{
+		if (scoopsActive)
+			return SCOOP_STATUS_ACTIVE;
+		if ([cargo count] >= max_cargo)
+			return SCOOP_STATUS_FULL_HOLD;
+		return SCOOP_STATUS_OKAY;
+	}
+	else
+		return SCOOP_STATUS_NOT_INSTALLED;
 }
 
 - (NSMutableArray*) comm_log
@@ -2736,6 +2947,7 @@ Your fair use and other rights are in no way affected by the above.
 		case VIEW_NONE:
 		case VIEW_BREAK_PATTERN:
 		case VIEW_FORWARD:
+//			NSLog(@"forward weapon offset = ( %.2f, %.2f, %.2f)", forwardWeaponOffset.x, forwardWeaponOffset.y, forwardWeaponOffset.z); 
 			forward_weapon_temp += weapon_heat_increment_per_shot;
 			break;
 		case VIEW_AFT:
@@ -2806,7 +3018,7 @@ Your fair use and other rights are in no way affected by the above.
 	
 	[ent retain];
 	[other retain];
-	rel_pos = (ent)? ent->position: make_vector(0,0,0);
+	rel_pos = (ent)? ent->position: make_vector( 0.0f, 0.0f, 0.0f);
 	
 	rel_pos.x -= position.x;
 	rel_pos.y -= position.y;
@@ -2909,7 +3121,7 @@ Your fair use and other rights are in no way affected by the above.
 		return;
 	
 	[ent retain];
-	rel_pos = (ent)? ent->position : make_vector(0,0,0);
+	rel_pos = (ent)? ent->position : make_vector( 0.0f, 0.0f, 0.0f);
 	
 	rel_pos.x -= position.x;
 	rel_pos.y -= position.y;
@@ -3145,8 +3357,9 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	if (![universe strict])	// only mess with the scores if we're not in 'strict' mode
 	{
+		BOOL killIsCargo = ((killClass == CLASS_CARGO)&&([other getCommodityAmount] > 0));
 //		NSLog(@"DEBUG universe not strict killClass is %d", killClass);
-		if ((killClass == CLASS_CARGO)||(killClass == CLASS_BUOY)||(killClass == CLASS_ROCK))
+		if ((killIsCargo)||(killClass == CLASS_BUOY)||(killClass == CLASS_ROCK))
 		{
 //			NSLog(@"DEBUG killClass not suitable for high reward");
 			if (![[other roles] isEqual:@"tharglet"])	// okay, we'll count tharglets as proper kills
@@ -3453,6 +3666,7 @@ Your fair use and other rights are in no way affected by the above.
 - (void) enterGalacticWitchspace
 {	
 	status = STATUS_ENTERING_WITCHSPACE;
+	throw_sparks = NO;	// shut off throwing sparks!
 	
 	if (primaryTarget != NO_TARGET)
 		primaryTarget = NO_TARGET;
@@ -3518,6 +3732,7 @@ Your fair use and other rights are in no way affected by the above.
 {
 	target_system_seed = [w_hole destination];
 	status = STATUS_ENTERING_WITCHSPACE;
+	throw_sparks = NO;	// shut off throwing sparks!
 	
 	hyperspeed_engaged = NO;
 	
@@ -3561,8 +3776,9 @@ Your fair use and other rights are in no way affected by the above.
 {
 	double		distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y); 
 	
-	status = STATUS_ENTERING_WITCHSPACE;
-	
+	status = STATUS_ENTERING_WITCHSPACE;	
+	throw_sparks = NO;	// shut off throwing sparks!
+
 	hyperspeed_engaged = NO;
 	
 	if (primaryTarget != NO_TARGET)
@@ -3663,6 +3879,7 @@ Your fair use and other rights are in no way affected by the above.
 	flight_speed = max_flight_speed * 0.25;
 	status = STATUS_EXITING_WITCHSPACE;
 	gui_screen = GUI_SCREEN_MAIN;
+	throw_sparks = NO;	// shut off throwing sparks!
 	being_fined = NO;				// until you're scanned by a copper!
 	[self setShowDemoShips:NO];
 	[universe setDisplayCursor:NO];
@@ -3709,6 +3926,15 @@ Your fair use and other rights are in no way affected by the above.
 	}
 	else
 	{
+		// try saving the cache now...
+		NSString*	cache_path = [[[[NSHomeDirectory()
+									stringByAppendingPathComponent:@"Library"]
+									stringByAppendingPathComponent:@"Application Support"]
+									stringByAppendingPathComponent:@"Oolite"]
+									stringByAppendingPathComponent:@"cache"];
+		NSLog(@"DEBUG ** saving cache ...**");
+		[[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES];
+		//
 		[universe clearPreviousMessage];	// allow this to be given time and again
 		[universe addMessage:[universe expandDescription:@"[game-saved]" forSystem:system_seed] forCount:2];
 		if (save_path)
@@ -3765,6 +3991,14 @@ Your fair use and other rights are in no way affected by the above.
 			[[universe gameController] setPlayerFileToLoad:save_path];
 			[[universe gameController] setPlayerFileDirectory:save_path];
 		}
+		// try saving the cache ...
+		NSString*	cache_path = [[[[NSHomeDirectory()
+									stringByAppendingPathComponent:@"Library"]
+									stringByAppendingPathComponent:@"Application Support"]
+									stringByAppendingPathComponent:@"Oolite"]
+									stringByAppendingPathComponent:@"cache"];
+		NSLog(@"DEBUG ** saving cache ...**");
+		[[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES];
 	}
 	[self setGuiToStatusScreen];
 }
@@ -6064,5 +6298,11 @@ OOSound* burnersound;
 {
 	suppressTargetLost = YES;
 }
+
+- (void) setScoopsActive
+{
+	scoopsActive = YES;
+}
+
 
 @end

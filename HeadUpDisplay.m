@@ -42,7 +42,7 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "HeadUpDisplay.h"
 #import "ResourceManager.h"
-#import "OpenGLSprite.h"
+//#import "OpenGLSprite.h"
 #import "PlayerEntity.h"
 #import "PlanetEntity.h"
 #import "Universe.h"
@@ -57,6 +57,7 @@ GLfloat red_color[4] =		{1.0, 0.0, 0.0, 1.0};
 GLfloat redplus_color[4] =  {1.0, 0.0, 0.5, 1.0};
 GLfloat yellow_color[4] =   {1.0, 1.0, 0.0, 1.0};
 GLfloat green_color[4] =	{0.0, 1.0, 0.0, 1.0};
+GLfloat darkgreen_color[4] ={0.0, 0.75, 0.0, 1.0};
 GLfloat blue_color[4] =		{0.0, 0.0, 1.0, 1.0};
 
 float char_widths[128] = {
@@ -79,9 +80,6 @@ float char_widths[128] = {
 	
 	line_width = 1.0;
 	
-//	for (i = 0; i < 450; i++)
-//		sin_value[i] = sin(i * PI / 180);
-//	cos_value = &sin_value[90];
 	setUpSinTable();
 	
 //	int ch;
@@ -109,24 +107,7 @@ float char_widths[128] = {
 //			printf(",");
 //	}
 //	printf("\n\n");
-	
-//	// init sprites
-	compassSprite = [[OpenGLSprite alloc]   initWithImage:[ResourceManager imageNamed:COMPASS_IMAGE inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, COMPASS_SIZE, COMPASS_SIZE)
-											size:NSMakeSize(COMPASS_HALF_SIZE, COMPASS_HALF_SIZE)];			// alloc retains
-	aegisSprite = [[OpenGLSprite alloc]   initWithImage:[ResourceManager imageNamed:AEGIS_IMAGE inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, 32, 32)
-											size:NSMakeSize(32, 32)];	// alloc retains
-	NSImage *zoomLevelImage = [ResourceManager imageNamed:ZOOM_LEVELS_IMAGE inFolder:@"Images"];
-	int w1 = [zoomLevelImage size].width / SCANNER_ZOOM_LEVELS;
-	int h1 = [zoomLevelImage size].height;
-	for (i = 0; i < SCANNER_ZOOM_LEVELS; i++)
-	{
-		zoomLevelSprite[i] = [[OpenGLSprite alloc]   initWithImage:zoomLevelImage
-														cropRectangle:NSMakeRect(w1*i, 0, w1, h1)
-														size:NSMakeSize(16, 16)];	// alloc retains
-	}
-	
+		
 	// init arrays
 	dialArray = [[NSMutableArray alloc] initWithCapacity:16];   // alloc retains
 	legendArray = [[NSMutableArray alloc] initWithCapacity:16]; // alloc retains
@@ -163,12 +144,6 @@ float char_widths[128] = {
 
 - (void) dealloc
 {
-	int i;
-    if (compassSprite)			[compassSprite release];
-    if (aegisSprite)			[aegisSprite release];
-
-	for (i = 0; i < SCANNER_ZOOM_LEVELS; i++) if (zoomLevelSprite[i]) [zoomLevelSprite[i] release];
-
     if (legendArray)			[legendArray release];
     if (dialArray)				[dialArray release];
 
@@ -567,40 +542,87 @@ static BOOL hostiles;
 
 - (void) drawScannerZoomIndicator:(NSDictionary *) info
 {	
-    int x = ZOOM_INDICATOR_CENTRE_X;
-	int y = ZOOM_INDICATOR_CENTRE_Y;
-	double alpha = 1.0;
+    GLfloat zoom_color[] = { 1.0f, 0.1f, 0.0f, 1.0f };
+	GLfloat x = ZOOM_INDICATOR_CENTRE_X;
+	GLfloat y = ZOOM_INDICATOR_CENTRE_Y;
+	NSSize siz = NSMakeSize( ZOOM_INDICATOR_WIDTH, ZOOM_INDICATOR_HEIGHT);
+	GLfloat alpha = 1.0;
 	if ([info objectForKey:X_KEY])
-		x =		[(NSNumber *)[info objectForKey:X_KEY] intValue];
+		x =		[(NSNumber *)[info objectForKey:X_KEY] floatValue];
 	if ([info objectForKey:Y_KEY])
-		y =		[(NSNumber *)[info objectForKey:Y_KEY] intValue];
+		y =		[(NSNumber *)[info objectForKey:Y_KEY] floatValue];
 	if ([info objectForKey:ALPHA_KEY])
-		alpha = [(NSNumber *)[info objectForKey:ALPHA_KEY] doubleValue];
-	int zoom_indicator_cx = x;
-	int zoom_indicator_cy = y;
-	int zl = scanner_zoom - 1.0;
-	if (zl < 0) zl = 0;
-	if (zl >= SCANNER_ZOOM_LEVELS) zl = SCANNER_ZOOM_LEVELS - 1;
-	[zoomLevelSprite[zl] blitCentredToX:zoom_indicator_cx Y:zoom_indicator_cy Z:z1 Alpha:(zl == 0) ? 0.75 * alpha : alpha];	// vary alpha up if zoomed
+		alpha = [(NSNumber *)[info objectForKey:ALPHA_KEY] floatValue];
+	if ([info objectForKey:WIDTH_KEY])
+		siz.width = [(NSNumber *)[info objectForKey:WIDTH_KEY] floatValue];
+	if ([info objectForKey:HEIGHT_KEY])
+		siz.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] floatValue];
+	if ([info objectForKey:RGB_COLOR_KEY])
+	{
+		NSArray*	rgb_array = (NSArray*)[info objectForKey:RGB_COLOR_KEY];
+		zoom_color[0] = (GLfloat)[(NSNumber *)[rgb_array objectAtIndex:0] floatValue];
+		zoom_color[1] = (GLfloat)[(NSNumber *)[rgb_array objectAtIndex:1] floatValue];
+		zoom_color[2] = (GLfloat)[(NSNumber *)[rgb_array objectAtIndex:2] floatValue];
+	}
+	GLfloat cx = x - 0.3 * siz.width;
+	GLfloat cy = y - 0.75 * siz.height;
+
+	int zl = scanner_zoom;
+	if (zl < 1) zl = 1;
+	if (zl > SCANNER_ZOOM_LEVELS) zl = SCANNER_ZOOM_LEVELS;
+	if (zl == 1) alpha *= 0.75;
+	zoom_color[3] = (GLfloat)alpha;
+	glColor4fv( zoom_color);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBindTexture(GL_TEXTURE_2D, ascii_texture_name);
+	glBegin(GL_QUADS);
+	drawCharacterQuad( 48 + zl, cx - 0.4 * siz.width, cy, z1, siz);
+	drawCharacterQuad( 58, cx, cy, z1, siz);
+	drawCharacterQuad( 49, cx + 0.3 * siz.width, cy, z1, siz);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	
 }
 
 - (void) drawCompass:(NSDictionary *) info
 {	
-    int x = COMPASS_CENTRE_X;
-	int y = COMPASS_CENTRE_Y;
-	double alpha = 1.0;
+	NSSize siz = NSMakeSize( COMPASS_HALF_SIZE, COMPASS_HALF_SIZE);
+    GLfloat x = COMPASS_CENTRE_X;
+	GLfloat y = COMPASS_CENTRE_Y;
+	GLfloat alpha = 1.0;
 	if ([info objectForKey:X_KEY])
-		x =		[(NSNumber *)[info objectForKey:X_KEY] intValue];
+		x =		[(NSNumber *)[info objectForKey:X_KEY] floatValue];
 	if ([info objectForKey:Y_KEY])
-		y =		[(NSNumber *)[info objectForKey:Y_KEY] intValue];
+		y =		[(NSNumber *)[info objectForKey:Y_KEY] floatValue];
+	if ([info objectForKey:WIDTH_KEY])
+		siz.width = [(NSNumber *)[info objectForKey:WIDTH_KEY] floatValue];
+	if ([info objectForKey:HEIGHT_KEY])
+		siz.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] floatValue];
 	if ([info objectForKey:ALPHA_KEY])
-		alpha = [(NSNumber *)[info objectForKey:ALPHA_KEY] doubleValue];
+		alpha = [(NSNumber *)[info objectForKey:ALPHA_KEY] floatValue];
 	// draw the compass
 	Matrix rotMatrix;
 	Vector position = player->position;
 	gl_matrix_into_matrix([player rotationMatrix], rotMatrix);
-	//
-	[compassSprite blitCentredToX:x Y:y Z:z1 Alpha:alpha];
+	//	
+	// new
+	GLfloat h1 = siz.height * 0.125;
+	GLfloat h3 = siz.height * 0.375;
+	GLfloat w1 = siz.width * 0.125;
+	GLfloat w3 = siz.width * 0.375;
+	glLineWidth( 2.0 * line_width);	// thicker
+	glColor4f( 0.0f, 0.0f, 1.0f, alpha);
+	drawOval( x, y, z1, siz, 12);	
+	glColor4f( 0.0f, 0.0f, 1.0f, 0.5f * alpha);
+	glBegin(GL_LINES);
+		glVertex3f( x - w1, y, z1);	glVertex3f( x - w3, y, z1);
+		glVertex3f( x + w1, y, z1);	glVertex3f( x + w3, y, z1);
+		glVertex3f( x, y - h1, z1);	glVertex3f( x, y - h3, z1);
+		glVertex3f( x, y + h1, z1);	glVertex3f( x, y + h3, z1);
+	glEnd();
+	glLineWidth( line_width);	// thinner
+	
 	//
 	PlanetEntity*	the_sun = [[player universe] sun];
 	PlanetEntity*	the_planet = [[player universe] planet];
@@ -608,7 +630,6 @@ static BOOL hostiles;
 	Entity*			the_target = [player getPrimaryTarget];
 	Entity*			the_next_beacon = [[player universe] entityForUniversalID:[player nextBeaconID]];
 	int				p_status = player->status;
-//	if (([[player universe] viewDir] != VIEW_DOCKED)&&(the_sun)&&(the_planet))
 	if	(((p_status == STATUS_IN_FLIGHT)
 		||(p_status == STATUS_AUTOPILOT_ENGAGED)
 		||(p_status == STATUS_LAUNCHING)
@@ -665,8 +686,8 @@ static BOOL hostiles;
 		else
 			relativePosition.z = 1.0;
 		relativePosition = unit_vector(&relativePosition);
-		relativePosition.x *= [compassSprite size].width * 0.4;
-		relativePosition.y *= [compassSprite size].height * 0.4;
+		relativePosition.x *= siz.width * 0.4;
+		relativePosition.y *= siz.height * 0.4;
 		relativePosition.x += x;
 		relativePosition.y += y;
 
@@ -677,7 +698,7 @@ static BOOL hostiles;
 		}
 		else
 		{
-			NSSize sz = [compassSprite size];
+			NSSize sz = siz;
 			sz.width *= 0.2;
 			sz.height *= 0.2;
 			glLineWidth(2.0);
@@ -826,19 +847,38 @@ static BOOL hostiles;
 
 - (void) drawAegis:(NSDictionary *) info
 {	
+	if (([[player universe] viewDir] == VIEW_DOCKED)||([[player universe] sun] == nil)||([player checkForAegis] != AEGIS_IN_DOCKING_RANGE))
+		return;	// don't draw
+	
+	NSSize siz = NSMakeSize( AEGIS_WIDTH, AEGIS_HEIGHT);
     int x = AEGIS_CENTRE_X;
 	int y = AEGIS_CENTRE_Y;
-	double alpha = 1.0;
+	GLfloat alpha = 0.5;
 	if ([info objectForKey:X_KEY])
 		x =		[(NSNumber *)[info objectForKey:X_KEY] intValue];
 	if ([info objectForKey:Y_KEY])
 		y =		[(NSNumber *)[info objectForKey:Y_KEY] intValue];
 	if ([info objectForKey:ALPHA_KEY])
-		alpha = [(NSNumber *)[info objectForKey:ALPHA_KEY] doubleValue];
+		alpha *= [(NSNumber *)[info objectForKey:ALPHA_KEY] floatValue];
+	if ([info objectForKey:WIDTH_KEY])
+		siz.width = [(NSNumber *)[info objectForKey:WIDTH_KEY] intValue];
+	if ([info objectForKey:HEIGHT_KEY])
+		siz.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] intValue];
+
 	// draw the aegis indicator
 	//
-	if (([[player universe] viewDir] != VIEW_DOCKED)&&([[player universe] sun])&&([player checkForAegis] == AEGIS_IN_DOCKING_RANGE))
-		[aegisSprite blitCentredToX:x Y:y Z:z1 Alpha:alpha];
+	GLfloat	w = siz.width / 16.0;
+	GLfloat	h = siz.height / 16.0;
+	
+	GLfloat strip[] = { -7,8, -6,5, 5,8, 3,5, 7,2, 4,2, 6,-1, 4,2, -4,-1, -6,2, -4,-1, -7,-1, -3,-4, -5,-7, 6,-4, 7,-7 };
+	
+	glColor4f( 0.0f, 1.0f, 0.0f, alpha);
+	glBegin(GL_QUAD_STRIP);
+	int i;
+	for (i = 0; i < 32; i += 2)
+		glVertex3f( x + w * strip[i], y - h * strip[i + 1], z1);
+	glEnd();
+	
 }
 
 - (void) drawSpeedBar:(NSDictionary *) info
@@ -1483,6 +1523,98 @@ static BOOL hostiles;
 	drawString( [player dial_objinfo], x, y - siz.height, z1, siz);
 	
 	drawString( positionInfo, x, y - 1.8 * siz.height, z1, siz08);
+}
+
+- (void) drawScoopStatus:(NSDictionary *) info
+{
+	NSSize siz = NSMakeSize( SCOOPSTATUS_WIDTH, SCOOPSTATUS_HEIGHT);
+    GLfloat x = SCOOPSTATUS_CENTRE_X;
+	GLfloat y = SCOOPSTATUS_CENTRE_Y;
+	GLfloat alpha = 0.75;
+	if ([info objectForKey:X_KEY])
+		x =		[(NSNumber *)[info objectForKey:X_KEY] floatValue];
+	if ([info objectForKey:Y_KEY])
+		y =		[(NSNumber *)[info objectForKey:Y_KEY] floatValue];
+	if ([info objectForKey:ALPHA_KEY])
+		alpha *= [(NSNumber *)[info objectForKey:ALPHA_KEY] floatValue];
+	if ([info objectForKey:WIDTH_KEY])
+		siz.width = [(NSNumber *)[info objectForKey:WIDTH_KEY] floatValue];
+	if ([info objectForKey:HEIGHT_KEY])
+		siz.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] floatValue];
+
+	GLfloat* s0_color = red_color;
+	GLfloat	s1c[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	GLfloat	s2c[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	GLfloat	s3c[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	int scoop_status = [player dial_fuelscoops_status];
+	double t = [[player universe] getTime];
+	GLfloat a1 = alpha * 0.5f * (1.0f + sin(t * 8.0f));
+	GLfloat a2 = alpha * 0.5f * (1.0f + sin(t * 8.0f - 1.0f));
+	GLfloat a3 = alpha * 0.5f * (1.0f + sin(t * 8.0f - 2.0f));
+		
+	switch (scoop_status)
+	{
+		case SCOOP_STATUS_NOT_INSTALLED :
+			return;	// don't draw
+		case SCOOP_STATUS_FULL_HOLD :
+			s0_color = darkgreen_color;
+			alpha *= 0.75;
+			break;
+		case SCOOP_STATUS_ACTIVE :
+		case SCOOP_STATUS_OKAY :
+			s0_color = green_color;
+			break;
+	}
+	int i;
+	for (i = 0; i < 3; i++)
+	{
+		s1c[i] = s0_color[i];
+		s2c[i] = s0_color[i];
+		s3c[i] = s0_color[i];
+	}
+	if (scoop_status == SCOOP_STATUS_FULL_HOLD)
+	{
+		s3c[0] = red_color[0];
+		s3c[1] = red_color[1];
+		s3c[2] = red_color[2];
+	}
+	if (scoop_status == SCOOP_STATUS_ACTIVE)
+	{
+		s1c[3] = alpha * a1;
+		s2c[3] = alpha * a2;
+		s3c[3] = alpha * a3;
+	}
+	else
+	{
+		s1c[3] = alpha;
+		s2c[3] = alpha;
+		s3c[3] = alpha;
+	}
+	
+	GLfloat w1 = siz.width / 8.0;
+	GLfloat w2 = 2.0 * w1;
+//	GLfloat w3 = 3.0 * w1;
+	GLfloat w4 = 4.0 * w1;
+	GLfloat h1 = siz.height / 8.0;
+	GLfloat h2 = 2.0 * h1;
+	GLfloat h3 = 3.0 * h1;
+	GLfloat h4 = 4.0 * h1;
+	
+	glDisable(GL_TEXTURE_2D);
+	glBegin( GL_QUADS);
+	// section 1
+		glColor4fv( s1c);
+		glVertex3f( x, y + h1, z1);	glVertex3f( x - w2, y + h2, z1);	glVertex3f( x, y + h3, z1);	glVertex3f( x + w2, y + h2, z1);
+	// section 2
+		glColor4fv( s2c);
+		glVertex3f( x, y - h1, z1);	glVertex3f( x - w4, y + h1, z1);	glVertex3f( x - w4, y + h2, z1);	glVertex3f( x, y, z1);
+		glVertex3f( x, y - h1, z1);	glVertex3f( x + w4, y + h1, z1);	glVertex3f( x + w4, y + h2, z1);	glVertex3f( x, y, z1);
+	// section 3
+		glColor4fv( s3c);
+		glVertex3f( x, y - h4, z1);	glVertex3f( x - w2, y - h2, z1);	glVertex3f( x - w2, y - h1, z1);	glVertex3f( x, y - h2, z1);
+		glVertex3f( x, y - h4, z1);	glVertex3f( x + w2, y - h2, z1);	glVertex3f( x + w2, y - h1, z1);	glVertex3f( x, y - h2, z1);
+	glEnd();
+	
 }
 
 - (void) drawGreenSurround:(NSDictionary *) info

@@ -44,6 +44,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "AI.h"
 #import "TextureStore.h"
 
+
 @implementation WormholeEntity
 
 - (id) initWormholeTo:(Random_Seed) s_seed fromShip:(ShipEntity *) ship
@@ -148,6 +149,9 @@ Your fair use and other rights are in no way affected by the above.
 		
 		[ship setBounty:[ship getBounty]/2];	// adjust legal status for new system
 		
+		if ([ship cargoFlag] == CARGO_FLAG_FULL_PLENTIFUL)
+			[ship setCargoFlag: CARGO_FLAG_FULL_SCARCE];
+		
 		[universe addEntity:ship];
 		
 		[[ship getAI] reactToMessage:@"EXITED WITCHSPACE"];
@@ -198,7 +202,7 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		// new billboard routine (from Planetentity.m)
 		Vector v0 = position;
-		Vector p0 = (player)? player->position: make_vector(0,0,0);
+		Vector p0 = (player)? player->position: make_vector( 0.0f, 0.0f, 0.0f);
 		v0.x -= p0.x;	v0.y -= p0.y;	v0.z -= p0.z; // vector from player to position
 		if (v0.x||v0.y||v0.z)
 			v0 = unit_vector(&v0);

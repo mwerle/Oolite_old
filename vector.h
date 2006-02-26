@@ -42,6 +42,23 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "OOOpenGL.h"
 
+
+#define OCTANT_LEFT_BOTTOM_BACK		0
+#define OCTANT_LEFT_BOTTOM_FRONT	1
+#define OCTANT_LEFT_TOP_BACK		2
+#define OCTANT_LEFT_TOP_FRONT		3
+#define OCTANT_RIGHT_BOTTOM_BACK	4
+#define OCTANT_RIGHT_BOTTOM_FRONT	5
+#define OCTANT_RIGHT_TOP_BACK		6
+#define OCTANT_RIGHT_TOP_FRONT		7
+
+#define CUBE_FACE_RIGHT		0x01
+#define CUBE_FACE_LEFT		0x02
+#define CUBE_FACE_TOP		0x04
+#define CUBE_FACE_BOTTOM	0x08
+#define CUBE_FACE_FRONT		0x10
+#define CUBE_FACE_BACK		0x20
+
 struct vector
 {
 	GLfloat x;
@@ -169,6 +186,9 @@ void	quaternion_normalise(struct quaternion *quat);
 
 Vector		calculateNormalForTriangle(struct triangle_4v * tri);
 Triangle	make_triangle(Vector v0, Vector v1, Vector v2);
+
+Vector lineIntersectionWithFace(Vector p1, Vector p2, long mask, GLfloat rd);
+int lineCubeIntersection(Vector v0, Vector v1, GLfloat rd);
 
 #endif
 

@@ -204,14 +204,14 @@ static float volumecount;
 	//	
 	NSObject* foundOctree = [self octreeWithinRadius:foundRadius toDepth:depth];
 	//
-	NSLog(@"octree found has %d leafs - object has volume %.2f mass %.2f", leafcount, volumecount, volumecount * 8.0);
+//	NSLog(@"octree found has %d leafs - object has volume %.2f mass %.2f", leafcount, volumecount, volumecount * 8.0);
 	//
 	Octree*	octreeRepresentation = [[Octree alloc] initWithRepresentationOfOctree:foundRadius :foundOctree :leafcount];
 	//
 	return [octreeRepresentation autorelease];
 }
 
-- (NSObject*) octreeWithinRadius:(GLfloat) octreeRadius toDepth: (int) depth
+- (NSObject*) octreeWithinRadius:(GLfloat) octreeRadius toDepth: (int) depth;
 {
 	//
 	GLfloat offset = 0.5 * octreeRadius;
@@ -223,7 +223,7 @@ static float volumecount;
 	}
 	// there is geometry!
 	//
-	if ((octreeRadius <= 1.0)||(depth <= 0))	// 1.0m resolution
+	if ((octreeRadius <= OCTREE_MIN_RADIUS)||(depth <= 0))	// maximum resolution
 	{
 		leafcount++;	// partially full or -1
 		volumecount += octreeRadius * octreeRadius * octreeRadius * 0.5;
@@ -243,34 +243,34 @@ static float volumecount;
 		}
 	}
 	//
-	Geometry* g_000 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
-	Geometry* g_001 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
-	Geometry* g_010 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
-	Geometry* g_011 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
-	Geometry* g_100 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
-	Geometry* g_101 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
-	Geometry* g_110 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
-	Geometry* g_111 = [[[Geometry alloc] initWithCapacity:n_triangles] autorelease];
+	Geometry* g_000 = [[Geometry alloc] initWithCapacity:n_triangles];
+	Geometry* g_001 = [[Geometry alloc] initWithCapacity:n_triangles];
+	Geometry* g_010 = [[Geometry alloc] initWithCapacity:n_triangles];
+	Geometry* g_011 = [[Geometry alloc] initWithCapacity:n_triangles];
+	Geometry* g_100 = [[Geometry alloc] initWithCapacity:n_triangles];
+	Geometry* g_101 = [[Geometry alloc] initWithCapacity:n_triangles];
+	Geometry* g_110 = [[Geometry alloc] initWithCapacity:n_triangles];
+	Geometry* g_111 = [[Geometry alloc] initWithCapacity:n_triangles];
 	//
 	Geometry* g_xx1 =	[[Geometry alloc] initWithCapacity:n_triangles];
 	Geometry* g_xx0 =	[[Geometry alloc] initWithCapacity:n_triangles];
 	//
-	[self z_axisSplitBetween:g_xx1 :g_xx0 :offset];
+	[self z_axisSplitBetween:g_xx1 :g_xx0 : offset];
 	if ([g_xx0 testHasGeometry])
 	{
 		Geometry* g_x00 =	[[Geometry alloc] initWithCapacity:n_triangles];
 		Geometry* g_x10 =	[[Geometry alloc] initWithCapacity:n_triangles];
 		//
-		[g_xx0 y_axisSplitBetween: g_x10 : g_x00 :offset];
+		[g_xx0 y_axisSplitBetween: g_x10 : g_x00 : offset];
 		if ([g_x00 testHasGeometry])
 		{
-			[g_x00 x_axisSplitBetween:g_100 :g_000 :offset];
+			[g_x00 x_axisSplitBetween:g_100 :g_000 : offset];
 			[g_000 setConvex: isConvex];
 			[g_100 setConvex: isConvex];
 		}
 		if ([g_x10 testHasGeometry])
 		{
-			[g_x10 x_axisSplitBetween:g_110 :g_010 :offset];
+			[g_x10 x_axisSplitBetween:g_110 :g_010 : offset];
 			[g_010 setConvex: isConvex];
 			[g_110 setConvex: isConvex];
 		}
@@ -302,7 +302,7 @@ static float volumecount;
 	[g_xx1 release];
 	
 	leafcount++;	// pointer to array
-	return [NSArray arrayWithObjects:
+	NSObject* result = [NSArray arrayWithObjects:
 		[g_000 octreeWithinRadius: offset toDepth:depth - 1],
 		[g_001 octreeWithinRadius: offset toDepth:depth - 1],
 		[g_010 octreeWithinRadius: offset toDepth:depth - 1],
@@ -312,6 +312,16 @@ static float volumecount;
 		[g_110 octreeWithinRadius: offset toDepth:depth - 1],
 		[g_111 octreeWithinRadius: offset toDepth:depth - 1],
 		nil];
+	[g_000 release];
+	[g_001 release];
+	[g_010 release];
+	[g_011 release];
+	[g_100 release];
+	[g_101 release];
+	[g_110 release];
+	[g_111 release];
+	//
+	return result;
 }
 
 - (void) translate:(Vector) offset
@@ -350,9 +360,9 @@ static float volumecount;
 	}
 }
 
-- (void) x_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) scale;
+- (void) x_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) x;
 {
-	// test each triangle splitting agist x == 0.0
+	// test each triangle splitting against x == 0.0
 	//
 	int i;
 	for (i = 0; i < n_triangles; i++)
@@ -361,6 +371,7 @@ static float volumecount;
 		Vector v0 = triangles[i].v[0];
 		Vector v1 = triangles[i].v[1];
 		Vector v2 = triangles[i].v[2];
+		
 		if ((v0.x >= 0.0)&&(v1.x >= 0.0)&&(v2.x >= 0.0))
 		{
 			[g_plus addTriangle: triangles[i]];
@@ -475,13 +486,13 @@ static float volumecount;
 
 		}
 	}
-	[g_plus translate: make_vector( -scale, 0.0, 0.0)];
-	[g_minus translate: make_vector( scale, 0.0, 0.0)];
+	[g_plus translate: make_vector( -x, 0.0, 0.0)];
+	[g_minus translate: make_vector( x, 0.0, 0.0)];
 }
 
-- (void) y_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) scale;
+- (void) y_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) y;
 {
-	// test each triangle splitting agist y == 0.0
+	// test each triangle splitting against y == 0.0
 	//
 	int i;
 	for (i = 0; i < n_triangles; i++)
@@ -490,6 +501,7 @@ static float volumecount;
 		Vector v0 = triangles[i].v[0];
 		Vector v1 = triangles[i].v[1];
 		Vector v2 = triangles[i].v[2];
+
 		if ((v0.y >= 0.0)&&(v1.y >= 0.0)&&(v2.y >= 0.0))
 		{
 			[g_plus addTriangle: triangles[i]];
@@ -603,13 +615,13 @@ static float volumecount;
 			}			
 		}
 	}
-	[g_plus translate: make_vector( 0.0, -scale, 0.0)];
-	[g_minus translate: make_vector( 0.0, scale, 0.0)];
+	[g_plus translate: make_vector( 0.0, -y, 0.0)];
+	[g_minus translate: make_vector( 0.0, y, 0.0)];
 }
 
-- (void) z_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) scale
+- (void) z_axisSplitBetween:(Geometry*) g_plus :(Geometry*) g_minus :(GLfloat) z
 {
-	// test each triangle splitting agist z == 0.0
+	// test each triangle splitting against z == 0.0
 	//
 	int i;
 	for (i = 0; i < n_triangles; i++)
@@ -618,6 +630,7 @@ static float volumecount;
 		Vector v0 = triangles[i].v[0];
 		Vector v1 = triangles[i].v[1];
 		Vector v2 = triangles[i].v[2];
+		
 		if ((v0.z >= 0.0)&&(v1.z >= 0.0)&&(v2.z >= 0.0))
 		{
 			[g_plus addTriangle: triangles[i]];
@@ -732,8 +745,8 @@ static float volumecount;
 
 		}
 	}
-	[g_plus translate: make_vector( 0.0, 0.0, -scale)];
-	[g_minus translate: make_vector( 0.0, 0.0, scale)];
+	[g_plus translate: make_vector( 0.0, 0.0, -z)];
+	[g_minus translate: make_vector( 0.0, 0.0, z)];
 }
 
 @end

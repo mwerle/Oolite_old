@@ -482,7 +482,7 @@ static NSTimeInterval	time_last_frame;
 					autopilot_engaged = YES;
 					ident_engaged = NO;
 					[self safe_all_missiles];
-					velocity = make_vector( 0, 0, 0);
+					velocity = make_vector( 0.0f, 0.0f, 0.0f);
 					status = STATUS_AUTOPILOT_ENGAGED;
 					[shipAI setState:@"GLOBAL"];	// restart the AI
 					[self beep];
@@ -521,7 +521,7 @@ static NSTimeInterval	time_last_frame;
 					autopilot_engaged = YES;
 					ident_engaged = NO;
 					[self safe_all_missiles];
-					velocity = make_vector( 0, 0, 0);
+					velocity = make_vector( 0.0f, 0.0f, 0.0f);
 					status = STATUS_AUTOPILOT_ENGAGED;
 					[shipAI setState:@"GLOBAL"];	// restart the AI
 					[self beep];
