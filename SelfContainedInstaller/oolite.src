@@ -21,7 +21,7 @@ fi
 
 # Oolite fails with a black message box with no text with the title
 # 'Critical' if this doesn't exist.
-mkdir -p $HOME/GNUstep/Library
+mkdir -p "$HOME/GNUstep/Library/Application Data/Oolite"
 
 # Set GNUstep environment.
 export GNUSTEP_FLATTENED=yes

@@ -343,7 +343,8 @@ Your fair use and other rights are in no way affected by the above.
 		[preloadedDataFiles autorelease];
 	// try finding a cache..
 #ifdef GNUSTEP
-	NSString*	cache_path = [[[[NSHomeDirectory()
+	NSString*	cache_path = [[[[[NSHomeDirectory()
+                        stringByAppendingPathComponent:@"GNUstep"]
 								stringByAppendingPathComponent:@"Library"]
 								stringByAppendingPathComponent:@"Application Support"]
 								stringByAppendingPathComponent:@"Oolite"]
