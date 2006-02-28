@@ -9,7 +9,7 @@ Packager: Dylan Smith <dyls@alioth.net>
 Summary: Oolite is an Elite tribute game that is easily expandable.
 URL: http://oolite.aegidian.org
 License: Creative Commons Attribution-NonCommercial-ShareAlike
-SoftwareVersion: 1.62-2
+SoftwareVersion: 1.62-3gusto
 AutopackageTarget: 1.0
 CPUArchitectures: x86
 
@@ -33,7 +33,7 @@ cp FreeDesktop/oolite.desktop $build_root
 cp FreeDesktop/oolite-icon.png $build_root
 cp oolite.app/oolite $build_root/oolite
 tar zcf $build_root/oolite.app.tar oolite.app --exclude .svn
-cd Linux-x86-deps
+cd deps/Linux-x86-deps
 cp oolite.src $build_root
 cp oolite-update.src $build_root
 tar zcf $build_root/oolite.deps.tar * --exclude .svn

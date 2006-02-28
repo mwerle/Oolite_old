@@ -1,9 +1,9 @@
 include $(GNUSTEP_MAKEFILES)/common.make
 CP = cp
-vpath %.m SDL:Core
-vpath %.h SDL:Core
-vpath %.c SDL:Core
-ADDITIONAL_INCLUDE_DIRS = -ISDL -ICore
+vpath %.m src/SDL:src/Core
+vpath %.h src/SDL:src/Core
+vpath %.c src/SDL:src/Core
+ADDITIONAL_INCLUDE_DIRS = -Isrc/SDL -Isrc/Core
 GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_USER_ROOT)
 ADDITIONAL_GUI_LIBS = -lGLU -lGL -lSDL -lpthread -lSDL_mixer -lSDL_image -lSDL_gfx
 ADDITIONAL_CFLAGS = -DLINUX `sdl-config --cflags`
