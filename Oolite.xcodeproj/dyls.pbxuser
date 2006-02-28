@@ -158,10 +158,17 @@
 	};
 	25F3E6F00994F466002F25FD /* Groolite.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {753, 672}}";
-			sepNavSelRange = "{1048, 0}";
-			sepNavVisRect = "{{0, 98}, {753, 562}}";
+			sepNavIntBoundsRect = "{{0, 0}, {659, 672}}";
+			sepNavSelRange = "{999, 24}";
+			sepNavVisRect = "{{0, 463}, {659, 154}}";
 			sepNavWindowFrame = "{{245, 272}, {798, 691}}";
+		};
+	};
+	25F3E6F10994F466002F25FD /* Groolite.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {800, 3962}}";
+			sepNavSelRange = "{6208, 49}";
+			sepNavVisRect = "{{0, 3318}, {659, 154}}";
 		};
 	};
 	25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {
@@ -251,8 +258,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 162852487;
-			PBXWorkspaceStateSaveDate = 162852487;
+			PBXPerProjectTemplateStateSaveDate = 162854001;
+			PBXWorkspaceStateSaveDate = 162854001;
 		};
 		sourceControlManager = 2555DA74091E8F4200C71505 /* Source Control */;
 		userBuildSettings = {

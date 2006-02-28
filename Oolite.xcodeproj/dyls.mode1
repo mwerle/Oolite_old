@@ -281,14 +281,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>343</integer>
 									<integer>342</integer>
 									<integer>329</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {259, 581}}</string>
+							<string>{{0, 5505}, {259, 581}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -388,9 +387,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2576E70809B4EE97007410F7</string>
+				<string>25CD0C4609B4F5290060106D</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2576E70909B4EE97007410F7</string>
+				<string>25CD0C4709B4F5290060106D</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -525,6 +524,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>2555DA7B091FDCCE00C71505</string>
 		<string>/Users/dyls/oolitesrc/cocoa-merge/Oolite.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -549,7 +549,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>Groolite.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -558,7 +558,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {706, 186}}</string>
 								<key>RubberWindowFrame</key>
-								<string>0 278 706 468 0 0 1024 746 </string>
+								<string>0 710 706 468 0 0 1600 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -584,7 +584,7 @@
 								<key>Frame</key>
 								<string>{{0, 191}, {706, 236}}</string>
 								<key>RubberWindowFrame</key>
-								<string>0 278 706 468 0 0 1024 746 </string>
+								<string>0 710 706 468 0 0 1600 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -607,14 +607,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>2555DA7B091FDCCE00C71505</string>
-				<string>2503F20809980E7F00DE3F91</string>
+				<string>25CD0C4809B4F5290060106D</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.build</string>
 			<key>WindowString</key>
-			<string>0 278 706 468 0 0 1024 746 </string>
+			<string>0 710 706 468 0 0 1600 1178 </string>
 			<key>WindowToolGUID</key>
 			<string>2555DA7B091FDCCE00C71505</string>
 			<key>WindowToolIsVisible</key>
@@ -977,9 +977,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>2576E70609B4EE95007410F7</string>
+				<string>25CD0C5709B4F6A40060106D</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>2576E70709B4EE95007410F7</string>
+				<string>25CD0C5809B4F6A40060106D</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

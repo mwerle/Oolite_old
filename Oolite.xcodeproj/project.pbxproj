@@ -18,7 +18,6 @@
 		25160E2F0995362F0037C2E1 /* OOCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 25160E2E0995362F0037C2E1 /* OOCocoa.h */; };
 		25160E69099539D50037C2E1 /* libOgg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E67099539D50037C2E1 /* libOgg.a */; };
 		25160E6A099539D50037C2E1 /* libVorbisAll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E68099539D50037C2E1 /* libVorbisAll.a */; };
-		25160FE409953CAA0037C2E1 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160FE309953CAA0037C2E1 /* Growl.framework */; };
 		251610DD099544090037C2E1 /* OOCABufferedSound.h in Headers */ = {isa = PBXBuildFile; fileRef = 251610CA099544090037C2E1 /* OOCABufferedSound.h */; };
 		251610DE099544090037C2E1 /* OOCASoundMixer.h in Headers */ = {isa = PBXBuildFile; fileRef = 251610CB099544090037C2E1 /* OOCASoundMixer.h */; };
 		251610DF099544090037C2E1 /* OOCASoundSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 251610CC099544090037C2E1 /* OOCASoundSource.h */; };
@@ -107,6 +106,7 @@
 		25161196099544390037C2E1 /* Universe.h in Headers */ = {isa = PBXBuildFile; fileRef = 25161144099544390037C2E1 /* Universe.h */; };
 		25161197099544390037C2E1 /* TextureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 25161145099544390037C2E1 /* TextureStore.m */; };
 		2576E7B309B4F418007410F7 /* MyOpenGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2576E7B209B4F418007410F7 /* MyOpenGLView.h */; };
+		25CD0C4E09B4F5A70060106D /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25CD0C4D09B4F5A70060106D /* Growl.framework */; };
 		25F3E6310994F033002F25FD /* legacy_random.h in Headers */ = {isa = PBXBuildFile; fileRef = 25F3E6300994F033002F25FD /* legacy_random.h */; };
 		25F3E6330994F04C002F25FD /* legacy_random.c in Sources */ = {isa = PBXBuildFile; fileRef = 25F3E6320994F04C002F25FD /* legacy_random.c */; };
 		25F3E6350994F05C002F25FD /* vector.h in Headers */ = {isa = PBXBuildFile; fileRef = 25F3E6340994F05C002F25FD /* vector.h */; };
@@ -418,7 +418,6 @@
 		25160E2E0995362F0037C2E1 /* OOCocoa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OOCocoa.h; path = src/Core/OOCocoa.h; sourceTree = "<group>"; };
 		25160E67099539D50037C2E1 /* libOgg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOgg.a; path = "Cocoa-deps/Ogg Vorbis/libOgg.a"; sourceTree = "<group>"; };
 		25160E68099539D50037C2E1 /* libVorbisAll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libVorbisAll.a; path = "Cocoa-deps/Ogg Vorbis/libVorbisAll.a"; sourceTree = "<group>"; };
-		25160FE309953CAA0037C2E1 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = "deps/Cocoa-deps/Growl.framework"; sourceTree = "<group>"; };
 		251610CA099544090037C2E1 /* OOCABufferedSound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OOCABufferedSound.h; path = src/Cocoa/OOCABufferedSound.h; sourceTree = "<group>"; };
 		251610CB099544090037C2E1 /* OOCASoundMixer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OOCASoundMixer.h; path = src/Cocoa/OOCASoundMixer.h; sourceTree = "<group>"; };
 		251610CC099544090037C2E1 /* OOCASoundSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OOCASoundSource.h; path = src/Cocoa/OOCASoundSource.h; sourceTree = "<group>"; };
@@ -507,6 +506,7 @@
 		25161144099544390037C2E1 /* Universe.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Universe.h; path = src/Core/Universe.h; sourceTree = "<group>"; };
 		25161145099544390037C2E1 /* TextureStore.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = TextureStore.m; path = src/Core/TextureStore.m; sourceTree = "<group>"; };
 		2576E7B209B4F418007410F7 /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MyOpenGLView.h; path = src/Cocoa/MyOpenGLView.h; sourceTree = "<group>"; };
+		25CD0C4D09B4F5A70060106D /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = "deps/Cocoa-deps/Growl.framework"; sourceTree = "<group>"; };
 		25F3E6300994F033002F25FD /* legacy_random.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = legacy_random.h; path = src/Core/legacy_random.h; sourceTree = "<group>"; };
 		25F3E6320994F04C002F25FD /* legacy_random.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = legacy_random.c; path = src/Core/legacy_random.c; sourceTree = "<group>"; };
 		25F3E6340994F05C002F25FD /* vector.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vector.h; path = src/Core/vector.h; sourceTree = "<group>"; };
@@ -754,7 +754,7 @@
 				25F3E8EC099502BB002F25FD /* libVorbisAll.a in Frameworks */,
 				25160E69099539D50037C2E1 /* libOgg.a in Frameworks */,
 				25160E6A099539D50037C2E1 /* libVorbisAll.a in Frameworks */,
-				25160FE409953CAA0037C2E1 /* Growl.framework in Frameworks */,
+				25CD0C4E09B4F5A70060106D /* Growl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1033,7 +1033,7 @@
 		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				25160FE309953CAA0037C2E1 /* Growl.framework */,
+				25CD0C4D09B4F5A70060106D /* Growl.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 			);
@@ -1713,6 +1713,7 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/Ogg Vorbis",
 					"$(SRCROOT)/Cocoa-deps",
+					"$(SRCROOT)/deps/Cocoa-deps",
 				);
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -1746,8 +1747,8 @@
 		088BB9010974564500399D1A /* Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = "\"Cocoa-deps/Ogg Vorbis\"";
-				LIBRARY_SEARCH_PATHS = "\"Cocoa-deps/Ogg Vorbis\"";
+				HEADER_SEARCH_PATHS = "\"deps/Cocoa-deps/Ogg Vorbis\"";
+				LIBRARY_SEARCH_PATHS = "\"deps/Cocoa-deps/Ogg Vorbis\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = "-DLOADSAVEGUI";
 				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
@@ -1762,6 +1763,7 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/Ogg Vorbis",
 					"$(SRCROOT)/Cocoa-deps",
+					"$(SRCROOT)/deps/Cocoa-deps",
 				);
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1800,6 +1802,7 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/Ogg Vorbis",
 					"$(SRCROOT)/Cocoa-deps",
+					"$(SRCROOT)/deps/Cocoa-deps",
 				);
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
