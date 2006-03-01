@@ -1709,25 +1709,17 @@
 				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(SRCROOT)/Ogg Vorbis",
-					"$(SRCROOT)/Cocoa-deps",
-					"$(SRCROOT)/deps/Cocoa-deps",
-				);
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/\"";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_REUSE_STRINGS = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Ogg Vorbis\"";
-				INFOPLIST_FILE = "Info-OoliteUB.plist";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg Vorbis\"";
+				INFOPLIST_FILE = "src/Cocoa/Info-OoliteUB.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/Ogg Vorbis",
-					"$(SRCROOT)/Cocoa-deps/Ogg Vorbis",
-				);
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg\\ Vorbis\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -1759,25 +1751,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(SRCROOT)/Ogg Vorbis",
-					"$(SRCROOT)/Cocoa-deps",
-					"$(SRCROOT)/deps/Cocoa-deps",
-				);
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/\"";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_REUSE_STRINGS = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Ogg Vorbis\"";
-				INFOPLIST_FILE = "Info-OoliteDev.plist";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg Vorbis\"";
+				INFOPLIST_FILE = "src/Cocoa/Info-OoliteDev.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/Ogg Vorbis",
-					"$(SRCROOT)/Cocoa-deps/Ogg Vorbis",
-				);
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg\\ Vorbis\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = "-DLOADSAVEGUIXX";
 				OTHER_LDFLAGS = "";
@@ -1798,24 +1782,16 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)",
-					"$(SRCROOT)/Ogg Vorbis",
-					"$(SRCROOT)/Cocoa-deps",
-					"$(SRCROOT)/deps/Cocoa-deps",
-				);
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/\"";
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_REUSE_STRINGS = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Ogg Vorbis\"";
-				INFOPLIST_FILE = "Info-Oolite.plist";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg Vorbis\"";
+				INFOPLIST_FILE = "src/Cocoa/Info-Oolite.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/Ogg Vorbis",
-					"$(SRCROOT)/Cocoa-deps/Ogg Vorbis",
-				);
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg\\ Vorbis\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = Oolite;
