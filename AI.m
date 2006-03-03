@@ -124,7 +124,19 @@ Your fair use and other rights are in no way affected by the above.
 	
 	if (!ai_stack)
 		ai_stack = [[NSMutableArray alloc] initWithCapacity:8];
-	
+
+   if ([ai_stack count] > 32)
+  	{
+  	   NSLog(@"***** ERROR: AI stack overflow for %@ stack:\n%@", owner, ai_stack);
+  	   NSException *myException = [NSException
+  	            exceptionWithName:@"OoliteException"
+  	            reason:[NSString stringWithFormat:@"AI stack overflow for %@", owner]
+  	            userInfo:nil];
+  	            [myException raise];
+  	            return;
+  	}
+  	    
+   
 	[ai_stack insertObject:pickledMachine atIndex:0];	//  PUSH
 }
 
