@@ -130,7 +130,7 @@ Your fair use and other rights are in no way affected by the above.
 #define OOLITE_EXCEPTION_SHIP_NOT_FOUND	@"OoliteShipNotFoundException"
 #define OOLITE_EXCEPTION_FATAL			@"OoliteFatalException"
 
-@class TextureStore, OpenGLSprite, GameController, ShipEntity;
+@class TextureStore, OpenGLSprite, GameController, ShipEntity, CollisionRegion;
 
 extern int debug;
 
@@ -252,6 +252,8 @@ extern int debug;
 		NSMutableArray*			activeWormholes;
 		
 		NSMutableArray*			characterPool;
+		
+		CollisionRegion*		universeRegion;
 
 }
 
@@ -375,6 +377,7 @@ extern int debug;
 - (double) getTimeDelta;
 
 - (void) findCollisions;
+- (NSString*) collisionDescription;
 - (void) dumpCollisions;
 
 - (void) setViewDirection:(int) vd;

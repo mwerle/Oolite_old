@@ -1504,6 +1504,8 @@ static BOOL hostiles;
 	
 	NSString* positionInfo = [universe expressPosition:player->position inCoordinateSystem:@"pwm"];
 	
+	NSString* collDebugInfo = [NSString stringWithFormat:@"%@ - %@", [player dial_objinfo], [universe collisionDescription]];
+	
 	int x = FPSINFO_DISPLAY_X;
 	int y = FPSINFO_DISPLAY_Y;
 	NSSize siz = NSMakeSize( FPSINFO_DISPLAY_WIDTH, FPSINFO_DISPLAY_HEIGHT);
@@ -1520,7 +1522,8 @@ static BOOL hostiles;
 
 	glColor4f( 0.0, 1.0, 0.0, 1.0);
 	drawString( [player dial_fpsinfo], x, y, z1, siz);
-	drawString( [player dial_objinfo], x, y - siz.height, z1, siz);
+//	drawString( [player dial_objinfo], x, y - siz.height, z1, siz);
+	drawString( collDebugInfo, x, y - siz.height, z1, siz);
 	
 	drawString( positionInfo, x, y - 1.8 * siz.height, z1, siz08);
 }

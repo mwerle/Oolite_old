@@ -283,6 +283,8 @@ static  Universe	*data_store_universe;
 	isSunlit = YES;
 	shadingEntityID = NO_TARGET;
 	//
+	collision_region = nil;
+	//
     return self;
 }
 

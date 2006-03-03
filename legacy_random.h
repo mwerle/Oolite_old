@@ -88,6 +88,8 @@ inline float bellf (int n);
 
 int gen_rnd_number (void);
 
+void make_pseudo_random_seed (struct rand_seed_6uc *seed_ptr);
+
 void rotate_seed (struct rand_seed_6uc *seed_ptr);
 int rotate_byte_left (int x);
 

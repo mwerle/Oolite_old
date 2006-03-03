@@ -100,7 +100,7 @@ Your fair use and other rights are in no way affected by the above.
 #include "vector.h"
 #include "legacy_random.h"
 
-@class Universe, Geometry;
+@class Universe, Geometry, CollisionRegion;
 
 
 struct face
@@ -201,7 +201,10 @@ extern int debug;
 		//
 		Entity*	collider;
 		//
-	   int			universal_id;				// used to reference the entity
+		int			universal_id;				// used to reference the entity
+		//
+		CollisionRegion*	collision_region;		// initially nil - then maintained
+		
 	@protected
 	//
 	//////////////////////////////////////////////////////

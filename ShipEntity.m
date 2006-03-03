@@ -1156,7 +1156,11 @@ static NSMutableDictionary* smallOctreeDict = nil;
 		portWeaponOffset = [Entity vectorFromString: (NSString *)[shipdict objectForKey:@"weapon_position_port"]];
 	if ([shipdict objectForKey:@"weapon_position_starboard"])
 		starboardWeaponOffset = [Entity vectorFromString: (NSString *)[shipdict objectForKey:@"weapon_position_starboard"]];
-	//
+	
+	// fuel scoop destination position (where cargo gets sucked into)
+	tractor_position = make_vector( 0.0f, 0.0f, 0.0f);
+	if ([shipdict objectForKey:@"scoop_position"])
+		tractor_position = [Entity vectorFromString: (NSString *)[shipdict objectForKey:@"scoop_position"]];
 }
 
 

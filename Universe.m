@@ -51,6 +51,9 @@ Your fair use and other rights are in no way affected by the above.
 #import "OOSound.h"
 
 #import "Octree.h"
+#import "CollisionRegion.h"
+
+#import "OOCharacter.h"
 
 #define MAX_NUMBER_OF_ENTITIES				200
 #define MAX_NUMBER_OF_SOLAR_SYSTEM_ENTITIES 20
@@ -106,9 +109,12 @@ Your fair use and other rights are in no way affected by the above.
 	//
 //	preloadedDataFiles =   [[NSMutableDictionary dictionaryWithCapacity:16] retain];
 	// try finding a cache..
-   NSString*   cache_path = OOLITE_CACHE;
-	
-   if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
+	NSString*	cache_path = [[[[NSHomeDirectory()
+								stringByAppendingPathComponent:@"Library"]
+								stringByAppendingPathComponent:@"Application Support"]
+								stringByAppendingPathComponent:@"Oolite"]
+								stringByAppendingPathComponent:@"cache"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
 	{
 		NSLog(@"DEBUG ** found cache - loading data ...**");
 		preloadedDataFiles = [[NSMutableDictionary dictionaryWithContentsOfFile:cache_path] retain];
@@ -219,6 +225,8 @@ Your fair use and other rights are in no way affected by the above.
 	//NSLog(@"UNIVERSE INIT station %d, planet %d, sun %d",station,planet,sun);
 	
 	demo_ship = nil;
+	
+	universeRegion = [[CollisionRegion alloc] initAsUniverse];	// retained
 		
     return self;
 }
@@ -263,7 +271,9 @@ Your fair use and other rights are in no way affected by the above.
 	if (activeWormholes)		[activeWormholes release];
 								
 	if (characterPool)			[characterPool release];
-								
+	
+	if (universeRegion)			[universeRegion release];
+	
 //	// reset/dealloc the universal planet edge thingy
 //	[PlanetEntity resetBaseVertexArray];
 	
@@ -330,8 +340,11 @@ Your fair use and other rights are in no way affected by the above.
 	if (preloadedDataFiles)
 		[preloadedDataFiles autorelease];
 	// try finding a cache..
-	NSString*	cache_path = OOLITE_CACHE;
-      
+	NSString*	cache_path = [[[[NSHomeDirectory()
+								stringByAppendingPathComponent:@"Library"]
+								stringByAppendingPathComponent:@"Application Support"]
+								stringByAppendingPathComponent:@"Oolite"]
+								stringByAppendingPathComponent:@"cache"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
 	{
 		NSLog(@"DEBUG ** found cache - loading data ...**");
@@ -671,6 +684,8 @@ Your fair use and other rights are in no way affected by the above.
 		
 	}
 	
+	[universeRegion clearSubregions];
+
 	//
 	// fixed entities (part of the graphics system really) come first...
 	//
@@ -756,23 +771,9 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	if ([systeminfo objectForKey:KEY_SCRIPT_ACTIONS])
 	{
-//		NSLog(@"DEBUG executing systeminfo script_actions");
-//		debug = YES;
-		
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
 		
 		[player scriptActions:script_actions forTarget: nil];
-		
-//		int i;
-//		for (i = 0; i < [script_actions count]; i++)
-//		{
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-//		}
-		
-//		debug = NO;
 	}
 	
 }
@@ -800,6 +801,8 @@ Your fair use and other rights are in no way affected by the above.
 	BOOL				sun_gone_nova = NO;
 	if ([systeminfo objectForKey:@"sun_gone_nova"])
 		sun_gone_nova = YES;
+	
+	[universeRegion clearSubregions];
 	
 //	NSLog(@"DEBUG systeminfo =\n%@", [systeminfo description]);
 	
@@ -848,13 +851,23 @@ Your fair use and other rights are in no way affected by the above.
 	/*- space planet -*/
 	a_planet = [[PlanetEntity alloc] initWithSeed: system_seed fromUniverse: self];	// alloc retains!
 	double planet_radius = [a_planet getRadius];
+	double region_radius = 2.5f * planet_radius;
+	double planet_zpos = (12.0 + (ranrot_rand() & 3) - (ranrot_rand() & 3) ) * planet_radius; // 10..14 pr (planet radii) ahead
+	double region_spacing = 2.0 * region_radius;
 	
 	[a_planet setPlanetType:PLANET_TYPE_GREEN];
 	[a_planet setStatus:STATUS_ACTIVE];
-	[a_planet setPosition:0.0:0.0:(12.0 + (ranrot_rand() & 3) - (ranrot_rand() & 3) ) * planet_radius]; // 10..14 pr (planet radii)  ahead
+	[a_planet setPosition: 0.0: 0.0: planet_zpos];
 	[a_planet setScanClass: CLASS_NO_DRAW];
 	[a_planet setEnergy:  1000000.0];
 	[self addEntity:a_planet]; // [entities addObject:a_planet];
+	
+	Vector region_pos = a_planet->position;
+	while (region_pos.z > -planet_radius)
+	{
+		[universeRegion addSubregionAtPosition: region_pos withRadius: region_radius];	// collision regions from planet to witchpoint
+		region_pos.z -= region_spacing;
+	}
 	
 	planet = [a_planet universal_id];
 	/*--*/
@@ -986,6 +999,34 @@ Your fair use and other rights are in no way affected by the above.
 //		NSLog([NSString stringWithFormat:@"Human Name: %@ %@", [self expandDescription:@"%R" forSystem:p_seed], [self expandDescription:@"[nom]" forSystem:p_seed]]);
 //	}
 	
+//	// debug character gen
+//	int i;
+//	Random_Seed p_seed = system_seed;
+//	for (i = 0; i < 20; i++)
+//	{
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		NSLog(@"%d.) %@", i + 1, [[[OOCharacter alloc] initWithGenSeed: p_seed andOriginalSystemSeed: system_seed inUniverse: self] autorelease]);
+//	}
+//	for (i = 0; i < 20; i++)
+//	{
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		NSLog(@"%d.) %@", i + 1, [[[OOCharacter alloc] initWithRole:@"pirate" andOriginalSystemSeed: p_seed inUniverse: self] autorelease]);
+//	}
+//	for (i = 0; i < 20; i++)
+//	{
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		NSLog(@"%d.) %@", i + 1, [[[OOCharacter alloc] initWithRole:@"trader" andOriginalSystemSeed: p_seed inUniverse: self] autorelease]);
+//	}
+	
 	
 	/*- nav beacon -*/
 	nav_buoy = [self getShipWithRole:@"buoy"];	// retain count = 1
@@ -1063,15 +1104,6 @@ Your fair use and other rights are in no way affected by the above.
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
 		
 		[player scriptActions: script_actions forTarget: nil];
-		
-//		int i;
-//		for (i = 0; i < [script_actions count]; i++)
-//		{
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-//		}
 	}
 	
 }
@@ -1684,8 +1716,16 @@ Your fair use and other rights are in no way affected by the above.
 			[self addEntity:hermit];
 			[[hermit getAI] setState:@"GLOBAL"];
 			[hermit release];
+			cluster_size++;
 		}
 	}
+	
+	// hint to the collision detection system
+	if (cluster_size > 3)
+	{
+		[universeRegion addSubregionAtPosition: spawnPos withRadius: SCANNER_MAX_RANGE * 1.5f ];	// 50% fudge on size
+	}
+	
 	return rocks;
 }
 
@@ -4636,100 +4676,120 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 	//
 	// According to Shark, this is where Oolite spends most time!
 	//
-	Entity *e1,*e2;
-	Vector p1, p2;
-	double dist2, r1, r2, r0, min_dist2;
-	int i,j;
+	int i;
 	//
-	// use a non-mutable copy so this can't be changed under us.
+	[universeRegion clearEntityList];
 	//
-	int			ent_count =		n_entities;
-	int			n_test = 0;
-	Entity*		my_entities[ent_count];
-	for (i = 0; i < ent_count; i++)
-	{
-		if ([sortedEntities[i] canCollide])	// on Jens' suggestion only check collidables
-			my_entities[n_test++] = [sortedEntities[i] retain];		//	retained
-	}
-	if (n_test <= 1)
-		return;
+	for (i = 0; i < n_entities; i++)
+		if ([sortedEntities[i] canCollide])						// on Jens' suggestion only check collidables
+			[universeRegion checkEntity: sortedEntities[i]];	//	sorts out which region it's in
 	//
-	//	clear collision vars
-	for (i = 0; i < n_test; i++)
-	{
-		e1 = my_entities[i];
-		if (e1->has_collided)
-			[[e1 collisionArray] removeAllObjects];
-		e1->has_collided = NO;
-		if (e1->isShip)
-			[(ShipEntity*)e1 setProximity_alert:nil];
-		e1->collider = nil;
-	}
+	[universeRegion findCollisionsInUniverse: self];
 	//
-	// test each entity against the others
-	for (i = 0; i < n_test; i++)
-	{
-		e1 = my_entities[i];
-		p1 = e1->position;
-		r1 = e1->collision_radius;
-		for (j = i + 1; j < n_test; j++)	// was j = 1, which wasted time!
-		{
-			e2 = my_entities[j];
-			p2 = e2->position;
-			r2 = e2->collision_radius;
-			r0 = r1 + r2;
-			p2.x -= p1.x;   p2.y -= p1.y;   p2.z -= p1.z;
-			if ((p2.x > r0)||(p2.x < -r0))	// test for simple x distance
-				continue;	// next j
-			if ((p2.y > r0)||(p2.y < -r0))	// test for simple y distance
-				continue;	// next j
-			if ((p2.z > r0)||(p2.z < -r0))	// test for simple z distance
-				continue;	// next j
-			dist2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
-			min_dist2 = r0 * r0;
-			if (e1->isShip && (e2 == cachedSun))
-				[e1 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
-			if (e2->isShip && (e1 == cachedSun))
-				[e2 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
-			if (dist2 < PROXIMITY_WARN_DISTANCE2 * min_dist2)
-			{
-				if ((e1->isShip) && (e2->isShip))
-				{
-//					NSLog(@"PROXIMITY ALERT %@ VS %@", e1, e2);
-					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r2 * r2) [(ShipEntity*)e1 setProximity_alert:(ShipEntity*)e2];
-					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r1 * r1) [(ShipEntity*)e2 setProximity_alert:(ShipEntity*)e1];
-				}
-				if (dist2 < min_dist2)
-				{
-					BOOL	coll1 = [e1 checkCloseCollisionWith:e2];
-					BOOL	coll2 = [e2 checkCloseCollisionWith:e1];
-//					NSLog(@"Checking close collision between entities [%@:%@] = :%@: :%@:",e1,e2, coll1? @"YES":@"NO ", coll2? @"YES":@"NO ");
-					if ( coll1 && coll2 )
-					{
-						//NSLog(@"collision!");
-						if (e1->collider)
-							[[e1 collisionArray] addObject:e1->collider];
-						else
-							[[e1 collisionArray] addObject:e2];
-						e1->has_collided = YES;
-						//
-						if (e2->collider)
-							[[e2 collisionArray] addObject:e2->collider];
-						else
-							[[e2 collisionArray] addObject:e1];
-						e2->has_collided = YES;
-					}
-				}
-			}
-//			if (dumpCollisionInfo)
-//				NSLog(@"Entity %d (%.1f) to entity %d (%.1f)- dist2ance  %.1f (%.1f,%.1f,%.1f)", i, r1, j, r2, sqrt(dist2), p2.x, p2.y, p2.z);
-		}
-	}
-//	if (dumpCollisionInfo)
-//		dumpCollisionInfo = NO;
-	//
-	for (i = 0; i < n_test; i++)
-		[my_entities[i] release];		//	released
+}
+//{
+//	//
+//	// According to Shark, this is where Oolite spends most time!
+//	//
+//	Entity *e1,*e2;
+//	Vector p1, p2;
+//	double dist2, r1, r2, r0, min_dist2;
+//	int i,j;
+//	//
+//	// use a non-mutable copy so this can't be changed under us.
+//	//
+//	int			ent_count =		n_entities;
+//	int			n_test = 0;
+//	Entity*		my_entities[ent_count];
+//	for (i = 0; i < ent_count; i++)
+//	{
+//		if ([sortedEntities[i] canCollide])	// on Jens' suggestion only check collidables
+//			my_entities[n_test++] = [sortedEntities[i] retain];		//	retained
+//	}
+//	if (n_test <= 1)
+//		return;
+//	//
+//	//	clear collision vars
+//	for (i = 0; i < n_test; i++)
+//	{
+//		e1 = my_entities[i];
+//		if (e1->has_collided)
+//			[[e1 collisionArray] removeAllObjects];
+//		e1->has_collided = NO;
+//		if (e1->isShip)
+//			[(ShipEntity*)e1 setProximity_alert:nil];
+//		e1->collider = nil;
+//	}
+//	//
+//	// test each entity against the others
+//	for (i = 0; i < n_test; i++)
+//	{
+//		e1 = my_entities[i];
+//		p1 = e1->position;
+//		r1 = e1->collision_radius;
+//		for (j = i + 1; j < n_test; j++)	// was j = 1, which wasted time!
+//		{
+//			e2 = my_entities[j];
+//			p2 = e2->position;
+//			r2 = e2->collision_radius;
+//			r0 = r1 + r2;
+//			p2.x -= p1.x;   p2.y -= p1.y;   p2.z -= p1.z;
+//			if ((p2.x > r0)||(p2.x < -r0))	// test for simple x distance
+//				continue;	// next j
+//			if ((p2.y > r0)||(p2.y < -r0))	// test for simple y distance
+//				continue;	// next j
+//			if ((p2.z > r0)||(p2.z < -r0))	// test for simple z distance
+//				continue;	// next j
+//			dist2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
+//			min_dist2 = r0 * r0;
+//			if (e1->isShip && (e2 == cachedSun))
+//				[e1 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
+//			if (e2->isShip && (e1 == cachedSun))
+//				[e2 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
+//			if (dist2 < PROXIMITY_WARN_DISTANCE2 * min_dist2)
+//			{
+//				if ((e1->isShip) && (e2->isShip))
+//				{
+////					NSLog(@"PROXIMITY ALERT %@ VS %@", e1, e2);
+//					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r2 * r2) [(ShipEntity*)e1 setProximity_alert:(ShipEntity*)e2];
+//					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r1 * r1) [(ShipEntity*)e2 setProximity_alert:(ShipEntity*)e1];
+//				}
+//				if (dist2 < min_dist2)
+//				{
+//					BOOL	coll1 = [e1 checkCloseCollisionWith:e2];
+//					BOOL	coll2 = [e2 checkCloseCollisionWith:e1];
+////					NSLog(@"Checking close collision between entities [%@:%@] = :%@: :%@:",e1,e2, coll1? @"YES":@"NO ", coll2? @"YES":@"NO ");
+//					if ( coll1 && coll2 )
+//					{
+//						//NSLog(@"collision!");
+//						if (e1->collider)
+//							[[e1 collisionArray] addObject:e1->collider];
+//						else
+//							[[e1 collisionArray] addObject:e2];
+//						e1->has_collided = YES;
+//						//
+//						if (e2->collider)
+//							[[e2 collisionArray] addObject:e2->collider];
+//						else
+//							[[e2 collisionArray] addObject:e1];
+//						e2->has_collided = YES;
+//					}
+//				}
+//			}
+////			if (dumpCollisionInfo)
+////				NSLog(@"Entity %d (%.1f) to entity %d (%.1f)- dist2ance  %.1f (%.1f,%.1f,%.1f)", i, r1, j, r2, sqrt(dist2), p2.x, p2.y, p2.z);
+//		}
+//	}
+////	if (dumpCollisionInfo)
+////		dumpCollisionInfo = NO;
+//	//
+//	for (i = 0; i < n_test; i++)
+//		[my_entities[i] release];		//	released
+//}
+
+- (NSString*) collisionDescription
+{
+	return [universeRegion debugOut];
 }
 
 - (void) dumpCollisions
@@ -7037,7 +7097,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	[partial	replaceOccurrencesOfString:@"%I"
 				withString:[NSString stringWithFormat:@"%@ian",[self generateSystemName:s_seed]]
 				options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
-				
+	
 	[partial	replaceOccurrencesOfString:@"%R"
 				withString:[self getRandomDigrams]
 				options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
