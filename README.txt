@@ -38,6 +38,7 @@ src               Objective-C and C sources, incuding header files:
    Core           Files that are compiled on all platforms
    SDL            Files that are only compiled for platforms that use SDL
    Cocoa          Files that are only compiled on Mac OS X without SDL
+   BSDCompat      Support for BSDisms that gnu libc doesn't have (strl*)
 tools             Various tools for preparing files, builds, releases etc.
 
 3. Building
