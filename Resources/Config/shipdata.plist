@@ -619,7 +619,7 @@
 		<key>name</key>
 		<string>Cargo container</string>
 		<key>roles</key>
-		<string>cargopod</string>
+		<string>cargopod 1t-cargopod</string>
 		<key>thrust</key>
 		<real>0.0</real>
 		<key>weapon_energy</key>

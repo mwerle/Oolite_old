@@ -586,7 +586,7 @@ Your fair use and other rights are in no way affected by the above.
 
 	// feelings
 	//
-	GLfloat temp = [player dial_cabin_temp];
+	GLfloat temp = [player dial_ship_temperature];
 	discomfort += delta_t * hunger * 0.02 * (1.0 - hunger);
 	if (temp > 0.33)
 		discomfort += delta_t * (temp - 0.33) * (temp - 0.33) * 0.05;

@@ -168,6 +168,7 @@ enum
 	_bufferL = nil;
 	[_bufferR release];
 	_bufferR = nil;
+	[_decoder rewindToBeginning];
 }
 
 

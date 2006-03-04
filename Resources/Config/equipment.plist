@@ -209,6 +209,14 @@
 		<string>EQ_WEAPON_TWIN_PLASMA_CANNON</string>
 		<string>Basic cannon delivering charged plasma bursts at sublight speed.</string>
 	</array>
+	<!-- new items -->
+	<array>
+		<integer>4</integer>
+		<integer>15000</integer>
+		<string>External Heat Shielding</string>
+		<string>EQ_HEAT_SHIELD</string>
+		<string>Additional ceramid-fibre blanketing and tiles, no armour value but provides extra solar insulation.</string>
+	</array>
 	<!-- renovation -->
 	<array>
 		<integer>6</integer>

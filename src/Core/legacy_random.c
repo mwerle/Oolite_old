@@ -192,6 +192,15 @@ int gen_rnd_number (void)
 	return a;
 }
 
+void make_pseudo_random_seed (struct rand_seed_6uc *seed_ptr)
+{
+	seed_ptr->a = gen_rnd_number();
+	seed_ptr->b = gen_rnd_number();
+	seed_ptr->c = gen_rnd_number();
+	seed_ptr->d = gen_rnd_number();
+	seed_ptr->e = gen_rnd_number();
+	seed_ptr->f = gen_rnd_number();
+}
 
 void rotate_seed (struct rand_seed_6uc *seed_ptr)
 {

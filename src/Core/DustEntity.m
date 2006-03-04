@@ -168,7 +168,6 @@ Your fair use and other rights are in no way affected by the above.
 		glFogf(GL_FOG_END, half_scale);
 		//
 		// disapply lighting and texture
-		glDisable(GL_LIGHTING);
 		glDisable(GL_TEXTURE_2D);
 		//
 		if (player->isSunlit)
@@ -202,13 +201,9 @@ Your fair use and other rights are in no way affected by the above.
 				Vector vh = make_vector(vertices[vi].x-warp_vector.x/HYPERSPEED_FACTOR, vertices[vi].y-warp_vector.y/HYPERSPEED_FACTOR, vertices[vi].z-warp_vector.z/HYPERSPEED_FACTOR);
 				glVertex3f( vh.x, vh.y, vh.z);
 			}
-//	//
-//	checkGLErrors(@"DustEntity after p1");	// NOTA BENE: YOU CANNOT CHECK FOR GL_ERRORs BETWEEN GL_BEGIN AND GL_END
-//	//
 		}
 		glEnd();
-		// reapply lighting etc.
-		glEnable(GL_LIGHTING);
+		// reapply normal conditions
 		glDisable(GL_FOG);
 	}
 	//

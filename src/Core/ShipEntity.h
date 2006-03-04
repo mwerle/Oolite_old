@@ -81,6 +81,8 @@ Your fair use and other rights are in no way affected by the above.
 
 #define CONDITION_ENERGY_BOMB_COUNTDOWN		601
 
+#define CONDITION_TRACTORED					701
+
 #define CONDITION_EXPERIMENTAL				54321
 
 
@@ -100,11 +102,12 @@ Your fair use and other rights are in no way affected by the above.
 
 #define CARGO_NOT_CARGO					-1
 #define CARGO_SLAVES					3
-#define CARGO_MINERALS					12
 #define CARGO_ALLOY						9
+#define CARGO_MINERALS					12
 #define CARGO_THARGOID					16
 #define CARGO_RANDOM					100
 #define CARGO_SCRIPTED_ITEM				200
+#define CARGO_CHARACTER					300
 
 #define CARGO_FLAG_NONE					400
 #define CARGO_FLAG_FULL_PLENTIFUL		501
@@ -112,6 +115,7 @@ Your fair use and other rights are in no way affected by the above.
 #define CARGO_FLAG_PIRATE				505
 #define CARGO_FLAG_FULL_UNIFORM			510
 #define CARGO_FLAG_CANISTERS			600
+#define CARGO_FLAG_FULL_PASSENGERS		700
 
 #define PIRATES_PREFER_PLAYER			YES
 
@@ -137,6 +141,13 @@ Your fair use and other rights are in no way affected by the above.
 #define COMBAT_OUT_RANGE_FACTOR						0.500
 #define COMBAT_WEAPON_RANGE_FACTOR					1.200
 
+#define SHIP_COOLING_FACTOR				1.0
+#define SHIP_INSULATION_FACTOR			0.00175
+#define SHIP_MAX_CABIN_TEMP				256.0
+#define SHIP_MIN_CABIN_TEMP				60.0
+
+#define SUN_TEMPERATURE					1250.0
+
 #define MAX_ESCORTS						16
 #define ESCORT_SPACING_FACTOR			3.0
 
@@ -144,9 +155,11 @@ Your fair use and other rights are in no way affected by the above.
 
 #define TURRET_SHOT_SPEED				2000.0
 
+#define TRACTOR_FORCE					2500.0f
+
 #define AIMS_AGGRESSOR_SWITCHED_TARGET	@"AGGRESSOR_SWITCHED_TARGET"
 
-@class StationEntity, ParticleEntity, PlanetEntity, WormholeEntity, AI;
+@class StationEntity, ParticleEntity, PlanetEntity, WormholeEntity, AI, Octree;
 
 @interface ShipEntity : Entity {
 	
@@ -163,6 +176,10 @@ Your fair use and other rights are in no way affected by the above.
 		// navigation
 		//
 		Vector v_forward, v_up, v_right;	// unit vectors derived from the direction faced
+		
+		// collision management
+		//
+		Octree*	octree;	// this is not retained by the ShipEntity but kept in a global dict.
 
 	@protected
 
@@ -319,10 +336,23 @@ Your fair use and other rights are in no way affected by the above.
 		BOOL					isNearPlanetSurface;
 		
 		NSString*				lastRadioMessage;
+		
+		// scooping...
+		Vector	tractor_position;
+
+		// from player entity moved here now we're doing more complex heat stuff
+		double					ship_temperature;
+		double					heat_insulation;
 
 		// DEBUGGING
 		int debug_condition;
 }
+
+// octree collision hunting
+- (GLfloat) doesHitLine:(Vector) v0: (Vector) v1;
+- (GLfloat) doesHitLine:(Vector) v0: (Vector) v1 withPosition:(Vector) o andIJK:(Vector) i :(Vector) j :(Vector) k;	// for subentities
+
+- (Vector)	absoluteTractorPosition;
 
 	// beacons
 - (BOOL)	isBeacon;
@@ -460,6 +490,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb);
 - (Vector) absolutePositionForSubentity;
 - (Vector) absolutePositionForSubentityOffset:(Vector) offset;
 
+- (Triangle) absoluteIJKForSubentity;
+
 - (void) addSolidSubentityToCollisionRadius:(ShipEntity*) subent;
 
 /*-----------------------------------------
@@ -520,8 +552,12 @@ Vector randomPositionInBoundingBox(BoundingBox bb);
 - (void) adjustVelocity:(Vector) xVel;
 - (void) addImpactMoment:(Vector) moment fraction:(GLfloat) howmuch;
 - (BOOL) canScoop:(ShipEntity *)other;
+- (void) getTractoredBy:(ShipEntity *)other;
+- (void) scoopIn:(ShipEntity *)other;
 - (void) scoopUp:(ShipEntity *)other;
 - (void) takeScrapeDamage:(double) amount from:(Entity *) ent;
+
+- (void) takeHeatDamage:(double) amount;
 
 - (void) enterDock:(StationEntity *)station;
 - (void) leaveDock:(StationEntity *)station;

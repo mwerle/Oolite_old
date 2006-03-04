@@ -99,6 +99,14 @@ enum
 	GUI_ROW_OPTIONS_END_OF_LIST
 };
 
+enum
+{
+	SCOOP_STATUS_NOT_INSTALLED			= 0,
+	SCOOP_STATUS_FULL_HOLD,
+	SCOOP_STATUS_OKAY,
+	SCOOP_STATUS_ACTIVE
+};
+
 #define GUI_ROW_EQUIPMENT_START			3
 #define GUI_MAX_ROWS_EQUIPMENT			12
 #define GUI_ROW_EQUIPMENT_DETAIL		GUI_ROW_EQUIPMENT_START+GUI_MAX_ROWS_EQUIPMENT+1
@@ -119,8 +127,6 @@ enum
 #define PLAYER_MAX_FORWARD_SHIELD		(128.0 * (shield_booster + shield_enhancer))
 #define PLAYER_MAX_AFT_SHIELD			(128.0 * (shield_booster + shield_enhancer))
 #define PLAYER_MAX_WEAPON_TEMP			256.0
-#define PLAYER_MAX_CABIN_TEMP			256.0
-#define PLAYER_MIN_CABIN_TEMP			60.0
 #define PLAYER_MAX_FUEL					70.0
 #define PLAYER_MAX_MISSILES				4
 #define PLAYER_STARTING_MISSILES		3
@@ -184,11 +190,6 @@ enum
 #define KEY_REPEAT_INTERVAL				0.20
 
 #define OOTUNES_ON						ootunes_on
-
-#define CABIN_COOLING_FACTOR			1.0
-#define CABIN_INSULATION_FACTOR			0.00175
-
-#define SUN_TEMPERATURE					1250.0
 
 #define PLAYER_SHIP_CLOCK_START			2084004 * 86400.0
 
@@ -265,6 +266,8 @@ enum
 	
 	NSString				*planetSearchString;
 	
+	gl_matrix				playerRotMatrix;
+	
 	// For OO-GUI based save screen
 	NSString				*commanderNameString;
 	NSMutableArray			*cdrDetailArray;
@@ -294,7 +297,7 @@ enum
 	double					weapon_temp;
 	double					forward_weapon_temp, aft_weapon_temp, port_weapon_temp, starboard_weapon_temp;
 	double					weapon_energy_per_shot, weapon_heat_increment_per_shot, weapon_reload_time;
-	double					cabin_temp;
+//	double					ship_temperature;
 	
 	int						chosen_weapon_facing;   // for purchasing weapons
 	
@@ -458,6 +461,9 @@ enum
 	
 	// smart target lst reports
 	BOOL					suppressTargetLost;
+	
+	// smart fuelscoops
+	BOOL					scoopsActive;
 
 
 #ifdef GNUSTEP
@@ -522,13 +528,15 @@ enum
 - (double) dial_fuel;
 - (double) dial_hyper_range;
 
-- (double) dial_cabin_temp;
+- (double) dial_ship_temperature;
 - (double) dial_weapon_temp;
 - (double) dial_altitude;
 
 - (int) dial_missiles;
 - (int) calc_missiles;
 - (int) dial_missile_status;
+
+- (int) dial_fuelscoops_status;
 
 - (NSString*) dial_clock;
 - (NSString*) dial_clock_adjusted;
@@ -643,5 +651,8 @@ enum
 - (NSString *)screenModeStringForWidth:(unsigned)inWidth height:(unsigned)inHeight refreshRate:(float)inRate;
 
 - (void) suppressTargetLost;
+
+- (void) setScoopsActive;
+
 
 @end

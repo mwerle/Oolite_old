@@ -125,6 +125,17 @@ Your fair use and other rights are in no way affected by the above.
 	if (!ai_stack)
 		ai_stack = [[NSMutableArray alloc] initWithCapacity:8];
 	
+	if ([ai_stack count] > 32)
+	{
+		NSLog(@"***** ERROR: AI stack overflow for %@ stack:\n%@", owner, ai_stack);
+		NSException *myException = [NSException
+			exceptionWithName:@"OoliteException"
+			reason:[NSString stringWithFormat:@"AI stack overflow for %@", owner]
+			userInfo:nil];
+		[myException raise];
+		return;
+	}
+	
 	[ai_stack insertObject:pickledMachine atIndex:0];	//  PUSH
 }
 
@@ -164,7 +175,7 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) setStateMachine:(NSString *) smName
 {
-    //
+	//
 	[aiLock lock];
 	//
 	NSDictionary* newSM = [ResourceManager dictionaryFromFilesNamed:smName inFolder:@"AIs" andMerge:NO];
@@ -180,7 +191,9 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	[aiLock unlock];
 	//
-	[self setState:@"GLOBAL"];
+	if (currentState)		[currentState release];
+	currentState = [[NSString stringWithString:@"GLOBAL"] retain];
+	[self reactToMessage:@"ENTER"];
     //
     //NSLog(@"AI Loaded:\n%@",[stateMachine description]);
     //
@@ -282,7 +295,6 @@ Your fair use and other rights are in no way affected by the above.
 	
 	if ([tokens count] > 1)
 	{
-//		dataString = (NSString *)[tokens objectAtIndex:1];
 		dataString = [[tokens subarrayWithRange:NSMakeRange(1, [tokens count] - 1)] componentsJoinedByString:@" "];
 	}
 	

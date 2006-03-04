@@ -13,9 +13,9 @@
     "DOCKING_WITCHPOINT" = {
 		ENTER = ("setSpeedFactorTo: 0.0", performIdle);
 		"DOCKING_COMPLETE" = ("setStateTo: HEAD_FOR_WITCHPOINT");
-        "GROUP_ATTACK_TARGET" = (setTargetToFoundTarget, "setStateTo: ATTACK_TARGET"); 
+        "GROUP_ATTACK_TARGET" = (setTargetToFoundTarget); 
         ATTACKED = (setTargetToPrimaryAggressor, groupAttackTarget); 
-        "INCOMING_MISSILE" = (fightOrFleeMissile, setTargetToPrimaryAggressor, launchDefenseShip, groupAttackTarget, "setStateTo: ATTACK_TARGET"); 
+        "INCOMING_MISSILE" = (fightOrFleeMissile, setTargetToPrimaryAggressor, launchDefenseShip, groupAttackTarget); 
         "TARGET_FOUND" = (setTargetToFoundTarget, launchDefenseShip, groupAttackTarget); 
         "OFFENCE_COMMITTED" = (setTargetToFoundTarget, "markTargetForOffence: 7", launchDefenseShip, groupAttackTarget); 
 		EXIT = ();

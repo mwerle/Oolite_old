@@ -130,7 +130,7 @@ Your fair use and other rights are in no way affected by the above.
 #define OOLITE_EXCEPTION_SHIP_NOT_FOUND	@"OoliteShipNotFoundException"
 #define OOLITE_EXCEPTION_FATAL			@"OoliteFatalException"
 
-@class TextureStore, OpenGLSprite, GameController, ShipEntity;
+@class TextureStore, OpenGLSprite, GameController, ShipEntity, CollisionRegion;
 
 extern int debug;
 
@@ -198,7 +198,6 @@ extern int debug;
 		BOOL					reducedDetail;
 		
 		BOOL					displayFPS;		
-		OpenGLSprite			*cursorSprite;
 				
 		double					universal_time;
 		double					time_delta;
@@ -253,6 +252,8 @@ extern int debug;
 		NSMutableArray*			activeWormholes;
 		
 		NSMutableArray*			characterPool;
+		
+		CollisionRegion*		universeRegion;
 
 }
 
@@ -285,6 +286,7 @@ extern int debug;
 - (BOOL) addShipWithRole:(NSString *) desc nearPosition:(Vector) pos withCoordinateSystem:(NSString *) system;
 - (BOOL) addShips:(int) howMany withRole:(NSString *) desc atPosition:(Vector) pos withCoordinateSystem:(NSString *) system;
 - (BOOL) addShips:(int) howMany withRole:(NSString *) desc nearPosition:(Vector) pos withCoordinateSystem:(NSString *) system;
+- (BOOL) addShips:(int) howMany withRole:(NSString *) desc nearPosition:(Vector) pos withCoordinateSystem:(NSString *) system withinRadius:(GLfloat) radius;
 - (BOOL) addShips:(int) howMany withRole:(NSString *) desc intoBoundingBox:(BoundingBox) bbox;
 - (BOOL) spawnShip:(NSString *) shipdesc;
 - (void) witchspaceShipWithRole:(NSString *) desc;
@@ -363,7 +365,6 @@ extern int debug;
 - (BOOL) isVectorClearFromEntity:(Entity *) e1 toDistance:(double)dist fromPoint:(Vector) p2;
 - (Vector) getSafeVectorFromEntity:(Entity *) e1 toDistance:(double)dist fromPoint:(Vector) p2;
 
-- (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir rangeFound:(GLfloat*)range_ptr;
 - (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir offset:(Vector) offset rangeFound:(GLfloat*)range_ptr;
 - (int) getFirstEntityTargettedByPlayer:(PlayerEntity*) player;
 
@@ -376,6 +377,7 @@ extern int debug;
 - (double) getTimeDelta;
 
 - (void) findCollisions;
+- (NSString*) collisionDescription;
 - (void) dumpCollisions;
 
 - (void) setViewDirection:(int) vd;

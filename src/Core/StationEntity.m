@@ -864,8 +864,8 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		// check if the ship is too big for the port and fudge things accordingly
 		BoundingBox shipbb = [ship getBoundingBox];
 		float ff = 1.0;
-		while	((shipbb.max_y * ff > w1)||(shipbb.min_y * ff < -w1)
-				||(shipbb.max_x * ff > h1)||(shipbb.min_x * ff < -h1))
+		while	((shipbb.max.y * ff > w1)||(shipbb.min.y * ff < -w1)
+				||(shipbb.max.x * ff > h1)||(shipbb.min.x * ff < -h1))
 			ff /= 1.25;
 				
 		//NSLog(@"DEBUG Checking docking corridor...");
@@ -879,11 +879,11 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		delta.z = dot_product(rel_pos, v_forward);
 		BOOL in_lane = YES;
 		
-		if ((delta.x > boundingBox.max_x + radius)||(delta.x < boundingBox.min_x - radius))
+		if ((delta.x > boundingBox.max.x + radius)||(delta.x < boundingBox.min.x - radius))
 			in_lane = NO;
-		if ((delta.y > boundingBox.max_y + radius)||(delta.y < boundingBox.min_y - radius))
+		if ((delta.y > boundingBox.max.y + radius)||(delta.y < boundingBox.min.y - radius))
 			in_lane = NO;
-		if ((delta.z > boundingBox.max_z + radius)||(delta.z < boundingBox.min_z - radius))
+		if ((delta.z > boundingBox.max.z + radius)||(delta.z < boundingBox.min.z - radius))
 			in_lane = NO;
 			
 		if (!in_lane)
@@ -899,39 +899,39 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 		BoundingBox arbb = [other findBoundingBoxRelativeToPosition:prt_pos InVectors: vi: vj: vk];
 		//
 		// apply fudge factor
-		arbb.max_x *= ff;
-		arbb.max_y *= ff;
-		arbb.min_x *= ff;
-		arbb.min_y *= ff;
+		arbb.max.x *= ff;
+		arbb.max.y *= ff;
+		arbb.min.x *= ff;
+		arbb.min.y *= ff;
 		//
 //		if (other == [universe entityZero])
 //			NSLog(@"DEBUG Docking corridor placement (%3.2f,%3.2f,%3.2f) <[%3.1f,%3.1f,%3.1f]-[%3.1f,%3.1f,%3.1f] (/%1.3f)>",
 //				delta.x, delta.y, delta.z,
-//				arbb.max_x, arbb.max_y, arbb.max_z,
-//				arbb.min_x, arbb.min_y, arbb.min_z,
+//				arbb.max.x, arbb.max.y, arbb.max.z,
+//				arbb.min.x, arbb.min.y, arbb.min.z,
 //				1.0 / ff);
-		if  (	(arbb.min_x > -ww)&&	(arbb.max_x < ww)	// docking slit is 90 degrees to vertical
-			&&	(arbb.min_y > -hh)&&	(arbb.max_y < hh)	// docking slit is 90 degrees to vertical
-			&&	(arbb.min_z > -dd))
+		if  (	(arbb.min.x > -ww)&&	(arbb.max.x < ww)	// docking slit is 90 degrees to vertical
+			&&	(arbb.min.y > -hh)&&	(arbb.max.y < hh)	// docking slit is 90 degrees to vertical
+			&&	(arbb.min.z > -dd))
 		{
-			if (arbb.max_z < 0)
+			if (arbb.max.z < 0)
 				[ship enterDock:self];
 			return NO;
 		}
 		else
 		{
 //			NSLog(@"DEBUG Outside the lane!");
-			if  (	(arbb.min_x > -1.5 * ww)&&	(arbb.max_x < 1.5 * ww)
-				&&	(arbb.min_y > -1.5 * hh)&&	(arbb.max_y < 1.5 * hh)
-				&&	(arbb.min_z > -dd)&&		(arbb.min_z < 0))	// inside the station
+			if  (	(arbb.min.x > -1.5 * ww)&&	(arbb.max.x < 1.5 * ww)
+				&&	(arbb.min.y > -1.5 * hh)&&	(arbb.max.y < 1.5 * hh)
+				&&	(arbb.min.z > -dd)&&		(arbb.min.z < 0))	// inside the station
 			{
 				// damage the ship according to velocity but don't collide
 				[ship takeScrapeDamage: 5 * [universe getTimeDelta]*[ship flight_speed] from:self];
 				
 				// adjust the ship back to the center of the port
-				if ((arbb.max_x < 32)&&(arbb.min_x > - 32))
+				if ((arbb.max.x < 32)&&(arbb.min.x > - 32))
 					delta.x = 0;
-				if ((arbb.max_y > 96)&&(arbb.min_x > - 96))
+				if ((arbb.max.y > 96)&&(arbb.min.x > - 96))
 					delta.y = 0;
 				Vector pos = ship->position;
 				pos.x -= delta.y * v_up.x + delta.x * v_right.x;
@@ -947,7 +947,7 @@ NSDictionary* instructions(int station_id, Vector coords, float speed, float ran
 //				}
 				
 				// if far enough in - dock
-				if (arbb.max_z < 0)
+				if (arbb.max.z < 0)
 					[ship enterDock:self];
 				return NO;
 			}

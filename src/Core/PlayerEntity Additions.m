@@ -732,6 +732,39 @@ static int shipsFound;
 	[universe addCommsMessage:expandedMessage forCount:4.5];
 }
 
+
+- (void) consoleMessage3s:(NSString *)valueString
+{
+	Random_Seed very_random_seed;
+	very_random_seed.a = rand() & 255;
+	very_random_seed.b = rand() & 255;
+	very_random_seed.c = rand() & 255;
+	very_random_seed.d = rand() & 255;
+	very_random_seed.e = rand() & 255;
+	very_random_seed.f = rand() & 255;
+	seed_RNG_only_for_planet_description(very_random_seed);
+	NSString* expandedMessage = [universe expandDescription:valueString forSystem:[universe systemSeed]];
+	expandedMessage = [self replaceVariablesInString: expandedMessage];
+
+	[universe addMessage: expandedMessage forCount: 3];
+}
+
+- (void) consoleMessage6s:(NSString *)valueString
+{
+	Random_Seed very_random_seed;
+	very_random_seed.a = rand() & 255;
+	very_random_seed.b = rand() & 255;
+	very_random_seed.c = rand() & 255;
+	very_random_seed.d = rand() & 255;
+	very_random_seed.e = rand() & 255;
+	very_random_seed.f = rand() & 255;
+	seed_RNG_only_for_planet_description(very_random_seed);
+	NSString* expandedMessage = [universe expandDescription:valueString forSystem:[universe systemSeed]];
+	expandedMessage = [self replaceVariablesInString: expandedMessage];
+
+	[universe addMessage: expandedMessage forCount: 6];
+}
+
 - (void) setLegalStatus:(NSString *)valueString
 {
 	legal_status = [valueString intValue];
@@ -1099,7 +1132,6 @@ static int shipsFound;
 
 - (void) addShipsAtPrecisely:(NSString *)roles_number_system_x_y_z
 {
-//	NSMutableArray*	tokens = [NSMutableArray arrayWithArray:[roles_number_system_x_y_z componentsSeparatedByString:@" "]];
 	NSMutableArray*	tokens = [Entity scanTokensFromString:roles_number_system_x_y_z];
 
 	NSString*   roleString = nil;
@@ -1131,6 +1163,32 @@ static int shipsFound;
 
 	if (![universe addShips: number withRole:roleString atPosition: posn withCoordinateSystem: systemString])
 		NSLog(@"***** CANNOT addShipsAtPrecisely: '%@' (should be addShipsAt: role number coordinate_system x y z)",roles_number_system_x_y_z);			
+}
+
+- (void) addShipsWithinRadius:(NSString *)roles_number_system_x_y_z_r
+{
+	NSMutableArray*	tokens = [Entity scanTokensFromString:roles_number_system_x_y_z_r];
+
+	if ([tokens count] != 7)
+	{
+		NSLog(@"***** CANNOT 'addShipsWithinRadius: %@' (should be 'addShipsWithinRadius: role number coordinate_system x y z r')",roles_number_system_x_y_z_r);			
+		return;
+	}
+	
+	NSString* roleString = (NSString *)[tokens objectAtIndex:0];
+	int number = [[tokens objectAtIndex:1] intValue];
+	NSString* systemString = (NSString *)[tokens objectAtIndex:2];
+	GLfloat x = [[tokens objectAtIndex:3] floatValue];
+	GLfloat y = [[tokens objectAtIndex:4] floatValue];
+	GLfloat z = [[tokens objectAtIndex:5] floatValue];
+	GLfloat r = [[tokens objectAtIndex:6] floatValue];	
+	Vector posn = make_vector( x, y, z);
+	
+	if (debug)
+		NSLog(@"DEBUG Going to add %d ship(s) with role '%@' within %.2f radius about point (%.3f, %.3f, %.3f) using system %@", number, roleString, r, x, y, z, systemString);
+
+	if (![universe addShips:number withRole: roleString nearPosition: posn withCoordinateSystem: systemString withinRadius: r])
+		NSLog(@"***** CANNOT 'addShipsWithinRadius: %@' (should be 'addShipsWithinRadius: role number coordinate_system x y z r')",roles_number_system_x_y_z_r);			
 }
 
 - (void) spawnShip:(NSString *)ship_key

@@ -46,6 +46,8 @@ Your fair use and other rights are in no way affected by the above.
 #import "Universe.h"
 #import "AI.h"
 
+static	Vector	zero_vector = { 0.0f, 0.0f, 0.0f};
+
 @implementation ShipEntity (AI)
 
 /*-----------------------------------------
@@ -74,7 +76,6 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) performFlyToRangeFromDestination
 {
-	//NSLog(@"ShipEntity.performFlyToRangeFromDestination NOT YET IMPLEMENTED");
 	condition = CONDITION_FLY_RANGE_FROM_DESTINATION;
 	frustration = 0.0;
 }
@@ -1599,7 +1600,7 @@ WormholeEntity*	whole;
 	Entity* the_target = [self getPrimaryTarget];
 	double bo_distance = 8000; //	8km back off
 	Vector v0 = position;
-	Vector d0 = (the_target)? the_target->position : make_vector(0,0,0);
+	Vector d0 = (the_target)? the_target->position : zero_vector;
 	v0.x += (randf() - 0.5)*collision_radius;	v0.y += (randf() - 0.5)*collision_radius;	v0.z += (randf() - 0.5)*collision_radius;
 	v0.x -= d0.x;	v0.y -= d0.y;	v0.z -= d0.z;
 	if (v0.x||v0.y||v0.z)

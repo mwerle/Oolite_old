@@ -6,6 +6,56 @@
 			2555DA64091E8F3C00C71505 /* Oolite */,
 		);
 	};
+	2512834C09BA28B500F43D55 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'playerRotMatrix' undeclared (first use in this function)";
+		fRef = 251610F5099544380037C2E1 /* PlayerEntity.m */;
+		rLen = 1;
+		rLoc = 2130;
+		rType = 1;
+	};
+	2512835109BA298100F43D55 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'keyboardRollPitchOverride' undeclared (first use in this function)";
+		fRef = 25161132099544390037C2E1 /* PlayerEntity (Controls).m */;
+		rLen = 1;
+		rLoc = 975;
+		rType = 1;
+	};
+	2512835909BA29C300F43D55 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 251610FA099544380037C2E1 /* PlayerEntity.h */;
+	};
+	2512835F09BA2A9400F43D55 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 25161132099544390037C2E1 /* PlayerEntity (Controls).m */;
+		name = "PlayerEntity (Controls).m: 977";
+		rLen = 0;
+		rLoc = 27499;
+		rType = 0;
+		vrLen = 936;
+		vrLoc = 26927;
+	};
+	2512836209BA2A9400F43D55 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 251610FA099544380037C2E1 /* PlayerEntity.h */;
+		name = "BOOL\t\t\t\t\t\tkeyboardRollPitchOverride;";
+		rLen = 39;
+		rLoc = 11715;
+		rType = 0;
+		vrLen = 846;
+		vrLoc = 11386;
+	};
+	2512836509BA2A9400F43D55 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 251610F5099544380037C2E1 /* PlayerEntity.m */;
+		name = "return playerRotMatrix;";
+		rLen = 28;
+		rLoc = 69556;
+		rType = 0;
+		vrLen = 976;
+		vrLoc = 69051;
+	};
 	251610D0099544090037C2E1 /* OOCASound.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {753, 826}}";
@@ -16,18 +66,18 @@
 	};
 	251610F5099544380037C2E1 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1424, 84938}}";
-			sepNavSelRange = "{116989, 11}";
-			sepNavVisRect = "{{0, 55670}, {753, 562}}";
-			sepNavWindowFrame = "{{245, 272}, {798, 691}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1424, 88970}}";
+			sepNavSelRange = "{69556, 28}";
+			sepNavVisRect = "{{0, 29546}, {753, 562}}";
+			sepNavWindowFrame = "{{145, 46}, {798, 691}}";
 		};
 	};
 	251610FA099544380037C2E1 /* PlayerEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {758, 9072}}";
-			sepNavSelRange = "{7191, 0}";
-			sepNavVisRect = "{{0, 3464}, {753, 562}}";
-			sepNavWindowFrame = "{{291, 230}, {798, 691}}";
+			sepNavIntBoundsRect = "{{0, 0}, {758, 9226}}";
+			sepNavSelRange = "{11715, 39}";
+			sepNavVisRect = "{{0, 6381}, {753, 562}}";
+			sepNavWindowFrame = "{{203, 52}, {798, 691}}";
 		};
 	};
 	251610FD099544380037C2E1 /* PlanetEntity.m */ = {
@@ -88,10 +138,18 @@
 	};
 	25161132099544390037C2E1 /* PlayerEntity (Controls).m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1418, 34804}}";
-			sepNavSelRange = "{66960, 0}";
-			sepNavVisRect = "{{0, 32767}, {753, 562}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1418, 34902}}";
+			sepNavSelRange = "{27461, 0}";
+			sepNavVisRect = "{{0, 13580}, {659, 154}}";
 			sepNavWindowFrame = "{{25, 53}, {798, 691}}";
+		};
+	};
+	25161133099544390037C2E1 /* PlayerEntity (Controls).h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {753, 840}}";
+			sepNavSelRange = "{430, 0}";
+			sepNavVisRect = "{{0, 278}, {753, 562}}";
+			sepNavWindowFrame = "{{15, 50}, {798, 691}}";
 		};
 	};
 	2555DA64091E8F3C00C71505 /* Oolite */ = {
@@ -258,8 +316,16 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 162982104;
-			PBXWorkspaceStateSaveDate = 162982104;
+			PBXPerProjectTemplateStateSaveDate = 163194760;
+			PBXWorkspaceStateSaveDate = 163194760;
+		};
+		perUserProjectItems = {
+			2512834C09BA28B500F43D55 /* PBXTextBookmark */ = 2512834C09BA28B500F43D55 /* PBXTextBookmark */;
+			2512835109BA298100F43D55 /* PBXTextBookmark */ = 2512835109BA298100F43D55 /* PBXTextBookmark */;
+			2512835909BA29C300F43D55 /* PBXBookmark */ = 2512835909BA29C300F43D55 /* PBXBookmark */;
+			2512835F09BA2A9400F43D55 /* PBXTextBookmark */ = 2512835F09BA2A9400F43D55 /* PBXTextBookmark */;
+			2512836209BA2A9400F43D55 /* PBXTextBookmark */ = 2512836209BA2A9400F43D55 /* PBXTextBookmark */;
+			2512836509BA2A9400F43D55 /* PBXTextBookmark */ = 2512836509BA2A9400F43D55 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 2555DA74091E8F4200C71505 /* Source Control */;
 		userBuildSettings = {

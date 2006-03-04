@@ -15,6 +15,12 @@
 		1A472921096B5468000E78D8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A47291F096B5468000E78D8 /* AudioToolbox.framework */; };
 		1A472922096B5468000E78D8 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472920096B5468000E78D8 /* AudioUnit.framework */; };
 		1A5BF2EA0916D50900BF238F /* Oolite.mdimporter in Copy MDImporter */ = {isa = PBXBuildFile; fileRef = 1A5BF2D50916D50100BF238F /* Oolite.mdimporter */; };
+		2512833E09BA27C100F43D55 /* Octree.m in Sources */ = {isa = PBXBuildFile; fileRef = 2512833C09BA27C100F43D55 /* Octree.m */; };
+		2512833F09BA27C100F43D55 /* Octree.h in Headers */ = {isa = PBXBuildFile; fileRef = 2512833D09BA27C100F43D55 /* Octree.h */; };
+		2512834209BA27EC00F43D55 /* Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 2512834009BA27EC00F43D55 /* Geometry.h */; };
+		2512834309BA27EC00F43D55 /* Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 2512834109BA27EC00F43D55 /* Geometry.m */; };
+		2512834609BA281500F43D55 /* CollisionRegion.h in Headers */ = {isa = PBXBuildFile; fileRef = 2512834409BA281500F43D55 /* CollisionRegion.h */; };
+		2512834709BA281500F43D55 /* CollisionRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = 2512834509BA281500F43D55 /* CollisionRegion.m */; };
 		25160E2F0995362F0037C2E1 /* OOCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 25160E2E0995362F0037C2E1 /* OOCocoa.h */; };
 		25160E69099539D50037C2E1 /* libOgg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E67099539D50037C2E1 /* libOgg.a */; };
 		25160E6A099539D50037C2E1 /* libVorbisAll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E68099539D50037C2E1 /* libVorbisAll.a */; };
@@ -181,13 +187,9 @@
 		25F3E7740994FC46002F25FD /* trumblesqueal.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E7600994FC46002F25FD /* trumblesqueal.ogg */; };
 		25F3E7750994FC46002F25FD /* warning.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E7610994FC46002F25FD /* warning.ogg */; };
 		25F3E7760994FC46002F25FD /* witchabort.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E7620994FC46002F25FD /* witchabort.ogg */; };
-		25F3E7810994FC5B002F25FD /* aegis.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E7770994FC5B002F25FD /* aegis.png */; };
-		25F3E7820994FC5B002F25FD /* compass.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E7780994FC5B002F25FD /* compass.png */; };
-		25F3E7830994FC5B002F25FD /* cursor.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E7790994FC5B002F25FD /* cursor.png */; };
 		25F3E7860994FC5B002F25FD /* solar.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E77C0994FC5B002F25FD /* solar.png */; };
 		25F3E7870994FC5B002F25FD /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E77D0994FC5B002F25FD /* splash.png */; };
 		25F3E7880994FC5B002F25FD /* splashback.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E77E0994FC5B002F25FD /* splashback.png */; };
-		25F3E78A0994FC5B002F25FD /* zoom.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E7800994FC5B002F25FD /* zoom.png */; };
 		25F3E78C0994FC9A002F25FD /* trumblebox.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E78B0994FC9A002F25FD /* trumblebox.png */; };
 		25F3E7DA0994FD4C002F25FD /* adder_redux.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E78D0994FD4C002F25FD /* adder_redux.png */; };
 		25F3E7DC0994FD4C002F25FD /* anaconda_redux.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E78F0994FD4C002F25FD /* anaconda_redux.png */; };
@@ -415,6 +417,12 @@
 		1A472920096B5468000E78D8 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		1A5BF2720916D47300BF238F /* Oolite-importer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Oolite-importer.xcodeproj"; path = "Oolite-importer/Oolite-importer.xcodeproj"; sourceTree = "<group>"; };
 		1A5BF2D50916D50100BF238F /* Oolite.mdimporter */ = {isa = PBXFileReference; explicitFileType = wrapper; name = Oolite.mdimporter; path = "Oolite-importer/build/Universal/Oolite.mdimporter"; sourceTree = "<group>"; };
+		2512833C09BA27C100F43D55 /* Octree.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = Octree.m; path = src/Core/Octree.m; sourceTree = "<group>"; };
+		2512833D09BA27C100F43D55 /* Octree.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Octree.h; path = src/Core/Octree.h; sourceTree = "<group>"; };
+		2512834009BA27EC00F43D55 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
+		2512834109BA27EC00F43D55 /* Geometry.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Geometry.m; sourceTree = "<group>"; };
+		2512834409BA281500F43D55 /* CollisionRegion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CollisionRegion.h; path = src/Core/CollisionRegion.h; sourceTree = "<group>"; };
+		2512834509BA281500F43D55 /* CollisionRegion.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CollisionRegion.m; path = src/Core/CollisionRegion.m; sourceTree = "<group>"; };
 		25160E2E0995362F0037C2E1 /* OOCocoa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OOCocoa.h; path = src/Core/OOCocoa.h; sourceTree = "<group>"; };
 		25160E67099539D50037C2E1 /* libOgg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOgg.a; path = "Cocoa-deps/Ogg Vorbis/libOgg.a"; sourceTree = "<group>"; };
 		25160E68099539D50037C2E1 /* libVorbisAll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libVorbisAll.a; path = "Cocoa-deps/Ogg Vorbis/libVorbisAll.a"; sourceTree = "<group>"; };
@@ -581,13 +589,9 @@
 		25F3E7600994FC46002F25FD /* trumblesqueal.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; name = trumblesqueal.ogg; path = Resources/Sounds/trumblesqueal.ogg; sourceTree = "<group>"; };
 		25F3E7610994FC46002F25FD /* warning.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; name = warning.ogg; path = Resources/Sounds/warning.ogg; sourceTree = "<group>"; };
 		25F3E7620994FC46002F25FD /* witchabort.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; name = witchabort.ogg; path = Resources/Sounds/witchabort.ogg; sourceTree = "<group>"; };
-		25F3E7770994FC5B002F25FD /* aegis.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = aegis.png; path = Resources/Images/aegis.png; sourceTree = "<group>"; };
-		25F3E7780994FC5B002F25FD /* compass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = compass.png; path = Resources/Images/compass.png; sourceTree = "<group>"; };
-		25F3E7790994FC5B002F25FD /* cursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cursor.png; path = Resources/Images/cursor.png; sourceTree = "<group>"; };
 		25F3E77C0994FC5B002F25FD /* solar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = solar.png; path = Resources/Images/solar.png; sourceTree = "<group>"; };
 		25F3E77D0994FC5B002F25FD /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = splash.png; path = Resources/Images/splash.png; sourceTree = "<group>"; };
 		25F3E77E0994FC5B002F25FD /* splashback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = splashback.png; path = Resources/Images/splashback.png; sourceTree = "<group>"; };
-		25F3E7800994FC5B002F25FD /* zoom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = zoom.png; path = Resources/Images/zoom.png; sourceTree = "<group>"; };
 		25F3E78B0994FC9A002F25FD /* trumblebox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = trumblebox.png; path = Resources/Images/trumblebox.png; sourceTree = "<group>"; };
 		25F3E78D0994FD4C002F25FD /* adder_redux.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = adder_redux.png; path = Resources/Textures/adder_redux.png; sourceTree = "<group>"; };
 		25F3E78F0994FD4C002F25FD /* anaconda_redux.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = anaconda_redux.png; path = Resources/Textures/anaconda_redux.png; sourceTree = "<group>"; };
@@ -956,13 +960,9 @@
 		08255CEE0683B3A900C96136 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				25F3E7770994FC5B002F25FD /* aegis.png */,
-				25F3E7780994FC5B002F25FD /* compass.png */,
-				25F3E7790994FC5B002F25FD /* cursor.png */,
 				25F3E77C0994FC5B002F25FD /* solar.png */,
 				25F3E77D0994FC5B002F25FD /* splash.png */,
 				25F3E77E0994FC5B002F25FD /* splashback.png */,
-				25F3E7800994FC5B002F25FD /* zoom.png */,
 				25F3E78B0994FC9A002F25FD /* trumblebox.png */,
 			);
 			name = Images;
@@ -1111,6 +1111,8 @@
 				25161122099544390037C2E1 /* MutableDictionaryExtension.h */,
 				25161123099544390037C2E1 /* LoadSave.m */,
 				25161124099544390037C2E1 /* LoadSave.h */,
+				2512834009BA27EC00F43D55 /* Geometry.h */,
+				2512834109BA27EC00F43D55 /* Geometry.m */,
 				25161126099544390037C2E1 /* GuiDisplayGen.m */,
 				25161127099544390037C2E1 /* GuiDisplayGen.h */,
 				2516112B099544390037C2E1 /* HeadUpDisplay.m */,
@@ -1120,6 +1122,8 @@
 				2516112F099544390037C2E1 /* RingEntity.h */,
 				25161130099544390037C2E1 /* ScannerExtension.m */,
 				25161131099544390037C2E1 /* ScannerExtension.h */,
+				2512833C09BA27C100F43D55 /* Octree.m */,
+				2512833D09BA27C100F43D55 /* Octree.h */,
 				25161132099544390037C2E1 /* PlayerEntity (Controls).m */,
 				25161133099544390037C2E1 /* PlayerEntity (Controls).h */,
 				25161134099544390037C2E1 /* TextureStore.h */,
@@ -1127,6 +1131,8 @@
 				25161136099544390037C2E1 /* StationEntity.h */,
 				25161139099544390037C2E1 /* ResourceManager.m */,
 				2516113A099544390037C2E1 /* ResourceManager.h */,
+				2512834409BA281500F43D55 /* CollisionRegion.h */,
+				2512834509BA281500F43D55 /* CollisionRegion.m */,
 				2516113B099544390037C2E1 /* ShipEntity.m */,
 				2516113C099544390037C2E1 /* ShipEntity.h */,
 				2516113F099544390037C2E1 /* PlayerEntity (Sound).m */,
@@ -1295,6 +1301,9 @@
 				25161196099544390037C2E1 /* Universe.h in Headers */,
 				25F46752099695D5009483BF /* OoliteApp.h in Headers */,
 				2576E7B309B4F418007410F7 /* MyOpenGLView.h in Headers */,
+				2512833F09BA27C100F43D55 /* Octree.h in Headers */,
+				2512834209BA27EC00F43D55 /* Geometry.h in Headers */,
+				2512834609BA281500F43D55 /* CollisionRegion.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1454,13 +1463,9 @@
 				25F3E7740994FC46002F25FD /* trumblesqueal.ogg in Resources */,
 				25F3E7750994FC46002F25FD /* warning.ogg in Resources */,
 				25F3E7760994FC46002F25FD /* witchabort.ogg in Resources */,
-				25F3E7810994FC5B002F25FD /* aegis.png in Resources */,
-				25F3E7820994FC5B002F25FD /* compass.png in Resources */,
-				25F3E7830994FC5B002F25FD /* cursor.png in Resources */,
 				25F3E7860994FC5B002F25FD /* solar.png in Resources */,
 				25F3E7870994FC5B002F25FD /* splash.png in Resources */,
 				25F3E7880994FC5B002F25FD /* splashback.png in Resources */,
-				25F3E78A0994FC5B002F25FD /* zoom.png in Resources */,
 				25F3E78C0994FC9A002F25FD /* trumblebox.png in Resources */,
 				25F3E7DA0994FD4C002F25FD /* adder_redux.png in Resources */,
 				25F3E7DC0994FD4C002F25FD /* anaconda_redux.png in Resources */,
@@ -1686,6 +1691,9 @@
 				25161197099544390037C2E1 /* TextureStore.m in Sources */,
 				25F46753099695D5009483BF /* OoliteApp.m in Sources */,
 				25F4676509969672009483BF /* MyOpenGLView.m in Sources */,
+				2512833E09BA27C100F43D55 /* Octree.m in Sources */,
+				2512834309BA27EC00F43D55 /* Geometry.m in Sources */,
+				2512834709BA281500F43D55 /* CollisionRegion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

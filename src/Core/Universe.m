@@ -50,6 +50,11 @@ Your fair use and other rights are in no way affected by the above.
 #import "HeadUpDisplay.h"
 #import "OOSound.h"
 
+#import "Octree.h"
+#import "CollisionRegion.h"
+
+#import "OOCharacter.h"
+
 #define MAX_NUMBER_OF_ENTITIES				200
 #define MAX_NUMBER_OF_SOLAR_SYSTEM_ENTITIES 20
 
@@ -102,7 +107,24 @@ Your fair use and other rights are in no way affected by the above.
 	for (i = 0; i < MAX_ENTITY_UID; i++)
 		entity_for_uid[i] = nil;
 	//
-	preloadedDataFiles =   [[NSMutableDictionary dictionaryWithCapacity:16] retain];
+//	preloadedDataFiles =   [[NSMutableDictionary dictionaryWithCapacity:16] retain];
+	// try finding a cache..
+	NSString*	cache_path = [[[[NSHomeDirectory()
+								stringByAppendingPathComponent:@"Library"]
+								stringByAppendingPathComponent:@"Application Support"]
+								stringByAppendingPathComponent:@"Oolite"]
+								stringByAppendingPathComponent:@"cache"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
+	{
+		NSLog(@"DEBUG ** found cache - loading data ...**");
+		preloadedDataFiles = [[NSMutableDictionary dictionaryWithContentsOfFile:cache_path] retain];
+	}
+	else
+	{
+		NSLog(@"DEBUG ** no cache exists - yet **");
+		preloadedDataFiles = [[NSMutableDictionary dictionaryWithCapacity:16] retain];
+	}
+	
 	//
 	entityRecyclePool =			[[NSMutableDictionary dictionaryWithCapacity:MAX_NUMBER_OF_ENTITIES] retain];
 	recycleLock =				[[NSLock alloc] init];
@@ -115,16 +137,6 @@ Your fair use and other rights are in no way affected by the above.
 	sun_center_position[3] = 1.0;
     //
 	textureStore = [[TextureStore alloc] init];	// alloc retains
-	//
-#ifndef WIN32
-	cursorSprite = [[OpenGLSprite alloc]   initWithImage:[ResourceManager imageNamed:@"cursor.png" inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, 128, 128)
-											size:NSMakeSize(32, 32)];	// alloc retains
-#else
-	cursorSprite = [[OpenGLSprite alloc]   initWithSurface:[ResourceManager surfaceNamed:@"cursor.png" inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, 128, 128)
-											size:NSMakeSize(32, 32)];	// alloc retains
-#endif
 	//
     gui = [[GuiDisplayGen alloc] init]; // alloc retains
     displayGUI = NO;
@@ -213,6 +225,8 @@ Your fair use and other rights are in no way affected by the above.
 	//NSLog(@"UNIVERSE INIT station %d, planet %d, sun %d",station,planet,sun);
 	
 	demo_ship = nil;
+	
+	universeRegion = [[CollisionRegion alloc] initAsUniverse];	// retained
 		
     return self;
 }
@@ -225,8 +239,6 @@ Your fair use and other rights are in no way affected by the above.
     if (message_gui)			[message_gui release];
     if (comm_log_gui)			[comm_log_gui release];
 	
-    if (cursorSprite)			[cursorSprite release];
-
     if (textureStore)			[textureStore release];
     if (preloadedDataFiles)		[preloadedDataFiles release];
 	
@@ -259,7 +271,9 @@ Your fair use and other rights are in no way affected by the above.
 	if (activeWormholes)		[activeWormholes release];
 								
 	if (characterPool)			[characterPool release];
-								
+	
+	if (universeRegion)			[universeRegion release];
+	
 //	// reset/dealloc the universal planet edge thingy
 //	[PlanetEntity resetBaseVertexArray];
 	
@@ -325,7 +339,23 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	if (preloadedDataFiles)
 		[preloadedDataFiles autorelease];
-	preloadedDataFiles =   [[NSMutableDictionary dictionaryWithCapacity:16] retain];
+	// try finding a cache..
+	NSString*	cache_path = [[[[NSHomeDirectory()
+								stringByAppendingPathComponent:@"Library"]
+								stringByAppendingPathComponent:@"Application Support"]
+								stringByAppendingPathComponent:@"Oolite"]
+								stringByAppendingPathComponent:@"cache"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
+	{
+		NSLog(@"DEBUG ** found cache - loading data ...**");
+		preloadedDataFiles = [[NSMutableDictionary dictionaryWithContentsOfFile:cache_path] retain];
+	}
+	else
+	{
+		NSLog(@"DEBUG ** no cache exists - yet **");
+		preloadedDataFiles = [[NSMutableDictionary dictionaryWithCapacity:16] retain];
+	}
+
 	//
 	if (entityRecyclePool)
 		[entityRecyclePool autorelease];
@@ -342,16 +372,6 @@ Your fair use and other rights are in no way affected by the above.
 	if (textureStore)
 		[textureStore autorelease];
 	textureStore = [[TextureStore alloc] init];	// alloc retains
-	//
-#ifndef WIN32
-	cursorSprite = [[OpenGLSprite alloc]   initWithImage:[ResourceManager imageNamed:@"cursor.png" inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, 128, 128)
-											size:NSMakeSize(32, 32)];	// alloc retains
-#else
-	cursorSprite = [[OpenGLSprite alloc]   initWithSurface:[ResourceManager surfaceNamed:@"cursor.png" inFolder:@"Images"]
-											cropRectangle:NSMakeRect(0, 0, 128, 128)
-											size:NSMakeSize(32, 32)];	// alloc retains
-#endif
 	//
 	if (gui)
 		[gui autorelease];
@@ -664,6 +684,8 @@ Your fair use and other rights are in no way affected by the above.
 		
 	}
 	
+	[universeRegion clearSubregions];
+
 	//
 	// fixed entities (part of the graphics system really) come first...
 	//
@@ -749,23 +771,9 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	if ([systeminfo objectForKey:KEY_SCRIPT_ACTIONS])
 	{
-//		NSLog(@"DEBUG executing systeminfo script_actions");
-//		debug = YES;
-		
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
 		
 		[player scriptActions:script_actions forTarget: nil];
-		
-//		int i;
-//		for (i = 0; i < [script_actions count]; i++)
-//		{
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-//		}
-		
-//		debug = NO;
 	}
 	
 }
@@ -793,6 +801,8 @@ Your fair use and other rights are in no way affected by the above.
 	BOOL				sun_gone_nova = NO;
 	if ([systeminfo objectForKey:@"sun_gone_nova"])
 		sun_gone_nova = YES;
+	
+	[universeRegion clearSubregions];
 	
 //	NSLog(@"DEBUG systeminfo =\n%@", [systeminfo description]);
 	
@@ -841,13 +851,23 @@ Your fair use and other rights are in no way affected by the above.
 	/*- space planet -*/
 	a_planet = [[PlanetEntity alloc] initWithSeed: system_seed fromUniverse: self];	// alloc retains!
 	double planet_radius = [a_planet getRadius];
+	double region_radius = 2.5f * planet_radius;
+	double planet_zpos = (12.0 + (ranrot_rand() & 3) - (ranrot_rand() & 3) ) * planet_radius; // 10..14 pr (planet radii) ahead
+	double region_spacing = 2.0 * region_radius;
 	
 	[a_planet setPlanetType:PLANET_TYPE_GREEN];
 	[a_planet setStatus:STATUS_ACTIVE];
-	[a_planet setPosition:0.0:0.0:(12.0 + (ranrot_rand() & 3) - (ranrot_rand() & 3) ) * planet_radius]; // 10..14 pr (planet radii)  ahead
+	[a_planet setPosition: 0.0: 0.0: planet_zpos];
 	[a_planet setScanClass: CLASS_NO_DRAW];
 	[a_planet setEnergy:  1000000.0];
 	[self addEntity:a_planet]; // [entities addObject:a_planet];
+	
+	Vector region_pos = a_planet->position;
+	while (region_pos.z > -planet_radius)
+	{
+		[universeRegion addSubregionAtPosition: region_pos withRadius: region_radius];	// collision regions from planet to witchpoint
+		region_pos.z -= region_spacing;
+	}
 	
 	planet = [a_planet universal_id];
 	/*--*/
@@ -859,7 +879,7 @@ Your fair use and other rights are in no way affected by the above.
 	double		sun_distance = (20.0 + (ranrot_rand() % 5) - (ranrot_rand() % 5) ) * planet_radius;
 	double		sun_radius = (2.5 + randf() - randf() ) * planet_radius;
 	Quaternion  q_sun;
-	Vector		sunPos = make_vector(0,0,0);
+	Vector		sunPos = make_vector( 0.0f, 0.0f, 0.0f);
 	
 	// here we need to check if the sun collides with (or is too close to) the witchpoint
 	// otherwise at (for example) Maregais in Galaxy 1 we go BANG!
@@ -895,7 +915,7 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		[a_sun setRadius: sun_radius + 600000];
 		[a_sun setThrowSparks:YES];
-		[a_sun setVelocity:make_vector(0,0,0)];
+		[a_sun setVelocity: make_vector( 0.0f, 0.0f, 0.0f)];
 	}
 	/*--*/
 		
@@ -979,6 +999,34 @@ Your fair use and other rights are in no way affected by the above.
 //		NSLog([NSString stringWithFormat:@"Human Name: %@ %@", [self expandDescription:@"%R" forSystem:p_seed], [self expandDescription:@"[nom]" forSystem:p_seed]]);
 //	}
 	
+//	// debug character gen
+//	int i;
+//	Random_Seed p_seed = system_seed;
+//	for (i = 0; i < 20; i++)
+//	{
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		NSLog(@"%d.) %@", i + 1, [[[OOCharacter alloc] initWithGenSeed: p_seed andOriginalSystemSeed: system_seed inUniverse: self] autorelease]);
+//	}
+//	for (i = 0; i < 20; i++)
+//	{
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		NSLog(@"%d.) %@", i + 1, [[[OOCharacter alloc] initWithRole:@"pirate" andOriginalSystemSeed: p_seed inUniverse: self] autorelease]);
+//	}
+//	for (i = 0; i < 20; i++)
+//	{
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		rotate_seed( &p_seed);
+//		NSLog(@"%d.) %@", i + 1, [[[OOCharacter alloc] initWithRole:@"trader" andOriginalSystemSeed: p_seed inUniverse: self] autorelease]);
+//	}
+	
 	
 	/*- nav beacon -*/
 	nav_buoy = [self getShipWithRole:@"buoy"];	// retain count = 1
@@ -1036,8 +1084,8 @@ Your fair use and other rights are in no way affected by the above.
 		int i;
 		for (i = 0; i < 3; i++)
 		{
-			[self scatterAsteroidsAt:planetPos withVelocity:make_vector(0,0,0) includingRockHermit:NO];
-			[self scatterAsteroidsAt:make_vector(0,0,0) withVelocity:make_vector(0,0,0) includingRockHermit:NO];
+			[self scatterAsteroidsAt:planetPos withVelocity:make_vector( 0.0f, 0.0f, 0.0f) includingRockHermit:NO];
+			[self scatterAsteroidsAt:make_vector( 0.0f, 0.0f, 0.0f) withVelocity:make_vector( 0.0f, 0.0f, 0.0f) includingRockHermit:NO];
 		}
 		
 	}
@@ -1056,15 +1104,6 @@ Your fair use and other rights are in no way affected by the above.
 		NSArray* script_actions = (NSArray *)[systeminfo objectForKey:KEY_SCRIPT_ACTIONS];
 		
 		[player scriptActions: script_actions forTarget: nil];
-		
-//		int i;
-//		for (i = 0; i < [script_actions count]; i++)
-//		{
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSDictionary class]])
-//				[player checkCouplet:(NSDictionary *)[script_actions objectAtIndex:i] onEntity:nil];
-//			if ([[script_actions objectAtIndex:i] isKindOfClass:[NSString class]])
-//				[player scriptAction:(NSString *)[script_actions objectAtIndex:i] onEntity:nil];
-//		}
 	}
 	
 }
@@ -1431,7 +1470,7 @@ Your fair use and other rights are in no way affected by the above.
 		
 		Vector	launch_pos = make_vector( h1_pos.x + asteroid_location * v_route1.x, h1_pos.y + asteroid_location * v_route1.y, h1_pos.z + asteroid_location * v_route1.z);
 		total_rocks += [self	scatterAsteroidsAt: launch_pos
-								withVelocity: make_vector( 0, 0, 0)
+								withVelocity: make_vector( 0.0f, 0.0f, 0.0f)
 								includingRockHermit: (((ranrot_rand() & 31) <= cluster_size)&&(r < total_clicks * 2 / 3)&&(!sun_gone_nova))];
 	}
 		
@@ -1618,7 +1657,7 @@ Your fair use and other rights are in no way affected by the above.
 		
 		Vector	launch_pos = make_vector( p1_pos.x + asteroid_location * v_route2.x, p1_pos.y + asteroid_location * v_route2.y, p1_pos.z + asteroid_location * v_route2.z);
 		total_rocks += [self	scatterAsteroidsAt: launch_pos
-								withVelocity: make_vector( 0, 0, 0)
+								withVelocity: make_vector( 0.0f, 0.0f, 0.0f)
 								includingRockHermit: (((ranrot_rand() & 31) <= cluster_size)&&(asteroid_location > 0.33 * max_length)&&(!sun_gone_nova))];
 	}
 	
@@ -1677,8 +1716,16 @@ Your fair use and other rights are in no way affected by the above.
 			[self addEntity:hermit];
 			[[hermit getAI] setState:@"GLOBAL"];
 			[hermit release];
+			cluster_size++;
 		}
 	}
+	
+	// hint to the collision detection system
+	if (cluster_size > 3)
+	{
+		[universeRegion addSubregionAtPosition: spawnPos withRadius: SCANNER_MAX_RANGE * 1.5f ];	// 50% fudge on size
+	}
+	
 	return rocks;
 }
 
@@ -1756,7 +1803,7 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	NSString* l_sys = [system lowercaseString];
 	if ([l_sys length] != 3)
-		return make_vector(0,0,0);
+		return make_vector( 0.0f, 0.0f, 0.0f);
 	PlanetEntity* the_planet = [self planet];
 	PlanetEntity* the_sun = [self sun];
 	if ((!the_planet)||(!the_sun))
@@ -1787,7 +1834,7 @@ Your fair use and other rights are in no way affected by the above.
 				case 's':
 					p1 = s_pos;	p2 = p_pos;	break;
 				default:
-					return make_vector(0,0,0);
+					return make_vector( 0.0f, 0.0f, 0.0f);
 			}
 			break;
 		case 'p':		
@@ -1799,7 +1846,7 @@ Your fair use and other rights are in no way affected by the above.
 				case 's':
 					p1 = s_pos;	p2 = w_pos;	break;
 				default:
-					return make_vector(0,0,0);
+					return make_vector( 0.0f, 0.0f, 0.0f);
 			}
 			break;
 		case 's':
@@ -1811,11 +1858,11 @@ Your fair use and other rights are in no way affected by the above.
 				case 'p':
 					p1 = p_pos;	p2 = w_pos;	break;
 				default:
-					return make_vector(0,0,0);
+					return make_vector( 0.0f, 0.0f, 0.0f);
 			}
 			break;
 		default:
-			return make_vector(0,0,0);
+			return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	Vector k = make_vector(p1.x - p0.x, p1.y - p0.y, p1.z - p0.z);
 	if (k.x||k.y||k.z)
@@ -1841,7 +1888,7 @@ Your fair use and other rights are in no way affected by the above.
 		case 'm':
 			scalar = 1.0;	break;
 		default:
-			return make_vector(0,0,0);
+			return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	*my_scalar = scalar;
 	
@@ -2013,7 +2060,7 @@ Your fair use and other rights are in no way affected by the above.
 		//
 		int limit_count = 8;
 		//
-		v_from_center = make_vector( 0, 0, 0);
+		v_from_center = make_vector( 0.0f, 0.0f, 0.0f);
 		do
 		{
 			do
@@ -2099,6 +2146,21 @@ Your fair use and other rights are in no way affected by the above.
 	return [self addShips: howMany withRole: desc intoBoundingBox: launch_bbox];
 }
 
+- (BOOL) addShips:(int) howMany withRole:(NSString *) desc nearPosition:(Vector) pos withCoordinateSystem:(NSString *) system withinRadius:(GLfloat) radius
+{
+	// initial bounding box
+	GLfloat scalar = 1.0;
+	Vector launch_pos = [self coordinatesForPosition:pos withCoordinateSystem:system returningScalar:&scalar];
+	GLfloat rfactor = radius;
+	if (rfactor < 1000)
+		rfactor = 1000;
+	BoundingBox	launch_bbox;
+	bounding_box_reset_to_vector( &launch_bbox, make_vector( launch_pos.x - rfactor, launch_pos.y - rfactor, launch_pos.z - rfactor));
+	bounding_box_add_xyz( &launch_bbox, launch_pos.x + rfactor, launch_pos.y + rfactor, launch_pos.z + rfactor);
+	
+	return [self addShips: howMany withRole: desc intoBoundingBox: launch_bbox];
+}
+
 - (BOOL) addShips:(int) howMany withRole:(NSString *) desc intoBoundingBox:(BoundingBox) bbox
 {
 	if (howMany < 1)
@@ -2109,27 +2171,27 @@ Your fair use and other rights are in no way affected by the above.
 		int h0 = howMany / 2;
 		int h1 = howMany - h0;
 		// split the bounding box into two along its longest dimension
-		GLfloat lx = bbox.max_x - bbox.min_x;
-		GLfloat ly = bbox.max_y - bbox.min_y;
-		GLfloat lz = bbox.max_z - bbox.min_z;
+		GLfloat lx = bbox.max.x - bbox.min.x;
+		GLfloat ly = bbox.max.y - bbox.min.y;
+		GLfloat lz = bbox.max.z - bbox.min.z;
 		BoundingBox bbox0 = bbox;
 		BoundingBox bbox1 = bbox;
 		if ((lx > lz)&&(lx > ly))	// longest dimension is x
 		{
-			bbox0.min_x += 0.5 * lx;
-			bbox1.max_x -= 0.5 * lx;
+			bbox0.min.x += 0.5 * lx;
+			bbox1.max.x -= 0.5 * lx;
 		}
 		else
 		{
 			if (ly > lz)	// longest dimension is y
 			{
-				bbox0.min_y += 0.5 * ly;
-				bbox1.max_y -= 0.5 * ly;
+				bbox0.min.y += 0.5 * ly;
+				bbox1.max.y -= 0.5 * ly;
 			}
 			else			// longest dimension is z
 			{
-				bbox0.min_z += 0.5 * lz;
-				bbox1.max_z -= 0.5 * lz;
+				bbox0.min.z += 0.5 * lz;
+				bbox1.max.z -= 0.5 * lz;
 			}
 		}
 		// place half the ships into each bounding box
@@ -2137,10 +2199,10 @@ Your fair use and other rights are in no way affected by the above.
 	}
 	
 	//	randomise within the bounding box (biased towards the center of the box)
-	Vector pos = make_vector(bbox.min_x, bbox.min_y, bbox.min_z);
-	pos.x += 0.5 * (randf() + randf()) * (bbox.max_x - bbox.min_x);
-	pos.y += 0.5 * (randf() + randf()) * (bbox.max_y - bbox.min_y);
-	pos.z += 0.5 * (randf() + randf()) * (bbox.max_z - bbox.min_z);
+	Vector pos = make_vector(bbox.min.x, bbox.min.y, bbox.min.z);
+	pos.x += 0.5 * (randf() + randf()) * (bbox.max.x - bbox.min.x);
+	pos.y += 0.5 * (randf() + randf()) * (bbox.max.y - bbox.min.y);
+	pos.z += 0.5 * (randf() + randf()) * (bbox.max.z - bbox.min.z);
 	
 	//
 	ShipEntity  *ship;
@@ -2190,7 +2252,7 @@ Your fair use and other rights are in no way affected by the above.
 	// position
 	if ([spawndict objectForKey:@"position"])
 	{
-		Vector pos = make_vector( 0, 0, 0);
+		Vector pos = make_vector( 0.0f, 0.0f, 0.0f);
 		NSString* positionString = (NSString*)[spawndict objectForKey:@"position"];
 		NSArray* positiontokens = [ResourceManager scanTokensFromString:positionString];
 		if ([positiontokens count] == 4)
@@ -2658,7 +2720,7 @@ Your fair use and other rights are in no way affected by the above.
 		// reset a few flags
 		entity->isSunlit = YES;
 		entity->shadingEntityID = NO_TARGET;
-		entity->position = make_vector(0,0,0);
+		entity->position = make_vector( 0.0f, 0.0f, 0.0f);
 		
 		if (entity->isShip)
 		{
@@ -2947,8 +3009,12 @@ Your fair use and other rights are in no way affected by the above.
 	for (i = 0; i < how_many; i++)
 	{
 		ShipEntity* container = [self getShipWithRole:@"cargopod"];	// retained
-		int co_type, co_amount, qr;
 		
+		// look for a pre-set filling
+		int co_type = [container getCommodityType];
+		int co_amount = [container getCommodityAmount];
+		
+		int qr;
 		// select a random point in the histogram
 		#if __POWERPC__ || defined(NO_DIV_ZERO_EXCEPTION)
 			qr = ranrot_rand() % total_quantity;
@@ -2957,14 +3023,20 @@ Your fair use and other rights are in no way affected by the above.
 			else qr = 0;
 		#endif
 		
-		co_type = 0;
-		while (qr > 0)
+		if ((co_type == NSNotFound)||(co_amount == 0))
 		{
-			qr -= quantities[co_type++];
+			// choose a random filling
+			// select a random point in the histogram
+			int qr = ranrot_rand() % total_quantity;
+			co_type = 0;
+			while (qr > 0)
+			{
+				qr -= quantities[co_type++];
+			}
+			co_type--;
+			
+			co_amount = [self getRandomAmountOfCommodity:co_type];
 		}
-		co_type--;
-		
-		co_amount = [self getRandomAmountOfCommodity:co_type];
 		
 		//NSLog(@"... loading with plentiful %@",[self describeCommodity:co_type amount:co_amount]);
 		
@@ -3002,18 +3074,25 @@ Your fair use and other rights are in no way affected by the above.
 	for (i = 0; i < how_many; i++)
 	{
 		ShipEntity* container = [self getShipWithRole:@"cargopod"];
-		int co_type, co_amount, qr;
 		
-		// select a random point in the histogram
-		qr = ranrot_rand() % total_quantity;
-		co_type = 0;
-		while (qr > 0)
+		// look for a pre-set filling
+		int co_type = [container getCommodityType];
+		int co_amount = [container getCommodityAmount];
+		
+		if ((co_type == NSNotFound)||(co_amount == 0))
 		{
-			qr -= quantities[co_type++];
+			// choose a random filling
+			// select a random point in the histogram
+			int qr = ranrot_rand() % total_quantity;
+			co_type = 0;
+			while (qr > 0)
+			{
+				qr -= quantities[co_type++];
+			}
+			co_type--;
+			
+			co_amount = [self getRandomAmountOfCommodity:co_type];
 		}
-		co_type--;
-		
-		co_amount = [self getRandomAmountOfCommodity:co_type];
 		
 		//NSLog(@"... loading with scarce %@",[self describeCommodity:co_type amount:co_amount]);
 		if (container)
@@ -3097,9 +3176,10 @@ Your fair use and other rights are in no way affected by the above.
 - (int) commodityForName:(NSString *) co_name
 {
 	int i;
+	NSString* capName = [co_name capitalizedString];
 	for (i = 0; i < [commoditydata count]; i++)
 	{
-		if ([co_name isEqual:[[commoditydata objectAtIndex:i] objectAtIndex:MARKET_NAME]])
+		if ([capName isEqual:[[commoditydata objectAtIndex:i] objectAtIndex:MARKET_NAME]])
 			return i;
 	}
 	return NSNotFound;
@@ -3173,6 +3253,11 @@ Your fair use and other rights are in no way affected by the above.
     return textureStore;
 }
 
+// global rotation matrix definitions
+GLfloat	fwd_matrix[] = {		1.0f, 0.0f, 0.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,		0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat	aft_matrix[] = {		-1.0f, 0.0f, 0.0f, 0.0f,	0.0f, 1.0f, 0.0f, 0.0f,		0.0f, 0.0f, -1.0f, 0.0f,	0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat	port_matrix[] = {		0.0f, 0.0f, -1.0f, 0.0f,	0.0f, 1.0f, 0.0f, 0.0f,		1.0f, 0.0f, 0.0f, 0.0f,		0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,		-1.0f, 0.0f, 0.0f, 0.0f,	0.0f, 0.0f, 0.0f, 1.0f};
 - (void) drawFromEntity:(int) n
 {
 	if (!no_update)
@@ -3183,7 +3268,6 @@ Your fair use and other rights are in no way affected by the above.
 			
 			int i, v_status;
 			Vector	position, obj_position, view_dir;
-			Matrix rotMatrix;
 			BOOL playerDemo = NO;
 			GLfloat	white[] = { 1.0, 1.0, 1.0, 1.0};	// white light
 			
@@ -3214,8 +3298,18 @@ Your fair use and other rights are in no way affected by the above.
 			Entity	*viewthing = nil;
 			Entity	*drawthing = nil;
 			
+			GLfloat* view_matrix = fwd_matrix;
+			switch (viewDirection)
+			{
+				case VIEW_AFT:
+					view_matrix = aft_matrix; break;
+				case VIEW_PORT:
+					view_matrix = port_matrix; break;
+				case VIEW_STARBOARD:
+					view_matrix = starboard_matrix; break;
+			}
+			
 			position.x = 0.0;	position.y = 0.0;	position.z = 0.0;
-			set_matrix_identity(rotMatrix);
 
 			if (n < n_entities)
 			{
@@ -3225,7 +3319,6 @@ Your fair use and other rights are in no way affected by the above.
 			if ((viewthing)&&(viewthing == sortedEntities[0]))
 			{
 				position = [viewthing getViewpointPosition];
-				gl_matrix_into_matrix([viewthing rotationMatrix], rotMatrix);
 				v_status = viewthing->status;
 				playerDemo = [(PlayerEntity*)viewthing showDemoShips];
 			}
@@ -3263,6 +3356,8 @@ Your fair use and other rights are in no way affected by the above.
 			// HACK BUSTED
 			glScalef(   -1.0,  1.0,	1.0);   // flip left and right
 
+			gl_matrix saved_flat_matrix;
+			glGetFloatv(GL_MODELVIEW_MATRIX, saved_flat_matrix);
 			glPushMatrix(); // save this flat viewpoint
 
 			switch (viewDirection)
@@ -3330,11 +3425,11 @@ Your fair use and other rights are in no way affected by the above.
 				
 				int		furthest = draw_count - 1;
 				int		nearest = 0;
-
+								
 				//
 				//		DRAW ALL THE OPAQUE ENTITIES
 				//
-				for (i = furthest; i > nearest; i--)
+				for (i = furthest; i >= nearest; i--)
 				{
 					int d_status;
 					drawthing = my_entities[i];
@@ -3354,10 +3449,23 @@ Your fair use and other rights are in no way affected by the above.
 						
 						glPushMatrix();
 						obj_position = drawthing->position;
-						//translate the object
-						glTranslatef(obj_position.x,obj_position.y,obj_position.z);
-						//rotate the object
-						glMultMatrixf([drawthing rotationMatrix]);
+						if (drawthing != viewthing)
+						{
+							//translate the object
+							glTranslatef(obj_position.x,obj_position.y,obj_position.z);
+							//rotate the object
+							glMultMatrixf([drawthing drawRotationMatrix]);
+						}
+						else
+						{
+							Vector viewOffset = [viewthing getViewpointOffset];
+							// get saved viewpoint
+							glLoadMatrixf( saved_flat_matrix);
+							// rotate according to view direction
+							glMultMatrixf( view_matrix);
+							//translate the object  from the viewpoint
+							glTranslatef( -viewOffset.x, -viewOffset.y, -viewOffset.z);
+						}
 
 						// atmospheric fog
 						if (fogging)
@@ -3405,7 +3513,7 @@ Your fair use and other rights are in no way affected by the above.
 				//
 				glDepthMask(GL_FALSE);				// don't write to depth buffer
 				glDisable(GL_LIGHTING);	// ++TEST++
-				for (i = furthest; i > nearest; i--)
+				for (i = furthest; i >= nearest; i--)
 				{
 					int d_status;
 					drawthing = my_entities[i];
@@ -3418,10 +3526,23 @@ Your fair use and other rights are in no way affected by the above.
 						
 						glPushMatrix();
 						obj_position = drawthing->position;
-						//translate the object
-						glTranslatef(obj_position.x,obj_position.y,obj_position.z);
-						//rotate the object
-						glMultMatrixf([drawthing rotationMatrix]);
+						if (drawthing != viewthing)
+						{
+							//translate the object
+							glTranslatef(obj_position.x,obj_position.y,obj_position.z);
+							//rotate the object
+							glMultMatrixf([drawthing drawRotationMatrix]);
+						}
+						else
+						{
+							Vector viewOffset = [viewthing getViewpointOffset];
+							// get saved viewpoint
+							glLoadMatrixf( saved_flat_matrix);
+							// rotate according to view direction
+							glMultMatrixf( view_matrix);
+							//translate the object  from the viewpoint
+							glTranslatef( -viewOffset.x, -viewOffset.y, -viewOffset.z);
+						}
 						
 						// atmospheric fog
 						if (fogging)
@@ -3446,6 +3567,7 @@ Your fair use and other rights are in no way affected by the above.
 						glPopMatrix();
 					}
 				}
+								
 				glDepthMask(GL_TRUE);	// restore write to depth buffer
 			}
 			
@@ -3494,11 +3616,6 @@ Your fair use and other rights are in no way affected by the above.
 			{
 				NSLog(@"\n\n***** Encountered localException: %@ : %@ *****\n\n",[localException name], [localException reason]);
 				[localException raise];
-//				if (![[self gameController] inFullScreenMode])
-//					NSRunAlertPanel(@"Unexpected Error!", @"Error during [universe update:]\n\n'%@'", @"QUIT", nil, nil,localException);
-//				else
-//				NSLog(@"\n\n***** Quitting Oolite *****\n\n");
-//				[[self gameController] exitApp];
 			}
 		
 		NS_ENDHANDLER
@@ -3521,7 +3638,8 @@ Your fair use and other rights are in no way affected by the above.
 		GLfloat cx_col0[4] = { 0.0, 1.0, 0.0, 0.25};
 		GLfloat cx_col1[4] = { 0.0, 1.0, 0.0, 0.50};
 		GLfloat cx_col2[4] = { 0.0, 1.0, 0.0, 0.75};
-		glEnable(GL_LINE_SMOOTH);									// alpha blending
+		glDisable(GL_TEXTURE_2D);						// important to do this to avoid disappearing crosshairs!
+		glEnable(GL_LINE_SMOOTH);						// alpha blending for lines
 		glLineWidth(2.0);
 		
 		switch (weapon)
@@ -3591,7 +3709,9 @@ Your fair use and other rights are in no way affected by the above.
 - (void) drawMessage
 {
 	GLfloat z1 = [(MyOpenGLView *)gameView display_z];
-
+	
+	glDisable(GL_TEXTURE_2D);	// for background sheets
+	
 	if (message_gui)
 	{
 		[message_gui drawGUI:0.0 :-40.0 :z1 :1.0 forUniverse:self];
@@ -3617,11 +3737,22 @@ Your fair use and other rights are in no way affected by the above.
 		if (cursor_y > MAIN_GUI_PIXEL_HEIGHT * 0.5)   cursor_y = MAIN_GUI_PIXEL_HEIGHT * 0.5;
 		
 		cursor_row = 1 + floor((0.5 * MAIN_GUI_PIXEL_HEIGHT - MAIN_GUI_PIXEL_ROW_START - cursor_y) / MAIN_GUI_ROW_HEIGHT);
-//		int column = floor((cursor_x + 0.5 * MAIN_GUI_PIXEL_WIDTH) / MAIN_GUI_ROW_WIDTH);
 		
 //		NSLog(@"DEBUG text cursor position [ row %d ] %@", cursor_row, [gui objectForRow: cursor_row]);
 		
-		[cursorSprite blitCentredToX:cursor_x Y:cursor_y Z:z1 Alpha:1.0];
+		// replace cursorSprite
+		GLfloat h1 = 3.0f;
+		GLfloat h3 = 9.0f;
+		glColor4f( 0.2f, 0.2f, 1.0f, 0.5f);
+		glLineWidth( 2.0f);
+		glBegin(GL_LINES);
+			glVertex3f( cursor_x - h1, cursor_y, z1);	glVertex3f( cursor_x - h3, cursor_y, z1);
+			glVertex3f( cursor_x + h1, cursor_y, z1);	glVertex3f( cursor_x + h3, cursor_y, z1);
+			glVertex3f( cursor_x, cursor_y - h1, z1);	glVertex3f( cursor_x, cursor_y - h3, z1);
+			glVertex3f( cursor_x, cursor_y + h1, z1);	glVertex3f( cursor_x, cursor_y + h3, z1);
+		glEnd();
+		glLineWidth( 1.0f);
+		
 		[(MyOpenGLView *)gameView setVirtualJoystick:cursor_x/MAIN_GUI_PIXEL_WIDTH :-cursor_y/MAIN_GUI_PIXEL_HEIGHT];
 	}
 	
@@ -3638,8 +3769,12 @@ Your fair use and other rights are in no way affected by the above.
 
 - (Entity *) entityForUniversalID:(int)u_id
 {
+	if (u_id == 100)
+		return [self entityZero];	// the player
+	
 	if ((u_id == NO_TARGET)||(!entity_for_uid[u_id]))
 		return nil;
+		
 	Entity* ent = entity_for_uid[u_id];
 	if (ent->isParticle)	// particles SHOULD NOT HAVE U_IDs!
 		return nil;
@@ -4070,7 +4205,7 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		NSLog(@"ERROR ***** No entity set in Universe getSafeVectorFromEntity:toDistance:fromPoint:");
 		NSBeep();
-		return make_vector(0,0,0);
+		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	Vector  f1;
 	Vector  result = p2;
@@ -4174,168 +4309,12 @@ Your fair use and other rights are in no way affected by the above.
 	return result;
 }
 
-- (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir rangeFound:(GLfloat*)range_ptr
-{
-	BOOL isSubentity = NO;
-	ShipEntity  *hit_entity = nil;
-	ShipEntity  *hit_subentity = nil;
-	
-	Vector p0 = e1->position;
-	Quaternion q1 = e1->q_rotation;
-	if ((e1)&&(e1->isPlayer))
-		q1.w = -q1.w;   //  reverse for player viewpoint
-	
-	ShipEntity* parent = (ShipEntity*)[e1 owner];
-	if ((e1)&&(e1->isShip)&&(parent)&&(parent != e1)&&(parent->isShip)&&([parent->sub_entities containsObject:e1]))
-	{	// we're a subentity!
-		BoundingBox bbox = [e1 getBoundingBox];
-		Vector midfrontplane = make_vector( 0.5 * (bbox.max_x + bbox.min_x), 0.5 * (bbox.max_y + bbox.min_y), bbox.max_z);
-		p0 = [(ShipEntity*)e1 absolutePositionForSubentityOffset:midfrontplane];
-		q1 = parent->q_rotation;
-		if (parent->isPlayer)
-			q1.w = -q1.w;
-		isSubentity = YES;
-	}
-	
-	int		result = NO_TARGET;
-	double  nearest;
-	if (!e1)
-		return NO_TARGET;
-	if (e1->isShip)
-		nearest = [(ShipEntity *)e1 weapon_range];
-	else
-		nearest = PARTICLE_LASER_LENGTH;
-//	NSLog(@"DEBUG LASER nearest = %.1f",nearest);
-	
-	int i;
-	int ent_count = n_entities;
-	int ship_count = 0;
-	ShipEntity* my_entities[ent_count];
-	for (i = 0; i < ent_count; i++)
-	{
-		Entity* ent = sortedEntities[i];
-		if ((ent->isShip) && (ent != e1) && (ent != parent) && [ent canCollide])
-			my_entities[ship_count++] = [ent retain];	// retained
-	}
-	
-	Vector u1 = vector_up_from_quaternion(q1);
-	switch (viewdir)
-	{
-		case VIEW_AFT :
-			quaternion_rotate_about_axis(&q1, u1, PI);
-			break;
-		case VIEW_PORT :
-			quaternion_rotate_about_axis(&q1, u1, PI/2.0);
-			break;
-		case VIEW_STARBOARD :
-			quaternion_rotate_about_axis(&q1, u1, -PI/2.0);
-			break;
-	}
-	Vector f1 = vector_forward_from_quaternion(q1);
-	Vector r1 = vector_right_from_quaternion(q1);
-	for (i = 0; i < ship_count; i++)
-	{
-		ShipEntity *e2 = my_entities[i];
-		
-//		if (debug_laser)
-//			NSLog(@"DEBUG >>>>> %@", e2);
-		
-		// check outermost bounding sphere
-		GLfloat cr = e2->collision_radius;
-		Vector rpos = make_vector( e2->position.x - p0.x, e2->position.y - p0.y, e2->position.z - p0.z);
-		Vector v_off = make_vector( dot_product( rpos, r1), dot_product( rpos, u1), dot_product( rpos, f1));
-		if ((v_off.z > 0.0)&&(v_off.z < nearest + cr)								// ahead AND within range
-			&&(v_off.x < cr)&&(v_off.x > -cr)&&(v_off.y < cr)&&(v_off.y > -cr)		// AND not off to one side or another
-			&&(v_off.x*v_off.x + v_off.y*v_off.y < cr*cr))							// AND not off to both sides
-		{
-			//  within the bounding sphere - do further tests
-//			if (debug_laser)
-//				NSLog(@"DEBUG LASER within outermost bounding sphere of %@", e2);
-			// find any subentities for later testing
-			int n_subs = 0;
-			NSArray* subs = e2->sub_entities;
-			if (subs)
-				n_subs = [subs count];
-			// check bounding spheres of main model and subentities
-			// main model
-			GLfloat ar = e2->actual_radius;
-			if ((v_off.z > 0.0)&&(v_off.z < nearest + ar)								// ahead AND within range
-				&&(v_off.x < ar)&&(v_off.x > -ar)&&(v_off.y < ar)&&(v_off.y > -ar)		// AND not off to one side or another
-				&&(v_off.x*v_off.x + v_off.y*v_off.y < ar*ar))							// AND not off to both sides
-			{
-//				if (debug_laser)
-//					NSLog(@"DEBUG LASER within actual bounding sphere of %@", e2);
-				// check bounding box of main model
-				BoundingBox arbb = [e2 findBoundingBoxRelativeToPosition:p0 InVectors:r1 :u1 :f1];
-				if ((arbb.min_x < 0.0)&&(arbb.max_x > 0.0)&&(arbb.min_y < 0.0)&&(arbb.max_y > 0.0)&&(arbb.min_z > 0.0)&&(arbb.min_z < nearest))
-				{
-					hit_subentity = nil;
-					hit_entity = e2;
-					nearest = arbb.min_z;
-				}
-			}
-			if ((hit_entity != e2)&&(n_subs))	// didn't hit main body but there are subs to chcek
-			{
-//				if (debug_laser)
-//					NSLog(@"DEBUG LASER checking subentities of %@", e2);
-				// check subentity bounding spheres
-				int si;
-				for (si = 0; (hit_entity != e2)&&(si < n_subs); si++)
-				{
-					Entity* e3 = (Entity*)[subs objectAtIndex:si];
-					if ([e3 canCollide]&&(e3->isShip))
-					{
-						ShipEntity* se3 = (ShipEntity*)e3;
-						GLfloat sr = e3->actual_radius;
-						Vector sepos = [se3 absolutePositionForSubentity];
-						Vector rpos = make_vector( sepos.x - p0.x, sepos.y - p0.y, sepos.z - p0.z);
-						Vector v_off = make_vector( dot_product( rpos, r1), dot_product( rpos, u1), dot_product( rpos, f1));
-						if ((v_off.z > 0.0)&&(v_off.z < nearest + sr)								// ahead AND within range
-							&&(v_off.x < sr)&&(v_off.x > -sr)&&(v_off.y < sr)&&(v_off.y > -sr)		// AND not off to one side or another
-							&&(v_off.x*v_off.x + v_off.y*v_off.y < sr*sr))							// AND not off to both sides
-						{
-//							if (debug_laser)
-//								NSLog(@"DEBUG LASER within actual bounding sphere of %@", se3);
-							// check subentity bounding box
-							BoundingBox sebb = [se3 findSubentityBoundingBoxRelativeToPosition:p0 inVectors:r1 :u1 :f1];
-							if ((sebb.min_x < 0.0)&&(sebb.max_x > 0.0)&&(sebb.min_y < 0.0)&&(sebb.max_y > 0.0)&&(sebb.min_z > 0.0)&&(sebb.min_z < nearest))
-							{
-//								if (debug_laser)
-//									NSLog(@"DEBUG Laser hits subentity %@ of %@", se3, e2);
-								hit_subentity = se3;
-								hit_entity = e2;
-								nearest = sebb.min_z;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	//
-	if (hit_entity)
-	{
-		result = [hit_entity universal_id];
-		if ((hit_subentity)&&[hit_entity->sub_entities containsObject:hit_subentity])
-			hit_entity->subentity_taking_damage = hit_subentity;
-		else
-			hit_entity->subentity_taking_damage = nil;
-		if (range_ptr != nil)
-			range_ptr[0] = (GLfloat)nearest;
-	}
-	//
-//	if (debug_laser)
-//		NSLog(@"DEBUG LASER hit %@ %d",[hit_entity name],result);
-	//
-	for (i = 0; i < ship_count; i++)
-		[my_entities[i] release]; //	released
-	//
-	return result;
-}
-
 - (int) getFirstEntityHitByLaserFromEntity:(Entity *) e1 inView:(int) viewdir offset:(Vector) offset rangeFound:(GLfloat*)range_ptr
 {
-//	BOOL debug_laser = e1->isPlayer;
+	if (!e1)
+		return NO_TARGET;
+	
+	BOOL debug_laser = e1->isPlayer;
 
 	BOOL isSubentity = NO;
 	ShipEntity  *hit_entity = nil;
@@ -4343,14 +4322,14 @@ Your fair use and other rights are in no way affected by the above.
 	
 	Vector p0 = e1->position;
 	Quaternion q1 = e1->q_rotation;
-	if ((e1)&&(e1->isPlayer))
+	if (e1->isPlayer)
 		q1.w = -q1.w;   //  reverse for player viewpoint
 	
 	ShipEntity* parent = (ShipEntity*)[e1 owner];
-	if ((e1)&&(e1->isShip)&&(parent)&&(parent != e1)&&(parent->isShip)&&([parent->sub_entities containsObject:e1]))
+	if ((e1->isShip)&&(parent)&&(parent != e1)&&(parent->isShip)&&([parent->sub_entities containsObject:e1]))
 	{	// we're a subentity!
 		BoundingBox bbox = [e1 getBoundingBox];
-		Vector midfrontplane = make_vector( 0.5 * (bbox.max_x + bbox.min_x), 0.5 * (bbox.max_y + bbox.min_y), bbox.max_z);
+		Vector midfrontplane = make_vector( 0.5 * (bbox.max.x + bbox.min.x), 0.5 * (bbox.max.y + bbox.min.y), bbox.max.z);
 		p0 = [(ShipEntity*)e1 absolutePositionForSubentityOffset:midfrontplane];
 		q1 = parent->q_rotation;
 		if (parent->isPlayer)
@@ -4360,8 +4339,6 @@ Your fair use and other rights are in no way affected by the above.
 	
 	int		result = NO_TARGET;
 	double  nearest;
-	if (!e1)
-		return NO_TARGET;
 	if (e1->isShip)
 		nearest = [(ShipEntity *)e1 weapon_range];
 	else
@@ -4399,19 +4376,16 @@ Your fair use and other rights are in no way affected by the above.
 	}
 	f1 = vector_forward_from_quaternion(q1);
 	r1 = vector_right_from_quaternion(q1);
+	Vector p1 = make_vector( p0.x + nearest *f1.x, p0.y + nearest *f1.y, p0.z + nearest *f1.z);	//endpoint
 	//
 	for (i = 0; i < ship_count; i++)
 	{
 		ShipEntity *e2 = my_entities[i];
 		
-//		debug_laser = ((e1->isPlayer) && ([(ShipEntity*)e1 getPrimaryTargetID] == [e2 universal_id]));
-
-//		if (debug_laser)
-//			NSLog(@"DEBUG >>>>> %@", e2);
+		debug_laser = ((e1->isPlayer) && ([(ShipEntity*)e1 getPrimaryTargetID] == [e2 universal_id]));
 		
 		// check outermost bounding sphere
 		GLfloat cr = e2->collision_radius;
-//		Vector rpos = make_vector( e2->position.x - p0.x, e2->position.y - p0.y, e2->position.z - p0.z);
 		Vector rpos = vector_between( p0, e2->position);
 		Vector v_off = make_vector( dot_product( rpos, r1), dot_product( rpos, u1), dot_product( rpos, f1));
 		if ((v_off.z > 0.0)&&(v_off.z < nearest + cr)								// ahead AND within range
@@ -4419,26 +4393,25 @@ Your fair use and other rights are in no way affected by the above.
 			&&(v_off.x*v_off.x + v_off.y*v_off.y < cr*cr))							// AND not off to both sides
 		{
 			//  within the bounding sphere - do further tests
-//			if (debug_laser)
-//				NSLog(@"DEBUG LASER within outermost bounding sphere %2f of %@", cr, e2);
-			// check bounding spheres of main model and subentities
-			// main model
 			GLfloat ar = e2->actual_radius;
 			if ((v_off.z > 0.0)&&(v_off.z < nearest + ar)								// ahead AND within range
 				&&(v_off.x < ar)&&(v_off.x > -ar)&&(v_off.y < ar)&&(v_off.y > -ar)		// AND not off to one side or another
 				&&(v_off.x*v_off.x + v_off.y*v_off.y < ar*ar))							// AND not off to both sides
 			{
+				debug_octree = NO;
 //				if (debug_laser)
-//					NSLog(@"DEBUG LASER within actual bounding sphere %.2f of %@", ar, e2);
-				// check bounding box of main model
-				BoundingBox arbb = [e2 findBoundingBoxRelativeToPosition:p0 InVectors:r1 :u1 :f1];
-				if ((arbb.min_x < 0.0)&&(arbb.max_x > 0.0)&&(arbb.min_y < 0.0)&&(arbb.max_y > 0.0)&&(arbb.min_z > 0.0)&&(arbb.min_z < nearest))
+//					debug_octree = YES;
+				GLfloat hit = [(ShipEntity*)e2 doesHitLine:p0:p1];	// octree detection
+				
+				if (hit > 0.0)
 				{
 					hit_subentity = nil;
 					hit_entity = e2;
-					nearest = arbb.min_z;
+					nearest = hit;
+					p1 = make_vector( p0.x + nearest *f1.x, p0.y + nearest *f1.y, p0.z + nearest *f1.z);
 				}
 			}
+
 			// find any subentities for testing
 			int n_subs = 0;
 			NSArray* subs = e2->sub_entities;
@@ -4464,30 +4437,23 @@ Your fair use and other rights are in no way affected by the above.
 							&&(v_off.x < sr)&&(v_off.x > -sr)&&(v_off.y < sr)&&(v_off.y > -sr)		// AND not off to one side or another
 							&&(v_off.x*v_off.x + v_off.y*v_off.y < sr*sr))							// AND not off to both sides
 						{
+							Triangle ijk = [se3 absoluteIJKForSubentity];
 //							if (debug_laser)
-//								NSLog(@"DEBUG LASER within actual bounding sphere of %@", se3);
-							// check subentity bounding box
-							BoundingBox sebb = [se3 findSubentityBoundingBoxRelativeToPosition:p0 inVectors:r1 :u1 :f1];
-							if ((sebb.min_x < 0.0)&&(sebb.max_x > 0.0)&&(sebb.min_y < 0.0)&&(sebb.max_y > 0.0)&&(sebb.min_z > 0.0)&&(sebb.min_z < nearest))
+//								debug_octree = YES;
+							GLfloat hit = [se3 doesHitLine:p0:p1 withPosition:sepos andIJK:ijk.v[0]:ijk.v[1]:ijk.v[2]];	// octree detection
+							debug_octree = NO;
+							if (hit > 0.0)
 							{
-//								if (debug_laser)
-//									NSLog(@"DEBUG Laser hits subentity %@ of %@", se3, e2);
 								hit_subentity = se3;
 								hit_entity = e2;
-								nearest = sebb.min_z;
+								nearest = hit;
+								p1 = make_vector( p0.x + nearest *f1.x, p0.y + nearest *f1.y, p0.z + nearest *f1.z);
 							}
 						}
 					}
 				}
 			}
 		}
-//		else
-//		{
-//			if (debug_laser)
-//			{
-//				NSLog(@"DEBUG LASER MISSED v_off = (%.2f, %.2f, %.2f) cr = %.2f", v_off.x, v_off.y, v_off.z, cr);
-//			}
-//		}
 	}
 
 	//
@@ -4710,93 +4676,120 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	// According to Shark, this is where Oolite spends most time!
 	//
-	Entity *e1,*e2;
-	Vector p1, p2;
-	double dist2, r1, r2, min_dist2;
-	int i,j;
+	int i;
 	//
-	// use a non-mutable copy so this can't be changed under us.
+	[universeRegion clearEntityList];
 	//
-	int			ent_count =		n_entities;
-	int			n_test = 0;
-	Entity*		my_entities[ent_count];
-	for (i = 0; i < ent_count; i++)
-	{
-		if ([sortedEntities[i] canCollide])	// on Jens' suggestion only check collidables
-			my_entities[n_test++] = [sortedEntities[i] retain];		//	retained
-	}
-	if (n_test <= 1)
-		return;
+	for (i = 0; i < n_entities; i++)
+		if ([sortedEntities[i] canCollide])						// on Jens' suggestion only check collidables
+			[universeRegion checkEntity: sortedEntities[i]];	//	sorts out which region it's in
 	//
-	//	clear collision vars
-	for (i = 0; i < n_test; i++)
-	{
-		e1 = my_entities[i];
-		if (e1->has_collided)
-			[[e1 collisionArray] removeAllObjects];
-		e1->has_collided = NO;
-		if (e1->isShip)
-			[(ShipEntity*)e1 setProximity_alert:nil];
-		e1->collider = nil;
-	}
+	[universeRegion findCollisionsInUniverse: self];
 	//
-	// test each entity against the others
-	for (i = 0; i < n_test; i++)
-	{
-		e1 = my_entities[i];
-		p1 = e1->position;
-		r1 = e1->collision_radius;
-		for (j = i + 1; j < n_test; j++)	// was j = 1, which wasted time!
-		{
-			e2 = my_entities[j];
-			p2 = e2->position;
-			r2 = e2->collision_radius;
-			p2.x -= p1.x;   p2.y -= p1.y;   p2.z -= p1.z;
-			dist2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
-			min_dist2 = (r1 + r2) * (r1 + r2);
-			if (e1->isShip && (e2 == cachedSun))
-				[e1 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
-			if (e2->isShip && (e1 == cachedSun))
-				[e2 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
-			if (dist2 < PROXIMITY_WARN_DISTANCE2 * min_dist2)
-			{
-				if ((e1->isShip) && (e2->isShip))
-				{
-//					NSLog(@"PROXIMITY ALERT %@ VS %@", e1, e2);
-					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r2 * r2) [(ShipEntity*)e1 setProximity_alert:(ShipEntity*)e2];
-					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r1 * r1) [(ShipEntity*)e2 setProximity_alert:(ShipEntity*)e1];
-				}
-				if (dist2 < min_dist2)
-				{
-					BOOL	coll1 = [e1 checkCloseCollisionWith:e2];
-					BOOL	coll2 = [e2 checkCloseCollisionWith:e1];
-//					NSLog(@"Checking close collision between entities [%@:%@] = :%@: :%@:",e1,e2, coll1? @"YES":@"NO ", coll2? @"YES":@"NO ");
-					if ( coll1 && coll2 )
-					{
-						//NSLog(@"collision!");
-						if (e1->collider)
-							[[e1 collisionArray] addObject:e1->collider];
-						else
-							[[e1 collisionArray] addObject:e2];
-						e1->has_collided = YES;
-						//
-						if (e2->collider)
-							[[e2 collisionArray] addObject:e2->collider];
-						else
-							[[e2 collisionArray] addObject:e1];
-						e2->has_collided = YES;
-					}
-				}
-			}
-//			if (dumpCollisionInfo)
-//				NSLog(@"Entity %d (%.1f) to entity %d (%.1f)- dist2ance  %.1f (%.1f,%.1f,%.1f)", i, r1, j, r2, sqrt(dist2), p2.x, p2.y, p2.z);
-		}
-	}
-//	if (dumpCollisionInfo)
-//		dumpCollisionInfo = NO;
-	//
-	for (i = 0; i < n_test; i++)
-		[my_entities[i] release];		//	released
+}
+//{
+//	//
+//	// According to Shark, this is where Oolite spends most time!
+//	//
+//	Entity *e1,*e2;
+//	Vector p1, p2;
+//	double dist2, r1, r2, r0, min_dist2;
+//	int i,j;
+//	//
+//	// use a non-mutable copy so this can't be changed under us.
+//	//
+//	int			ent_count =		n_entities;
+//	int			n_test = 0;
+//	Entity*		my_entities[ent_count];
+//	for (i = 0; i < ent_count; i++)
+//	{
+//		if ([sortedEntities[i] canCollide])	// on Jens' suggestion only check collidables
+//			my_entities[n_test++] = [sortedEntities[i] retain];		//	retained
+//	}
+//	if (n_test <= 1)
+//		return;
+//	//
+//	//	clear collision vars
+//	for (i = 0; i < n_test; i++)
+//	{
+//		e1 = my_entities[i];
+//		if (e1->has_collided)
+//			[[e1 collisionArray] removeAllObjects];
+//		e1->has_collided = NO;
+//		if (e1->isShip)
+//			[(ShipEntity*)e1 setProximity_alert:nil];
+//		e1->collider = nil;
+//	}
+//	//
+//	// test each entity against the others
+//	for (i = 0; i < n_test; i++)
+//	{
+//		e1 = my_entities[i];
+//		p1 = e1->position;
+//		r1 = e1->collision_radius;
+//		for (j = i + 1; j < n_test; j++)	// was j = 1, which wasted time!
+//		{
+//			e2 = my_entities[j];
+//			p2 = e2->position;
+//			r2 = e2->collision_radius;
+//			r0 = r1 + r2;
+//			p2.x -= p1.x;   p2.y -= p1.y;   p2.z -= p1.z;
+//			if ((p2.x > r0)||(p2.x < -r0))	// test for simple x distance
+//				continue;	// next j
+//			if ((p2.y > r0)||(p2.y < -r0))	// test for simple y distance
+//				continue;	// next j
+//			if ((p2.z > r0)||(p2.z < -r0))	// test for simple z distance
+//				continue;	// next j
+//			dist2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
+//			min_dist2 = r0 * r0;
+//			if (e1->isShip && (e2 == cachedSun))
+//				[e1 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
+//			if (e2->isShip && (e1 == cachedSun))
+//				[e2 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
+//			if (dist2 < PROXIMITY_WARN_DISTANCE2 * min_dist2)
+//			{
+//				if ((e1->isShip) && (e2->isShip))
+//				{
+////					NSLog(@"PROXIMITY ALERT %@ VS %@", e1, e2);
+//					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r2 * r2) [(ShipEntity*)e1 setProximity_alert:(ShipEntity*)e2];
+//					if (dist2 < PROXIMITY_WARN_DISTANCE2 * r1 * r1) [(ShipEntity*)e2 setProximity_alert:(ShipEntity*)e1];
+//				}
+//				if (dist2 < min_dist2)
+//				{
+//					BOOL	coll1 = [e1 checkCloseCollisionWith:e2];
+//					BOOL	coll2 = [e2 checkCloseCollisionWith:e1];
+////					NSLog(@"Checking close collision between entities [%@:%@] = :%@: :%@:",e1,e2, coll1? @"YES":@"NO ", coll2? @"YES":@"NO ");
+//					if ( coll1 && coll2 )
+//					{
+//						//NSLog(@"collision!");
+//						if (e1->collider)
+//							[[e1 collisionArray] addObject:e1->collider];
+//						else
+//							[[e1 collisionArray] addObject:e2];
+//						e1->has_collided = YES;
+//						//
+//						if (e2->collider)
+//							[[e2 collisionArray] addObject:e2->collider];
+//						else
+//							[[e2 collisionArray] addObject:e1];
+//						e2->has_collided = YES;
+//					}
+//				}
+//			}
+////			if (dumpCollisionInfo)
+////				NSLog(@"Entity %d (%.1f) to entity %d (%.1f)- dist2ance  %.1f (%.1f,%.1f,%.1f)", i, r1, j, r2, sqrt(dist2), p2.x, p2.y, p2.z);
+//		}
+//	}
+////	if (dumpCollisionInfo)
+////		dumpCollisionInfo = NO;
+//	//
+//	for (i = 0; i < n_test; i++)
+//		[my_entities[i] release];		//	released
+//}
+
+- (NSString*) collisionDescription
+{
+	return [universeRegion debugOut];
 }
 
 - (void) dumpCollisions
@@ -7028,7 +7021,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 		NSEnumerator* missVarsEnum = [mission_vars keyEnumerator];
 		id key;
 		while (key = [missVarsEnum nextObject])
-			[all_descriptions setObject:[NSArray arrayWithObject:[mission_vars objectForKey:key]] forKey:key];
+			[all_descriptions setObject:[mission_vars objectForKey:key] forKey:key];
 	}
 	//
 	////
@@ -7039,16 +7032,16 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	{
 		NSDictionary*		playerinfo = [player commanderDataDictionary];
 		// commander's name
-		[all_descriptions setObject:[NSArray arrayWithObject:[playerinfo objectForKey:@"player_name"]] forKey:@"commander_name"];
+		[all_descriptions setObject:[playerinfo objectForKey:@"player_name"] forKey:@"commander_name"];
 		// one or two word description of ship
-		[all_descriptions setObject:[NSArray arrayWithObject:[player name]] forKey:@"commander_shipname"];
+		[all_descriptions setObject:[player name] forKey:@"commander_shipname"];
 		// ranking from Hamless to ELITE
 		int rating = [player getRatingFromKills: [[playerinfo objectForKey:@"ship_kills"] intValue]];
-		[all_descriptions setObject:[NSArray arrayWithObject:[(NSArray *)[descriptions objectForKey:@"rating"] objectAtIndex:rating]] forKey:@"commander_rank"];
+		[all_descriptions setObject:[(NSArray *)[descriptions objectForKey:@"rating"] objectAtIndex:rating] forKey:@"commander_rank"];
 		// legal status
 		int legal_status = [[playerinfo objectForKey:@"legal_status"] intValue];
 		int legal_index = 0 + (legal_status <= 50) ? 1 : 2;
-		[all_descriptions setObject:[NSArray arrayWithObject:[(NSArray *)[descriptions objectForKey:@"legal_status"] objectAtIndex:legal_index]] forKey:@"commander_legal_status"];
+		[all_descriptions setObject:[(NSArray *)[descriptions objectForKey:@"legal_status"] objectAtIndex:legal_index] forKey:@"commander_legal_status"];
 	}
 	//
 	////
@@ -7065,11 +7058,18 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 		middle = [partial substringWithRange:NSMakeRange(p1 + 1 , p2 - p1 - 2)];
 		
 		// check all_descriptions for an array that's keyed to middle
-		if ([[all_descriptions objectForKey:middle] isKindOfClass:[NSArray class]])
+		if ([all_descriptions objectForKey:middle])
 		{
-			NSArray* choices = (NSArray*)[all_descriptions objectForKey:middle];
-			rnd = gen_rnd_number() % [choices count];
-			part = [NSString stringWithString:(NSString *)[choices objectAtIndex:rnd]];
+			if ([[all_descriptions objectForKey:middle] isKindOfClass:[NSArray class]])
+			{
+				NSArray* choices = (NSArray*)[all_descriptions objectForKey:middle];
+				rnd = gen_rnd_number() % [choices count];
+				part = [NSString stringWithString:(NSString *)[choices objectAtIndex:rnd]];
+			}
+			else
+			{
+				part = [all_descriptions objectForKey:middle];
+			}
 		}
 		else
 		{
@@ -7097,7 +7097,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	[partial	replaceOccurrencesOfString:@"%I"
 				withString:[NSString stringWithFormat:@"%@ian",[self generateSystemName:s_seed]]
 				options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
-				
+	
 	[partial	replaceOccurrencesOfString:@"%R"
 				withString:[self getRandomDigrams]
 				options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
@@ -7158,7 +7158,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	{
 		NSLog(@"ERROR ***** No ship set in Universe getSunSkimStartPositionForShip:");
 		NSBeep();
-		return make_vector(0,0,0);
+		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	PlanetEntity* the_sun = [self sun];
 	// get vector from sun position to ship
@@ -7166,7 +7166,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	{
 		NSLog(@"ERROR ***** No sun set in Universe getSunSkimStartPositionForShip:");
 		NSBeep();
-		return make_vector(0,0,0);
+		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	Vector v0 = the_sun->position;
 	Vector v1 = ship->position;
@@ -7189,14 +7189,14 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	{
 		NSLog(@"ERROR ***** No ship set in Universe getSunSkimEndPositionForShip:");
 		NSBeep();
-		return make_vector(0,0,0);
+		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	// get vector from sun position to ship
 	if (!the_sun)
 	{
 		NSLog(@"ERROR ***** No sun set in Universe getSunSkimEndPositionForShip:");
 		NSBeep();
-		return make_vector(0,0,0);
+		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	Vector v0 = the_sun->position;
 	Vector v1 = ship->position;

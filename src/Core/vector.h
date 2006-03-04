@@ -42,6 +42,23 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "OOOpenGL.h"
 
+
+#define OCTANT_LEFT_BOTTOM_BACK		0
+#define OCTANT_LEFT_BOTTOM_FRONT	1
+#define OCTANT_LEFT_TOP_BACK		2
+#define OCTANT_LEFT_TOP_FRONT		3
+#define OCTANT_RIGHT_BOTTOM_BACK	4
+#define OCTANT_RIGHT_BOTTOM_FRONT	5
+#define OCTANT_RIGHT_TOP_BACK		6
+#define OCTANT_RIGHT_TOP_FRONT		7
+
+#define CUBE_FACE_RIGHT		0x01
+#define CUBE_FACE_LEFT		0x02
+#define CUBE_FACE_TOP		0x04
+#define CUBE_FACE_BOTTOM	0x08
+#define CUBE_FACE_FRONT		0x10
+#define CUBE_FACE_BACK		0x20
+
 struct vector
 {
 	GLfloat x;
@@ -51,9 +68,18 @@ struct vector
 
 struct boundingBox
 {
-	GLfloat min_x, max_x;
-	GLfloat min_y, max_y;
-	GLfloat min_z, max_z;
+	struct vector min;
+	struct vector max;
+};
+
+struct triangle_3v
+{
+	struct vector v[3];
+};
+
+struct triangle_4v
+{
+	struct vector v[4];	// v0 v1 v2 and vnormal
 };
 
 typedef struct vector Matrix[3];
@@ -61,6 +87,8 @@ typedef struct vector Matrix[3];
 typedef struct vector Vector;
 
 typedef struct boundingBox BoundingBox;
+
+typedef struct triangle_4v Triangle;
 
 typedef GLfloat	gl_matrix[16];
 
@@ -102,6 +130,7 @@ void	bounding_box_add_vector(struct boundingBox *box, Vector vec);
 void	bounding_box_add_xyz(struct boundingBox *box, GLfloat x, GLfloat y, GLfloat z);
 void	bounding_box_reset(struct boundingBox *box);
 void	bounding_box_reset_to_vector(struct boundingBox *box, Vector vec);
+GLfloat	bounding_box_max_radius(BoundingBox bb);
 
 // product of two quaternions
 //
@@ -154,6 +183,12 @@ void	quaternion_rotate_about_axis(struct quaternion *quat, Vector axis, GLfloat 
 // normalise
 //
 void	quaternion_normalise(struct quaternion *quat);
+
+Vector		calculateNormalForTriangle(struct triangle_4v * tri);
+Triangle	make_triangle(Vector v0, Vector v1, Vector v2);
+
+Vector lineIntersectionWithFace(Vector p1, Vector p2, long mask, GLfloat rd);
+int lineCubeIntersection(Vector v0, Vector v1, GLfloat rd);
 
 #endif
 

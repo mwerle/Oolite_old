@@ -42,6 +42,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "JoystickHandler.h" // TODO: Not here!
 #import "SDL_syswm.h"
 #import "OOSound.h"
+#import "OOFileManager.h" // to find savedir
 
 #include <ctype.h>
 
@@ -404,7 +405,7 @@ Your fair use and other rights are in no way affected by the above.
 	if ([gameController universe])
 	{
 		Entity* the_sun = [[gameController universe] sun];
-		Vector sun_pos = (the_sun)? the_sun->position : make_vector(0,0,0);
+		Vector sun_pos = (the_sun)? the_sun->position : make_vector(0.0f,0.0f,0.0f);
 		sun_center_position[0] = sun_pos.x;
 		sun_center_position[1] = sun_pos.y;
 		sun_center_position[2] = sun_pos.z;
@@ -448,19 +449,19 @@ Your fair use and other rights are in no way affected by the above.
 	
 //    long nPixels = w * h + 1;	
 
-	NSString	*filepath = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
+   // save in the oolite-saves directory.
+   [[NSFileManager defaultManager] chdirToDefaultCommanderPath];
+
 	int imageNo = 1;
 
-	NSString	*pathToPic = 
-      [filepath stringByAppendingPathComponent:
-         [NSString stringWithFormat:@"oolite-%03d.bmp",imageNo]];
+	NSString	*pathToPic = [NSString stringWithFormat:@"oolite-%03d.bmp",imageNo];
 	while ([[NSFileManager defaultManager] fileExistsAtPath:pathToPic])
 	{
 		imageNo++;
-		pathToPic = [filepath stringByAppendingPathComponent:[NSString stringWithFormat:@"oolite-%03d.bmp",imageNo]];
+		pathToPic = [NSString stringWithFormat:@"oolite-%03d.bmp",imageNo];
 	}
 
-	NSLog(@">>>>> Snapshot %d x %d file path chosen = %@", w, h, pathToPic);
+	NSLog(@">>>>> Snapshot %d x %d file chosen = %@", w, h, pathToPic);
 
 	unsigned char *puntos = (unsigned char*)malloc(surface->w * surface->h * 3);
 //	SDL_Surface *screen;  

@@ -567,7 +567,7 @@ static NSTimeInterval	time_last_frame;
 					autopilot_engaged = YES;
 					ident_engaged = NO;
 					[self safe_all_missiles];
-					velocity = make_vector( 0, 0, 0);
+					velocity = make_vector( 0.0f, 0.0f, 0.0f);
 					status = STATUS_AUTOPILOT_ENGAGED;
 					[shipAI setState:@"GLOBAL"];	// restart the AI
 					[self beep];
@@ -606,7 +606,7 @@ static NSTimeInterval	time_last_frame;
 					autopilot_engaged = YES;
 					ident_engaged = NO;
 					[self safe_all_missiles];
-					velocity = make_vector( 0, 0, 0);
+					velocity = make_vector( 0.0f, 0.0f, 0.0f);
 					status = STATUS_AUTOPILOT_ENGAGED;
 					[shipAI setState:@"GLOBAL"];	// restart the AI
 					[self beep];
@@ -968,7 +968,14 @@ static  BOOL	taking_snapshot;
 			{
 				mouse_control_on = !mouse_control_on;
 				if (mouse_control_on)
+				{
 					[universe addMessage:[universe expandDescription:@"[mouse-on]" forSystem:system_seed] forCount:3.0];
+#ifdef GNUSTEP
+					// ensure the keyboard pitch override (intended to lock out the joystick if the
+					// player runs to the keyboard) is reset
+					keyboardRollPitchOverride = NO;
+#endif					
+				}
 				else
 					[universe addMessage:[universe expandDescription:@"[mouse-off]" forSystem:system_seed] forCount:3.0];
 			}
@@ -2072,7 +2079,7 @@ static BOOL zoom_pressed;
 	//
 	// Zoom scanner 'z'
 	//
-	if ([gameView isDown:key_scanner_zoom]) // look for the 'z' key
+	if ([gameView isDown:key_scanner_zoom] && ([gameView allowingStringInput] == gvStringInputNo)) // look for the 'z' key
 	{
 		if (!scanner_zoom_rate)
 		{

@@ -64,7 +64,10 @@ NSLock						*gOOCASoundSyncLock = NULL;	// Used to ensure thread-safety of play 
 		
 		gOOSoundSetUp = YES;
 		
-		sNominalVolume = [[NSUserDefaults standardUserDefaults] floatForKey:KEY_VOLUME_CONTROL];
+		if ([[NSUserDefaults standardUserDefaults] objectForKey:KEY_VOLUME_CONTROL])
+			sNominalVolume = [[NSUserDefaults standardUserDefaults] floatForKey:KEY_VOLUME_CONTROL];
+		else
+			sNominalVolume = 0.75;	// default setting at 75% system volume
 		[[OOCASoundMixer mixer] setMasterVolume:sNominalVolume];
 	}
 }
