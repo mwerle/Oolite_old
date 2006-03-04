@@ -1145,10 +1145,10 @@ static BOOL hostiles;
 	if ([info objectForKey:HEIGHT_KEY])
 		siz.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] intValue];
 
-	double temp = [player dial_cabin_temp];
+	double temp = [player dial_ship_temperature];
 	int flash = (int)([[player universe] getTime] * 4);
 	flash &= 1;
-	// draw cabin_temp bar
+	// draw ship_temperature bar
 	glColor4fv(green_color);
 	if (temp > .25)
 		glColor4fv(yellow_color);

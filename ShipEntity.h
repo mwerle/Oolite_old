@@ -141,6 +141,13 @@ Your fair use and other rights are in no way affected by the above.
 #define COMBAT_OUT_RANGE_FACTOR						0.500
 #define COMBAT_WEAPON_RANGE_FACTOR					1.200
 
+#define SHIP_COOLING_FACTOR				1.0
+#define SHIP_INSULATION_FACTOR			0.00175
+#define SHIP_MAX_CABIN_TEMP				256.0
+#define SHIP_MIN_CABIN_TEMP				60.0
+
+#define SUN_TEMPERATURE					1250.0
+
 #define MAX_ESCORTS						16
 #define ESCORT_SPACING_FACTOR			3.0
 
@@ -332,6 +339,10 @@ Your fair use and other rights are in no way affected by the above.
 		
 		// scooping...
 		Vector	tractor_position;
+
+		// from player entity moved here now we're doing more complex heat stuff
+		double					ship_temperature;
+		double					heat_insulation;
 
 		// DEBUGGING
 		int debug_condition;
@@ -545,6 +556,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb);
 - (void) scoopIn:(ShipEntity *)other;
 - (void) scoopUp:(ShipEntity *)other;
 - (void) takeScrapeDamage:(double) amount from:(Entity *) ent;
+
+- (void) takeHeatDamage:(double) amount;
 
 - (void) enterDock:(StationEntity *)station;
 - (void) leaveDock:(StationEntity *)station;

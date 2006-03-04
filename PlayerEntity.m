@@ -986,7 +986,8 @@ Your fair use and other rights are in no way affected by the above.
 	aft_weapon_temp =		0.0;
 	port_weapon_temp =		0.0;
 	starboard_weapon_temp =	0.0;
-	cabin_temp =		60.0;
+	ship_temperature =		60.0;
+	heat_insulation = 1.0;
 	alert_flags =		0;
 	//
 	game_over =				NO;
@@ -1094,7 +1095,6 @@ Your fair use and other rights are in no way affected by the above.
 	aftViewOffset = make_vector( 0.0f, 0.0f, 0.0f);
 	portViewOffset = make_vector( 0.0f, 0.0f, 0.0f);
 	starboardViewOffset = make_vector( 0.0f, 0.0f, 0.0f);
-	
 	
 	if (save_path)
 		[save_path autorelease];
@@ -1279,6 +1279,12 @@ Your fair use and other rights are in no way affected by the above.
 		portWeaponOffset = [Entity vectorFromString: (NSString *)[dict objectForKey:@"weapon_position_port"]];
 	if ([dict objectForKey:@"weapon_position_starboard"])
 		starboardWeaponOffset = [Entity vectorFromString: (NSString *)[dict objectForKey:@"weapon_position_starboard"]];
+	//
+	
+	// fuel scoop destination position (where cargo gets sucked into)
+	tractor_position = make_vector( 0.0f, 0.0f, 0.0f);
+	if ([dict objectForKey:@"scoop_position"])
+		tractor_position = [Entity vectorFromString: (NSString *)[dict objectForKey:@"scoop_position"]];
 	//
 
 	if (sub_entities)
@@ -1956,20 +1962,23 @@ double scoopSoundPlayTime = 0.0;
 		}
 	}
 	
-	// work on the cabin temperature
-	//
-	cabin_temp += delta_t * flight_speed * air_friction;	// wind_speed
-	//
-	if (external_temp > cabin_temp)
-		cabin_temp += (external_temp - cabin_temp) * delta_t * CABIN_INSULATION_FACTOR;
-	else
+	if ((status != STATUS_AUTOPILOT_ENGAGED)&&(status != STATUS_ESCAPE_SEQUENCE))
 	{
-		if (cabin_temp > PLAYER_MIN_CABIN_TEMP)
-			cabin_temp += (external_temp - cabin_temp) * delta_t * CABIN_COOLING_FACTOR;
-	}
+		// work on the cabin temperature
+		//
+		ship_temperature += delta_t * flight_speed * air_friction / heat_insulation;	// wind_speed
+		//
+		if (external_temp > ship_temperature)
+			ship_temperature += (external_temp - ship_temperature) * delta_t * SHIP_INSULATION_FACTOR / heat_insulation;
+		else
+		{
+			if (ship_temperature > SHIP_MIN_CABIN_TEMP)
+				ship_temperature += (external_temp - ship_temperature) * delta_t * SHIP_COOLING_FACTOR / heat_insulation;
+		}
 
-	if (cabin_temp > PLAYER_MAX_CABIN_TEMP)
-		[self getDestroyed];
+		if (ship_temperature > SHIP_MAX_CABIN_TEMP)
+			[self takeHeatDamage: delta_t * ship_temperature];
+	}
 
 	if ((status == STATUS_ESCAPE_SEQUENCE)&&(shot_time > ESCAPE_SEQUENCE_TIME))
 	{
@@ -2298,9 +2307,9 @@ double scoopSoundPlayTime = 0.0;
 	double distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
 	return 10.0 * distance / PLAYER_MAX_FUEL;
 }
-- (double) dial_cabin_temp
+- (double) dial_ship_temperature
 {
-	return cabin_temp / PLAYER_MAX_CABIN_TEMP;
+	return ship_temperature / SHIP_MAX_CABIN_TEMP;
 }
 - (double) dial_weapon_temp
 {
@@ -3082,10 +3091,10 @@ double scoopSoundPlayTime = 0.0;
 			[scrapeDamageSound play];
 #endif         
 		}
-		cabin_temp += amount;
+		ship_temperature += amount;
 	}
 	
-	if ((energy <= 0.0)||(cabin_temp > PLAYER_MAX_CABIN_TEMP))
+	if ((energy <= 0.0)||(ship_temperature > SHIP_MAX_CABIN_TEMP))
 	{
 		if ((other)&&(other->isShip))
 		{
@@ -3191,6 +3200,56 @@ double scoopSoundPlayTime = 0.0;
 	
 	//
 	[ent release];
+}
+
+- (void) takeHeatDamage:(double) amount
+{
+	if (status == STATUS_DEAD)					// it's too late for this one!
+		return;
+	
+	if (amount < 0.0)
+		return;
+
+	// hit the shields first!
+
+	double fwd_amount = 0.5 * amount;
+	double aft_amount = 0.5 * amount;
+	
+	forward_shield -= fwd_amount;
+	if (forward_shield < 0.0)
+	{
+		fwd_amount = -forward_shield;
+		forward_shield = 0.0;
+	}
+	else
+		fwd_amount = 0.0;
+
+	aft_shield -= aft_amount;
+	if (aft_shield < 0.0)
+	{
+		aft_amount = -aft_shield;
+		aft_shield = 0.0;
+	}
+	else
+		aft_amount = 0.0;
+	
+	double residual_amount = fwd_amount + aft_amount;
+	if (residual_amount <= 0.0)
+		return;
+
+	energy -= residual_amount;
+	
+	throw_sparks = YES;
+	
+	// oops we're burning up!
+	if (energy <= 0.0)
+		[self getDestroyed];
+	else
+	{
+		// warn if I'm low on energy
+		if (energy < max_energy *0.25)
+			[shipAI message:@"ENERGY_LOW"];
+	}
 }
 
 - (int) launchEscapeCapsule
@@ -3581,7 +3640,7 @@ double scoopSoundPlayTime = 0.0;
 	aft_shield =		PLAYER_MAX_AFT_SHIELD;
 	energy =			max_energy;
 	weapon_temp =		0.0;
-	cabin_temp =		60.0;
+	ship_temperature =		60.0;
 	
 	[self setAlert_flag:ALERT_FLAG_DOCKED :YES];
 	
@@ -3666,7 +3725,6 @@ double scoopSoundPlayTime = 0.0;
 - (void) enterGalacticWitchspace
 {	
 	status = STATUS_ENTERING_WITCHSPACE;
-	throw_sparks = NO;	// shut off throwing sparks!
 	
 	if (primaryTarget != NO_TARGET)
 		primaryTarget = NO_TARGET;
@@ -3732,7 +3790,6 @@ double scoopSoundPlayTime = 0.0;
 {
 	target_system_seed = [w_hole destination];
 	status = STATUS_ENTERING_WITCHSPACE;
-	throw_sparks = NO;	// shut off throwing sparks!
 	
 	hyperspeed_engaged = NO;
 	
@@ -3777,7 +3834,6 @@ double scoopSoundPlayTime = 0.0;
 	double		distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y); 
 	
 	status = STATUS_ENTERING_WITCHSPACE;	
-	throw_sparks = NO;	// shut off throwing sparks!
 
 	hyperspeed_engaged = NO;
 	
@@ -3879,7 +3935,6 @@ double scoopSoundPlayTime = 0.0;
 	flight_speed = max_flight_speed * 0.25;
 	status = STATUS_EXITING_WITCHSPACE;
 	gui_screen = GUI_SCREEN_MAIN;
-	throw_sparks = NO;	// shut off throwing sparks!
 	being_fined = NO;				// until you're scanned by a copper!
 	[self setShowDemoShips:NO];
 	[universe setDisplayCursor:NO];
@@ -5935,6 +5990,7 @@ static int last_outfitting_index;
 	
 	shield_booster = ([self has_extra_equipment:@"EQ_SHIELD_BOOSTER"])? 2:1;
 	shield_enhancer = ([self has_extra_equipment:@"EQ_NAVAL_SHIELD_BOOSTER"])? 1:0;
+	heat_insulation = ([self has_extra_equipment:@"EQ_HEAT_SHIELD"])? 2.0 : 1.0;	// new - provide extra heat_insulation
 }
 
 

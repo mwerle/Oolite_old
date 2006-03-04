@@ -194,6 +194,10 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	tractor_position = make_vector( 0.0f, 0.0f, 0.0f);
 	//
+	ship_temperature = 60.0;
+	//
+	heat_insulation = 1.0;
+	//
 	return self;
 }
 
@@ -608,6 +612,10 @@ static NSMutableDictionary* smallOctreeDict = nil;
 	lastRadioMessage = nil;
 	//
 	tractor_position = make_vector( 0.0f, 0.0f, 0.0f);
+	//
+	ship_temperature = 60.0;
+	//
+	heat_insulation = 1.0;
 	//
 }
 
@@ -1161,6 +1169,11 @@ static NSMutableDictionary* smallOctreeDict = nil;
 	tractor_position = make_vector( 0.0f, 0.0f, 0.0f);
 	if ([shipdict objectForKey:@"scoop_position"])
 		tractor_position = [Entity vectorFromString: (NSString *)[shipdict objectForKey:@"scoop_position"]];
+	
+	// ship skin insulation factor (1.0 is normal)
+	heat_insulation = 1.0;
+	if ([shipdict objectForKey:@"heat_insulation"])
+		heat_insulation = [[shipdict objectForKey:@"heat_insulation"] doubleValue];
 }
 
 
@@ -1689,16 +1702,47 @@ BOOL ship_canCollide (ShipEntity* ship)
 			message_time = 0.0;
 	}
 	
+	// temperature factors
+	//
+	double external_temp = 0.0;
+	if ([universe sun])
+	{
+		PlanetEntity* sun = [universe sun];
+		// set the ambient temperature here
+		double  sun_zd = magnitude2(vector_between( position, sun->position));	// square of distance
+		double  sun_cr = sun->collision_radius;
+		double	alt1 = sun_cr * sun_cr / sun_zd;
+		external_temp = SUN_TEMPERATURE * alt1;
+		if ([sun goneNova])
+			external_temp *= 100;
+	}
+	
+	// work on the ship temperature
+	//
+	if (external_temp > ship_temperature)
+		ship_temperature += (external_temp - ship_temperature) * delta_t * SHIP_INSULATION_FACTOR / heat_insulation;
+	else
+	{
+		if (ship_temperature > SHIP_MIN_CABIN_TEMP)
+			ship_temperature += (external_temp - ship_temperature) * delta_t * SHIP_COOLING_FACTOR / heat_insulation;
+	}
+
+	if (ship_temperature > SHIP_MAX_CABIN_TEMP)
+		[self takeHeatDamage: delta_t * ship_temperature];
+
+	// are we burning due to low energy
+	if ((energy < max_energy * 0.20)&&(energy_recharge_rate > 0.0))	// prevents asteroid etc. from burning
+		throw_sparks = YES;
 	
 	// burning effects
 	//
-	if ((throw_sparks)||(energy < max_energy * 0.20))
+	if (throw_sparks)
 	{
-		if (energy_recharge_rate > 0.0)	// prevents asteroid etc. from burning
+		next_spark_time -= delta_t;
+		if (next_spark_time < 0.0)
 		{
-			next_spark_time -= delta_t;
-			if (next_spark_time < 0.0)
-				[self throwSparks];
+			[self throwSparks];
+			throw_sparks = NO;	// until triggered again
 		}
 	}
 	
@@ -6122,6 +6166,29 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 		}
 		[self becomeExplosion];
 	}
+	else
+	{
+		// warn if I'm low on energy
+		if (energy < max_energy *0.25)
+			[shipAI message:@"ENERGY_LOW"];
+	}
+}
+
+- (void) takeHeatDamage:(double) amount
+{
+	if (status == STATUS_DEAD)					// it's too late for this one!
+		return;
+
+	if (amount < 0.0)
+		return;
+
+	energy -= amount;
+	
+	throw_sparks = YES;
+	
+	// oops we're burning up!
+	if (energy <= 0.0)
+		[self becomeExplosion];
 	else
 	{
 		// warn if I'm low on energy

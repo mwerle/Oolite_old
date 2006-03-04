@@ -305,7 +305,6 @@ NSArray* subregionsContainingPosition( Vector position, CollisionRegion* region)
 	//
 	// According to Shark, when this was in Universe this was where Oolite spent most time!
 	//
-	Entity* cachedSun = [universe sun];
 	Entity *e1,*e2;
 	Vector p1, p2;
 	double dist2, r1, r2, r0, min_dist2;
@@ -359,10 +358,6 @@ NSArray* subregionsContainingPosition( Vector position, CollisionRegion* region)
 				continue;	// next j
 			dist2 = p2.x*p2.x + p2.y*p2.y + p2.z*p2.z;
 			min_dist2 = r0 * r0;
-			if (e1->isShip && (e2 == cachedSun))
-				[e1 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
-			if (e2->isShip && (e1 == cachedSun))
-				[e2 setThrowSparks:(dist2 < SUN_SPARKS_RADIUS_FACTOR * min_dist2)];
 			if (dist2 < PROXIMITY_WARN_DISTANCE2 * min_dist2)
 			{
 				if ((e1->isShip) && (e2->isShip))

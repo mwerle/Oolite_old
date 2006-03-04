@@ -127,8 +127,6 @@ enum
 #define PLAYER_MAX_FORWARD_SHIELD		(128.0 * (shield_booster + shield_enhancer))
 #define PLAYER_MAX_AFT_SHIELD			(128.0 * (shield_booster + shield_enhancer))
 #define PLAYER_MAX_WEAPON_TEMP			256.0
-#define PLAYER_MAX_CABIN_TEMP			256.0
-#define PLAYER_MIN_CABIN_TEMP			60.0
 #define PLAYER_MAX_FUEL					70.0
 #define PLAYER_MAX_MISSILES				4
 #define PLAYER_STARTING_MISSILES		3
@@ -192,11 +190,6 @@ enum
 #define KEY_REPEAT_INTERVAL				0.20
 
 #define OOTUNES_ON						ootunes_on
-
-#define CABIN_COOLING_FACTOR			1.0
-#define CABIN_INSULATION_FACTOR			0.00175
-
-#define SUN_TEMPERATURE					1250.0
 
 #define PLAYER_SHIP_CLOCK_START			2084004 * 86400.0
 
@@ -305,7 +298,7 @@ enum
 	double					weapon_temp;
 	double					forward_weapon_temp, aft_weapon_temp, port_weapon_temp, starboard_weapon_temp;
 	double					weapon_energy_per_shot, weapon_heat_increment_per_shot, weapon_reload_time;
-	double					cabin_temp;
+//	double					ship_temperature;
 	
 	int						chosen_weapon_facing;   // for purchasing weapons
 	
@@ -536,7 +529,7 @@ enum
 - (double) dial_fuel;
 - (double) dial_hyper_range;
 
-- (double) dial_cabin_temp;
+- (double) dial_ship_temperature;
 - (double) dial_weapon_temp;
 - (double) dial_altitude;
 
