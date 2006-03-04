@@ -21,6 +21,7 @@ dependency tree in tarball installers.
 2. Contents
 -----------
 autopackage       Directory for the apspec file for the Linux autopackage
+Asset Source      Files used to create the various PNG and sound files
 deps              Dependencies for all plaforms:
    Cocoa-deps     Dependencies for Mac OS X (macppc and macintel platforms)
    Linux-x86-deps Dependencies for Linux on x86 processors
@@ -37,6 +38,7 @@ src               Objective-C and C sources, incuding header files:
    Core           Files that are compiled on all platforms
    SDL            Files that are only compiled for platforms that use SDL
    Cocoa          Files that are only compiled on Mac OS X without SDL
+tools             Various tools for preparing files, builds, releases etc.
 
 3. Building
 -----------
