@@ -59,6 +59,9 @@ GLfloat yellow_color[4] =   {1.0, 1.0, 0.0, 1.0};
 GLfloat green_color[4] =	{0.0, 1.0, 0.0, 1.0};
 GLfloat darkgreen_color[4] ={0.0, 0.75, 0.0, 1.0};
 GLfloat blue_color[4] =		{0.0, 0.0, 1.0, 1.0};
+GLfloat puce_color[4] =    {1.0, 0.0, 1.0, 1.0};
+GLfloat cyan_color[4] =    {0.5, 0.5, 1.0, 1.0};
+GLfloat white_color[4] =   {1.0, 1.0, 1.0, 1.0};
 
 float char_widths[128] = {
 	8.000,	7.000,	8.000,	8.000,	7.000,	6.000,	7.000,	6.000,	6.000,	6.000,	6.000,	6.000,	6.000,	6.000,	6.000,	6.000,
@@ -1356,13 +1359,66 @@ static BOOL hostiles;
 //	if (([info objectForKey:EQUIPMENT_REQUIRED_KEY])&&
 //		(![player has_extra_equipment:(NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY]]))
 //		return;
-//	
+//
+/* TODO: Temporary - for testing   
 	if ([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
 	{
 		//Entity *target = [player getPrimaryTarget];
 		hudDrawReticleOnTarget( [player getPrimaryTarget], player, z1);
 		[self drawDirectionCue:info];
-	}
+	} */
+
+   // stolen from the scanner code
+   int i;
+   Universe*	uni =			[player universe];
+	int			ent_count =		uni->n_entities;
+	Entity**	uni_entities =	uni->sortedEntities;	// grab the public sorted list
+	//Entity*		my_entities[ent_count];
+   Entity* thing;
+   Entity *primary=[player getPrimaryTarget];
+   int drawClass;
+   double mass_lock_range2=25600.0 * 25600.0;
+
+   for (i = 0; i < ent_count; i++)
+   {
+      BOOL hostile=NO;
+      BOOL show_info=NO;
+      thing=uni_entities[i];
+      drawClass=thing->scan_class;
+      
+      if(thing->zero_distance <= mass_lock_range2)
+      {
+         switch(drawClass)
+         {
+            case CLASS_BUOY:
+            case CLASS_ROCK:
+            case CLASS_CARGO :
+            case CLASS_MINE :
+            case CLASS_THARGOID :
+            case CLASS_MISSILE :
+            case CLASS_STATION :
+            case CLASS_POLICE :
+            case CLASS_MILITARY :
+            case CLASS_NEUTRAL:
+            case CLASS_TARGET: 
+               if(thing->isShip)
+               { 
+                  if (([(ShipEntity *)thing hasHostileTarget])&&
+                  ([(ShipEntity *)thing getPrimaryTarget] == player))
+                  {
+                     hostile=YES;
+                  }
+               }
+	
+               hudDrawReticleOnTarget(thing, player, z1, hostile, thing==primary);
+         }
+      }
+   }
+   if([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
+   {
+      [self drawDirectionCue: info];
+   }
+
 }
 
 - (void) drawStatusLight:(NSDictionary *) info
@@ -1867,9 +1923,10 @@ void hudDrawStatusIconAt(int x, int y, int z, NSSize siz)
 }
 
 
-void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
+void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, BOOL is_hostile, BOOL show_info)
 {
 	//GLfloat z1 = [(MyOpenGLView *)[[player1 universe] gameView] display_z];
+   GLfloat *targetColor=green_color;
 	ShipEntity* target_ship = (ShipEntity *)target;
 	NSString* legal_desc = nil;
 	if ((!target)||(!player1))
@@ -1883,33 +1940,45 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 			if (target_legal > 0)
 				legal_i =  (target_legal <= 50) ? 1 : 2;
 			legal_desc = [(NSArray *)[[[player1 universe] descriptions] objectForKey:@"legal_status"] objectAtIndex:legal_i];
+         targetColor=yellow_color;
 		}
 		break;
 	
 		case CLASS_THARGOID :
 		legal_desc = @"Alien";
+      targetColor=red_color;
 		break;
 		
 		case CLASS_POLICE :
 		legal_desc = @"System Vessel";
+      targetColor=puce_color;
 		break;
 		
 		case CLASS_MILITARY :
 		legal_desc = @"Military Vessel";
+      targetColor=puce_color;
 		break;
 		
-		default :
 		case CLASS_BUOY :
 		case CLASS_CARGO :
 		case CLASS_ROCK :
+         targetColor=white_color;
+         break;
 		case CLASS_MISSILE :
+         targetColor=cyan_color;
+         break;
 		case CLASS_NO_DRAW :
 		case CLASS_STATION :
 		case CLASS_TARGET :
+		default :
 		break;
 	}
 
-	
+   if(is_hostile)
+   {
+      targetColor=redplus_color;
+   }
+  
 	if ([player1 gui_screen] != GUI_SCREEN_MAIN)	// don't draw on text screens
 		return;
 	
@@ -1973,7 +2042,7 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 	//rotate to face player1
 	glMultMatrixf(back_mat);
 	// draw the reticle	
-	glColor4fv(green_color);
+	glColor4fv(targetColor);
 	glBegin(GL_LINES);
 		glVertex2f(rs0,rs2);	glVertex2f(rs0,rs0);
 		glVertex2f(rs0,rs0);	glVertex2f(rs2,rs0);
@@ -1986,8 +2055,17 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 
 		glVertex2f(-rs0,-rs2);	glVertex2f(-rs0,-rs0);
 		glVertex2f(-rs0,-rs0);	glVertex2f(-rs2,-rs0);
+
+      if(show_info)
+      {
+         // this is our primary target, draw the deadly diamond of death.
+         glVertex2f(rs0, 0.0f); glVertex2f(0.0f, rs0);
+         glVertex2f(0.0f, rs0); glVertex2f(-rs0, 0.0f);
+         glVertex2f(-rs0, 0.0f); glVertex2f(0.0f, -rs0);
+         glVertex2f(0.0f, -rs0); glVertex2f(rs0, 0.0f);
+      }
 	
-//	NSLog(@"DEBUG rs0 %.3f %.3f",rs0, rs2);
+	//NSLog(@"DEBUG rs0 %.3f %.3f",rs0, rs2);
 	
 	glEnd();
 	
@@ -1995,11 +2073,14 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 	float range = sqrt(target->zero_distance)/1000;
 	NSSize textsize = NSMakeSize( rdist * ONE_SIXTYFOURTH, rdist * ONE_SIXTYFOURTH);
 	float line_height = rdist * ONE_SIXTYFOURTH;
-	NSString*	info1 = [target_ship identFromShip: player1];
-	NSString*	info2 = (legal_desc == nil)? [NSString stringWithFormat:@"%0.3f km", range] : [NSString stringWithFormat:@"%0.3f km (%@)", range, legal_desc];
-	// no need to set color - tis green already!
-	drawString( info1, rs0, 0.5 * rs2, 0, textsize);
-	drawString( info2, rs0, 0.5 * rs2 - line_height, 0, textsize);
+   if(show_info)
+   {
+	   NSString*	info1 = [target_ship identFromShip: player1];
+	   NSString*	info2 = (legal_desc == nil)? [NSString stringWithFormat:@"%0.3f km", range] : [NSString stringWithFormat:@"%0.3f km (%@)", range, legal_desc];
+	   // no need to set color - tis green already!
+	   drawString( info1, rs0, 0.5 * rs2, 0, textsize);
+	   drawString( info2, rs0, 0.5 * rs2 - line_height, 0, textsize);
+   }
 	
 	glPopMatrix();
 }
