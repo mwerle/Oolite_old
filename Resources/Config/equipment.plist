@@ -232,6 +232,17 @@
 			<true/>
 		</dict>
 	</array>
+   <array>
+      <integer>12</integer>
+      <integer>250000</integer>
+      <string>Advanced Naval Targeting System</string>
+      <string>EQ_ANTS</string>
+      <string>An IFF scanner target aquisition and designation system as used by the Navy.</string>
+      <dict>
+         <key>available_to_all</key>
+         <true/>
+      </dict>
+   </array>
 	<array>
 		<integer>99</integer>
 		<integer>150000</integer>

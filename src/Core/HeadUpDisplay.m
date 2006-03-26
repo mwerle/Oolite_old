@@ -378,6 +378,10 @@ static BOOL hostiles;
 		double upscale = scanner_zoom*1.25/scanner_scale;
 		off_scope2 /= upscale * upscale;
 		double max_blip = 0.0;
+
+      // only do these once per loop
+      Entity *primary=[player getPrimaryTarget];
+      BOOL hasAnts=[player has_extra_equipment:@"EQ_ANTS"];
 		
 		for (i = 0; i < ent_count; i++)  // scanner lollypops
 		{
@@ -403,6 +407,7 @@ static BOOL hostiles;
 			{
 				GLfloat x1,y1,y2;
 				float	ms_blip = 0.0;
+            BOOL drawReticle=NO;
 
 				if (drawthing->zero_distance <= mass_lock_range2)
 				{
@@ -412,6 +417,7 @@ static BOOL hostiles;
 						case CLASS_ROCK :
 						case CLASS_CARGO :
 						case CLASS_MINE :
+                     drawReticle=YES;
 							break;
 						case CLASS_THARGOID :
 						case CLASS_MISSILE :
@@ -419,6 +425,7 @@ static BOOL hostiles;
 						case CLASS_POLICE :
 						case CLASS_MILITARY :
 						case CLASS_WORMHOLE :
+                     drawReticle=YES;
 						default :
 							mass_locked = YES;
 							break;
@@ -492,6 +499,13 @@ static BOOL hostiles;
 				// exit if it's off-scanner
 				if (drawthing->zero_distance > max_zoomed_range2)
 					continue;
+
+            // if the player has the ANTS, add a reticle to the potential target
+            if(drawReticle && hasAnts)
+            {
+               hudDrawReticleOnTarget(drawthing, player, z1, isHostile, drawthing==primary, YES);
+               [self drawDirectionCue: info];
+            }
 
 				if (ms_blip > 0.0)
 				{
@@ -1360,65 +1374,14 @@ static BOOL hostiles;
 //		(![player has_extra_equipment:(NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY]]))
 //		return;
 //
-/* TODO: Temporary - for testing   
-	if ([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
+   // suppress this if the ANTS is in use
+	if ([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED &&
+       ![player has_extra_equipment:@"EQ_ANTS"])
 	{
 		//Entity *target = [player getPrimaryTarget];
-		hudDrawReticleOnTarget( [player getPrimaryTarget], player, z1);
+		hudDrawReticleOnTarget( [player getPrimaryTarget], player, z1, NO, YES, NO);
 		[self drawDirectionCue:info];
-	} */
-
-   // stolen from the scanner code
-   int i;
-   Universe*	uni =			[player universe];
-	int			ent_count =		uni->n_entities;
-	Entity**	uni_entities =	uni->sortedEntities;	// grab the public sorted list
-	//Entity*		my_entities[ent_count];
-   Entity* thing;
-   Entity *primary=[player getPrimaryTarget];
-   int drawClass;
-   double mass_lock_range2=25600.0 * 25600.0;
-
-   for (i = 0; i < ent_count; i++)
-   {
-      BOOL hostile=NO;
-      BOOL show_info=NO;
-      thing=uni_entities[i];
-      drawClass=thing->scan_class;
-      
-      if(thing->zero_distance <= mass_lock_range2)
-      {
-         switch(drawClass)
-         {
-            case CLASS_BUOY:
-            case CLASS_ROCK:
-            case CLASS_CARGO :
-            case CLASS_MINE :
-            case CLASS_THARGOID :
-            case CLASS_MISSILE :
-            case CLASS_STATION :
-            case CLASS_POLICE :
-            case CLASS_MILITARY :
-            case CLASS_NEUTRAL:
-            case CLASS_TARGET: 
-               if(thing->isShip)
-               { 
-                  if (([(ShipEntity *)thing hasHostileTarget])&&
-                  ([(ShipEntity *)thing getPrimaryTarget] == player))
-                  {
-                     hostile=YES;
-                  }
-               }
-	
-               hudDrawReticleOnTarget(thing, player, z1, hostile, thing==primary);
-         }
-      }
-   }
-   if([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
-   {
-      [self drawDirectionCue: info];
-   }
-
+	}
 }
 
 - (void) drawStatusLight:(NSDictionary *) info
@@ -1923,7 +1886,7 @@ void hudDrawStatusIconAt(int x, int y, int z, NSSize siz)
 }
 
 
-void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, BOOL is_hostile, BOOL show_info)
+void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, BOOL is_hostile, BOOL show_info, BOOL isAdvanced)
 {
 	//GLfloat z1 = [(MyOpenGLView *)[[player1 universe] gameView] display_z];
    GLfloat *targetColor=green_color;
@@ -1940,32 +1903,38 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, B
 			if (target_legal > 0)
 				legal_i =  (target_legal <= 50) ? 1 : 2;
 			legal_desc = [(NSArray *)[[[player1 universe] descriptions] objectForKey:@"legal_status"] objectAtIndex:legal_i];
-         targetColor=yellow_color;
+         if(isAdvanced)
+            targetColor=yellow_color;
 		}
 		break;
 	
 		case CLASS_THARGOID :
 		legal_desc = @"Alien";
-      targetColor=red_color;
+      if(isAdvanced)
+         targetColor=red_color;
 		break;
 		
 		case CLASS_POLICE :
 		legal_desc = @"System Vessel";
-      targetColor=puce_color;
+      if(isAdvanced)
+         targetColor=puce_color;
 		break;
 		
 		case CLASS_MILITARY :
 		legal_desc = @"Military Vessel";
-      targetColor=puce_color;
+      if(isAdvanced)
+         targetColor=puce_color;
 		break;
 		
 		case CLASS_BUOY :
 		case CLASS_CARGO :
 		case CLASS_ROCK :
-         targetColor=white_color;
+         if(isAdvanced)
+            targetColor=white_color;
          break;
 		case CLASS_MISSILE :
-         targetColor=cyan_color;
+         if(isAdvanced)
+            targetColor=cyan_color;
          break;
 		case CLASS_NO_DRAW :
 		case CLASS_STATION :
@@ -1976,7 +1945,7 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, B
 
    if(is_hostile)
    {
-      targetColor=redplus_color;
+      targetColor=red_color;
    }
   
 	if ([player1 gui_screen] != GUI_SCREEN_MAIN)	// don't draw on text screens
@@ -2056,7 +2025,7 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, B
 		glVertex2f(-rs0,-rs2);	glVertex2f(-rs0,-rs0);
 		glVertex2f(-rs0,-rs0);	glVertex2f(-rs2,-rs0);
 
-      if(show_info)
+      if(show_info && isAdvanced)
       {
          // this is our primary target, draw the deadly diamond of death.
          glVertex2f(rs0, 0.0f); glVertex2f(0.0f, rs0);

@@ -268,7 +268,8 @@ void hudDrawMineIconAt(int x, int y, int z, NSSize siz);
 void hudDrawMissileIconAt(int x, int y, int z, NSSize siz);
 void hudDrawStatusIconAt(int x, int y, int z, NSSize siz);
 
-void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, BOOL is_hostile, BOOL show_info);
+void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, 
+                            BOOL is_hostile, BOOL show_info, BOOL isAdvanced);
 
 double drawCharacterQuad(int chr, double x, double y, double z, NSSize siz);
 void drawString(NSString *text, double x, double y, double z, NSSize siz);
