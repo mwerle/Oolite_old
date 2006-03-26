@@ -424,7 +424,8 @@ static BOOL hostiles;
 						case CLASS_STATION :
 						case CLASS_POLICE :
 						case CLASS_MILITARY :
-						case CLASS_WORMHOLE :
+                  case CLASS_NEUTRAL :      
+                  case CLASS_TARGET :                     
                      drawReticle=YES;
 						default :
 							mass_locked = YES;
