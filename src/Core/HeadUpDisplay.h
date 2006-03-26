@@ -249,7 +249,7 @@ extern int debug;
 - (void) drawMissileDisplay:(NSDictionary *) info;
 - (void) drawTargetReticle:(NSDictionary *) info;
 - (void) drawStatusLight:(NSDictionary *) info;
-- (void) drawDirectionCue:(NSDictionary *) info;
+- (BOOL) drawDirectionCue:(NSDictionary *) info;
 - (void) drawClock:(NSDictionary *) info;
 - (void) drawFPSInfoCounter:(NSDictionary *) info;
 - (void) drawScoopStatus:(NSDictionary *) info;
@@ -269,7 +269,7 @@ void hudDrawMissileIconAt(int x, int y, int z, NSSize siz);
 void hudDrawStatusIconAt(int x, int y, int z, NSSize siz);
 
 void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, 
-                            BOOL is_hostile, BOOL show_info, BOOL isAdvanced);
+                            BOOL is_hostile, BOOL show_info, BOOL isAdvanced, BOOL isClose);
 
 double drawCharacterQuad(int chr, double x, double y, double z, NSSize siz);
 void drawString(NSString *text, double x, double y, double z, NSSize siz);

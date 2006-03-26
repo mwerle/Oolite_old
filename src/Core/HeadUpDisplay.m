@@ -504,8 +504,8 @@ static BOOL hostiles;
             // if the player has the ANTS, add a reticle to the potential target
             if(drawReticle && hasAnts)
             {
-               hudDrawReticleOnTarget(drawthing, player, z1, isHostile, drawthing==primary, YES);
-               [self drawDirectionCue: info];
+               BOOL isClose=[self drawDirectionCue: info];
+               hudDrawReticleOnTarget(drawthing, player, z1, isHostile, drawthing==primary, YES, isClose);
             }
 
 				if (ms_blip > 0.0)
@@ -1380,7 +1380,7 @@ static BOOL hostiles;
        ![player has_extra_equipment:@"EQ_ANTS"])
 	{
 		//Entity *target = [player getPrimaryTarget];
-		hudDrawReticleOnTarget( [player getPrimaryTarget], player, z1, NO, YES, NO);
+		hudDrawReticleOnTarget( [player getPrimaryTarget], player, z1, NO, YES, NO, NO);
 		[self drawDirectionCue:info];
 	}
 }
@@ -1438,23 +1438,30 @@ static BOOL hostiles;
 	glEnd();
 }
 
-- (void) drawDirectionCue:(NSDictionary *) info
+// DJS: Changed to BOOL to be able to return 'isClose' so that
+// the target reticle can display a kill indicator without having
+// to recalculate what is calculated here.
+// YES is returned when the target is within a certain limit of being
+// dead ahead (or behind, but that doesn't matter).
+- (BOOL) drawDirectionCue:(NSDictionary *) info
 {	
+   BOOL isClose=NO;
+   
  	// the direction cue is an advanced option
 	// so we need to check for its extra equipment flag first
 	if (([info objectForKey:EQUIPMENT_REQUIRED_KEY])&&
 		(![player has_extra_equipment:(NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY]]))
-		return;
+		return NO;
 	
 	if ([[player universe] displayGUI])
-		return;
+		return NO;
 	
 	if ([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
 	{
 		GLfloat clear_color[4] = {0.0, 1.0, 0.0, 0.0};
 		Entity *target = [player getPrimaryTarget];
 		if (!target)
-			return;
+			return NO;
 		
 		// draw the direction cue
 		Matrix rotMatrix;
@@ -1484,6 +1491,13 @@ static BOOL hostiles;
 					break;
 			}
 			rpn.z = 0;	// flatten vector
+
+         // helper for ANTS reticle
+         if(fabs(rpn.x) < 40.0f && fabs(rpn.y) < 40.0f)
+         {
+            isClose=YES;
+         }
+         
 			if (rpn.x||rpn.y)
 			{
 				rpn = unit_vector(&rpn);
@@ -1500,6 +1514,7 @@ static BOOL hostiles;
 			}
 		}
 	}
+   return isClose;
 }
 
 - (void) drawClock:(NSDictionary *) info
@@ -1887,7 +1902,8 @@ void hudDrawStatusIconAt(int x, int y, int z, NSSize siz)
 }
 
 
-void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, BOOL is_hostile, BOOL show_info, BOOL isAdvanced)
+void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, 
+                            BOOL is_hostile, BOOL show_info, BOOL isAdvanced, BOOL isClose)
 {
 	//GLfloat z1 = [(MyOpenGLView *)[[player1 universe] gameView] display_z];
    GLfloat *targetColor=green_color;
@@ -1972,7 +1988,8 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, B
 	//double rs3 = rsize * 0.75;
 	double rs2 = rsize * 0.50;
 	//double rs1 = rsize * 0.25;
-	
+   double rs4 = rsize * 1.5;
+
 	glPushMatrix();
 	//
 	// deal with view directions
@@ -2033,6 +2050,13 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, B
          glVertex2f(0.0f, rs0); glVertex2f(-rs0, 0.0f);
          glVertex2f(-rs0, 0.0f); glVertex2f(0.0f, -rs0);
          glVertex2f(0.0f, -rs0); glVertex2f(rs0, 0.0f);
+      }
+
+      if(show_info && isClose)
+      {
+         // draw targetting helper
+         glVertex2f(rs4, 0.0f); glVertex2f(-rs4, 0.0f);
+         glVertex2f(0.0f, rs4); glVertex2f(0.0f, -rs4);
       }
 	
 	//NSLog(@"DEBUG rs0 %.3f %.3f",rs0, rs2);
