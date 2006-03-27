@@ -2028,8 +2028,20 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1,
 	glTranslatef(p1.x, p1.y, p1.z);
 	//rotate to face player1
 	glMultMatrixf(back_mat);
+   
 	// draw the reticle	
-	glColor4fv(targetColor);
+   if (!show_info) //distance hint for non-targetted items
+   {
+      double mass_lock_range2 = 25600.0*25600.0;
+      double dist_alpha = 1 - target->zero_distance/mass_lock_range2;
+      GLfloat targetColorAlpha[4] = {targetColor[0], targetColor[1], targetColor[2], dist_alpha};
+      glColor4fv(targetColorAlpha);
+   } 
+   else 
+   {
+      glColor4fv(targetColor);
+   }
+   
 	glBegin(GL_LINES);
 		glVertex2f(rs0,rs2);	glVertex2f(rs0,rs0);
 		glVertex2f(rs0,rs0);	glVertex2f(rs2,rs0);
@@ -2055,8 +2067,10 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1,
       if(show_info && isClose)
       {
          // draw targetting helper
-         glVertex2f(rs4, 0.0f); glVertex2f(-rs4, 0.0f);
-         glVertex2f(0.0f, rs4); glVertex2f(0.0f, -rs4);
+         glVertex2f(rs4, 0.0f); glVertex2f(rs0, 0.0f);
+         glVertex2f(-rs4, 0.0f); glVertex2f(-rs0, 0.0f);
+         glVertex2f(0.0f, rs4); glVertex2f(0.0f, rs0);
+         glVertex2f(0.0f, -rs4); glVertex2f(0.0f, -rs0);
       }
 	
 	//NSLog(@"DEBUG rs0 %.3f %.3f",rs0, rs2);
