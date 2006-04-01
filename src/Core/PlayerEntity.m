@@ -910,6 +910,11 @@ Your fair use and other rights are in no way affected by the above.
 	//script = [[ResourceManager dictionaryFromFilesNamed:@"script.plist" inFolder:@"Config" andMerge:YES] retain];
 	script = [[ResourceManager loadScripts] retain];
 	mission_variables =[[NSMutableDictionary dictionaryWithCapacity:16] retain];
+	local_variables =[[NSMutableDictionary dictionaryWithCapacity:[script count]] retain];
+	NSArray *scriptKeys = [script allKeys];
+	for (i = 0; i < [scriptKeys count]; i++)
+		[local_variables setObject:[NSMutableDictionary dictionaryWithCapacity:16] forKey:[scriptKeys objectAtIndex:i]];
+
 	[self setScript_target:nil];
 	[self resetMissionChoice];
 	//
@@ -1420,6 +1425,20 @@ Your fair use and other rights are in no way affected by the above.
 
     if (script)					[script release];
     if (mission_variables)		[mission_variables release];
+
+	if (local_variables)
+	{
+		int i;
+		NSArray *objs = [local_variables allValues];
+		for (i = 0; i < [objs count]; i++)
+		{
+			NSMutableDictionary *dict = (NSMutableDictionary *)[objs objectAtIndex:i];
+			[dict dealloc];
+		}
+		[local_variables removeAllObjects];
+		[local_variables dealloc];
+	}
+
 	if (lastTextKey)			[lastTextKey release];
 
     if (extra_equipment)		[extra_equipment release];
