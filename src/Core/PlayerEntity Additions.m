@@ -241,6 +241,7 @@ static NSString * mission_key;
 
 	*/
 	NSArray*	tokens = [Entity scanTokensFromString:scriptCondition];
+	NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
 	NSString*   selectorString = nil;
 	NSString*	comparisonString = nil;
 	NSString*	valueString = nil;
@@ -261,6 +262,13 @@ static NSString * mission_key;
 		if (debug)
 			NSLog(@"DEBUG ..... checking mission_variable '%@'",selectorString);
 		mission_string_value = (NSString *)[mission_variables objectForKey:selectorString];
+		selectorString = @"mission_string";
+	}
+	else if ([selectorString hasPrefix:@"local_"])
+	{
+		if (debug)
+			NSLog(@"DEBUG ..... checking local variable '%@'",selectorString);
+		mission_string_value = (NSString *)[locals objectForKey:selectorString];
 		selectorString = @"mission_string";
 	}
 
@@ -1743,7 +1751,7 @@ static int shipsFound;
 
 - (void) debugMessage:(NSString *)args
 {
-	NSLog(@"SCRIPT debugMessage: %@", [self replaceVariablesInString: args]);
+	NSLog(@"SCRIPT debugMessage: %@", args);
 }
 
 - (NSString*) replaceVariablesInString:(NSString*) args
