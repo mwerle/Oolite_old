@@ -57,9 +57,9 @@ static NSString * mission_key;
 - (void) checkScript
 {
 	int i;
-	
+
 	[self setScript_target:self];
-	
+
 	if (debug)
 		NSLog(@"----- checkScript");
 
@@ -151,18 +151,19 @@ static NSString * mission_key;
 {
 	/*
 	a script action takes the form of an expression:
-	
+
 	action[: string_expression]
-	
+
 	where 'action' is a  selector for the entity or (failing that) PlayerEntity
 	optionally taking a NSString object ('string_expression') as a variable
-	
+
 	The special action 'set: mission_variable string_expression'
-	
+
 	is used to set a mission variable to the given string_expression
-	
+
 	*/
 	NSMutableArray*	tokens = [Entity scanTokensFromString:scriptAction];
+	NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
 	NSString*   selectorString = nil;
 	NSString*	valueString = nil;
 	SEL			_selector;
@@ -177,15 +178,18 @@ static NSString * mission_key;
 	}
 
 	selectorString = (NSString *)[tokens objectAtIndex:0];
-	
+
 	if ([tokens count] > 1)
 	{
 		[tokens removeObjectAtIndex:0];
 		valueString = [[tokens componentsJoinedByString:@" "] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		valueString = [universe expandDescriptionWithLocals:valueString forSystem:[self system_seed] withLocalVariables:locals];
+		if (debug)
+ 			NSLog(@"DEBUG ::::: after expansion: \"%@ %@\"", selectorString, valueString);
 	}
-					
+
 	_selector = NSSelectorFromString(selectorString);
-	
+
 	if ((entity)&&([entity respondsToSelector:_selector]))
 	{
 		if ([selectorString hasSuffix:@":"])
@@ -194,13 +198,13 @@ static NSString * mission_key;
 			[entity performSelector:_selector];
 		return;
 	}
-	
+
 	if (![self respondsToSelector:_selector])
 	{
 		NSLog(@"***** PlayerEntity DOES NOT RESPOND TO scriptAction: \"%@\"", scriptAction);
 		return;
 	}
-	
+
 	if ([selectorString hasSuffix:@":"])
 		[self performSelector:_selector withObject:valueString];
 	else
@@ -211,26 +215,26 @@ static NSString * mission_key;
 {
 	/*
 	a script condition takes the form of an expression:
-	
+
 	testable_variable lessthan|equals|greaterthan constant_expression
-	
+
 	where testable_variable is an accessor selector for PlayerEntity returning an object
 	that can be compared with the constant expression. They are supposed to take the form:
 		variablename_type where type can be 'string', 'bool', or 'number'
-	
+
 	or where testable_variable is prefixed with 'mission_' in which case it is a 'mission variable'
 	which is a string used by the script as a means of setting flags or indicating state
-	
+
 	The special test:
-	
+
 	testable_variable undefined
-	
+
 	is used only with mission variables and is true when that mission variable has yet to be used
-	
+
 	v1.31+
 	constant_expression can now also be an accessor selector recognised by having the suffix
-	"_bool", "_number" or "_string". 
-	
+	"_bool", "_number" or "_string".
+
 	dajt: black ops
 	a new comparison operator "oneof" can be used to test a numeric variable against a set of
 	comma separated numeric constants (eg "planet_number oneof 1,5,9,12,14,234").
@@ -242,10 +246,10 @@ static NSString * mission_key;
 	NSString*	valueString = nil;
 	SEL			_selector;
 	int			comparator = COMPARISON_NO;
-		
+
 	if (debug)
 		NSLog(@"DEBUG ::::: scriptTestCondition: \"%@\"", scriptCondition);
-	
+
 	if ([tokens count] < 1)
 	{
 		NSLog(@"***** No scriptCondition '%@'",scriptCondition);
@@ -259,7 +263,7 @@ static NSString * mission_key;
 		mission_string_value = (NSString *)[mission_variables objectForKey:selectorString];
 		selectorString = @"mission_string";
 	}
-	
+
 	if ([tokens count] > 1)
 	{
 		comparisonString = (NSString *)[tokens objectAtIndex:1];
@@ -276,7 +280,7 @@ static NSString * mission_key;
 		if ([comparisonString isEqual:@"undefined"])
 			comparator = COMPARISON_UNDEFINED;
 	}
-	
+
 	if ([tokens count] > 2)
 	{
 		NSMutableString* allValues = [NSMutableString stringWithCapacity:256];
@@ -370,10 +374,10 @@ static NSString * mission_key;
 		else
 		{
 			NSNumber *value = [NSNumber numberWithDouble:[valueString doubleValue]];
-			
+
 			if (debug)
 				NSLog(@"DEBUG ..... comparing \"%@\" (%@) to \"%@\" (%@)", result, [result class], value, [value class]);
-			
+
 			switch (comparator)
 			{
 				case COMPARISON_UNDEFINED :
@@ -801,7 +805,7 @@ static int shipsFound;
 		fuel = 70;
 		return;
 	}
-	
+
 	if ([eq_type hasSuffix:@"MISSILE"]||[eq_type hasSuffix:@"MINE"])
 	{
 		if ([self mountMissile:[[universe getShipWithRole:eq_type] autorelease]])
@@ -813,13 +817,13 @@ static int shipsFound;
 	{
 		[self add_extra_equipment:eq_type];
 	}
-	
+
 }
 
 - (void) removeEquipment:(NSString *)equipString  //eg. EQ_NAVAL_ENERGY_UNIT
 {
 	NSString*   eq_type		= equipString;
-	
+
 	if ((!script_target)||(!script_target->isPlayer))
 		return;
 
@@ -828,12 +832,12 @@ static int shipsFound;
 		fuel = 0;
 		return;
 	}
-	
+
 	if ([self has_extra_equipment:eq_type])
 	{
 		[self remove_extra_equipment:eq_type];
 	}
-	
+
 }
 
 - (void) setPlanetinfo:(NSString *)key_valueString	// uses key=value format
@@ -847,12 +851,33 @@ static int shipsFound;
 		NSLog(@"***** CANNOT SETPLANETINFO: '%@'", key_valueString);
 		return;
 	}
-	
+
 	keyString = [(NSString*)[tokens objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 	valueString = [(NSString*)[tokens objectAtIndex:1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-	
+
 	[universe setSystemDataKey:keyString value:valueString];
-	
+
+}
+
+- (void) setSpecificPlanetInfo:(NSString *)key_valueString  // uses galaxy#=planet#=key=value
+{
+	NSArray*	tokens = [[key_valueString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsSeparatedByString:@"="];
+	NSString*   keyString = nil;
+	NSString*	valueString = nil;
+	int gnum, pnum;
+
+	if ([tokens count] != 4)
+	{
+		NSLog(@"***** CANNOT SETPLANETINFO: '%@'", key_valueString);
+		return;
+	}
+
+	gnum = [(NSString*)[tokens objectAtIndex:0] intValue];
+	pnum = [(NSString*)[tokens objectAtIndex:1] intValue];
+	keyString = [(NSString*)[tokens objectAtIndex:2] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	valueString = [(NSString*)[tokens objectAtIndex:3] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+	[universe setSystemDataForGalaxy:gnum planet:pnum key:keyString value:valueString];
 }
 
 - (void) awardCargo:(NSString *)amount_typeString
@@ -871,10 +896,10 @@ static int shipsFound;
 		NSLog(@"***** CANNOT AWARDCARGO: '%@'",amount_typeString);
 		return;
 	}
-	
+
 	amountString =	(NSString *)[tokens objectAtIndex:0];
 	typeString =	(NSString *)[tokens objectAtIndex:1];
-	
+
 	int amount =	[amountString intValue];
 	int type =		[universe commodityForName:typeString];
 	if (type == NSNotFound)
@@ -884,15 +909,15 @@ static int shipsFound;
 		NSLog(@"***** CANNOT AWARDCARGO: '%@'",amount_typeString);
 		return;
 	}
-	
+
 	NSArray* commodityArray = (NSArray *)[[universe commoditydata] objectAtIndex:type];
 	NSString* cargoString = [(NSArray*)commodityArray objectAtIndex:MARKET_NAME];
-	
+
 	if (debug)
 		NSLog(@"DEBUG ..... Going to award cargo %d x '%@'", amount, cargoString);
-		
+
 	int unit = [(NSNumber *)[commodityArray objectAtIndex:MARKET_UNITS] intValue];
-	
+
 	if (status != STATUS_DOCKED)
 	{	// in-flight
 		while (amount)
@@ -970,7 +995,7 @@ static int shipsFound;
 
 	if (debug)
 		NSLog(@"DEBUG ..... Going to removeAllCargo");
-		
+
 	NSMutableArray* manifest = [NSMutableArray arrayWithArray:shipCommodityData];
 	for (type = 0; type < [manifest count]; type++)
 	{
@@ -1027,11 +1052,11 @@ static int shipsFound;
 		NSLog(@"***** CANNOT MESSAGESHIPSAIS: '%@'",roles_message);
 		return;
 	}
-	
+
 	roleString = (NSString *)[tokens objectAtIndex:0];
 	[tokens removeObjectAtIndex:0];
 	messageString = [tokens componentsJoinedByString:@" "];
-	
+
 	[universe sendShipsWithRole:roleString messageToAI:messageString];
 }
 
@@ -1055,12 +1080,12 @@ static int shipsFound;
 		NSLog(@"***** CANNOT ADDSHIPS: '%@' - MUST BE '<role> <number>'",roles_number);
 		return;
 	}
-	
+
 	roleString = (NSString *)[tokens objectAtIndex:0];
 	numberString = (NSString *)[tokens objectAtIndex:1];
-	
+
 	int number = [numberString intValue];
-	
+
 	if (debug)
 		NSLog(@"DEBUG ..... Going to add %d ships with role '%@'", number, roleString);
 
@@ -1080,14 +1105,14 @@ static int shipsFound;
 		NSLog(@"***** CANNOT ADDSYSTEMSHIPS: '%@'",roles_number_position);
 		return;
 	}
-	
+
 	roleString = (NSString *)[tokens objectAtIndex:0];
 	numberString = (NSString *)[tokens objectAtIndex:1];
 	positionString = (NSString *)[tokens objectAtIndex:2];
-	
+
 	int number = [numberString intValue];
 	double posn = [positionString doubleValue];
-	
+
 	if (debug)
 		NSLog(@"DEBUG Going to add %d ships with role '%@' at a point %.3f along route1", number, roleString, posn);
 
@@ -1111,23 +1136,23 @@ static int shipsFound;
 		NSLog(@"***** CANNOT ADDSYSTEMSHIPSAT: '%@'",roles_number_system_x_y_z);
 		return;
 	}
-	
+
 	roleString = (NSString *)[tokens objectAtIndex:0];
 	numberString = (NSString *)[tokens objectAtIndex:1];
 	systemString = (NSString *)[tokens objectAtIndex:2];
 	xString = (NSString *)[tokens objectAtIndex:3];
 	yString = (NSString *)[tokens objectAtIndex:4];
 	zString = (NSString *)[tokens objectAtIndex:5];
-	
+
 	Vector posn = make_vector( [xString floatValue], [yString floatValue], [zString floatValue]);
-	
+
 	int number = [numberString intValue];
-	
+
 	if (debug)
 		NSLog(@"DEBUG Going to add %d ship(s) with role '%@' at point (%.3f, %.3f, %.3f) using system %@", number, roleString, posn.x, posn.y, posn.z, systemString);
 
 	if (![universe addShips: number withRole:roleString nearPosition: posn withCoordinateSystem: systemString])
-		NSLog(@"***** CANNOT addShipsAt: '%@' (should be addShipsAt: role number coordinate_system x y z)",roles_number_system_x_y_z);			
+		NSLog(@"***** CANNOT addShipsAt: '%@' (should be addShipsAt: role number coordinate_system x y z)",roles_number_system_x_y_z);
 }
 
 - (void) addShipsAtPrecisely:(NSString *)roles_number_system_x_y_z
@@ -1146,23 +1171,23 @@ static int shipsFound;
 		NSLog(@"***** CANNOT ADDSYSTEMSHIPSAT: '%@'",roles_number_system_x_y_z);
 		return;
 	}
-	
+
 	roleString = (NSString *)[tokens objectAtIndex:0];
 	numberString = (NSString *)[tokens objectAtIndex:1];
 	systemString = (NSString *)[tokens objectAtIndex:2];
 	xString = (NSString *)[tokens objectAtIndex:3];
 	yString = (NSString *)[tokens objectAtIndex:4];
 	zString = (NSString *)[tokens objectAtIndex:5];
-	
+
 	Vector posn = make_vector( [xString floatValue], [yString floatValue], [zString floatValue]);
-	
+
 	int number = [numberString intValue];
-	
+
 	if (debug)
 		NSLog(@"DEBUG Going to add %d ship(s) with role '%@' precisely at point (%.3f, %.3f, %.3f) using system %@", number, roleString, posn.x, posn.y, posn.z, systemString);
 
 	if (![universe addShips: number withRole:roleString atPosition: posn withCoordinateSystem: systemString])
-		NSLog(@"***** CANNOT addShipsAtPrecisely: '%@' (should be addShipsAt: role number coordinate_system x y z)",roles_number_system_x_y_z);			
+		NSLog(@"***** CANNOT addShipsAtPrecisely: '%@' (should be addShipsAt: role number coordinate_system x y z)",roles_number_system_x_y_z);
 }
 
 - (void) addShipsWithinRadius:(NSString *)roles_number_system_x_y_z_r
@@ -1171,24 +1196,24 @@ static int shipsFound;
 
 	if ([tokens count] != 7)
 	{
-		NSLog(@"***** CANNOT 'addShipsWithinRadius: %@' (should be 'addShipsWithinRadius: role number coordinate_system x y z r')",roles_number_system_x_y_z_r);			
+		NSLog(@"***** CANNOT 'addShipsWithinRadius: %@' (should be 'addShipsWithinRadius: role number coordinate_system x y z r')",roles_number_system_x_y_z_r);
 		return;
 	}
-	
+
 	NSString* roleString = (NSString *)[tokens objectAtIndex:0];
 	int number = [[tokens objectAtIndex:1] intValue];
 	NSString* systemString = (NSString *)[tokens objectAtIndex:2];
 	GLfloat x = [[tokens objectAtIndex:3] floatValue];
 	GLfloat y = [[tokens objectAtIndex:4] floatValue];
 	GLfloat z = [[tokens objectAtIndex:5] floatValue];
-	GLfloat r = [[tokens objectAtIndex:6] floatValue];	
+	GLfloat r = [[tokens objectAtIndex:6] floatValue];
 	Vector posn = make_vector( x, y, z);
-	
+
 	if (debug)
 		NSLog(@"DEBUG Going to add %d ship(s) with role '%@' within %.2f radius about point (%.3f, %.3f, %.3f) using system %@", number, roleString, r, x, y, z, systemString);
 
 	if (![universe addShips:number withRole: roleString nearPosition: posn withCoordinateSystem: systemString withinRadius: r])
-		NSLog(@"***** CANNOT 'addShipsWithinRadius: %@' (should be 'addShipsWithinRadius: role number coordinate_system x y z r')",roles_number_system_x_y_z_r);			
+		NSLog(@"***** CANNOT 'addShipsWithinRadius: %@' (should be 'addShipsWithinRadius: role number coordinate_system x y z r')",roles_number_system_x_y_z_r);
 }
 
 - (void) spawnShip:(NSString *)ship_key
@@ -1206,67 +1231,107 @@ static int shipsFound;
 - (void) set:(NSString *)missionvariable_value
 {
 	NSMutableArray*	tokens = [Entity scanTokensFromString:missionvariable_value];
+	NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
 	NSString*   missionVariableString = nil;
 	NSString*	valueString = nil;
+	BOOL hasMissionPrefix, hasLocalPrefix;
 
 	if ([tokens count] < 2)
 	{
 		NSLog(@"***** CANNOT SET: '%@'", missionvariable_value);
 		return;
 	}
-	
+
 	missionVariableString = (NSString *)[tokens objectAtIndex:0];
 	[tokens removeObjectAtIndex:0];
 	valueString = [tokens componentsJoinedByString:@" "];
 
-	if (([valueString hasSuffix:@"_number"])||([valueString hasSuffix:@"_bool"])||([valueString hasSuffix:@"_string"]))
+	hasMissionPrefix = [missionVariableString hasPrefix:@"mission_"];
+	hasLocalPrefix = [missionVariableString hasPrefix:@"local_"];
+
+	if (hasMissionPrefix != YES && hasLocalPrefix != YES)
 	{
-		SEL value_selector = NSSelectorFromString(valueString);
-		if ([self respondsToSelector:value_selector])
-		{
-			// substitute into valueString the result of the call
-			valueString = [NSString stringWithFormat:@"%@", [self performSelector:value_selector]];
-		}
-	}
-	
-	if (![missionVariableString hasPrefix:@"mission_"])
-	{
-		NSLog(@"***** MISSION VARIABLE '%@' DOES NOT BEGIN WITH 'mission_'", missionvariable_value);
+		NSLog(@"***** IDENTIFIER '%@' DOES NOT BEGIN WITH 'mission_' or 'local_'", missionVariableString);
 		return;
 	}
-	
-	[mission_variables setObject:valueString forKey:missionVariableString];
+
+	if (hasMissionPrefix)
+		[mission_variables setObject:valueString forKey:missionVariableString];
+	else
+		[locals setObject:valueString forKey:missionVariableString];
 }
 
 - (void) reset:(NSString *)missionvariable
 {
 	NSString*   missionVariableString = [missionvariable stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	BOOL hasMissionPrefix, hasLocalPrefix;
 
-	if (![missionVariableString hasPrefix:@"mission_"])
+	hasMissionPrefix = [missionVariableString hasPrefix:@"mission_"];
+	hasLocalPrefix = [missionVariableString hasPrefix:@"local_"];
+
+	if (hasMissionPrefix)
 	{
-		NSLog(@"***** MISSION VARIABLE '%@' DOES NOT BEGIN WITH 'mission_'", missionVariableString);
-		return;
+		[mission_variables removeObjectForKey:missionVariableString];
 	}
-	
-	[mission_variables removeObjectForKey:missionVariableString];
+	else if (hasLocalPrefix)
+	{
+		NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
+		[locals removeObjectForKey:missionVariableString];
+	}
+	else
+	{
+		NSLog(@"***** IDENTIFIER '%@' DOES NOT BEGIN WITH 'mission_' or 'local_'", missionVariableString);
+	}
 }
 
 - (void) increment:(NSString *)missionVariableString
 {
+	BOOL hasMissionPrefix, hasLocalPrefix;
 	int value = 0;
-	if ([mission_variables objectForKey:missionVariableString])
-		value = [(NSString *)[mission_variables objectForKey:missionVariableString] intValue];
-	value++;
-	[mission_variables setObject:[NSString stringWithFormat:@"%d", value] forKey:missionVariableString];
+
+	hasMissionPrefix = [missionVariableString hasPrefix:@"mission_"];
+	hasLocalPrefix = [missionVariableString hasPrefix:@"local_"];
+
+	if (hasMissionPrefix)
+	{
+		if ([mission_variables objectForKey:missionVariableString])
+			value = [(NSString *)[mission_variables objectForKey:missionVariableString] intValue];
+		value++;
+		[mission_variables setObject:[NSString stringWithFormat:@"%d", value] forKey:missionVariableString];
+	}
+	else if (hasLocalPrefix)
+	{
+		NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
+		if ([locals objectForKey:missionVariableString])
+			value = [(NSString *)[locals objectForKey:missionVariableString] intValue];
+		value++;
+		[locals setObject:[NSString stringWithFormat:@"%d", value] forKey:missionVariableString];
+	}
 }
 
 - (void) decrement:(NSString *)missionVariableString
 {
+	BOOL hasMissionPrefix, hasLocalPrefix;
 	int value = 0;
-	if ([mission_variables objectForKey:missionVariableString])
-		value = [(NSString *)[mission_variables objectForKey:missionVariableString] intValue];
-	value--;
-	[mission_variables setObject:[NSString stringWithFormat:@"%d", value] forKey:missionVariableString];
+
+	hasMissionPrefix = [missionVariableString hasPrefix:@"mission_"];
+	hasLocalPrefix = [missionVariableString hasPrefix:@"local_"];
+
+	if (hasMissionPrefix)
+	{
+		if ([mission_variables objectForKey:missionVariableString])
+			value = [(NSString *)[mission_variables objectForKey:missionVariableString] intValue];
+		value--;
+		[mission_variables setObject:[NSString stringWithFormat:@"%d", value] forKey:missionVariableString];
+	}
+	else if (hasLocalPrefix)
+	{
+		NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
+		if ([locals objectForKey:missionVariableString])
+			value = [(NSString *)[locals objectForKey:missionVariableString] intValue];
+		value--;
+		[locals setObject:[NSString stringWithFormat:@"%d", value] forKey:missionVariableString];
+	}
 }
 
 - (void) add:(NSString *)missionVariableString_value
@@ -1275,6 +1340,8 @@ static int shipsFound;
 	NSString*   valueString;
 	double	value;
 	NSMutableArray*	tokens = [Entity scanTokensFromString:missionVariableString_value];
+	NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
+	BOOL hasMissionPrefix, hasLocalPrefix;
 
 	if ([tokens count] < 2)
 	{
@@ -1286,27 +1353,28 @@ static int shipsFound;
 	[tokens removeObjectAtIndex:0];
 	valueString = [tokens componentsJoinedByString:@" "];
 
-	if (![mission_variables objectForKey:missionVariableString])
+	hasMissionPrefix = [missionVariableString hasPrefix:@"mission_"];
+	hasLocalPrefix = [missionVariableString hasPrefix:@"local_"];
+
+	if (hasMissionPrefix)
+	{
+		value = [[mission_variables objectForKey:missionVariableString] doubleValue];
+		value += [valueString doubleValue];
+
+		[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
+	}
+	else if (hasLocalPrefix)
+	{
+		value = [[locals objectForKey:missionVariableString] doubleValue];
+		value += [valueString doubleValue];
+
+		[locals setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
+	}
+	else
 	{
 		NSLog(@"***** CANNOT ADD: '%@'",missionVariableString_value);
-		NSLog(@"***** NO MISSION VARIABLE: '%@'",missionVariableString);
-		return;
+		NSLog(@"***** IDENTIFIER '%@' DOES NOT BEGIN WITH 'mission_' or 'local_'",missionVariableString);
 	}
-	
-	if (([valueString hasSuffix:@"_number"])||([valueString hasSuffix:@"_bool"])||([valueString hasSuffix:@"_string"]))
-	{
-		SEL value_selector = NSSelectorFromString(valueString);
-		if ([self respondsToSelector:value_selector])
-		{
-			// substitute into valueString the result of the call
-			valueString = [NSString stringWithFormat:@"%@", [self performSelector:value_selector]];
-		}
-	}
-	
-	value = [[mission_variables objectForKey:missionVariableString] doubleValue];
-	value += [valueString doubleValue];
-	
-	[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
 }
 
 - (void) subtract:(NSString *)missionVariableString_value
@@ -1315,10 +1383,12 @@ static int shipsFound;
 	NSString*   valueString;
 	double	value;
 	NSMutableArray*	tokens = [Entity scanTokensFromString:missionVariableString_value];
+	NSMutableDictionary* locals = [local_variables objectForKey:mission_key];
+	BOOL hasMissionPrefix, hasLocalPrefix;
 
 	if ([tokens count] < 2)
 	{
-		NSLog(@"***** CANNOT ADD: '%@'",missionVariableString_value);
+		NSLog(@"***** CANNOT SUBTRACT: '%@'",missionVariableString_value);
 		return;
 	}
 
@@ -1326,27 +1396,28 @@ static int shipsFound;
 	[tokens removeObjectAtIndex:0];
 	valueString = [tokens componentsJoinedByString:@" "];
 
-	if (![mission_variables objectForKey:missionVariableString])
+	hasMissionPrefix = [missionVariableString hasPrefix:@"mission_"];
+	hasLocalPrefix = [missionVariableString hasPrefix:@"local_"];
+
+	if (hasMissionPrefix)
 	{
-		NSLog(@"***** CANNOT ADD: '%@'",missionVariableString_value);
-		NSLog(@"***** NO MISSION VARIABLE: '%@'",missionVariableString);
-		return;
+		value = [[mission_variables objectForKey:missionVariableString] doubleValue];
+		value -= [valueString doubleValue];
+
+		[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
 	}
-	
-	if (([valueString hasSuffix:@"_number"])||([valueString hasSuffix:@"_bool"])||([valueString hasSuffix:@"_string"]))
+	else if (hasLocalPrefix)
 	{
-		SEL value_selector = NSSelectorFromString(valueString);
-		if ([self respondsToSelector:value_selector])
-		{
-			// substitute into valueString the result of the call
-			valueString = [NSString stringWithFormat:@"%@", [self performSelector:value_selector]];
-		}
+		value = [[locals objectForKey:missionVariableString] doubleValue];
+		value -= [valueString doubleValue];
+
+		[locals setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
 	}
-	
-	value = [[mission_variables objectForKey:missionVariableString] doubleValue];
-	value -= [valueString doubleValue];
-	
-	[mission_variables setObject:[NSString stringWithFormat:@"%f", value] forKey:missionVariableString];
+	else
+	{
+		NSLog(@"***** CANNOT SUBTRACT: '%@'",missionVariableString_value);
+		NSLog(@"***** IDENTIFIER '%@' DOES NOT BEGIN WITH 'mission_' or 'local_'",missionVariableString);
+	}
 }
 
 - (void) checkForShips: (NSString *)roleString
@@ -1380,7 +1451,7 @@ static int shipsFound;
 	}
 	if (lastTextKey)
 		[lastTextKey release];
-	lastTextKey = [[NSString stringWithString:textKey] retain];  // 
+	lastTextKey = [[NSString stringWithString:textKey] retain];  //
 }
 
 - (void) setMissionChoices:(NSString *)choicesKey	// choicesKey is a key for a dictionary of
@@ -1439,16 +1510,16 @@ static int shipsFound;
 
 	if (!docked_station)
 		return;
-	
+
 	[universe removeDemoShips];	// get rid of any pre-existing models on display
-	
+
     quaternion_into_gl_matrix(q_rotation, rotMatrix);
 
 	Quaternion		q2 = q_rotation;
 	q2.w = -q2.w;
 	Vector			pos = position;
 	quaternion_rotate_about_axis(&q2,vector_right_from_quaternion(q2), 0.5 * PI);
-	
+
 	ship = [universe getShipWithRole: shipKey];   // retain count = 1
 	if (ship)
 	{
@@ -1459,7 +1530,7 @@ static int shipsFound;
 		pos.x += 3.6 * cr * v_forward.x;
 		pos.y += 3.6 * cr * v_forward.y;
 		pos.z += 3.6 * cr * v_forward.z;
-			
+
 		[ship setStatus: STATUS_DEMO];
 		[ship setPosition: pos];
 		[ship setScanClass: CLASS_NO_DRAW];
@@ -1492,7 +1563,7 @@ static int shipsFound;
 	if ([[value lowercaseString] isEqual:@"none"])
 		missionBackgroundImage = nil;
 	else
- 	{ 	
+ 	{
 #ifdef WIN32
  		missionBackgroundImage =  [[ResourceManager surfaceNamed:value inFolder:@"Images"] retain];
 #else
@@ -1544,7 +1615,7 @@ static int shipsFound;
 	int i;
 	for (i = 0; i < ent_count; i++)
 		my_entities[i] = [uni_entities[i] retain];		//	retained
-	
+
 	for (i = 1; i < ent_count; i++)
 	{
 		Entity* e1 = my_entities[i];
@@ -1571,7 +1642,7 @@ static int shipsFound;
 {
 	if (debug)
 		NSLog(@"DEBUG addPlanet: %@", planetKey);
-	
+
 	if (!universe)
 		return;
 	NSDictionary* dict = (NSDictionary*)[[universe planetinfo] objectForKey:planetKey];
@@ -1580,14 +1651,14 @@ static int shipsFound;
 		NSLog(@"ERROR - could not find an entry in planetinfo.plist for '%@'", planetKey);
 		return;
 	}
-	
+
 	/*- add planet -*/
 	if (debug)
 		NSLog(@"DEBUG initPlanetFromDictionary: %@", dict);
 	//
 	PlanetEntity*	planet = [[PlanetEntity alloc] initPlanetFromDictionary:dict inUniverse:universe];	// alloc retains!
 	[planet setStatus:STATUS_ACTIVE];
-	
+
 	if ([dict objectForKey:@"orientation"])
 		[planet setQRotation: [Entity quaternionFromString:(NSString *)[dict objectForKey:@"orientation"]]];
 
@@ -1617,7 +1688,7 @@ static int shipsFound;
 {
 	if (debug)
 		NSLog(@"DEBUG addMoon: %@", moonKey);
-	
+
 	if (!universe)
 		return;
 	NSDictionary* dict = (NSDictionary*)[[universe planetinfo] objectForKey:moonKey];
@@ -1626,13 +1697,13 @@ static int shipsFound;
 		NSLog(@"ERROR - could not find an entry in planetinfo.plist for '%@'", moonKey);
 		return;
 	}
-	
+
 	if (debug)
 		NSLog(@"DEBUG initMoonFromDictionary: %@", dict);
 	//
 	PlanetEntity*	planet = [[PlanetEntity alloc] initMoonFromDictionary:dict inUniverse:universe];	// alloc retains!
 	[planet setStatus:STATUS_ACTIVE];
-	
+
 	if ([dict objectForKey:@"orientation"])
 		[planet setQRotation: [Entity quaternionFromString:(NSString *)[dict objectForKey:@"orientation"]]];
 
@@ -1689,8 +1760,7 @@ static int shipsFound;
 		{
 			[tokens replaceObjectAtIndex:i withObject:[mission_variables objectForKey:valueString]];
 		}
-	
-		if (([valueString hasSuffix:@"_number"])||([valueString hasSuffix:@"_bool"])||([valueString hasSuffix:@"_string"]))
+		else if (([valueString hasSuffix:@"_number"])||([valueString hasSuffix:@"_bool"])||([valueString hasSuffix:@"_string"]))
 		{
 			SEL value_selector = NSSelectorFromString(valueString);
 			if ([self respondsToSelector:value_selector])
@@ -1724,13 +1794,13 @@ static int shipsFound;
 		//
 		[gui setSelectableRange:NSMakeRange(0,0)];
 		[gui setBackgroundImage:missionBackgroundImage];
-		
+
 		[gui setShowTextCursor:NO];
 	}
 	/* ends */
-	
+
 	missionTextRow = 1;
-	
+
 	if (gui)
 		gui_screen = GUI_SCREEN_MISSION;
 
@@ -1742,14 +1812,14 @@ static int shipsFound;
 
 #ifdef GNUSTEP
 //TODO: 3.???? 4. Profit!
-#else   
+#else
 	if ((missionMusic)&&(!ootunes_on))
 	{
 //		GoToBeginningOfMovie ([missionMusic QTMovie]);
 //		StartMovie ([missionMusic QTMovie]);
 		[missionMusic play];
 	}
-#endif   
+#endif
 
 	// the following are necessary...
 	status = STATUS_DEMO;
