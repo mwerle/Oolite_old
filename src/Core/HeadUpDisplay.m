@@ -88,7 +88,7 @@ float char_widths[128] = {
 //	int ch;
 //    NSMutableDictionary *stringAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 //        [NSFont fontWithName:@"Helvetica-Bold" size:28], NSFontAttributeName,
-//        [NSColor blackColor], NSForegroundColorAttributeName, NULL];
+//        [OOColor blackColor], NSForegroundColorAttributeName, NULL];
 //	for (ch = 32; ch < 127; ch++)
 //	{
 //		unichar	 uch = (unichar) ch;
@@ -178,7 +178,7 @@ GLuint ascii_texture_name;
 	if ([info objectForKey:IMAGE_KEY])
 	{
 		//NSLog(@"DEBUG adding Legend %@",[info objectForKey:IMAGE_KEY]);
-#ifdef WIN32
+#ifdef GNUSTEP
 		SDLImage		*legendImage = [ResourceManager surfaceNamed:(NSString *)[info objectForKey:IMAGE_KEY] inFolder:@"Images"];
 #else
 		NSImage			*legendImage = [ResourceManager imageNamed:(NSString *)[info objectForKey:IMAGE_KEY] inFolder:@"Images"];
@@ -189,7 +189,7 @@ GLuint ascii_texture_name;
 			spriteSize.width = [(NSNumber *)[info objectForKey:WIDTH_KEY] intValue];
 		if ([info objectForKey:HEIGHT_KEY])
 			spriteSize.height = [(NSNumber *)[info objectForKey:HEIGHT_KEY] intValue];
-#ifdef WIN32
+#ifdef GNUSTEP
  		OpenGLSprite *legendSprite = [[OpenGLSprite alloc] initWithSurface:legendImage
  										cropRectangle:NSMakeRect(0, 0, imageSize.width, imageSize.height) size:spriteSize]; // retained
 #else

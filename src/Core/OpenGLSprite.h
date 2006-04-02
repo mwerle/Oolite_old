@@ -62,9 +62,11 @@ extern int debug;
 
 
 - (id) init;
+#ifndef GNUSTEP
 - (id) initWithImage:(NSImage *)textureImage cropRectangle:(NSRect)cropRect size:(NSSize) spriteSize;
 - (id) initWithText:(NSString *)str;
 - (id) initWithText:(NSString *)str ofColor:(NSColor *) textColor;
+#endif
 - (void) dealloc;
 
 - (NSSize)  size;
@@ -73,10 +75,12 @@ extern int debug;
 - (void)blitCentredToX:(float)x Y:(float)y Z:(float)z Alpha:(float)a;
 
 - (void) setText:(NSString *)str;
+#ifndef GNUSTEP
 - (void)makeTextureFromImage:(NSImage *)texImage cropRectangle:(NSRect)cropRect size:(NSSize)spriteSize;
 
 - (void)replaceTextureFromImage:(NSImage *)texImage cropRectangle:(NSRect)cropRect;
 - (void)substituteTextureFromImage:(NSImage *)texImage;
+#endif
 
 #ifdef GNUSTEP
 - (id) initWithSurface:(SDLImage *)textureImage cropRectangle:(NSRect)cropRect size:(NSSize) spriteSize;

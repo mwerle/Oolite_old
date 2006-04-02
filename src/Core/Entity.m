@@ -36,7 +36,6 @@ Any of these conditions can be waived if you get permission from the copyright h
 Your fair use and other rights are in no way affected by the above.
 
 */
-
 #import "Entity.h"
 
 #import "vector.h"
@@ -250,7 +249,7 @@ static  Universe	*data_store_universe;
 	//
 	collision_radius = 0.0;
 	//
-	collidingEntities = [[NSMutableArray alloc] initWithCapacity:16];   // alloc automatically retains
+	collidingEntities = [(NSMutableArray *)[NSMutableArray alloc] initWithCapacity:16];   // alloc automatically retains
 	//
 	scan_class = CLASS_NOT_SET;
 	//
@@ -433,7 +432,7 @@ static  Universe	*data_store_universe;
 
 - (Geometry*) getGeometry
 {
-	Geometry* result = [[Geometry alloc] initWithCapacity: n_faces];
+	Geometry* result = [(Geometry *)[Geometry alloc] initWithCapacity: n_faces];
 	int i;
 	for (i = 0; i < n_faces; i++)
 	{
@@ -695,7 +694,7 @@ static  Universe	*data_store_universe;
 			else
 			{
 				NSLog(@"ERROR no basefile for entity %@");
-				NSBeep();
+			//	NSBeep();	// appkit dependency
 			}
 		}
 		glShadeModel(GL_SMOOTH);
@@ -728,29 +727,7 @@ static  Universe	*data_store_universe;
 			return; // TOO FAR AWAY
 		}
 	}
-	if (status != STATUS_ACTIVE)
-	{
-		if ((![universe reducedDetail])||(status == STATUS_EFFECT))	// don't draw passive subentities except exhausts in reduced detail mode.
-		{
-			glPushMatrix();
-
-			// position and orientation is relative to owner
-			
-			//NSLog(@"DEBUG drawing passive subentity at %.3f, %.3f, %.3f", position.x, position.y, position.z);
-			
-			glTranslated( position.x, position.y, position.z);
-			glMultMatrixf(rotMatrix);
-			
-			[self drawEntity:immediate :translucent];
-				
-			glPopMatrix();
-
-//			NSLog(@"drawn static entity : %@", basefile);
-
-
-		}
-	}
-	else
+	if (status == STATUS_ACTIVE)
 	{
 		Vector abspos = position;  // STATUS_ACTIVE means it is in control of it's own orientation
 		Entity*		father = my_owner;
@@ -771,9 +748,17 @@ static  Universe	*data_store_universe;
 		glMultMatrixf(rotMatrix);
 		
 		[self drawEntity:immediate :translucent];
-		
-//		NSLog(@"drawn active entity : %@", basefile);
+	}
+	else
+	{
+		glPushMatrix();
 
+		glTranslated( position.x, position.y, position.z);
+		glMultMatrixf(rotMatrix);
+		
+		[self drawEntity:immediate :translucent];
+			
+		glPopMatrix();
 	}
 }
 
@@ -2099,7 +2084,7 @@ static  Universe	*data_store_universe;
 		// see if we have supported hardware
 		s = (char *)glGetString(GL_EXTENSIONS);	// get extensions list
 				
-		if (strstr(s, "GL_APPLE_vertex_array_range") == nil)
+		if (strstr(s, "GL_APPLE_vertex_array_range") == 0)
 		{
 			global_usingVAR &= NO;
 			NSLog(@"Vertex Array Range optimisation - not supported");

@@ -38,6 +38,7 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 #import "OpenGLSprite.h"
+#import "OOColor.h"
 
 
 @implementation OpenGLSprite
@@ -48,6 +49,7 @@ Your fair use and other rights are in no way affected by the above.
     return self;
 }
 
+#ifndef GNUSTEP
 - (id) initWithImage:(NSImage *)textureImage cropRectangle:(NSRect)cropRect size:(NSSize) spriteSize
 {
     self = [super init];
@@ -63,7 +65,6 @@ Your fair use and other rights are in no way affected by the above.
 
 - (id) initWithText:(NSString *)str ofColor:(NSColor *) textColor
 {
-#ifndef GNUSTEP
     NSImage	*image;
     NSSize	strsize;
     NSMutableDictionary *stringAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -88,11 +89,8 @@ Your fair use and other rights are in no way affected by the above.
 	[image release];
 	
     return self;
-#else
-	[self release];
-	return nil;
-#endif
 }
+#endif
 
 - (void) dealloc
 {
@@ -182,7 +180,7 @@ Your fair use and other rights are in no way affected by the above.
 #endif
 }
 
-
+#ifndef GNUSTEP
 - (void)makeTextureFromImage:(NSImage *)texImage cropRectangle:(NSRect)cropRect size:(NSSize)spriteSize
 {
     NSBitmapImageRep*	bitmapImageRep;
@@ -345,6 +343,8 @@ Your fair use and other rights are in no way affected by the above.
     [bitmapImageRep release];
 }
 
+#endif
+
 #ifdef GNUSTEP
 /* SDL interprets each pixel as a 32-bit number, so our masks must depend
    on the endianness (byte order) of the machine */
@@ -405,7 +405,7 @@ enum
     surface = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)textureRect.size.width, (int)textureRect.size.height, 32, rmask, gmask, bmask, amask);
 
     //[image lockFocus];
-    //[[NSColor clearColor] set];
+    //[[OOColor clearColor] set];
     //NSRectFill(textureRect);
     SDL_FillRect(surface, (SDL_Rect *)0x00, SDL_MapRGBA(surface->format, 0, 0, 0, SDL_ALPHA_TRANSPARENT));
 

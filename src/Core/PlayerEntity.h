@@ -242,7 +242,7 @@ enum
 	
 	NSMutableArray*			comm_log;
 
-#ifdef WIN32
+#ifdef GNUSTEP
  	SDLImage				*missionBackgroundImage;
 #else
 	NSImage					*missionBackgroundImage;
@@ -481,7 +481,6 @@ enum
 	// target memory
 	int						target_memory[PLAYER_TARGET_MEMORY_SIZE];
 	int						target_memory_index;
-
 
 #ifdef GNUSTEP
   // Keeping track of joysticks

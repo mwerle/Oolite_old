@@ -49,6 +49,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "GuiDisplayGen.h"
 #import "HeadUpDisplay.h"
 #import "OOSound.h"
+#import "OOColor.h"
 
 #import "Octree.h"
 #import "CollisionRegion.h"
@@ -148,10 +149,10 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	comm_log_gui = [[GuiDisplayGen alloc] initWithPixelSize:NSMakeSize( 360, 120) Columns:1 Rows:10 RowHeight:12 RowStart:12 Title:nil];
 	[comm_log_gui setCurrentRow:9];
-	[comm_log_gui setBackgroundColor:[NSColor colorWithCalibratedRed:0.0 green:0.05 blue:0.45 alpha:0.5]];
-	[comm_log_gui setTextColor:[NSColor whiteColor]];
+	[comm_log_gui setBackgroundColor:[OOColor colorWithCalibratedRed:0.0 green:0.05 blue:0.45 alpha:0.5]];
+	[comm_log_gui setTextColor:[OOColor whiteColor]];
 	[comm_log_gui setAlpha:0.0];
-	[comm_log_gui printLongText:@"Communications Log" Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:0 Key:nil AddToArray:nil];
+	[comm_log_gui printLongText:@"Communications Log" Align:GUI_ALIGN_CENTER Color:[OOColor yellowColor] FadeTime:0 Key:nil AddToArray:nil];
 	//
 	displayFPS = NO;
 	//
@@ -200,14 +201,12 @@ Your fair use and other rights are in no way affected by the above.
 	
 	[player setUpShipFromDictionary:[self getDictionaryForShip:[player ship_desc]]];	// ship desc is the standard cobra at this point
 
-	[player setStatus:STATUS_DEMO];
+	[player setStatus:STATUS_START_GAME];
+	[player setShowDemoShips: YES];
+	
 	[self setGalaxy_seed: [player galaxy_seed]];
 	
 	system_seed = [self findSystemAtCoords:[player galaxy_coordinates] withGalaxySeed:galaxy_seed];
-	
-//	NSLog(@"Galaxy coords are (%f, %f)", [player galaxy_coordinates].x, [player galaxy_coordinates].y);
-	
-//	NSLog(@"Well whaddayaknow - we're at %@", [self getSystemName:system_seed]);
 	
 	
 	activeWormholes = [[NSMutableArray arrayWithCapacity:16] retain];
@@ -218,6 +217,8 @@ Your fair use and other rights are in no way affected by the above.
 	
 	[self set_up_space];
 	
+	if (cachedStation)
+		[player setPosition: cachedStation->position];
 
 	[player release];
 	//
@@ -392,10 +393,10 @@ Your fair use and other rights are in no way affected by the above.
 		[comm_log_gui autorelease];
 	comm_log_gui = [[GuiDisplayGen alloc] initWithPixelSize:NSMakeSize( 360, 120) Columns:1 Rows:10 RowHeight:12 RowStart:12 Title:nil];
 	[comm_log_gui setCurrentRow:9];
-	[comm_log_gui setBackgroundColor:[NSColor colorWithCalibratedRed:0.0 green:0.05 blue:0.45 alpha:0.5]];
-	[comm_log_gui setTextColor:[NSColor whiteColor]];
+	[comm_log_gui setBackgroundColor:[OOColor colorWithCalibratedRed:0.0 green:0.05 blue:0.45 alpha:0.5]];
+	[comm_log_gui setTextColor:[OOColor whiteColor]];
 	[comm_log_gui setAlpha:0.0];
-	[comm_log_gui printLongText:@"Communications Log" Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:0 Key:nil AddToArray:nil];
+	[comm_log_gui printLongText:@"Communications Log" Align:GUI_ALIGN_CENTER Color:[OOColor yellowColor] FadeTime:0 Key:nil AddToArray:nil];
 	//
 	time_delta = 0.0;
 	universal_time = 0.0;
@@ -616,7 +617,7 @@ Your fair use and other rights are in no way affected by the above.
 	[self setViewDirection:VIEW_FORWARD];
 	
 	[comm_log_gui printLongText:[NSString stringWithFormat:@"%@ %@", [self generateSystemName:system_seed], [player dial_clock_adjusted]]
-		Align:GUI_ALIGN_CENTER Color:[NSColor whiteColor] FadeTime:0 Key:nil AddToArray:[player comm_log]];
+		Align:GUI_ALIGN_CENTER Color:[OOColor whiteColor] FadeTime:0 Key:nil AddToArray:[player comm_log]];
 	//
     //
 	/* test stuff */
@@ -697,8 +698,8 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	
 	/*- the sky backdrop -*/
-	NSColor *col1 = [NSColor colorWithCalibratedRed:0.0 green:1.0 blue:0.5 alpha:1.0];
-	NSColor *col2 = [NSColor colorWithCalibratedRed:0.0 green:1.0 blue:0.0 alpha:1.0];
+	OOColor *col1 = [OOColor colorWithCalibratedRed:0.0 green:1.0 blue:0.5 alpha:1.0];
+	OOColor *col2 = [OOColor colorWithCalibratedRed:0.0 green:1.0 blue:0.0 alpha:1.0];
 //	thing = [[SkyEntity alloc] initAsWitchspace];	// alloc retains!
 	thing = [[SkyEntity alloc] initWithColors:col1:col2 andSystemInfo: systeminfo];	// alloc retains!
 	[thing setScanClass: CLASS_NO_DRAW];
@@ -801,8 +802,8 @@ Your fair use and other rights are in no way affected by the above.
 	NSDictionary		*systeminfo = [self generateSystemData:system_seed];
 	int					techlevel = [(NSNumber *)[systeminfo objectForKey:KEY_TECHLEVEL] intValue];
 	NSString			*stationDesc;
-	NSColor				*bgcolor;
-	NSColor				*pale_bgcolor;
+	OOColor				*bgcolor;
+	OOColor				*pale_bgcolor;
 	
 	BOOL				sun_gone_nova = NO;
 	if ([systeminfo objectForKey:@"sun_gone_nova"])
@@ -826,14 +827,14 @@ Your fair use and other rights are in no way affected by the above.
 	float h2 = h1 + 1.0 / (1.0 + (ranrot_rand() % 5));
 	while (h2 > 1.0)
 		h2 -= 1.0;
-	NSColor *col1 = [NSColor colorWithCalibratedHue:h1 saturation:randf() brightness:0.5 + randf()/2.0 alpha:1.0];
-	NSColor *col2 = [NSColor colorWithCalibratedHue:h2 saturation:0.5 + randf()/2.0 brightness:0.5 + randf()/2.0 alpha:1.0];
+	OOColor *col1 = [OOColor colorWithCalibratedHue:h1 saturation:randf() brightness:0.5 + randf()/2.0 alpha:1.0];
+	OOColor *col2 = [OOColor colorWithCalibratedHue:h2 saturation:0.5 + randf()/2.0 brightness:0.5 + randf()/2.0 alpha:1.0];
 	
 	thing = [[SkyEntity alloc] initWithColors:col1:col2 andSystemInfo: systeminfo];	// alloc retains!
 	[thing setScanClass: CLASS_NO_DRAW];
 	[self addEntity:thing]; // [entities addObject:thing];
 	bgcolor = [(SkyEntity *)thing sky_color];
-	pale_bgcolor = [bgcolor blendedColorWithFraction:0.5 ofColor:[NSColor whiteColor]];
+	pale_bgcolor = [bgcolor blendedColorWithFraction:0.5 ofColor:[OOColor whiteColor]];
 	[thing release];
 	/*--*/
 	
@@ -1114,8 +1115,22 @@ Your fair use and other rights are in no way affected by the above.
 	
 }
 
+
+GLfloat docked_light_ambient[]	= { (GLfloat) 0.05, (GLfloat) 0.05, (GLfloat) 0.05, (GLfloat) 1.0};	// dark gray (low ambient)
+GLfloat docked_light_diffuse[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 1.0};	// white
+GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5, (GLfloat) 1.0};	// yellow-white
 - (void) setLighting
 {
+	/*
+	
+	GL_LIGHT1 is the sun and is active while a sun exists in space
+	where there is no sun (witch/interstellar space) this is placed at the origin
+	
+	GL_LIGHT0 is the light for inside the station and needs to have its position reset
+	relative to the player whenever demo ships or background scenes are to be shown
+	
+	*/
+	
 	NSDictionary*	systeminfo = [self generateSystemData:system_seed];
 	PlanetEntity*	the_sun = [self sun];
 	SkyEntity*		the_sky = nil;
@@ -1152,7 +1167,6 @@ Your fair use and other rights are in no way affected by the above.
 		glLightfv(GL_LIGHT1, GL_AMBIENT, sun_ambient);
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, sun_diffuse);
 		glLightfv(GL_LIGHT1, GL_SPECULAR, sun_specular);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, stars_ambient);
 	}
 	//
 	glLightfv(GL_LIGHT1, GL_POSITION, sun_pos);
@@ -1169,15 +1183,16 @@ Your fair use and other rights are in no way affected by the above.
 		stars_ambient[1] = ambient_level * 0.0625 * (1.0 + g) * (1.0 + g);
 		stars_ambient[2] = ambient_level * 0.0625 * (1.0 + b) * (1.0 + b);
 		stars_ambient[3] = 1.0;
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, stars_ambient);
 	}
 	//
 	// light for demo ships display..
-	GLfloat	white[] = { 1.0, 1.0, 1.0, 1.0};	// white light
-	glLightfv(GL_LIGHT0, GL_AMBIENT, white);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
-			
+	glLightfv(GL_LIGHT0, GL_AMBIENT, docked_light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, docked_light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, docked_light_specular);
+	
+	// glLightModel details...
+	//
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, stars_ambient);
 }
 
 - (void) populateSpaceFromActiveWormholes
@@ -2427,6 +2442,8 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) set_up_intro1
 {
+	PlayerEntity* player = (PlayerEntity*)[self entityZero];
+	Vector p0 = player->position;
 	ShipEntity		*ship;
 	Quaternion		q2;
 	q2.x = 0.0;   q2.y = 0.0;   q2.z = 0.0; q2.w = 1.0;
@@ -2434,16 +2451,17 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	// in status demo : draw ships and display text
 	//
-	[[self entityZero] setStatus:STATUS_DEMO];
+	[player setStatus: STATUS_START_GAME];
+	[player setShowDemoShips: YES];
 	displayGUI = YES;
 	//
 	/*- cobra -*/
 	ship = [self getShip:PLAYER_SHIP_DESC];   // retain count = 1   // shows the cobra-player ship
 	if (ship)
 	{
-		[ship setStatus:STATUS_DEMO];
+		[ship setStatus: STATUS_DEMO];
 		[ship setQRotation:q2];
-		[ship setPosition:0.0:0.0: 3.6 * ship->actual_radius];  // 250m ahead
+		[ship setPosition: p0.x : p0.y : p0.z + 3.6 * ship->actual_radius];  // 250m ahead
 		
 		//NSLog(@"demo ship %@ has collision radius %.1f 250.0/cr = %.1f", [ship name], ship->collision_radius, 250.0/ship->collision_radius);
 		
@@ -2466,6 +2484,8 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) set_up_intro2
 {
+	PlayerEntity* player = (PlayerEntity*)[self entityZero];
+	Vector p0 = player->position;
 	ShipEntity		*ship;
 	Quaternion		q2;
 	q2.x = 0.0;   q2.y = 0.0;   q2.z = 0.0; q2.w = 1.0;
@@ -2474,7 +2494,8 @@ Your fair use and other rights are in no way affected by the above.
 	// in status demo draw ships and display text
 	//
 	[self removeDemoShips];
-	[[self entityZero] setStatus:STATUS_DEMO];
+	[(PlayerEntity*)[self entityZero] setStatus: STATUS_START_GAME];
+	[(PlayerEntity*)[self entityZero] setShowDemoShips: YES];
 	displayGUI = YES;
 	//
 	/*- demo ships -*/
@@ -2483,7 +2504,7 @@ Your fair use and other rights are in no way affected by the above.
 	if (ship)
 	{
 		[ship setQRotation:q2];
-		[ship setPosition:0.0:0.0: 3.6 * ship->actual_radius];
+		[ship setPosition: p0.x : p0.y : p0.z + 3.6 * ship->actual_radius];
 		
 		//NSLog(@"demo ship %@ has collision radius %.1f 250.0/cr = %.1f", [ship name], ship->collision_radius, 250.0/ship->collision_radius);
 		
@@ -2499,7 +2520,7 @@ Your fair use and other rights are in no way affected by the above.
 		demo_ship = ship;
 		
 		[gui setText:[ship name] forRow:19 align:GUI_ALIGN_CENTER];
-		[gui setColor:[NSColor whiteColor] forRow:19];
+		[gui setColor:[OOColor whiteColor] forRow:19];
 		
 		[ship release];
 	}
@@ -3293,6 +3314,43 @@ Your fair use and other rights are in no way affected by the above.
     return textureStore;
 }
 
+// track the position and status of the lights
+BOOL	sun_light_on = NO;
+BOOL	demo_light_on = NO;
+GLfloat	demo_light_position[] = { 0.0f, 0.0f, 0.0f};
+void	setSunLight(BOOL yesno)
+{
+	if (yesno != sun_light_on)
+	{
+		if (yesno)
+			glEnable(GL_LIGHT1);
+		else
+			glDisable(GL_LIGHT1);
+		sun_light_on = yesno;
+//		NSLog(@"DEBUG ::::: Sunlight switched %@", (yesno)? @"ON":@"off");
+	}
+}
+void	setDemoLight(BOOL yesno, Vector position)
+{
+	if (yesno != demo_light_on)
+	{
+		if ((demo_light_position[0] != position.x)||(demo_light_position[1] != position.y)||(demo_light_position[2] != position.z))
+		{
+			demo_light_position[0] = position.x;
+			demo_light_position[1] = position.y;
+			demo_light_position[2] = position.z;
+			glLightfv(GL_LIGHT0, GL_POSITION, demo_light_position);
+//			NSLog(@"DEBUG ::::: Demo light repositioned at ( %.2f, %.2f, %.2f)", position.x, position.y, position.z);
+		}
+		if (yesno)
+			glEnable(GL_LIGHT0);
+		else
+			glDisable(GL_LIGHT0);
+		demo_light_on = yesno;
+//		NSLog(@"DEBUG ::::: Demo light switched %@", (yesno)? @"ON":@"off");
+	}
+}
+
 // global rotation matrix definitions
 GLfloat	fwd_matrix[] = {		1.0f, 0.0f, 0.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,		0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 0.0f, 0.0f, 1.0f};
 GLfloat	aft_matrix[] = {		-1.0f, 0.0f, 0.0f, 0.0f,	0.0f, 1.0f, 0.0f, 0.0f,		0.0f, 0.0f, -1.0f, 0.0f,	0.0f, 0.0f, 0.0f, 1.0f};
@@ -3309,7 +3367,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 			int i, v_status;
 			Vector	position, obj_position, view_dir;
 			BOOL playerDemo = NO;
-			GLfloat	white[] = { 1.0, 1.0, 1.0, 1.0};	// white light
+//			GLfloat	white[] = { 1.0, 1.0, 1.0, 1.0};	// white light
 			
 			//
 			// use a non-mutable copy so this can't be changed under us.
@@ -3356,7 +3414,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 				viewthing = [entities objectAtIndex:n];
 			}
 			
-			if ((viewthing)&&(viewthing == sortedEntities[0]))
+			if ((viewthing)&&(viewthing->isPlayer))
 			{
 				position = [viewthing getViewpointPosition];
 				v_status = viewthing->status;
@@ -3427,8 +3485,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 			if ((!displayGUI) || (playerDemo))
 			{
 				// set up the light for demo ships
-				GLfloat origin[] = { 500.0f, 2500.0f, -1000.0f};
-				glLightfv(GL_LIGHT0, GL_POSITION, origin);
+				Vector demo_light_origin = {  5000.0f, 25000.0f,  -10000.0f}; // right 5000 up 25000 back 10000
 				
 				////
 				//
@@ -3439,29 +3496,33 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 				//
 				////
 				
-				// position the sun correctly
+				// position the sun and docked lights correctly
 				glLightfv(GL_LIGHT1, GL_POSITION, sun_center_position);	// this is necessary or the sun will move with the player
 				
 				if (playerDemo)
 				{
 					// light for demo ships display.. 
-					glLightfv(GL_LIGHT0, GL_AMBIENT, white);
-					glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-					glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+					glLightfv(GL_LIGHT0, GL_AMBIENT, docked_light_ambient);
+					glLightfv(GL_LIGHT0, GL_DIFFUSE, docked_light_diffuse);
+					glLightfv(GL_LIGHT0, GL_SPECULAR, docked_light_specular);
 					//
-					glEnable(GL_LIGHT0);		// switch on the light for demo ships
-					glDisable(GL_LIGHT1);		// switch the sun off inside the space station
+					demo_light_on = NO;	// be contrary - force enabling of the light
+					setDemoLight( YES, demo_light_origin);
+					sun_light_on = YES;	// be contrary - force disabling of the light
+					setSunLight( NO);
+					glLightModelfv(GL_LIGHT_MODEL_AMBIENT, docked_light_ambient);
 				}
 				else
 				{
-					glDisable(GL_LIGHT0);		// switch off the demo-ship light
-					glEnable(GL_LIGHT1);		// lighting up the sun
+					demo_light_on = YES;	// be contrary - force disabling of the light
+					setDemoLight( NO, demo_light_origin);
+					sun_light_on = NO;	// be contrary - force enabling of the light
+					setSunLight( YES);
+					glLightModelfv(GL_LIGHT_MODEL_AMBIENT, stars_ambient);
 				}
 				
 				// turn on lighting
 				glEnable(GL_LIGHTING);
-				
-				BOOL sunlit = YES;
 				
 				int		furthest = draw_count - 1;
 				int		nearest = 0;
@@ -3521,20 +3582,17 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 						}
 						
 						// lighting
-						if (drawthing->isSunlit != sunlit)
+						if (playerDemo)
 						{
-							if (drawthing->isSunlit)
-							{
-								glEnable(GL_LIGHT1);
-								sunlit = YES;	// track the state of GL_LIGHT1
-							}
-							else
-							{
-								glDisable(GL_LIGHT1);
-								sunlit = NO;	// track the state of GL_LIGHT1
-							}
+							setDemoLight( YES, demo_light_origin);
+							setSunLight( NO);
 						}
-						
+						else
+						{
+							setSunLight( drawthing->isSunlit);
+							setDemoLight( NO, demo_light_origin);
+						}
+	
 						// draw the thing
 						//
 						[drawthing drawEntity:NO:NO];
@@ -4252,7 +4310,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 	if (!e1)
 	{
 		NSLog(@"ERROR ***** No entity set in Universe getSafeVectorFromEntity:toDistance:fromPoint:");
-		NSBeep();
+		// NSBeep(); // AppKit
 		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	Vector  f1;
@@ -4510,7 +4568,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 		result = [hit_entity universal_id];
 		if ((hit_subentity)&&[hit_entity->sub_entities containsObject:hit_subentity])
 			hit_entity->subentity_taking_damage = hit_subentity;
-		if (range_ptr != nil)
+		if (range_ptr != (GLfloat *)nil)
 			range_ptr[0] = (GLfloat)nearest;
 	}
 	//
@@ -4813,7 +4871,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 	currentMessage = nil;
 }
 
-- (void) setMessageGuiBackgroundColor:(NSColor *) some_color
+- (void) setMessageGuiBackgroundColor:(OOColor *) some_color
 {
 	[message_gui setBackgroundColor:some_color];
 }
@@ -4825,7 +4883,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 		if (currentMessage)	[currentMessage release];
 		currentMessage = [text retain];
 		
-		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
+		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[OOColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
     }
 }
 
@@ -4836,7 +4894,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 		if (currentMessage)	[currentMessage release];
 		currentMessage = [text retain];
 		
-		[message_gui printLineNoScroll:text Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
+		[message_gui printLineNoScroll:text Align:GUI_ALIGN_CENTER Color:[OOColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
     }
 }
 
@@ -4902,7 +4960,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 		}
 	#endif	// !def GNUSTEP
 		
-		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
+		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[OOColor yellowColor] FadeTime:(float)count Key:nil AddToArray:nil];
 		
 		if (currentMessage)	[currentMessage release];
 		currentMessage = [text retain];
@@ -4922,7 +4980,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 			[self startSpeakingString:@"Incoming message."];
 		}
 		
-		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[NSColor greenColor] FadeTime:(float)count Key:nil AddToArray:nil];
+		[message_gui printLongText:text Align:GUI_ALIGN_CENTER Color:[OOColor greenColor] FadeTime:(float)count Key:nil AddToArray:nil];
 		
 		[comm_log_gui printLongText:text Align:GUI_ALIGN_LEFT Color:nil FadeTime:0.0 Key:nil AddToArray:[player comm_log]];
 		[comm_log_gui setAlpha:1.0];
@@ -4949,6 +5007,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 			PlayerEntity*	player = (PlayerEntity *)[self entityZero];
 			int				ent_count = n_entities;
 			Entity*			my_entities[ent_count];
+			BOOL			playerDemo = [player showDemoShips];
 			
 			sky_clear_color[0] = 0.0;
 			sky_clear_color[1] = 0.0;
@@ -4964,7 +5023,7 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 			universal_time += delta_t;
 			//
 			update_stage = @"demo management";
-			if ((demo_stage)&&(player)&&(player->status == STATUS_DEMO)&&(universal_time > demo_stage_time)&&([player gui_screen] == GUI_SCREEN_INTRO2))
+			if ((demo_stage)&&(player)&&(playerDemo)&&(universal_time > demo_stage_time)&&([player gui_screen] == GUI_SCREEN_INTRO2))
 			{
 				if (ent_count > 1)
 				{
@@ -4996,10 +5055,13 @@ GLfloat	starboard_matrix[] = {	0.0f, 0.0f, 1.0f, 0.0f,		0.0f, 1.0f, 0.0f, 0.0f,	
 							demo_ship_index %= [demo_ships count];
 							if (demo_ship)
 							{
+								Vector p0 = player->position;
 								[demo_ship setUpShipFromDictionary:[self getDictionaryForShip:[demo_ships objectAtIndex:demo_ship_index]]];
 								[[demo_ship getAI] setStateMachine:@"nullAI.plist"];
 								[demo_ship setQRotation:q2];
-								[demo_ship setPosition:0.0 :0.0 :3.6 * demo_ship->actual_radius * 100.0];
+								[demo_ship setPosition: p0.x : p0.y : p0.z + 360.0 * demo_ship->actual_radius];
+								p0.z += 3.6 * demo_ship->actual_radius;
+								[demo_ship setDestination: p0];
 								vel.x = 0.0;	vel.y = 0.0;	vel.z = -3.6 * demo_ship->actual_radius * 100.0;
 								[demo_ship setVelocity:vel];
 								[demo_ship setScanClass: CLASS_NO_DRAW];
@@ -7015,7 +7077,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	if (!ship)
 	{
 		NSLog(@"ERROR ***** No ship set in Universe getSunSkimStartPositionForShip:");
-		NSBeep();
+		// NSBeep(); // AppKit
 		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	PlanetEntity* the_sun = [self sun];
@@ -7023,7 +7085,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	if (!the_sun)
 	{
 		NSLog(@"ERROR ***** No sun set in Universe getSunSkimStartPositionForShip:");
-		NSBeep();
+		// NSBeep(); // AppKit
 		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	Vector v0 = the_sun->position;
@@ -7046,14 +7108,14 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	if (!ship)
 	{
 		NSLog(@"ERROR ***** No ship set in Universe getSunSkimEndPositionForShip:");
-		NSBeep();
+		// NSBeep(); // AppKit
 		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	// get vector from sun position to ship
 	if (!the_sun)
 	{
 		NSLog(@"ERROR ***** No sun set in Universe getSunSkimEndPositionForShip:");
-		NSBeep();
+		// NSBeep(); // AppKit
 		return make_vector( 0.0f, 0.0f, 0.0f);
 	}
 	Vector v0 = the_sun->position;
@@ -7126,12 +7188,12 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	[gui clear];
 	[message_gui clear];
 	[comm_log_gui clear];
-	[comm_log_gui printLongText:@"Communications Log" Align:GUI_ALIGN_CENTER Color:[NSColor yellowColor] FadeTime:0 Key:nil AddToArray:nil];
+	[comm_log_gui printLongText:@"Communications Log" Align:GUI_ALIGN_CENTER Color:[OOColor yellowColor] FadeTime:0 Key:nil AddToArray:nil];
 }
 
 - (void) resetCommsLogColor
 {
-	[comm_log_gui setTextColor:[NSColor whiteColor]];
+	[comm_log_gui setTextColor:[OOColor whiteColor]];
 }
 
 - (void) setDisplayCursor:(BOOL) value

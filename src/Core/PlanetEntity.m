@@ -46,6 +46,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "TextureStore.h"
 #import "MyOpenGLView.h"
 #import "ShipEntity (AI).h"
+#import "OOColor.h"
 
 #define LIM500  500.0*500.0 * NO_DRAW_DISTANCE_FACTOR*NO_DRAW_DISTANCE_FACTOR
 #define LIM4K   4000.0*4000.0 * NO_DRAW_DISTANCE_FACTOR*NO_DRAW_DISTANCE_FACTOR
@@ -156,11 +157,11 @@ void setUpSinTable()
     return self;
 }
 
-- (id) initAsSunWithColor:(NSColor *) sun_color
+- (id) initAsSunWithColor:(OOColor *) sun_color
 {
 	int		i;
 	float	hue, sat, bri, alf;
-	NSColor *color;
+	OOColor *color;
 	//
 	self = [super init];
     //
@@ -207,13 +208,9 @@ void setUpSinTable()
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, sun_diffuse);
 	glLightfv(GL_LIGHT1, GL_SPECULAR, sun_specular);
 	
-//	NSLog(@"DEBUG sun color set to (%.4f, %.4f, %.4f) (%.4f, %.4f, %.4f)",
-//		sun_diffuse[0], sun_diffuse[1], sun_diffuse[2],
-//		sun_ambient[0], sun_ambient[1], sun_ambient[2]);
-	
 	//
 	// main disc less saturation more brightness
-	color = [NSColor colorWithCalibratedHue:hue saturation:sat * 0.5 brightness:(bri + 3.0)/4.0 alpha:alf];
+	color = [OOColor colorWithCalibratedHue: hue saturation: sat * 0.333 brightness: 1.0 alpha: alf];
 	amb_land[0] = [color redComponent];
 	amb_land[1] = [color greenComponent];
 	amb_land[2] = [color blueComponent];
@@ -223,7 +220,7 @@ void setUpSinTable()
 	hue += hue_drift;
 	if (hue < 0.0)	hue += 1.0;
 	if (hue > 1.0)	hue -= 1.0;
-	color = [NSColor colorWithCalibratedHue:hue saturation: sat * 0.625 brightness:(bri + 2.0)/3.0 alpha:alf];
+	color = [OOColor colorWithCalibratedHue:hue saturation: sat * 0.625 brightness:(bri + 2.0)/3.0 alpha:alf];
 	amb_polar_land[0] = [color redComponent];
 	amb_polar_land[1] = [color greenComponent];
 	amb_polar_land[2] = [color blueComponent];
@@ -233,7 +230,7 @@ void setUpSinTable()
 	hue += hue_drift;
 	if (hue < 0.0)	hue += 1.0;
 	if (hue > 1.0)	hue -= 1.0;
-	color = [NSColor colorWithCalibratedHue:hue saturation:sat brightness:bri alpha:alf];
+	color = [OOColor colorWithCalibratedHue:hue saturation:sat brightness:bri alpha:alf];
 	amb_sea[0] = [color redComponent];
 	amb_sea[1] = [color greenComponent];
 	amb_sea[2] = [color blueComponent];
@@ -243,7 +240,7 @@ void setUpSinTable()
 	hue += hue_drift;
 	if (hue < 0.0)	hue += 1.0;
 	if (hue > 1.0)	hue -= 1.0;
-	color = [NSColor colorWithCalibratedHue:hue saturation:1.0 brightness:bri * 0.75 alpha:alf];
+	color = [OOColor colorWithCalibratedHue:hue saturation:1.0 brightness:bri * 0.75 alpha:alf];
 	amb_polar_sea[0] = [color redComponent];
 	amb_polar_sea[1] = [color greenComponent];
 	amb_polar_sea[2] = [color blueComponent];
@@ -489,21 +486,21 @@ void setUpSinTable()
 	land_polar_hsb.x = land_hsb.x;  land_polar_hsb.y = (land_hsb.y / 5.0);  land_polar_hsb.z = 1.0 - (land_hsb.z / 10.0);  
 	sea_polar_hsb.x = sea_hsb.x;  sea_polar_hsb.y = (sea_hsb.y / 5.0);  sea_polar_hsb.z = 1.0 - (sea_hsb.z / 10.0);  
 
-	amb_land[0] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] redComponent];
-	amb_land[1] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] blueComponent];
-	amb_land[2] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] greenComponent];
+	amb_land[0] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] redComponent];
+	amb_land[1] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] blueComponent];
+	amb_land[2] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] greenComponent];
 	amb_land[3] = 1.0;
-	amb_sea[0] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] redComponent];
-	amb_sea[1] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] blueComponent];
-	amb_sea[2] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] greenComponent];
+	amb_sea[0] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] redComponent];
+	amb_sea[1] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] blueComponent];
+	amb_sea[2] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] greenComponent];
 	amb_sea[3] = 1.0;
-	amb_polar_land[0] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] redComponent];
-	amb_polar_land[1] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] blueComponent];
-	amb_polar_land[2] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] greenComponent];
+	amb_polar_land[0] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] redComponent];
+	amb_polar_land[1] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] blueComponent];
+	amb_polar_land[2] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] greenComponent];
 	amb_polar_land[3] = 1.0;
-	amb_polar_sea[0] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] redComponent];
-	amb_polar_sea[1] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] blueComponent];
-	amb_polar_sea[2] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] greenComponent];
+	amb_polar_sea[0] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] redComponent];
+	amb_polar_sea[1] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] blueComponent];
+	amb_polar_sea[2] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] greenComponent];
 	amb_polar_sea[3] = 1.0;
 	
 //	NSLog(@"DEBUG testing [PlanetEntity initialiseBaseVertexArray]");
@@ -673,21 +670,21 @@ void setUpSinTable()
 	land_polar_hsb.x = land_hsb.x;  land_polar_hsb.y = (land_hsb.y / 5.0);  land_polar_hsb.z = 1.0 - (land_hsb.z / 10.0);  
 	sea_polar_hsb.x = sea_hsb.x;  sea_polar_hsb.y = (sea_hsb.y / 5.0);  sea_polar_hsb.z = 1.0 - (sea_hsb.z / 10.0);  
 
-	amb_land[0] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] redComponent];
-	amb_land[1] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] blueComponent];
-	amb_land[2] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] greenComponent];
+	amb_land[0] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] redComponent];
+	amb_land[1] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] blueComponent];
+	amb_land[2] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] greenComponent];
 	amb_land[3] = 1.0;
-	amb_sea[0] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] redComponent];
-	amb_sea[1] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] blueComponent];
-	amb_sea[2] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] greenComponent];
+	amb_sea[0] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] redComponent];
+	amb_sea[1] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] blueComponent];
+	amb_sea[2] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] greenComponent];
 	amb_sea[3] = 1.0;
-	amb_polar_land[0] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] redComponent];
-	amb_polar_land[1] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] blueComponent];
-	amb_polar_land[2] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] greenComponent];
+	amb_polar_land[0] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] redComponent];
+	amb_polar_land[1] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] blueComponent];
+	amb_polar_land[2] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] greenComponent];
 	amb_polar_land[3] = 1.0;
-	amb_polar_sea[0] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] redComponent];
-	amb_polar_sea[1] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] blueComponent];
-	amb_polar_sea[2] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] greenComponent];
+	amb_polar_sea[0] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] redComponent];
+	amb_polar_sea[1] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] blueComponent];
+	amb_polar_sea[2] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] greenComponent];
 	amb_polar_sea[3] = 1.0;
 	
 //	NSLog(@"DEBUG testing [PlanetEntity initialiseBaseVertexArray]");
@@ -861,21 +858,21 @@ void setUpSinTable()
 	land_polar_hsb.x = land_hsb.x;  land_polar_hsb.y = (land_hsb.y / 5.0);  land_polar_hsb.z = 1.0 - (land_hsb.z / 10.0);  
 	sea_polar_hsb.x = sea_hsb.x;  sea_polar_hsb.y = (sea_hsb.y / 5.0);  sea_polar_hsb.z = 1.0 - (sea_hsb.z / 10.0);  
 
-	amb_land[0] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] redComponent];
-	amb_land[1] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] blueComponent];
-	amb_land[2] = [[NSColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] greenComponent];
+	amb_land[0] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] redComponent];
+	amb_land[1] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] blueComponent];
+	amb_land[2] = [[OOColor colorWithCalibratedHue:land_hsb.x saturation:land_hsb.y brightness:land_hsb.z alpha:1.0] greenComponent];
 	amb_land[3] = 1.0;
-	amb_sea[0] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] redComponent];
-	amb_sea[1] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] blueComponent];
-	amb_sea[2] = [[NSColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] greenComponent];
+	amb_sea[0] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] redComponent];
+	amb_sea[1] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] blueComponent];
+	amb_sea[2] = [[OOColor colorWithCalibratedHue:sea_hsb.x saturation:sea_hsb.y brightness:sea_hsb.z alpha:1.0] greenComponent];
 	amb_sea[3] = 1.0;
-	amb_polar_land[0] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] redComponent];
-	amb_polar_land[1] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] blueComponent];
-	amb_polar_land[2] = [[NSColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] greenComponent];
+	amb_polar_land[0] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] redComponent];
+	amb_polar_land[1] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] blueComponent];
+	amb_polar_land[2] = [[OOColor colorWithCalibratedHue:land_polar_hsb.x saturation:land_polar_hsb.y brightness:land_polar_hsb.z alpha:1.0] greenComponent];
 	amb_polar_land[3] = 1.0;
-	amb_polar_sea[0] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] redComponent];
-	amb_polar_sea[1] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] blueComponent];
-	amb_polar_sea[2] = [[NSColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] greenComponent];
+	amb_polar_sea[0] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] redComponent];
+	amb_polar_sea[1] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] blueComponent];
+	amb_polar_sea[2] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] greenComponent];
 	amb_polar_sea[3] = 1.0;
 	
 //	NSLog(@"DEBUG testing [PlanetEntity initialiseBaseVertexArray]");
@@ -1234,8 +1231,6 @@ void setUpSinTable()
 					}
 					else
 					{
-//						glDisableClientState(GL_COLOR_ARRAY);
-						//
 						glEnableClientState(GL_COLOR_ARRAY);		// test shading
 						glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
 						//
@@ -1267,8 +1262,6 @@ void setUpSinTable()
 					}
 					else
 					{
-//						glDisableClientState(GL_COLOR_ARRAY);
-						//
 						glEnableClientState(GL_COLOR_ARRAY);		// test shading
 						glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
 						//
@@ -1281,8 +1274,6 @@ void setUpSinTable()
 					//
 					glEnableClientState(GL_VERTEX_ARRAY);
 					glVertexPointer( 3, GL_FLOAT, 0, vertexdata.vertex_array);
-//					glEnableClientState(GL_COLOR_ARRAY);
-//					glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
 					glEnableClientState(GL_NORMAL_ARRAY);
 					glNormalPointer(GL_FLOAT, 0, vertexdata.normal_array);
 					//
@@ -1294,17 +1285,12 @@ void setUpSinTable()
 						//
 						glColor4fv(mat1);
 						glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat1);
-						//
-//						if (!isTextured)
-						{
-							glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-							glEnable(GL_COLOR_MATERIAL);
-						}
+						glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+						glEnable(GL_COLOR_MATERIAL);
 						//
 						[self drawModelWithVertexArraysAndSubdivision:subdivideLevel];
 						//
-//						if (!isTextured)
-							glDisable(GL_COLOR_MATERIAL);
+						glDisable(GL_COLOR_MATERIAL);
 						//
 						glEndList();
 					}
@@ -1334,21 +1320,13 @@ void setUpSinTable()
 		case PLANET_TYPE_SUN :
 			if (!translucent)
 			{
-				GLfloat amb_1[4]		= {1.0, 1.0,	1.0,	1.0 };
-				
 				int steps = 2 * (MAX_SUBDIVIDE - subdivideLevel);
 				
 				glDisable(GL_TEXTURE_2D);
 				glDisable(GL_LIGHTING);
-
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, amb_1);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, amb_land);
 				glColor4fv( amb_land);
 
 				glBegin(GL_TRIANGLE_FAN);
-					glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, amb_1);	// do this between glBegin/glEnd
-					glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, amb_land);			// as well (for consistency)
-					glColor4fv( amb_land);
 					drawBallVertices( collision_radius, steps, sqrt_zero_distance);
 				glEnd();
 												

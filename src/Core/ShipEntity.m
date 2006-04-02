@@ -49,6 +49,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "Geometry.h"
 #import "Octree.h"
 #import "ScannerExtension.h"
+#import "OOColor.h"
 
 
 @implementation ShipEntity
@@ -58,9 +59,9 @@ Your fair use and other rights are in no way affected by the above.
     self = [super init];
 	//
 	// scripting
-	launch_actions = [[NSMutableArray alloc] initWithCapacity:4];
-	script_actions = [[NSMutableArray alloc] initWithCapacity:4];
-	death_actions = [[NSMutableArray alloc] initWithCapacity:4];
+	launch_actions = [(NSMutableArray *)[NSMutableArray alloc] initWithCapacity:4];
+	script_actions = [(NSMutableArray *)[NSMutableArray alloc] initWithCapacity:4];
+	death_actions = [(NSMutableArray *)[NSMutableArray alloc] initWithCapacity:4];
 	//
 	// escorts
 	last_escort_target = NO_TARGET;
@@ -143,7 +144,7 @@ Your fair use and other rights are in no way affected by the above.
 	extra_cargo = 15;
 	likely_cargo = 0;
 	cargo_type = 0;
-	cargo = [[NSMutableArray alloc] initWithCapacity:max_cargo]; // alloc retains;
+	cargo = [(NSMutableArray *)[NSMutableArray alloc] initWithCapacity:max_cargo]; // alloc retains;
 	cargo_flag = CARGO_FLAG_NONE;
 	[self setCommodity:NSNotFound andAmount:0];
 	//
@@ -157,7 +158,7 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	patrol_counter = 0;
 	//
-	laser_color = [[NSColor redColor] retain];
+	laser_color = [[OOColor redColor] retain];
 	//
 	scanner_range = 25600;
 	//
@@ -309,20 +310,20 @@ static NSMutableDictionary* smallOctreeDict = nil;
 {
 	[super setModel:modelName];
 	// TESTING
-	NSMutableDictionary* octreeCache = [[NSMutableDictionary alloc] initWithCapacity:30];
+	NSMutableDictionary* octreeCache = [(NSMutableDictionary *)[NSMutableDictionary alloc] initWithCapacity:30];
 	if ([Entity dataStore])
 	{
 		octreeCache = (NSMutableDictionary*)[[[Entity dataStore] preloadedDataFiles] objectForKey:@"**octrees**"];
 		if (!octreeCache)
 		{
 			NSLog(@"DEBUG creating octree cache......");
-			octreeCache = [[NSMutableDictionary alloc] initWithCapacity:30];
+			octreeCache = [(NSMutableDictionary *)[NSMutableDictionary alloc] initWithCapacity:30];
 			[[[Entity dataStore] preloadedDataFiles] setObject:octreeCache forKey:@"**octrees**"];
 		}
 	}
 
 	if (smallOctreeDict == nil)
-		smallOctreeDict = [[NSMutableDictionary alloc] initWithCapacity:30];
+		smallOctreeDict = [(NSMutableDictionary *)[NSMutableDictionary alloc] initWithCapacity:30];
 	if ([smallOctreeDict objectForKey: modelName])
 	{
 		octree = (Octree*)[smallOctreeDict objectForKey: modelName];
@@ -622,7 +623,7 @@ static NSMutableDictionary* smallOctreeDict = nil;
 	cargo_type = 0;
 	cargo_flag = CARGO_FLAG_NONE;
 	if (!cargo)
-		cargo = [[NSMutableArray alloc] initWithCapacity:max_cargo]; // alloc retains;
+		cargo = [(NSMutableArray *)[NSMutableArray alloc] initWithCapacity:max_cargo]; // alloc retains;
 	[cargo removeAllObjects];
 	[self setCommodity:NSNotFound andAmount:0];
 	//
@@ -751,7 +752,7 @@ static NSMutableDictionary* smallOctreeDict = nil;
 	if (collisionInfoForEntity)
 		[collisionInfoForEntity removeAllObjects];
 	else
-		collisionInfoForEntity = [[NSMutableDictionary alloc] initWithCapacity:12];
+		collisionInfoForEntity = [(NSMutableDictionary *)[NSMutableDictionary alloc] initWithCapacity:12];
 	
 	// check if this is based upon a different ship
 	while ([shipdict objectForKey:@"like_ship"])
@@ -973,7 +974,7 @@ static NSMutableDictionary* smallOctreeDict = nil;
 			cargo_type = CARGO_SCRIPTED_ITEM;
 		if (cargo)
 			[cargo autorelease];
-		cargo = [[NSMutableArray alloc] initWithCapacity:max_cargo]; // alloc retains;
+		cargo = [(NSMutableArray *)[NSMutableArray alloc] initWithCapacity:max_cargo]; // alloc retains;
 	}
 	//
 	// A HACK!! - must do this before the model is set
@@ -1046,7 +1047,7 @@ static NSMutableDictionary* smallOctreeDict = nil;
 					if ([subdesc isEqual:@"*FLASHER*"])
 					{
 						subent = [[ParticleEntity alloc] init];	// retained
-						[(ParticleEntity*)subent setColor:[NSColor colorWithCalibratedHue: sub_q.w/360.0 saturation:1.0 brightness:1.0 alpha:1.0]];
+						[(ParticleEntity*)subent setColor:[OOColor colorWithCalibratedHue: sub_q.w/360.0 saturation:1.0 brightness:1.0 alpha:1.0]];
 						[(ParticleEntity*)subent setDuration: sub_q.x];
 						[(ParticleEntity*)subent setEnergy: 2.0 * sub_q.y];
 						[(ParticleEntity*)subent setSize:NSMakeSize( sub_q.z, sub_q.z)];
@@ -1074,10 +1075,7 @@ static NSMutableDictionary* smallOctreeDict = nil;
 							[(ShipEntity*)subent setPosition: sub_pos];
 							[(ShipEntity*)subent setQRotation: sub_q];
 							//
-							if ([[(ShipEntity*)subent roles] isEqual:@"docking-slit"])
-								[subent setStatus:STATUS_EFFECT];			// hack keeps docking slit visible when at reduced detail
-							else
-								[self addSolidSubentityToCollisionRadius:(ShipEntity*)subent];	// hack - ignore docking-slit for collision radius
+							[self addSolidSubentityToCollisionRadius:(ShipEntity*)subent];
 							//
 							subent->isSubentity = YES;
 						}
@@ -1114,15 +1112,15 @@ static NSMutableDictionary* smallOctreeDict = nil;
 	{
 		NSString *laser_color_string = (NSString *)[shipdict objectForKey:@"laser_color"];
 		SEL color_selector = NSSelectorFromString(laser_color_string);
-		if ([NSColor respondsToSelector:color_selector])
+		if ([OOColor respondsToSelector:color_selector])
 		{
-			id  color_thing = [NSColor performSelector:color_selector];
-			if ([color_thing isKindOfClass:[NSColor class]])
-				[self setLaserColor:(NSColor *)color_thing];
+			id  color_thing = [OOColor performSelector:color_selector];
+			if ([color_thing isKindOfClass:[OOColor class]])
+				[self setLaserColor:(OOColor *)color_thing];
 		}
 	}   
 	else
-		[self setLaserColor:[NSColor redColor]];
+		[self setLaserColor:[OOColor redColor]];
 	//
 	// scan class
 	if ([shipdict objectForKey:@"scanClass"])
@@ -1884,15 +1882,12 @@ BOOL ship_canCollide (ShipEntity* ship)
 	//
 	if (status == STATUS_DEMO)
     {
-        [self applyRoll:delta_t*flight_roll andClimb:delta_t*flight_pitch];
-		position.x += delta_t*velocity.x;
-		position.y += delta_t*velocity.y;
-		position.z += delta_t*velocity.z;
-		if (position.z <= collision_radius * 3.6)
-		{
-			position.z = collision_radius * 3.6;
-			velocity.z = 0.0;
-		}
+		[self applyRoll: delta_t * flight_roll andClimb: delta_t * flight_pitch];
+		GLfloat range2 = 0.1 * distance2( position, destination) / (collision_radius * collision_radius);
+		if ((range2 > 1.0)||(velocity.z > 0.0))	range2 = 1.0;
+		position.x += range2 * delta_t * velocity.x;
+		position.y += range2 * delta_t * velocity.y;
+		position.z += range2 * delta_t * velocity.z;
 		return;
     }
 	else
@@ -2541,6 +2536,15 @@ BOOL ship_canCollide (ShipEntity* ship)
 	int rhs = 3.2 / delta_t;
 	if (rhs)	missile_chance = 1 + (ranrot_rand() % rhs);
 	
+	if ((has_energy_bomb) && (range < 10000.0))
+	{
+		float	qbomb_chance = 0.01 * delta_t;
+		if (randf() < qbomb_chance)
+		{
+			[self launchEnergyBomb];
+		}
+	}
+	
 	double hurt_factor = 16 * pow(energy/max_energy, 4.0);
 	if (([(ShipEntity *)[self getPrimaryTarget] getPrimaryTarget] == self)&&(missiles > missile_chance * hurt_factor))
 		[self fireMissile];
@@ -2865,30 +2869,7 @@ BOOL ship_canCollide (ShipEntity* ship)
 			return; // TOO FAR AWAY
 		}
 	}
-	if (status != STATUS_ACTIVE)
-	{
-		if ((![universe reducedDetail])||(status == STATUS_EFFECT))	// don't draw passive subentities except exhausts in reduced detail mode.
-		{
-			glPushMatrix();
-
-			// position and orientation is relative to owner
-			
-			//NSLog(@"DEBUG drawing passive subentity at %.3f, %.3f, %.3f", position.x, position.y, position.z);
-			
-			glTranslated( position.x, position.y, position.z);
-			glMultMatrixf(rotMatrix);
-			
-			[self drawEntity:immediate :translucent];
-				
-//			// test octree drawing
-//			if (translucent && (octree) &&(my_owner))
-//				if  (my_owner->status == STATUS_DEMO)
-//					[octree drawOctree];
-			
-			glPopMatrix();
-		}
-	}
-	else
+	if (status == STATUS_ACTIVE)
 	{
 		Vector abspos = position;  // STATUS_ACTIVE means it is in control of it's own orientation
 		Entity*		father = my_owner;
@@ -2912,6 +2893,17 @@ BOOL ship_canCollide (ShipEntity* ship)
 		
 //		NSLog(@"drawn active entity : %@", basefile);
 
+	}
+	else
+	{
+			glPushMatrix();
+
+			glTranslated( position.x, position.y, position.z);
+			glMultMatrixf(rotMatrix);
+			
+			[self drawEntity:immediate :translucent];
+				
+			glPopMatrix();
 	}
 }
 
@@ -3122,7 +3114,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 			previousCondition = nil;
 		}
 		
-		previousCondition = [[NSMutableDictionary alloc] initWithCapacity:16];
+		previousCondition = [(NSMutableDictionary *)[NSMutableDictionary alloc] initWithCapacity:16];
 		
 		[previousCondition setObject:[NSNumber numberWithInt:behaviour] forKey:@"behaviour"];
 		[previousCondition setObject:[NSNumber numberWithInt:primaryTarget] forKey:@"primaryTarget"];
@@ -4201,6 +4193,102 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	return result;
 }
 
+- (Vector) positionOffsetForAlignment:(NSString*) align
+{
+	NSString* padAlign = [NSString stringWithFormat:@"%@---", align];
+	Vector result = make_vector( 0.0f, 0.0f, 0.0f);
+	switch ([padAlign characterAtIndex:0])
+	{
+		case (unichar)'c':
+		case (unichar)'C':
+			result.x = 0.5 * (boundingBox.min.x + boundingBox.max.x);
+			break;
+		case (unichar)'M':
+			result.x = boundingBox.max.x;
+			break;
+		case (unichar)'m':
+			result.x = boundingBox.min.x;
+			break;
+	}
+	switch ([padAlign characterAtIndex:1])
+	{
+		case (unichar)'c':
+		case (unichar)'C':
+			result.y = 0.5 * (boundingBox.min.y + boundingBox.max.y);
+			break;
+		case (unichar)'M':
+			result.y = boundingBox.max.y;
+			break;
+		case (unichar)'m':
+			result.y = boundingBox.min.y;
+			break;
+	}
+	switch ([padAlign characterAtIndex:2])
+	{
+		case (unichar)'c':
+		case (unichar)'C':
+			result.z = 0.5 * (boundingBox.min.z + boundingBox.max.z);
+			break;
+		case (unichar)'M':
+			result.z = boundingBox.max.z;
+			break;
+		case (unichar)'m':
+			result.z = boundingBox.min.z;
+			break;
+	}
+	return result;
+}
+
+Vector positionOffsetForShipInRotationToAlignment(ShipEntity* ship, Quaternion q, NSString* align)
+{
+	NSString* padAlign = [NSString stringWithFormat:@"%@---", align];
+	Vector i = vector_right_from_quaternion(q);
+	Vector j = vector_up_from_quaternion(q);
+	Vector k = vector_forward_from_quaternion(q);
+	BoundingBox arbb = [ship findBoundingBoxRelativeToPosition: make_vector(0,0,0) InVectors: i : j : k];
+	Vector result = make_vector( 0.0f, 0.0f, 0.0f);
+	switch ([padAlign characterAtIndex:0])
+	{
+		case (unichar)'c':
+		case (unichar)'C':
+			result.x = 0.5 * (arbb.min.x + arbb.max.x);
+			break;
+		case (unichar)'M':
+			result.x = arbb.max.x;
+			break;
+		case (unichar)'m':
+			result.x = arbb.min.x;
+			break;
+	}
+	switch ([padAlign characterAtIndex:1])
+	{
+		case (unichar)'c':
+		case (unichar)'C':
+			result.y = 0.5 * (arbb.min.y + arbb.max.y);
+			break;
+		case (unichar)'M':
+			result.y = arbb.max.y;
+			break;
+		case (unichar)'m':
+			result.y = arbb.min.y;
+			break;
+	}
+	switch ([padAlign characterAtIndex:2])
+	{
+		case (unichar)'c':
+		case (unichar)'C':
+			result.z = 0.5 * (arbb.min.z + arbb.max.z);
+			break;
+		case (unichar)'M':
+			result.z = arbb.max.z;
+			break;
+		case (unichar)'m':
+			result.z = arbb.min.z;
+			break;
+	}
+	return result;
+}
+
 - (void) becomeLargeExplosion:(double) factor
 {
 	Vector xposition = position;
@@ -5128,8 +5216,8 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	switch (forward_weapon_type)
 	{
 		case WEAPON_PLASMA_CANNON :
-			[self firePlasmaShot:weapon_offset_x:1500.0:[NSColor yellowColor]];
-			[self firePlasmaShot:weapon_offset_x:1500.0:[NSColor yellowColor]];
+			[self firePlasmaShot:weapon_offset_x:1500.0:[OOColor yellowColor]];
+			[self firePlasmaShot:weapon_offset_x:1500.0:[OOColor yellowColor]];
 			fired = YES;
 			break;
 			
@@ -5241,7 +5329,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	}
 	double  start = collision_radius + 0.5;
 	double  speed = TURRET_SHOT_SPEED;
-	NSColor* color = laser_color;
+	OOColor* color = laser_color;
 	
 	origin.x += vel.x * start;
 	origin.y += vel.y * start;
@@ -5276,7 +5364,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	return YES;
 }
 
-- (void) setLaserColor:(NSColor *) color
+- (void) setLaserColor:(OOColor *) color
 {
 	if (color)
 	{
@@ -5608,7 +5696,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	[spark setSize:NSMakeSize( sz, sz)];
 	[spark setEnergy: 0.0];
 	[spark setParticleType: PARTICLE_SPARK];
-	[spark setColor:[NSColor colorWithCalibratedHue:0.08 + 0.17 * randf() saturation:1.0 brightness:1.0 alpha:1.0]];
+	[spark setColor:[OOColor colorWithCalibratedHue:0.08 + 0.17 * randf() saturation:1.0 brightness:1.0 alpha:1.0]];
 	[spark setOwner:self];
 	[universe addEntity:spark];
 	[spark release]; //release
@@ -5616,7 +5704,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 	next_spark_time = randf();
 }
 
-- (BOOL) firePlasmaShot:(double) offset :(double) speed :(NSColor *) color
+- (BOOL) firePlasmaShot:(double) offset :(double) speed :(OOColor *) color
 {
 	ParticleEntity *shot;
 	Vector  vel, rt;
@@ -5861,6 +5949,7 @@ Vector randomPositionInBoundingBox(BoundingBox bb)
 {
 	if (!has_energy_bomb)
 		return NO;
+	has_energy_bomb = NO;
 	[self setSpeed: max_flight_speed + 300];
 	ShipEntity*	bomb = [universe getShipWithRole:@"energy-bomb"];
 	if (!bomb)
@@ -7020,11 +7109,11 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 - (void) setCommsMessageColor
 {
 	float hue = 0.0625 * (universal_id & 15);
-	[[universe comm_log_gui] setTextColor:[NSColor colorWithCalibratedHue:hue saturation:0.375 brightness:1.0 alpha:1.0]];
+	[[universe comm_log_gui] setTextColor:[OOColor colorWithCalibratedHue:hue saturation:0.375 brightness:1.0 alpha:1.0]];
 	if (scan_class == CLASS_THARGOID)
-		[[universe comm_log_gui] setTextColor:[NSColor greenColor]];
+		[[universe comm_log_gui] setTextColor:[OOColor greenColor]];
 	if (scan_class == CLASS_POLICE)
-		[[universe comm_log_gui] setTextColor:[NSColor cyanColor]];
+		[[universe comm_log_gui] setTextColor:[OOColor cyanColor]];
 }
 
 - (void) receiveCommsMessage:(NSString *) message_text
