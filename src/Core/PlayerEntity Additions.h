@@ -166,6 +166,9 @@ Your fair use and other rights are in no way affected by the above.
 													// choices/choice phrases in missiontext.plist and also..
 - (void) resetMissionChoice;						// resets MissionChoice to nil
 
+- (void) addMissionDestination:(NSString *)destinations;	// mark a system on the star charts
+- (void) removeMissionDestination:(NSString *)destinations; // stop a system being marked on star charts
+
 - (void) showShipModel: (NSString *)shipKey;
 - (void) setMissionMusic: (NSString *)value;
 - (void) setMissionImage: (NSString *)value;

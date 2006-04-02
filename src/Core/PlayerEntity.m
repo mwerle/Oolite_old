@@ -430,6 +430,8 @@ Your fair use and other rights are in no way affected by the above.
 	[result setObject:contracts forKey:@"contracts"];
 	[result setObject:contract_record forKey:@"contract_record"];
 
+	[result setObject:missionDestinations forKey:@"missionDestinations"];
+
 	//shipyard
 	[result setObject:shipyard_record forKey:@"shipyard_record"];
 
@@ -696,6 +698,20 @@ Your fair use and other rights are in no way affected by the above.
 		contract_record = [[NSMutableDictionary dictionaryWithCapacity:8] retain];
 	}
 
+	// mission destinations
+	if ([dict objectForKey:@"missionDestinations"])
+	{
+		if (missionDestinations)
+			[missionDestinations release];
+		missionDestinations = [[NSMutableArray arrayWithArray:(NSArray *)[dict objectForKey:@"missionDestinations"]] retain];
+	}
+	else
+	{
+		if (missionDestinations)
+			[missionDestinations release];
+		missionDestinations = [[NSMutableArray arrayWithCapacity:8] retain];
+	}
+
 	// shipyard
 	if ([dict objectForKey:@"shipyard_record"])
 	{
@@ -940,6 +956,10 @@ Your fair use and other rights are in no way affected by the above.
 	if (contract_record)
 		[contract_record release];
 	contract_record = [[NSMutableDictionary dictionaryWithCapacity:16] retain];
+	//
+	if (missionDestinations)
+		[missionDestinations release];
+	missionDestinations = [[NSMutableArray alloc] initWithCapacity:8];
 	//
 	if (shipyard_record)
 		[shipyard_record release];
@@ -1448,6 +1468,7 @@ Your fair use and other rights are in no way affected by the above.
 	if (passenger_record)		[passenger_record release];
 	if (contracts)				[contracts release];
 	if (contract_record)		[contract_record release];
+	if (missionDestinations)	[missionDestinations release];
 	if (shipyard_record)		[shipyard_record release];
 
     if (missionBackgroundImage) [missionBackgroundImage release];
@@ -3802,6 +3823,10 @@ double scoopSoundPlayTime = 0.0;
 	if (contracts)
 		[contracts removeAllObjects];
 
+	// remove any mission destinations for the old galaxy
+	if (missionDestinations)
+		[missionDestinations removeAllObjects];
+
 	// expire passenger contracts for the old galaxy
 	if (passengers)
 	{
@@ -4526,6 +4551,8 @@ double scoopSoundPlayTime = 0.0;
 		mark[[(NSNumber*)[(NSDictionary*)[passengers objectAtIndex:i] objectForKey:PASSENGER_KEY_DESTINATION] intValue]] = YES;
 	for (i = 0; i < [contracts count]; i++)
 		mark[[(NSNumber*)[(NSDictionary*)[contracts objectAtIndex:i] objectForKey:CONTRACT_KEY_DESTINATION] intValue]] = YES;
+	for (i = 0; i < [missionDestinations count]; i++)
+		mark[[(NSNumber*)[missionDestinations objectAtIndex:i] intValue]] = YES;
 	for (i = 0; i < 256; i++)
 		[destinations addObject:[NSNumber numberWithBool:mark[i]]];
 
@@ -4550,6 +4577,8 @@ double scoopSoundPlayTime = 0.0;
 		mark[[(NSNumber*)[(NSDictionary*)[passengers objectAtIndex:i] objectForKey:PASSENGER_KEY_DESTINATION] intValue]] = YES;
 	for (i = 0; i < [contracts count]; i++)
 		mark[[(NSNumber*)[(NSDictionary*)[contracts objectAtIndex:i] objectForKey:CONTRACT_KEY_DESTINATION] intValue]] = YES;
+	for (i = 0; i < [missionDestinations count]; i++)
+		mark[[(NSNumber*)[missionDestinations objectAtIndex:i] intValue]] = YES;
 
 	// GUI stuff
 	{

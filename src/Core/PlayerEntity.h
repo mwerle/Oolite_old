@@ -263,6 +263,8 @@ enum
 
 	NSMutableDictionary		*shipyard_record;
 
+	NSMutableArray			*missionDestinations;
+
 	double					script_time;
 	double					script_time_check;
 	double					script_time_interval;

@@ -1512,6 +1512,68 @@ static int shipsFound;
 	missionChoice = nil;
 }
 
+- (void) addMissionDestination:(NSString *)destinations
+{
+	int i, j;
+	NSNumber *pnump;
+	int pnum, dest;
+	NSMutableArray*	tokens = [Entity scanTokensFromString:destinations];
+	BOOL addDestination;
+
+	for (j = 0; j < [tokens count]; j++)
+	{
+		dest = [(NSString *)[tokens objectAtIndex:j] intValue];
+		if (dest < 0 || dest > 255)
+			continue;
+
+		addDestination = YES;
+		for (i = 0; i < [missionDestinations count]; i++)
+		{
+			pnump = (NSNumber *)[missionDestinations objectAtIndex:i];
+			pnum = [pnump intValue];
+			if (pnum == dest)
+			{
+				addDestination = NO;
+				break;
+			}
+		}
+
+		if (addDestination == YES)
+			[missionDestinations addObject:[NSNumber numberWithUnsignedInt:dest]];
+	}
+}
+
+- (void) removeMissionDestination:(NSString *)destinations
+{
+	int i, j;
+	NSNumber *pnump;
+	int pnum, dest;
+	NSMutableArray*	tokens = [Entity scanTokensFromString:destinations];
+	BOOL removeDestination;
+
+	for (j = 0; j < [tokens count]; j++)
+	{
+		dest = [(NSString *)[tokens objectAtIndex:j] intValue];
+		if (dest < 0 || dest > 255)
+			continue;
+
+		removeDestination = NO;
+		for (i = 0; i < [missionDestinations count]; i++)
+		{
+			pnump = (NSNumber *)[missionDestinations objectAtIndex:i];
+			pnum = [pnump intValue];
+			if (pnum == dest)
+			{
+				removeDestination = YES;
+				break;
+			}
+		}
+
+		if (removeDestination == YES)
+			[missionDestinations removeObjectAtIndex:i];
+	}
+}
+
 - (void) showShipModel: (NSString *)shipKey
 {
 	ShipEntity		*ship;
