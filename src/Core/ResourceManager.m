@@ -610,6 +610,60 @@ NSMutableDictionary*	surface_cache;
 	//NSLog(@"---> ResourceManager found %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
 	return result;
 }
+
+
++ (OSStatus) getFSRef:(FSRef *)outRef forFileNamed:(NSString *)filename inFolder:(NSString *)foldername
+{
+	OSStatus			result;
+	NSURL				*url = nil;
+	NSMutableArray		*fpaths = [ResourceManager paths];
+	int					i, count;
+	
+	if (!filename || !outRef) return paramErr;
+	
+	count = [fpaths count];
+	for (i = 0; i < count; i++)
+	{
+		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
+		{
+			url = [NSURL fileURLWithPath:filepath];
+		}
+		if (foldername)
+		{
+			filepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:filename];
+			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
+			{
+				url = [NSURL fileURLWithPath:filepath];
+			}
+		}
+	}
+	
+	if (nil != url)
+	{
+		result = CFURLGetFSRef((CFURLRef)url, outRef) ? noErr : coreFoundationUnknownErr;
+	}
+	else
+	{
+		result = fnfErr;
+	}
+	
+	return result;
+}
+
++ (OSStatus) getFSSpec:(FSSpec *)outSpec forFileNamed:(NSString *)filename inFolder:(NSString *)foldername
+{
+	OSStatus			result;
+	FSRef				fsRef;
+	
+	if (NULL == outSpec) return paramErr;
+	
+	result = [self getFSRef:&fsRef forFileNamed:filename inFolder:foldername];
+	if (!result) result = FSGetCatalogInfo(&fsRef, kFSCatInfoNone, NULL, NULL, outSpec, NULL);
+	
+	return result;
+}
+
 #endif
 
 + (NSString *) stringFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername

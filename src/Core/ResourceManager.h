@@ -83,11 +83,14 @@ BOOL always_include_addons;
 
 #ifndef GNUSTEP
 + (NSImage *) imageNamed:(NSString *)filename inFolder:(NSString *)foldername;
-#endif
-+ (NSString *) stringFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername;
-#ifdef GNUSTEP
++ (OSStatus) getFSRef:(FSRef *)outRef forFileNamed:(NSString *)filename inFolder:(NSString *)foldername;
++ (OSStatus) getFSSpec:(FSSpec *)outRef forFileNamed:(NSString *)filename inFolder:(NSString *)foldername;
+#else
 + (SDLImage *) surfaceNamed:(NSString *)filename inFolder:(NSString *)foldername;
 #endif
+
++ (NSString *) stringFromFilesNamed:(NSString *)filename inFolder:(NSString *)foldername;
+
 
 + (NSMutableArray *) scanTokensFromString:(NSString*) values;
 + (NSString *) decodeString:(NSString*) encodedString;

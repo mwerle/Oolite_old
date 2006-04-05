@@ -17,6 +17,14 @@
 		0865431D06B8447D000CA0AB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06AFA01500A58FB77F000001 /* OpenGL.framework */; };
 		0878FD30086EF845004CB752 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0878FD2F086EF845004CB752 /* Carbon.framework */; };
 		08CB1FED09D3F2AA001EA329 /* customsounds.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08CB1FEC09D3F2AA001EA329 /* customsounds.plist */; };
+		1A244CED09E433B8000CCD6C /* TextureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A244CE509E433B8000CCD6C /* TextureStore.m */; };
+		1A244CEE09E433B8000CCD6C /* OOTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A244CE609E433B8000CCD6C /* OOTexture.m */; };
+		1A244CF009E433B8000CCD6C /* OOMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A244CE809E433B8000CCD6C /* OOMaterial.m */; };
+		1A244CF209E433B8000CCD6C /* TextureUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A244CEA09E433B8000CCD6C /* TextureUtilities.c */; settings = {COMPILER_FLAGS = "-force_cpusubtype_ALL -faltivec -falign-loops=16"; }; };
+		1A244D3D09E44087000CCD6C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A244D3C09E44087000CCD6C /* Accelerate.framework */; };
+		1A244D8F09E440DB000CCD6C /* libOgg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E68099539D50037C2E1 /* libOgg.a */; };
+		1A244E3009E4410C000CCD6C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A244E2F09E4410C000CCD6C /* QuickTime.framework */; };
+		1A244E5309E44119000CCD6C /* libVorbisAll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E67099539D50037C2E1 /* libVorbisAll.a */; };
 		1A472917096B5454000E78D8 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472916096B5454000E78D8 /* CoreAudio.framework */; };
 		1A472921096B5468000E78D8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A47291F096B5468000E78D8 /* AudioToolbox.framework */; };
 		1A472922096B5468000E78D8 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472920096B5468000E78D8 /* AudioUnit.framework */; };
@@ -99,7 +107,6 @@
 		25161183099544390037C2E1 /* ScannerExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = 25161131099544390037C2E1 /* ScannerExtension.h */; };
 		25161184099544390037C2E1 /* PlayerEntity (Controls).m in Sources */ = {isa = PBXBuildFile; fileRef = 25161132099544390037C2E1 /* PlayerEntity (Controls).m */; };
 		25161185099544390037C2E1 /* PlayerEntity (Controls).h in Headers */ = {isa = PBXBuildFile; fileRef = 25161133099544390037C2E1 /* PlayerEntity (Controls).h */; };
-		25161186099544390037C2E1 /* TextureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 25161134099544390037C2E1 /* TextureStore.h */; };
 		25161187099544390037C2E1 /* StationEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 25161135099544390037C2E1 /* StationEntity.m */; };
 		25161188099544390037C2E1 /* StationEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 25161136099544390037C2E1 /* StationEntity.h */; };
 		2516118B099544390037C2E1 /* ResourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25161139099544390037C2E1 /* ResourceManager.m */; };
@@ -112,7 +119,6 @@
 		25161194099544390037C2E1 /* PlayerEntity Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 25161142099544390037C2E1 /* PlayerEntity Additions.h */; };
 		25161195099544390037C2E1 /* Universe.m in Sources */ = {isa = PBXBuildFile; fileRef = 25161143099544390037C2E1 /* Universe.m */; };
 		25161196099544390037C2E1 /* Universe.h in Headers */ = {isa = PBXBuildFile; fileRef = 25161144099544390037C2E1 /* Universe.h */; };
-		25161197099544390037C2E1 /* TextureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 25161145099544390037C2E1 /* TextureStore.m */; };
 		2576E7B309B4F418007410F7 /* MyOpenGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2576E7B209B4F418007410F7 /* MyOpenGLView.h */; };
 		25F3E6310994F033002F25FD /* legacy_random.h in Headers */ = {isa = PBXBuildFile; fileRef = 25F3E6300994F033002F25FD /* legacy_random.h */; };
 		25F3E6330994F04C002F25FD /* legacy_random.c in Sources */ = {isa = PBXBuildFile; fileRef = 25F3E6320994F04C002F25FD /* legacy_random.c */; };
@@ -316,8 +322,6 @@
 		25F3E8A90994FE65002F25FD /* oolite-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E8A60994FE65002F25FD /* oolite-icon.icns */; };
 		25F3E8B40994FE9B002F25FD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E8B30994FE9B002F25FD /* InfoPlist.strings */; };
 		25F3E8C4099500F1002F25FD /* SoundInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = 25F3E8C3099500F1002F25FD /* SoundInspector.nib */; };
-		25F3E8EB099502BB002F25FD /* libOgg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F3E8E9099502BB002F25FD /* libOgg.a */; };
-		25F3E8EC099502BB002F25FD /* libVorbisAll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F3E8EA099502BB002F25FD /* libVorbisAll.a */; };
 		25F46752099695D5009483BF /* OoliteApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 25F46750099695D5009483BF /* OoliteApp.h */; };
 		25F46753099695D5009483BF /* OoliteApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F46751099695D5009483BF /* OoliteApp.m */; };
 		25F4676509969672009483BF /* MyOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F4676309969672009483BF /* MyOpenGLView.m */; };
@@ -399,10 +403,21 @@
 		0831C5C809E3396D0058029A /* ScriptCompiler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScriptCompiler.m; path = src/Core/ScriptCompiler.m; sourceTree = "<group>"; };
 		083325DB09DDBCDE00F5B8E4 /* OOColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOColor.h; path = src/Core/OOColor.h; sourceTree = "<group>"; };
 		083325DC09DDBCDE00F5B8E4 /* OOColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOColor.m; path = src/Core/OOColor.m; sourceTree = "<group>"; };
-		0865432206B8447D000CA0AB /* Oolite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Oolite.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0865432206B8447D000CA0AB /* OoliteDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OoliteDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0878FD2F086EF845004CB752 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		08CB1FEC09D3F2AA001EA329 /* customsounds.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = customsounds.plist; path = Resources/Config/customsounds.plist; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1A244CE309E433B8000CCD6C /* TextureStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureStore.h; sourceTree = "<group>"; };
+		1A244CE409E433B8000CCD6C /* OOMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMaterial.h; sourceTree = "<group>"; };
+		1A244CE509E433B8000CCD6C /* TextureStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextureStore.m; sourceTree = "<group>"; };
+		1A244CE609E433B8000CCD6C /* OOTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTexture.m; sourceTree = "<group>"; };
+		1A244CE709E433B8000CCD6C /* OOTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTexture.h; sourceTree = "<group>"; };
+		1A244CE809E433B8000CCD6C /* OOMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMaterial.m; sourceTree = "<group>"; };
+		1A244CE909E433B8000CCD6C /* TextureUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureUtilities.h; sourceTree = "<group>"; };
+		1A244CEA09E433B8000CCD6C /* TextureUtilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TextureUtilities.c; sourceTree = "<group>"; };
+		1A244CF409E43412000CCD6C /* MathsUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathsUtils.h; sourceTree = "<group>"; };
+		1A244D3C09E44087000CCD6C /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		1A244E2F09E4410C000CCD6C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		1A472916096B5454000E78D8 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		1A47291F096B5468000E78D8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		1A472920096B5468000E78D8 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
@@ -415,8 +430,8 @@
 		2512834409BA281500F43D55 /* CollisionRegion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CollisionRegion.h; path = src/Core/CollisionRegion.h; sourceTree = "<group>"; };
 		2512834509BA281500F43D55 /* CollisionRegion.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CollisionRegion.m; path = src/Core/CollisionRegion.m; sourceTree = "<group>"; };
 		25160E2E0995362F0037C2E1 /* OOCocoa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OOCocoa.h; path = src/Core/OOCocoa.h; sourceTree = "<group>"; };
-		25160E67099539D50037C2E1 /* libOgg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOgg.a; path = "Cocoa-deps/Ogg Vorbis/libOgg.a"; sourceTree = "<group>"; };
-		25160E68099539D50037C2E1 /* libVorbisAll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libVorbisAll.a; path = "Cocoa-deps/Ogg Vorbis/libVorbisAll.a"; sourceTree = "<group>"; };
+		25160E67099539D50037C2E1 /* libVorbisAll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libVorbisAll.a; sourceTree = "<group>"; };
+		25160E68099539D50037C2E1 /* libOgg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOgg.a; sourceTree = "<group>"; };
 		251610CA099544090037C2E1 /* OOCABufferedSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOCABufferedSound.h; path = src/Cocoa/OOCABufferedSound.h; sourceTree = "<group>"; };
 		251610CB099544090037C2E1 /* OOCASoundMixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOCASoundMixer.h; path = src/Cocoa/OOCASoundMixer.h; sourceTree = "<group>"; };
 		251610CC099544090037C2E1 /* OOCASoundSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOCASoundSource.h; path = src/Cocoa/OOCASoundSource.h; sourceTree = "<group>"; };
@@ -488,7 +503,6 @@
 		25161131099544390037C2E1 /* ScannerExtension.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ScannerExtension.h; path = src/Core/ScannerExtension.h; sourceTree = "<group>"; };
 		25161132099544390037C2E1 /* PlayerEntity (Controls).m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = "PlayerEntity (Controls).m"; path = "src/Core/PlayerEntity (Controls).m"; sourceTree = "<group>"; };
 		25161133099544390037C2E1 /* PlayerEntity (Controls).h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "PlayerEntity (Controls).h"; path = "src/Core/PlayerEntity (Controls).h"; sourceTree = "<group>"; };
-		25161134099544390037C2E1 /* TextureStore.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = TextureStore.h; path = src/Core/TextureStore.h; sourceTree = "<group>"; };
 		25161135099544390037C2E1 /* StationEntity.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = StationEntity.m; path = src/Core/StationEntity.m; sourceTree = "<group>"; };
 		25161136099544390037C2E1 /* StationEntity.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = StationEntity.h; path = src/Core/StationEntity.h; sourceTree = "<group>"; };
 		25161139099544390037C2E1 /* ResourceManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ResourceManager.m; path = src/Core/ResourceManager.m; sourceTree = "<group>"; };
@@ -501,7 +515,6 @@
 		25161142099544390037C2E1 /* PlayerEntity Additions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "PlayerEntity Additions.h"; path = "src/Core/PlayerEntity Additions.h"; sourceTree = "<group>"; };
 		25161143099544390037C2E1 /* Universe.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = Universe.m; path = src/Core/Universe.m; sourceTree = "<group>"; };
 		25161144099544390037C2E1 /* Universe.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Universe.h; path = src/Core/Universe.h; sourceTree = "<group>"; };
-		25161145099544390037C2E1 /* TextureStore.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = TextureStore.m; path = src/Core/TextureStore.m; sourceTree = "<group>"; };
 		2576E7B209B4F418007410F7 /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MyOpenGLView.h; path = src/Cocoa/MyOpenGLView.h; sourceTree = "<group>"; };
 		25CD0C4D09B4F5A70060106D /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = "deps/Cocoa-deps/Growl.framework"; sourceTree = "<group>"; };
 		25F3E6300994F033002F25FD /* legacy_random.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = legacy_random.h; path = src/Core/legacy_random.h; sourceTree = "<group>"; };
@@ -709,8 +722,6 @@
 		25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = "Info-OoliteDev.plist"; path = "src/Cocoa/Info-OoliteDev.plist"; sourceTree = "<group>"; };
 		25F3E8BE09950088002F25FD /* Info-OoliteUB.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = "Info-OoliteUB.plist"; path = "src/Cocoa/Info-OoliteUB.plist"; sourceTree = "<group>"; };
 		25F3E8C3099500F1002F25FD /* SoundInspector.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = SoundInspector.nib; path = src/Cocoa/SoundInspector.nib; sourceTree = "<group>"; };
-		25F3E8E9099502BB002F25FD /* libOgg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOgg.a; path = "deps/Cocoa-deps/Ogg Vorbis/libOgg.a"; sourceTree = "<group>"; };
-		25F3E8EA099502BB002F25FD /* libVorbisAll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libVorbisAll.a; path = "deps/Cocoa-deps/Ogg Vorbis/libVorbisAll.a"; sourceTree = "<group>"; };
 		25F46750099695D5009483BF /* OoliteApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OoliteApp.h; path = src/Cocoa/OoliteApp.h; sourceTree = "<group>"; };
 		25F46751099695D5009483BF /* OoliteApp.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = OoliteApp.m; path = src/Cocoa/OoliteApp.m; sourceTree = "<group>"; };
 		25F4676309969672009483BF /* MyOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = MyOpenGLView.m; path = src/Cocoa/MyOpenGLView.m; sourceTree = "<group>"; };
@@ -730,8 +741,10 @@
 				1A472917096B5454000E78D8 /* CoreAudio.framework in Frameworks */,
 				1A472921096B5468000E78D8 /* AudioToolbox.framework in Frameworks */,
 				1A472922096B5468000E78D8 /* AudioUnit.framework in Frameworks */,
-				25F3E8EB099502BB002F25FD /* libOgg.a in Frameworks */,
-				25F3E8EC099502BB002F25FD /* libVorbisAll.a in Frameworks */,
+				1A244D3D09E44087000CCD6C /* Accelerate.framework in Frameworks */,
+				1A244D8F09E440DB000CCD6C /* libOgg.a in Frameworks */,
+				1A244E3009E4410C000CCD6C /* QuickTime.framework in Frameworks */,
+				1A244E5309E44119000CCD6C /* libVorbisAll.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -989,14 +1002,15 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				25160E67099539D50037C2E1 /* libOgg.a */,
-				25160E68099539D50037C2E1 /* libVorbisAll.a */,
+				1A244D9409E440E8000CCD6C /* Ogg Vorbis */,
 				0878FD2F086EF845004CB752 /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				06AFA01500A58FB77F000001 /* OpenGL.framework */,
 				1A472916096B5454000E78D8 /* CoreAudio.framework */,
 				1A47291F096B5468000E78D8 /* AudioToolbox.framework */,
 				1A472920096B5468000E78D8 /* AudioUnit.framework */,
+				1A244D3C09E44087000CCD6C /* Accelerate.framework */,
+				1A244E2F09E4410C000CCD6C /* QuickTime.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -1014,9 +1028,36 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0865432206B8447D000CA0AB /* Oolite.app */,
+				0865432206B8447D000CA0AB /* OoliteDev.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1A244CE209E433A3000CCD6C /* Materials */ = {
+			isa = PBXGroup;
+			children = (
+				1A244CE409E433B8000CCD6C /* OOMaterial.h */,
+				1A244CE609E433B8000CCD6C /* OOTexture.m */,
+				1A244CE709E433B8000CCD6C /* OOTexture.h */,
+				1A244CE809E433B8000CCD6C /* OOMaterial.m */,
+				1A244CE909E433B8000CCD6C /* TextureUtilities.h */,
+				1A244CEA09E433B8000CCD6C /* TextureUtilities.c */,
+				1A244CE309E433B8000CCD6C /* TextureStore.h */,
+				1A244CE509E433B8000CCD6C /* TextureStore.m */,
+				1A244CF409E43412000CCD6C /* MathsUtils.h */,
+			);
+			name = Materials;
+			path = src/Core/Materials;
+			sourceTree = "<group>";
+		};
+		1A244D9409E440E8000CCD6C /* Ogg Vorbis */ = {
+			isa = PBXGroup;
+			children = (
+				25160E67099539D50037C2E1 /* libVorbisAll.a */,
+				25160E68099539D50037C2E1 /* libOgg.a */,
+			);
+			name = "Ogg Vorbis";
+			path = "deps/Cocoa-deps/Ogg Vorbis";
 			sourceTree = "<group>";
 		};
 		1A5BF2710916D45B00BF238F /* MDImporter */ = {
@@ -1039,6 +1080,8 @@
 		25161012099543850037C2E1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				25161017099543850037C2E1 /* Audio */,
+				1A244CE209E433A3000CCD6C /* Materials */,
 				0831C5CD09E339760058029A /* OOScript */,
 				25F46750099695D5009483BF /* OoliteApp.h */,
 				25F46751099695D5009483BF /* OoliteApp.m */,
@@ -1046,10 +1089,8 @@
 				25F4676309969672009483BF /* MyOpenGLView.m */,
 				2516110B099544390037C2E1 /* GameController.h */,
 				2516110C099544390037C2E1 /* GameController.m */,
-				25161134099544390037C2E1 /* TextureStore.h */,
-				25161145099544390037C2E1 /* TextureStore.m */,
-				25161139099544390037C2E1 /* ResourceManager.m */,
 				2516113A099544390037C2E1 /* ResourceManager.h */,
+				25161139099544390037C2E1 /* ResourceManager.m */,
 				25161124099544390037C2E1 /* LoadSave.h */,
 				25161123099544390037C2E1 /* LoadSave.m */,
 				2516111A099544390037C2E1 /* OOFileManager.h */,
@@ -1116,7 +1157,6 @@
 				25161130099544390037C2E1 /* ScannerExtension.m */,
 				083325DB09DDBCDE00F5B8E4 /* OOColor.h */,
 				083325DC09DDBCDE00F5B8E4 /* OOColor.m */,
-				25161017099543850037C2E1 /* Audio */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1152,8 +1192,6 @@
 		29B97314FDCFA39411CA2CEA /* Oolite_GUSTO */ = {
 			isa = PBXGroup;
 			children = (
-				25F3E8E9099502BB002F25FD /* libOgg.a */,
-				25F3E8EA099502BB002F25FD /* libVorbisAll.a */,
 				0870F6230903F890002A598D /* Groolite */,
 				25F3E6300994F033002F25FD /* legacy_random.h */,
 				25F3E6320994F04C002F25FD /* legacy_random.c */,
@@ -1262,7 +1300,6 @@
 				25161181099544390037C2E1 /* RingEntity.h in Headers */,
 				25161183099544390037C2E1 /* ScannerExtension.h in Headers */,
 				25161185099544390037C2E1 /* PlayerEntity (Controls).h in Headers */,
-				25161186099544390037C2E1 /* TextureStore.h in Headers */,
 				25161188099544390037C2E1 /* StationEntity.h in Headers */,
 				2516118C099544390037C2E1 /* ResourceManager.h in Headers */,
 				2516118E099544390037C2E1 /* ShipEntity.h in Headers */,
@@ -1322,7 +1359,7 @@
 			name = Oolite;
 			productInstallPath = "$(HOME)/Applications";
 			productName = Oolite;
-			productReference = 0865432206B8447D000CA0AB /* Oolite.app */;
+			productReference = 0865432206B8447D000CA0AB /* OoliteDev.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1645,7 +1682,6 @@
 				25161191099544390037C2E1 /* PlayerEntity (Sound).m in Sources */,
 				25161193099544390037C2E1 /* PlayerEntity (contracts).m in Sources */,
 				25161195099544390037C2E1 /* Universe.m in Sources */,
-				25161197099544390037C2E1 /* TextureStore.m in Sources */,
 				25F46753099695D5009483BF /* OoliteApp.m in Sources */,
 				25F4676509969672009483BF /* MyOpenGLView.m in Sources */,
 				2512833E09BA27C100F43D55 /* Octree.m in Sources */,
@@ -1654,6 +1690,10 @@
 				083325DE09DDBCDE00F5B8E4 /* OOColor.m in Sources */,
 				0831C5C909E3396D0058029A /* StringTokeniser.m in Sources */,
 				0831C5CB09E3396D0058029A /* ScriptCompiler.m in Sources */,
+				1A244CED09E433B8000CCD6C /* TextureStore.m in Sources */,
+				1A244CEE09E433B8000CCD6C /* OOTexture.m in Sources */,
+				1A244CF009E433B8000CCD6C /* OOMaterial.m in Sources */,
+				1A244CF209E433B8000CCD6C /* TextureUtilities.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1726,7 +1766,10 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_REUSE_STRINGS = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg Vorbis\"";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/deps/Cocoa-deps/Ogg Vorbis",
+					"$(SRCROOT)/src/Core/Materials/",
+				);
 				INFOPLIST_FILE = "src/Cocoa/Info-OoliteDev.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg\\ Vorbis\"";
