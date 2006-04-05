@@ -16,7 +16,9 @@
 #endif
 
 
+#ifndef USE_ASYNCHRONOUS_LOADING
 #define USE_ASYNCHRONOUS_LOADING		0
+#endif
 
 
 #if __BIG_ENDIAN__
@@ -294,6 +296,9 @@ static unsigned				sMaxTextureSize = 0;
 			width = w;
 			height = h;
 		}
+		
+		// FIXME: force-disable mipmapping for non-square textures.
+		if (w != h) mipmapped = NO;
 	}
 	
 	// Load image
@@ -343,7 +348,7 @@ static unsigned				sMaxTextureSize = 0;
 			
 			w /= 2;
 			h /= 2;
-		} while (1 < w && 1 < h && mipmapped);
+		} while ((1 < w || 1 < h) && mipmapped);
 		
 		if (NULL != colorSpace) CFRelease(colorSpace);
 	}
@@ -436,7 +441,7 @@ static unsigned				sMaxTextureSize = 0;
 			w /= 2;
 			h /= 2;
 		}
-		while (w && h && mipmapped);
+		while ((w || h) && mipmapped);
 		
 		if (!clientStorage)
 		{

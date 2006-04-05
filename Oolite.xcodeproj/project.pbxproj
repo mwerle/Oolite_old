@@ -1037,9 +1037,9 @@
 			isa = PBXGroup;
 			children = (
 				1A244CE409E433B8000CCD6C /* OOMaterial.h */,
-				1A244CE609E433B8000CCD6C /* OOTexture.m */,
-				1A244CE709E433B8000CCD6C /* OOTexture.h */,
 				1A244CE809E433B8000CCD6C /* OOMaterial.m */,
+				1A244CE709E433B8000CCD6C /* OOTexture.h */,
+				1A244CE609E433B8000CCD6C /* OOTexture.m */,
 				1A244CE909E433B8000CCD6C /* TextureUtilities.h */,
 				1A244CEA09E433B8000CCD6C /* TextureUtilities.c */,
 				1A244CE309E433B8000CCD6C /* TextureStore.h */,

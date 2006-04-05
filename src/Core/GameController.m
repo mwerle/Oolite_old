@@ -43,6 +43,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "TextureStore.h"
 #import "OOSound.h"
 #import "OOOpenGL.h"
+#import "OOTexture.h"
 
 @implementation GameController
 
@@ -533,6 +534,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 #endif   
 	//
 	[OOSound update];
+	[OOTexture update];
 }
 
 - (void) startAnimationTimer
