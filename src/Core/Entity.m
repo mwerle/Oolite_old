@@ -1740,12 +1740,11 @@ static  Universe	*data_store_universe;
 //            NSSize	texSize = [[universe textureStore] getSizeOfTexture:faces[j].textureFile];
 //            result = [NSString stringWithFormat:@"%@%@\t%d %d", result, faces[j].textureFile, (int)texSize.width, (int)texSize.height];
 			NSString* texture = [NSString stringWithUTF8String: (char*)faces[j].textureFileStr255];
-            NSSize	texSize = [[universe textureStore] getSizeOfTexture: texture];
-            result = [NSString stringWithFormat:@"%@%@\t%d %d", result, texture, (int)texSize.width, (int)texSize.height];
+            result = [NSString stringWithFormat:@"%@%@\t1 1", result, texture];
             for (i = 0; i < faces[j].n_verts; i++)
             {
-                int s = (int)(faces[j].s[i] * texSize.width);
-                int t = (int)(faces[j].t[i] * texSize.height);
+                int s = (int)(faces[j].s[i]);
+                int t = (int)(faces[j].t[i]);
                 result = [NSString stringWithFormat:@"%@\t%d %d", result, s, t];
             }
             result = [NSString stringWithFormat:@"%@\n", result];
