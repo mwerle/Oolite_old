@@ -424,10 +424,10 @@
 		1A244CF409E43412000CCD6C /* MathsUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathsUtils.h; sourceTree = "<group>"; };
 		1A244D3C09E44087000CCD6C /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
 		1A244E2F09E4410C000CCD6C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		1A244F6309E46284000CCD6C /* OoliteDAT.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = OoliteDAT.l; path = src/Core/Mesh/OoliteDAT.l; sourceTree = "<group>"; };
-		1A244F7509E463FF000CCD6C /* OoliteDATTokens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OoliteDATTokens.h; path = src/Core/Mesh/OoliteDATTokens.h; sourceTree = "<group>"; };
-		1A244F7709E46409000CCD6C /* OODATLexer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OODATLexer.m; path = src/Core/Mesh/OODATLexer.m; sourceTree = "<group>"; };
-		1A244F7809E46409000CCD6C /* OODATLexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OODATLexer.h; path = src/Core/Mesh/OODATLexer.h; sourceTree = "<group>"; };
+		1A244F6309E46284000CCD6C /* OoliteDAT.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = OoliteDAT.l; sourceTree = "<group>"; };
+		1A244F7509E463FF000CCD6C /* OoliteDATTokens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OoliteDATTokens.h; sourceTree = "<group>"; };
+		1A244F7709E46409000CCD6C /* OODATLexer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODATLexer.m; sourceTree = "<group>"; };
+		1A244F7809E46409000CCD6C /* OODATLexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODATLexer.h; sourceTree = "<group>"; };
 		1A244FE309E47A58000CCD6C /* OOMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMesh.h; sourceTree = "<group>"; };
 		1A244FE409E47A58000CCD6C /* OOMesh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMesh.m; sourceTree = "<group>"; };
 		1A472916096B5454000E78D8 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
@@ -1083,6 +1083,7 @@
 				1A244F6309E46284000CCD6C /* OoliteDAT.l */,
 			);
 			name = Mesh;
+			path = src/Core/Mesh;
 			sourceTree = "<group>";
 		};
 		1A5BF2710916D45B00BF238F /* MDImporter */ = {
