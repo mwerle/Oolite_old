@@ -39,3 +39,5 @@ NSString *AudioErrorNSString(ComponentResult inCode);
 NSString *KernelResultNSString(kern_return_t inCode);
 NSString *FourCharCodeToNSString(FourCharCode inCode);
 NSString *AudioErrorShortNSString(OSStatus inCode);
+FOUNDATION_EXPORT NSString *ErrnoToNSString(int inErrno);
+#define ErrnoAsNSString() ErrnoToNSString(errno)

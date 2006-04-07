@@ -13,6 +13,7 @@
 NSString *kOOMaterialSpecularColor		= @"specular color";
 NSString *kOOMaterialSpecularExponent	= @"specular exponent";
 NSString *kOOMaterialAllowMipMap		= @"allow mip-mapping";
+NSString *kOOMaterialTextureName		= @"texture";
 
 
 @implementation OOMaterial
@@ -68,6 +69,7 @@ NSString *kOOMaterialAllowMipMap		= @"allow mip-mapping";
 
 - (void)activate
 {
+	[OOTexture update];
 	[mainTexture bind];
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specColor);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, specExponent);

@@ -296,9 +296,6 @@ static unsigned				sMaxTextureSize = 0;
 			width = w;
 			height = h;
 		}
-		
-		// FIXME: force-disable mipmapping for non-square textures.
-		if (w != h) mipmapped = NO;
 	}
 	
 	// Load image
@@ -348,7 +345,7 @@ static unsigned				sMaxTextureSize = 0;
 			
 			w /= 2;
 			h /= 2;
-		} while ((1 < w || 1 < h) && mipmapped);
+		} while (1 < w && 1 < h && mipmapped);
 		
 		if (NULL != colorSpace) CFRelease(colorSpace);
 	}
@@ -440,8 +437,12 @@ static unsigned				sMaxTextureSize = 0;
 			
 			w /= 2;
 			h /= 2;
+		} while (1 < w && 1 < h && mipmapped);
+		
+		if (mipmapped)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, level - 1);
 		}
-		while ((w || h) && mipmapped);
 		
 		if (!clientStorage)
 		{

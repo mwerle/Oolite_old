@@ -25,6 +25,12 @@
 		1A244D8F09E440DB000CCD6C /* libOgg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E68099539D50037C2E1 /* libOgg.a */; };
 		1A244E3009E4410C000CCD6C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A244E2F09E4410C000CCD6C /* QuickTime.framework */; };
 		1A244E5309E44119000CCD6C /* libVorbisAll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25160E67099539D50037C2E1 /* libVorbisAll.a */; };
+		1A244F6409E46284000CCD6C /* OoliteDAT.l in Sources */ = {isa = PBXBuildFile; fileRef = 1A244F6309E46284000CCD6C /* OoliteDAT.l */; settings = {COMPILER_FLAGS = "-pp -8 -CFre -POoliteDAT_yy"; }; };
+		1A244F7609E463FF000CCD6C /* OoliteDATTokens.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A244F7509E463FF000CCD6C /* OoliteDATTokens.h */; };
+		1A244F7909E46409000CCD6C /* OODATLexer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A244F7709E46409000CCD6C /* OODATLexer.m */; };
+		1A244F7A09E46409000CCD6C /* OODATLexer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A244F7809E46409000CCD6C /* OODATLexer.h */; };
+		1A244FE509E47A58000CCD6C /* OOMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A244FE309E47A58000CCD6C /* OOMesh.h */; };
+		1A244FE609E47A58000CCD6C /* OOMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A244FE409E47A58000CCD6C /* OOMesh.m */; };
 		1A472917096B5454000E78D8 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472916096B5454000E78D8 /* CoreAudio.framework */; };
 		1A472921096B5468000E78D8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A47291F096B5468000E78D8 /* AudioToolbox.framework */; };
 		1A472922096B5468000E78D8 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472920096B5468000E78D8 /* AudioUnit.framework */; };
@@ -418,6 +424,12 @@
 		1A244CF409E43412000CCD6C /* MathsUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathsUtils.h; sourceTree = "<group>"; };
 		1A244D3C09E44087000CCD6C /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
 		1A244E2F09E4410C000CCD6C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		1A244F6309E46284000CCD6C /* OoliteDAT.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = OoliteDAT.l; path = src/Core/Mesh/OoliteDAT.l; sourceTree = "<group>"; };
+		1A244F7509E463FF000CCD6C /* OoliteDATTokens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OoliteDATTokens.h; path = src/Core/Mesh/OoliteDATTokens.h; sourceTree = "<group>"; };
+		1A244F7709E46409000CCD6C /* OODATLexer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OODATLexer.m; path = src/Core/Mesh/OODATLexer.m; sourceTree = "<group>"; };
+		1A244F7809E46409000CCD6C /* OODATLexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OODATLexer.h; path = src/Core/Mesh/OODATLexer.h; sourceTree = "<group>"; };
+		1A244FE309E47A58000CCD6C /* OOMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMesh.h; sourceTree = "<group>"; };
+		1A244FE409E47A58000CCD6C /* OOMesh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMesh.m; sourceTree = "<group>"; };
 		1A472916096B5454000E78D8 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		1A47291F096B5468000E78D8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		1A472920096B5468000E78D8 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
@@ -722,7 +734,7 @@
 		25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = "Info-OoliteDev.plist"; path = "src/Cocoa/Info-OoliteDev.plist"; sourceTree = "<group>"; };
 		25F3E8BE09950088002F25FD /* Info-OoliteUB.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = "Info-OoliteUB.plist"; path = "src/Cocoa/Info-OoliteUB.plist"; sourceTree = "<group>"; };
 		25F3E8C3099500F1002F25FD /* SoundInspector.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = SoundInspector.nib; path = src/Cocoa/SoundInspector.nib; sourceTree = "<group>"; };
-		25F46750099695D5009483BF /* OoliteApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OoliteApp.h; path = src/Cocoa/OoliteApp.h; sourceTree = "<group>"; };
+		25F46750099695D5009483BF /* OoliteApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OoliteApp.h; path = src/Cocoa/OoliteApp.h; sourceTree = "<group>"; };
 		25F46751099695D5009483BF /* OoliteApp.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = OoliteApp.m; path = src/Cocoa/OoliteApp.m; sourceTree = "<group>"; };
 		25F4676309969672009483BF /* MyOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = MyOpenGLView.m; path = src/Cocoa/MyOpenGLView.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MainMenu.nib; path = src/Cocoa/MainMenu.nib; sourceTree = "<group>"; };
@@ -1060,6 +1072,19 @@
 			path = "deps/Cocoa-deps/Ogg Vorbis";
 			sourceTree = "<group>";
 		};
+		1A244F6209E4627B000CCD6C /* Mesh */ = {
+			isa = PBXGroup;
+			children = (
+				1A244FE309E47A58000CCD6C /* OOMesh.h */,
+				1A244FE409E47A58000CCD6C /* OOMesh.m */,
+				1A244F7509E463FF000CCD6C /* OoliteDATTokens.h */,
+				1A244F7809E46409000CCD6C /* OODATLexer.h */,
+				1A244F7709E46409000CCD6C /* OODATLexer.m */,
+				1A244F6309E46284000CCD6C /* OoliteDAT.l */,
+			);
+			name = Mesh;
+			sourceTree = "<group>";
+		};
 		1A5BF2710916D45B00BF238F /* MDImporter */ = {
 			isa = PBXGroup;
 			children = (
@@ -1082,6 +1107,7 @@
 			children = (
 				25161017099543850037C2E1 /* Audio */,
 				1A244CE209E433A3000CCD6C /* Materials */,
+				1A244F6209E4627B000CCD6C /* Mesh */,
 				0831C5CD09E339760058029A /* OOScript */,
 				25F46750099695D5009483BF /* OoliteApp.h */,
 				25F46751099695D5009483BF /* OoliteApp.m */,
@@ -1313,6 +1339,9 @@
 				2512834609BA281500F43D55 /* CollisionRegion.h in Headers */,
 				083325DD09DDBCDE00F5B8E4 /* OOColor.h in Headers */,
 				0831C5CA09E3396D0058029A /* StringTokeniser.h in Headers */,
+				1A244F7609E463FF000CCD6C /* OoliteDATTokens.h in Headers */,
+				1A244F7A09E46409000CCD6C /* OODATLexer.h in Headers */,
+				1A244FE509E47A58000CCD6C /* OOMesh.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1694,6 +1723,9 @@
 				1A244CEE09E433B8000CCD6C /* OOTexture.m in Sources */,
 				1A244CF009E433B8000CCD6C /* OOMaterial.m in Sources */,
 				1A244CF209E433B8000CCD6C /* TextureUtilities.c in Sources */,
+				1A244F6409E46284000CCD6C /* OoliteDAT.l in Sources */,
+				1A244F7909E46409000CCD6C /* OODATLexer.m in Sources */,
+				1A244FE609E47A58000CCD6C /* OOMesh.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
