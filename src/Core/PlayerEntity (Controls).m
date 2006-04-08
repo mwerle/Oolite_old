@@ -48,6 +48,8 @@ Your fair use and other rights are in no way affected by the above.
 #import "OOSound.h"
 #import "LoadSave.h"
 
+#import "OOTexture.h"
+
 // TODO: ifdef HAVE_STICK might be better.
 #ifdef GNUSTEP
 #import "JoystickHandler.h"
@@ -886,7 +888,9 @@ static NSTimeInterval	time_last_frame;
 		if ([gameView isDown:48])// look for the '0' key
 		{
 			if (!cloak_pressed)
+			{
 				[universe obj_dump];	// dump objects
+			}
 			cloak_pressed = YES;
 		}
 		else
@@ -982,10 +986,17 @@ static  BOOL	taking_snapshot;
 	//
 	// dread debugging keypress of fear
 	//
+	static BOOL atDebounce;
 	if ([gameView isDown: 64])   // '@'
 	{
-		NSLog(@"%@ status==%@ guiscreen==%@", self, [self status_string], [self gui_screen_string]);
+		if (!atDebounce)
+		{
+			atDebounce = YES;
+			[OOTexture invalidateAllTextureBindings];
+			NSLog(@"%@ status==%@ guiscreen==%@", self, [self status_string], [self gui_screen_string]);
+		}
 	}
+	else atDebounce = NO;
 	
 	//
 	//  snapshot

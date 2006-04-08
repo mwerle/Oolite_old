@@ -13,10 +13,11 @@
 @interface OOTexture: NSObject
 {
 	OOTexture				*link;
+	NSString				*name;
 	GLuint					texName;
 	GLuint					width, height;
 	void					*data;
-	uint8_t					mipmapped, loaded, setUp;
+	uint8_t					mipmapped, loaded, setUp, invalidated;
 }
 
 + (id)textureWithImageNamed:(NSString *)inName allowMipMap:(BOOL)inAllowMipMap;
@@ -28,5 +29,11 @@
 - (NSSize)size;
 
 + (void)update;
+
+// This invalidates a texture’s connection to an OpenGL context. It will also need to be reloaded
+// on systems not supporting GL_UNPACK_CLIENT_STORAGE_APPLE or equivalent. If asyncronous loading
+// is DISABLED, this must be called with the new context active.
++ (void)invalidateAllTextureBindings;
+- (void)invalidateBinding;
 
 @end

@@ -16,6 +16,13 @@
 #endif
 
 
+#if 0
+	#define VERBOSE_LOG NSLog
+#else
+	#define VERBOSE_LOG(...) do {} while (0)
+#endif
+
+
 #ifndef USE_ASYNCHRONOUS_LOADING
 #define USE_ASYNCHRONOUS_LOADING		0
 #endif
@@ -45,7 +52,6 @@ enum
 typedef struct
 {
 	OOTexture				*texture;
-	NSString				*name;
 } LoadTextureData;
 
 
@@ -71,7 +77,8 @@ static unsigned				sMaxTextureSize = 0;
 @interface OOTexture(Private)
 
 - (id)initWithImageNamed:(NSString *)inName allowMipMap:(BOOL)inAllowMipMap;
-- (void)loadTextureNamed:(NSString *)inTexture;
+- (void)loadTexture;
+- (void)queueLoadTexture;
 
 + (void)textureLoadThread:unused;
 + (void)handlePortMessage:(NSPortMessage *)inMessage;
@@ -103,12 +110,6 @@ static unsigned				sMaxTextureSize = 0;
 
 - (id)initWithImageNamed:(NSString *)inName allowMipMap:(BOOL)inAllowMipMap
 {
-	#if USE_ASYNCHRONOUS_LOADING
-		NSPortMessage			*loadRequest;
-		LoadTextureData			msgData;
-		NSArray					*msgComponents;
-	#endif
-	
 	if (0 == sMaxTextureSize)
 	{
 		// Set-up
@@ -120,48 +121,61 @@ static unsigned				sMaxTextureSize = 0;
 	{
 		mipmapped = inAllowMipMap;
 		glGenTextures(1, &texName);
+		name = [inName retain];
 		
-		#if USE_ASYNCHRONOUS_LOADING
-			// Set up texture-loading thread if necessary
-			if (!sLoadThreadIsRunning)
+		[self queueLoadTexture];
+	}
+	return self;
+}
+
+
+- (void)queueLoadTexture
+{
+	#if USE_ASYNCHRONOUS_LOADING
+		NSPortMessage			*loadRequest;
+		LoadTextureData			msgData;
+		NSArray					*msgComponents;
+	#endif
+	
+	#if USE_ASYNCHRONOUS_LOADING
+		// Set up texture-loading thread if necessary
+		if (!sLoadThreadIsRunning)
+		{
+			sLoadRequestPort = [[NSPort port] retain];///[[NSMessagePort alloc] init];
+			if (nil != sLoadRequestPort)
 			{
-				sLoadRequestPort = [[NSPort port] retain];///[[NSMessagePort alloc] init];
-				if (nil != sLoadRequestPort)
+				sLoadedTexLock = [[NSLock alloc] init];
+				if (nil != sLoadedTexLock)
 				{
-					sLoadedTexLock = [[NSLock alloc] init];
-					if (nil != sLoadedTexLock)
-					{
-						[NSThread detachNewThreadSelector:@selector(textureLoadThread:) toTarget:[self class] withObject:nil];
-						sLoadThreadIsRunning = YES;
-					}
-					else
-					{
-						[sLoadRequestPort release];
-						sLoadRequestPort = nil;
-					}
+					[NSThread detachNewThreadSelector:@selector(textureLoadThread:) toTarget:[self class] withObject:nil];
+					sLoadThreadIsRunning = YES;
 				}
 				else
 				{
-					NSLog(@"Failed to start texture-loading thread.");
+					[sLoadRequestPort release];
+					sLoadRequestPort = nil;
 				}
 			}
-			
-			// Send load request to texture-loading thread
-			msgData.texture = [self retain];
-			msgData.name = [inName retain];
-			msgComponents = [NSArray arrayWithObject:[NSData dataWithBytes:(const void *)&msgData length:sizeof msgData]];
-			
-			loadRequest = [[NSPortMessage alloc] initWithSendPort:sLoadRequestPort receivePort:nil
-							components:msgComponents];
-			[loadRequest setMsgid:kMsgLoadTexture];
-			
-			[loadRequest sendBeforeDate:[NSDate distantFuture]];
-		#else
-			[self loadTextureNamed:inName];
-			[self bind];
-		#endif
-	}
-	return self;
+			else
+			{
+				NSLog(@"Failed to start texture-loading thread.");
+			}
+		}
+		
+		VERBOSE_LOG(@"Queuing load request for texture %@", name);
+		// Send load request to texture-loading thread
+		msgData.texture = [self retain];
+		msgComponents = [NSArray arrayWithObject:[NSData dataWithBytes:(const void *)&msgData length:sizeof msgData]];
+		
+		loadRequest = [[NSPortMessage alloc] initWithSendPort:sLoadRequestPort receivePort:nil
+						components:msgComponents];
+		[loadRequest setMsgid:kMsgLoadTexture];
+		
+		[loadRequest sendBeforeDate:[NSDate distantFuture]];
+	#else
+		[self loadTexture];
+		[self bind];
+	#endif
 }
 
 
@@ -177,7 +191,7 @@ static unsigned				sMaxTextureSize = 0;
 	assert(nil != sLoadRequestPort);
 	
 	rootPool = [[NSAutoreleasePool alloc] init];
-	NSLog(@"Texture-loading thread started.");
+	VERBOSE_LOG(@"Texture-loading thread started.");
 	loop = [NSRunLoop currentRunLoop];
 	
 	[sLoadRequestPort setDelegate:self];
@@ -192,9 +206,8 @@ static unsigned				sMaxTextureSize = 0;
 		{
 			case kMsgLoadTexture:
 				loadTex = (LoadTextureData *)[[sComponentsRcv objectAtIndex:0] bytes];
-				NSLog(@"Texture loading thread got load message for %@", loadTex->name);
-				[loadTex->texture loadTextureNamed:loadTex->name];
-				[loadTex->name release];
+				VERBOSE_LOG(@"Texture loading thread got load message for %@", loadTex->texture->name);
+				[loadTex->texture loadTexture];
 				
 				// Put loaded texture on stack for +update.
 				[sLoadedTexLock lock];
@@ -214,7 +227,7 @@ static unsigned				sMaxTextureSize = 0;
 	}
 	while (!exit);
 	
-	NSLog(@"Texture-loading thread exiting.");
+	VERBOSE_LOG(@"Texture-loading thread exiting.");
 	
 	[loop removePort:sLoadRequestPort forMode:kTextureLoadQueueRunLoopMode];
 	[rootPool release];
@@ -256,7 +269,7 @@ static unsigned				sMaxTextureSize = 0;
 
 #ifndef GNUSTEP
 
-- (void)loadTextureNamed:(NSString *)inName
+- (void)loadTexture
 {
 	OSStatus				err = noErr;
 	FSSpec					fsSpec;
@@ -271,8 +284,10 @@ static unsigned				sMaxTextureSize = 0;
 	
 	data = NULL;
 	
+	VERBOSE_LOG(@"Loading texture %@", name);
+	
 	// Find and load image
-	err = [ResourceManager getFSSpec:&fsSpec forFileNamed:inName inFolder:@"Textures"];
+	err = [ResourceManager getFSSpec:&fsSpec forFileNamed:name inFolder:@"Textures"];
 	if (!err) err = GetGraphicsImporterForFile(&fsSpec, &importer);
 	
 	// Determine dimensions
@@ -292,7 +307,7 @@ static unsigned				sMaxTextureSize = 0;
 		
 		if (w != width || h != height)
 		{
-			NSLog(@"WARNING: The texture %@ has non-power-of two dimensions (%u x %u); it is being scaled to %u x %u.", inName, width, height, w, h);
+			NSLog(@"WARNING: The texture %@ has non-power-of two dimensions (%u x %u); it is being scaled to %u x %u.", name, width, height, w, h);
 			width = w;
 			height = h;
 		}
@@ -359,7 +374,7 @@ static unsigned				sMaxTextureSize = 0;
 			free(data);
 			data = NULL;
 		}
-		NSLog(@"Loading of texture %@ failed (error %i).", inName, err);
+		NSLog(@"Loading of texture %@ failed (error %i).", name, err);
 	}
 	else loaded = YES;
 }
@@ -467,9 +482,37 @@ static unsigned				sMaxTextureSize = 0;
 }
 
 
++ (void)invalidateAllTextureBindings
+{
+	NSEnumerator			*textureEnum;
+	OOTexture				*texture;
+	
+	VERBOSE_LOG(@"Invalidated texture bindings!");
+	for (textureEnum = [sTextureCache objectEnumerator]; texture = [textureEnum nextObject]; )
+	{
+		[texture invalidateBinding];
+	}
+}
+
+
+- (void)invalidateBinding
+{
+	if (setUp)
+	{
+		setUp = NO;
+		if (NULL == data)
+		{
+			// No client storage, need to reload
+			loaded = NO;
+			[self queueLoadTexture];
+		}
+	}
+}
+
+
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"<%s %p>{%u, %u x %u pixels%s}", object_getClassName(self), self, texName, width, height, mipmapped ? ", mipmapped" : ""];
+	return [NSString stringWithFormat:@"<%s %p>{%@ (%u), %u x %u pixels%s}", object_getClassName(self), self, name, texName, width, height, mipmapped ? ", mipmapped" : ""];
 }
 
 @end
@@ -486,12 +529,12 @@ static BOOL ClientStorageAvailable(void)
 			extensions = glGetString(GL_EXTENSIONS);
 			if (NULL != strstr((const char *)extensions, "GL_APPLE_client_storage"))
 			{
-				NSLog(@"GL_APPLE_client_storage available.");
+				VERBOSE_LOG(@"GL_APPLE_client_storage available.");
 				available = YES;
 			}
 			else
 			{
-				NSLog(@"GL_APPLE_client_storage not found in %s", extensions);
+				VERBOSE_LOG(@"GL_APPLE_client_storage not found in %s", extensions);
 				available = NO;
 			}
 			
