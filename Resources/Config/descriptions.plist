@@ -852,5 +852,11 @@
 		<string>i</string>
 		<string>y</string>
 	</array>
+	<key>game-copyright</key>
+	<string>by Giles Williams (C) 2003-2006</string>
+	<key>theme-music-credit</key>
+	<string>Oolite Theme Music by \u8CA0\u8377\u524D\u306E\u53F8\u4EE4\u5B98\u304B (C) 2004</string>
+	<key>load-previous-commander</key>
+	<string>\u0418\u043C\u0435\u0435\u0442 \u043B\u0438 \u0441\u043C\u044B\u0441\u043B (Y/N)?</string>
 </dict>
 </plist>

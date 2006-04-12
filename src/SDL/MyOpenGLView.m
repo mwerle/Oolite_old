@@ -326,9 +326,9 @@ Your fair use and other rights are in no way affected by the above.
 	else
 	{
 		// not set up yet, draw a black screen
-		NSLog(@"no universe, clearning surface");
-		glClearColor( 0.0, 0.0, 0.0, 0.0);
-		glClear( GL_COLOR_BUFFER_BIT);
+		NSLog(@"no universe, clearing surface");
+		glClearColor(0.0, 0.0, 0.0, 0.0);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	SDL_GL_SwapBuffers();
@@ -716,7 +716,7 @@ Your fair use and other rights are in no way affected by the above.
                }
             }
             else
-            {  
+            {
                // Windowed mode. Use the absolute position so the
                // Oolite mouse pointer appears under the X Window System
                // mouse pointer.

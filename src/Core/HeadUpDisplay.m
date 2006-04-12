@@ -51,6 +51,95 @@ Your fair use and other rights are in no way affected by the above.
 
 static const char *toAscii(unsigned inCodePoint);
 
+#ifdef NEWFONTS
+	TTF_Font *gui_font = 0;
+#endif
+
+/* Quick utility function for texture creation */
+static int power_of_two(int input)
+{
+	int value = 1;
+
+	while ( value < input ) {
+		value <<= 1;
+	}
+	return value;
+}
+
+GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
+{
+	GLuint texture;
+	int w, h;
+	SDL_Surface *image;
+	SDL_Rect area;
+	Uint32 saved_flags;
+	Uint8  saved_alpha;
+
+	/* Use the surface width and height expanded to powers of 2 */
+	w = power_of_two(surface->w);
+	h = power_of_two(surface->h);
+	texcoord[0] = 0.0f;			/* Min X */
+	texcoord[1] = 0.0f;			/* Min Y */
+	texcoord[2] = (GLfloat)surface->w / w;	/* Max X */
+	texcoord[3] = (GLfloat)surface->h / h;	/* Max Y */
+
+	image = SDL_CreateRGBSurface(
+			SDL_SWSURFACE,
+			w, h,
+			32,
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN /* OpenGL RGBA masks */
+			0x000000FF,
+			0x0000FF00,
+			0x00FF0000,
+			0xFF000000
+#else
+			0xFF000000,
+			0x00FF0000,
+			0x0000FF00,
+			0x000000FF
+#endif
+		       );
+	if ( image == NULL ) {
+		return 0;
+	}
+
+	/* Save the alpha blending attributes */
+	saved_flags = surface->flags&(SDL_SRCALPHA|SDL_RLEACCELOK);
+	saved_alpha = surface->format->alpha;
+	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
+		SDL_SetAlpha(surface, 0, 0);
+	}
+
+	/* Copy the surface into the GL texture image */
+	area.x = 0;
+	area.y = 0;
+	area.w = surface->w;
+	area.h = surface->h;
+	SDL_BlitSurface(surface, &area, image, &area);
+
+	/* Restore the alpha blending attributes */
+	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
+		SDL_SetAlpha(surface, saved_flags, saved_alpha);
+	}
+
+	/* Create an OpenGL texture for the image */
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D,
+		     0,
+		     GL_RGBA,
+		     w, h,
+		     0,
+		     GL_RGBA,
+		     GL_UNSIGNED_BYTE,
+		     image->pixels);
+	SDL_FreeSurface(image); /* No longer needed */
+
+	return texture;
+}
+
 @implementation HeadUpDisplay
 
 GLfloat red_color[4] =		{1.0, 0.0, 0.0, 1.0};
@@ -75,13 +164,32 @@ float char_widths[128] = {
 {
 	int i;
 	BOOL areTrumblesToBeDrawn = NO;
-	
+
 	self = [super init];
-	
+
+#ifdef NEWFONTS
+	NSLog(@"initialising SDL_ttf");
+	if ( TTF_Init() < 0 )
+	{
+		NSLog(@"Couldn't initialize TTF: %s\n",SDL_GetError());
+		return nil;
+	}
+
+	//atexit(TTF_Quit);
+
+	// TODO: Get the font from the defaults file
+	NSLog(@"loading font");
+	gui_font = TTF_OpenFont("C:\\WINDOWS\\Fonts\\ANDALEWT.TTF", 48);
+	if (gui_font)
+		NSLog(@"loaded font OK");
+	else
+		NSLog(@"could not load font");
+#endif
+
 	line_width = 1.0;
-	
+
 	setUpSinTable();
-	
+
 //	int ch;
 //    NSMutableDictionary *stringAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 //        [NSFont fontWithName:@"Helvetica-Bold" size:28], NSFontAttributeName,
@@ -94,7 +202,7 @@ float char_widths[128] = {
 //		if ((ch < 48)||(ch > 57))	// exclude the digits which should be fixed width
 //			char_widths[ch] = strsize.width * .225;
 //	}
-//	
+//
 //	// output the character sizes for hardcoding
 //	//
 //	printf("hard code this:\n\nfloat char_widths[128] = {");
@@ -107,11 +215,11 @@ float char_widths[128] = {
 //			printf(",");
 //	}
 //	printf("\n\n");
-		
+
 	// init arrays
 	dialArray = [[NSMutableArray alloc] initWithCapacity:16];   // alloc retains
 	legendArray = [[NSMutableArray alloc] initWithCapacity:16]; // alloc retains
-	
+
 	// populate arrays
 	if ([hudinfo objectForKey:DIALS_KEY])
 	{
@@ -136,9 +244,9 @@ float char_widths[128] = {
 		for (i = 0; i < [legends count]; i++)
 			[self addLegend:(NSDictionary *)[legends objectAtIndex:i]];
 	}
-	
+
 	last_transmitter = NO_TARGET;
-	
+
 	return self;
 }
 
@@ -146,6 +254,16 @@ float char_widths[128] = {
 {
     if (legendArray)			[legendArray release];
     if (dialArray)				[dialArray release];
+
+#ifdef NEWFONTS
+	if (gui_font)
+	{
+		NSLog(@"closing font, quitting TTF");
+		TTF_CloseFont(gui_font);
+		TTF_Quit();
+		gui_font = 0;
+	}
+#endif
 
     [super dealloc];
 }
@@ -195,7 +313,7 @@ GLuint ascii_texture_name;
 #endif
 		NSMutableDictionary *legendDict = [NSMutableDictionary dictionaryWithDictionary:info];
 		[legendDict setObject:legendSprite forKey:SPRITE_KEY];
-		[legendArray addObject:legendDict];																	
+		[legendArray addObject:legendDict];
 		[legendSprite release];
 		return;
 	}
@@ -273,7 +391,7 @@ checkGLErrors(@"HeadUpDisplay after drawDials");
 	if (([info objectForKey:EQUIPMENT_REQUIRED_KEY])&&
 		(![player has_extra_equipment:(NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY]]))
 		return;
-	
+
 	if ([info objectForKey:SELECTOR_KEY])
 	{
 		//NSLog(@"DEBUG about to '%@'",[info objectForKey:SELECTOR_KEY]);
@@ -292,9 +410,9 @@ checkGLErrors([NSString stringWithFormat:@"HeadUpDisplay after drawHUDItem %@", 
 
 static BOOL hostiles;
 - (void) drawScanner:(NSDictionary *) info
-{	
+{
     GLfloat scanner_color[4] = { 1.0, 0.0, 0.0, 1.0 };
-	
+
 	int x = SCANNER_CENTRE_X;
 	int y = SCANNER_CENTRE_Y;
 	double alpha = 1.0;
@@ -318,10 +436,10 @@ static BOOL hostiles;
 		scanner_color[2] = (GLfloat)[(NSNumber *)[rgb_array objectAtIndex:2] floatValue];
 	}
 	scanner_color[3] = (GLfloat)alpha;
-	
+
 	double z_factor = siz.height / siz.width;	// approx 1/4
 	double y_factor = 1.0 - sqrt(z_factor);	// approx 1/2
-	
+
 //	NSLog(@"DEBUG z_factor %.2f y_factor %.2f", z_factor, y_factor);
 
 	int i;
@@ -333,11 +451,11 @@ static BOOL hostiles;
 
 	double max_scanner_range2 = SCANNER_SCALE*SCANNER_SCALE*10000.0;
 	double max_zoomed_range2 = SCANNER_SCALE*SCANNER_SCALE*10000.0/(scanner_zoom*scanner_zoom);
-	
+
 	BOOL	isHostile = NO;
 	BOOL	foundHostiles = NO;
 	BOOL	mass_locked = NO;
-	
+
 	Vector	position, relativePosition;
 	Matrix rotMatrix;
 	int flash = ((int)([[player universe] getTime] * 4))&1;
@@ -349,7 +467,7 @@ static BOOL hostiles;
 	int			ent_count =		uni->n_entities;
 	Entity**	uni_entities =	uni->sortedEntities;	// grab the public sorted list
 	Entity*		my_entities[ent_count];
-	
+
 	for (i = 0; i < ent_count; i++)
 		my_entities[i] = [uni_entities[i] retain];	// retained
 	//
@@ -359,14 +477,14 @@ static BOOL hostiles;
 
 	position = player->position;
 	gl_matrix_into_matrix([player rotationMatrix], rotMatrix);
-	
+
 //	NSLog(@"drawing grid size %.1f x %.1f", siz.width, siz.height);
-	
+
 	glColor4fv( scanner_color);
 	drawScannerGrid( x, y, z1, siz, [[player universe] viewDir], line_width, scanner_zoom);
-	
+
 	GLfloat off_scope2 = (siz.width > siz.height) ? siz.width * siz.width : siz.height * siz.height;
-	
+
 	//
 	int p_status = player->status;
 
@@ -375,14 +493,14 @@ static BOOL hostiles;
 		double upscale = scanner_zoom*1.25/scanner_scale;
 		off_scope2 /= upscale * upscale;
 		double max_blip = 0.0;
-		
+
 		for (i = 0; i < ent_count; i++)  // scanner lollypops
 		{
 			drawthing = my_entities[i];
-			
+
 			int drawClass = drawthing->scan_class;
 			if (drawClass == CLASS_PLAYER)	drawClass = CLASS_NO_DRAW;
-			
+
 			// consider large bodies for mass_lock
 			if (drawthing->isPlanet)
 			{
@@ -395,7 +513,7 @@ static BOOL hostiles;
 					mass_locked = YES;
 				}
 			}
-			
+
 			if (drawClass != CLASS_NO_DRAW)
 			{
 				GLfloat x1,y1,y2;
@@ -421,16 +539,16 @@ static BOOL hostiles;
 							break;
 					}
 				}
-				
+
 				[player setAlert_flag:ALERT_FLAG_MASS_LOCK :mass_locked];
-				
+
 				// exit if it's too far away
 				if ((isnan(drawthing->zero_distance))||(drawthing->zero_distance > max_scanner_range2))
 					continue;
-				
+
 				// has it sent a recent message
 				//
-				if (drawthing->isShip) 
+				if (drawthing->isShip)
 					ms_blip = 2.0 * [(ShipEntity *)drawthing message_time];
 				if (ms_blip > max_blip)
 				{
@@ -438,18 +556,18 @@ static BOOL hostiles;
 					last_transmitter = [drawthing universal_id];
 				}
 				ms_blip -= floor(ms_blip);
-				
+
 				relativePosition = drawthing->relative_position;
 
 				// rotate the view
 				mult_vector(&relativePosition, rotMatrix);
 				// scale the view
 				relativePosition.x *= upscale;	relativePosition.y *= upscale;	relativePosition.z *= upscale;
-				
+
 				x1 = relativePosition.x;
 				y1 = z_factor * relativePosition.z;
 				y2 = y1 + y_factor * relativePosition.y;
-				
+
 				isHostile = NO;
 				if (drawthing->isShip)
 				{
@@ -459,12 +577,12 @@ static BOOL hostiles;
 					GLfloat* base_col = [ship scannerDisplayColorForShip:player :isHostile :flash];
 					col[0] = base_col[0];	col[1] = base_col[1];	col[2] = base_col[2];	col[3] = alpha * base_col[3];
 				}
-				
+
 				if (drawthing->isWormhole)
 				{
 					col[0] = blue_color[0];	col[1] = (flash)? 1.0 : blue_color[1];	col[2] = blue_color[2];	col[3] = alpha * blue_color[3];
 				}
-				
+
 				// position the scanner
 				x1 += scanner_cx;   y1 += scanner_cy;   y2 += scanner_cy;
 				switch (drawClass)
@@ -511,7 +629,7 @@ static BOOL hostiles;
 				{
 					glBegin(GL_QUADS);
 					glColor4fv(col);
-					glVertex3f( x1-3, y2, z1);	glVertex3f( x1+2, y2, z1);	glVertex3f( x1+2, y2+3, z1);	glVertex3f( x1-3, y2+3, z1);	
+					glVertex3f( x1-3, y2, z1);	glVertex3f( x1+2, y2, z1);	glVertex3f( x1+2, y2+3, z1);	glVertex3f( x1-3, y2+3, z1);
 					col[3] *= 0.3333; // one third the alpha
 					glColor4fv(col);
 					glVertex3f( x1, y1, z1);	glVertex3f( x1+2, y1, z1);	glVertex3f( x1+2, y2, z1);	glVertex3f( x1, y2, z1);
@@ -521,7 +639,7 @@ static BOOL hostiles;
 		}
 		//
 		[player setAlert_flag:ALERT_FLAG_HOSTILES :foundHostiles];
-		//	
+		//
 		if ((foundHostiles)&&(!hostiles))
 		{
 			hostiles = YES;
@@ -531,7 +649,7 @@ static BOOL hostiles;
 			hostiles = NO;					// there are now no hostiles on scope, relax
 		}
 	}
-	
+
 	//
 	for (i = 0; i < ent_count; i++)
 		[my_entities[i] release];	//	released
@@ -550,7 +668,7 @@ static BOOL hostiles;
 }
 
 - (void) drawScannerZoomIndicator:(NSDictionary *) info
-{	
+{
     GLfloat zoom_color[] = { 1.0f, 0.1f, 0.0f, 1.0f };
 	GLfloat x = ZOOM_INDICATOR_CENTRE_X;
 	GLfloat y = ZOOM_INDICATOR_CENTRE_Y;
@@ -591,11 +709,11 @@ static BOOL hostiles;
 	drawCharacterQuad( 49, cx + 0.3 * siz.width, cy, z1, siz);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
-	
+
 }
 
 - (void) drawCompass:(NSDictionary *) info
-{	
+{
 	NSSize siz = NSMakeSize( COMPASS_HALF_SIZE, COMPASS_HALF_SIZE);
     GLfloat x = COMPASS_CENTRE_X;
 	GLfloat y = COMPASS_CENTRE_Y;
@@ -614,7 +732,7 @@ static BOOL hostiles;
 	Matrix rotMatrix;
 	Vector position = player->position;
 	gl_matrix_into_matrix([player rotationMatrix], rotMatrix);
-	//	
+	//
 	// new
 	GLfloat h1 = siz.height * 0.125;
 	GLfloat h3 = siz.height * 0.375;
@@ -622,7 +740,7 @@ static BOOL hostiles;
 	GLfloat w3 = siz.width * 0.375;
 	glLineWidth( 2.0 * line_width);	// thicker
 	glColor4f( 0.0f, 0.0f, 1.0f, alpha);
-	drawOval( x, y, z1, siz, 12);	
+	drawOval( x, y, z1, siz, 12);
 	glColor4f( 0.0f, 0.0f, 1.0f, 0.5f * alpha);
 	glBegin(GL_LINES);
 		glVertex3f( x - w1, y, z1);	glVertex3f( x - w3, y, z1);
@@ -631,7 +749,7 @@ static BOOL hostiles;
 		glVertex3f( x, y + h1, z1);	glVertex3f( x, y + h3, z1);
 	glEnd();
 	glLineWidth( line_width);	// thinner
-	
+
 	//
 	PlanetEntity*	the_sun = [[player universe] sun];
 	PlanetEntity*	the_planet = [[player universe] planet];
@@ -673,7 +791,7 @@ static BOOL hostiles;
 					{
 						[player setCompass_mode:COMPASS_MODE_PLANET];
 						relativePosition = the_planet->position;
-					}	
+					}
 					break;
 				case COMPASS_MODE_BEACONS:
 					if (the_next_beacon)
@@ -682,7 +800,7 @@ static BOOL hostiles;
 					{
 						[player setCompass_mode:COMPASS_MODE_PLANET];
 						relativePosition = the_planet->position;
-					}	
+					}
 					break;
 			}
 		}
@@ -815,16 +933,16 @@ static BOOL hostiles;
 		glColor4f(1.0,0.0,0.0,alpha);
 	}
 	glBegin(GL_LINES);
-	
+
 	glVertex3f(relativePosition.x - 0.5 * siz.width, relativePosition.y + 0.5 * siz.height, z1);
 	glVertex3f(relativePosition.x - 0.25 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
-	
+
 	glVertex3f(relativePosition.x - 0.25 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
 	glVertex3f(relativePosition.x, relativePosition.y, z1);
-	
+
 	glVertex3f(relativePosition.x, relativePosition.y, z1);
 	glVertex3f(relativePosition.x + 0.25 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
-	
+
 	glVertex3f(relativePosition.x + 0.25 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
 	glVertex3f(relativePosition.x + 0.5 * siz.width, relativePosition.y + 0.5 * siz.height, z1);
 	glEnd();
@@ -841,24 +959,24 @@ static BOOL hostiles;
 		glColor4f(1.0,0.0,0.0,alpha);
 	}
 	glBegin(GL_LINES);
-	
+
 	glVertex3f(relativePosition.x - 0.5 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
 	glVertex3f(relativePosition.x, relativePosition.y + 0.5 * siz.height, z1);
-	
+
 	glVertex3f(relativePosition.x + 0.5 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
 	glVertex3f(relativePosition.x, relativePosition.y + 0.5 * siz.height, z1);
-	
+
 	glVertex3f(relativePosition.x - 0.5 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
 	glVertex3f(relativePosition.x + 0.5 * siz.width, relativePosition.y - 0.5 * siz.height, z1);
-	
+
 	glEnd();
 }
 
 - (void) drawAegis:(NSDictionary *) info
-{	
+{
 	if (([[player universe] viewDir] == VIEW_DOCKED)||([[player universe] sun] == nil)||([player checkForAegis] != AEGIS_IN_DOCKING_RANGE))
 		return;	// don't draw
-	
+
 	NSSize siz = NSMakeSize( AEGIS_WIDTH, AEGIS_HEIGHT);
     int x = AEGIS_CENTRE_X;
 	int y = AEGIS_CENTRE_Y;
@@ -878,20 +996,20 @@ static BOOL hostiles;
 	//
 	GLfloat	w = siz.width / 16.0;
 	GLfloat	h = siz.height / 16.0;
-	
+
 	GLfloat strip[] = { -7,8, -6,5, 5,8, 3,5, 7,2, 4,2, 6,-1, 4,2, -4,-1, -6,2, -4,-1, -7,-1, -3,-4, -5,-7, 6,-4, 7,-7 };
-	
+
 	glColor4f( 0.0f, 1.0f, 0.0f, alpha);
 	glBegin(GL_QUAD_STRIP);
 	int i;
 	for (i = 0; i < 32; i += 2)
 		glVertex3f( x + w * strip[i], y - h * strip[i + 1], z1);
 	glEnd();
-	
+
 }
 
 - (void) drawSpeedBar:(NSDictionary *) info
-{	
+{
     double ds = [player dial_speed];
 //	double hs = [player dial_hyper_speed];
 	int x = SPEED_BAR_CENTRE_X;
@@ -921,11 +1039,11 @@ static BOOL hostiles;
 	if (ds > .80)
 		glColor4fv(red_color);
 	hudDrawBarAt( x, y, z1, siz, ds);
-	
+
 }
 
 - (void) drawRollBar:(NSDictionary *) info
-{	
+{
     int x = ROLL_BAR_CENTRE_X;
 	int y = ROLL_BAR_CENTRE_Y;
 	NSSize siz = NSMakeSize( ROLL_BAR_WIDTH, ROLL_BAR_HEIGHT);
@@ -953,7 +1071,7 @@ static BOOL hostiles;
 }
 
 - (void) drawPitchBar:(NSDictionary *) info
-{	
+{
     int x = PITCH_BAR_CENTRE_X;
 	int y = PITCH_BAR_CENTRE_Y;
 	NSSize siz = NSMakeSize( PITCH_BAR_WIDTH, PITCH_BAR_HEIGHT);
@@ -981,14 +1099,14 @@ static BOOL hostiles;
 }
 
 - (void) drawEnergyGauge:(NSDictionary *) info
-{	
+{
 	int n_bars = [player dial_max_energy]/64.0;
 	if (n_bars < 1)
 		n_bars = 1;
 
     int x = ENERGY_GAUGE_CENTRE_X;
 	int y = ENERGY_GAUGE_CENTRE_Y;
-	
+
 
 	NSSize siz = NSMakeSize( ENERGY_GAUGE_WIDTH, ENERGY_GAUGE_HEIGHT);
 	if ([info objectForKey:X_KEY])
@@ -1005,13 +1123,13 @@ static BOOL hostiles;
 	BOOL labelled = YES;
 	if ([info objectForKey:LABELLED_KEY])
 		labelled = [(NSNumber *)[info objectForKey:LABELLED_KEY] boolValue];
-	
+
 	if ([info objectForKey:N_BARS_KEY])
 		n_bars = [(NSNumber *)[info objectForKey:N_BARS_KEY] intValue];
-		
+
 	if (n_bars > 8)
 		labelled = NO;
-		
+
 	if (draw_surround)
 	{
 		// draw energy surround
@@ -1047,7 +1165,7 @@ static BOOL hostiles;
 }
 
 - (void) drawForwardShieldBar:(NSDictionary *) info
-{	
+{
     int x = FORWARD_SHIELD_BAR_CENTRE_X;
 	int y = FORWARD_SHIELD_BAR_CENTRE_Y;
 	NSSize siz = NSMakeSize( FORWARD_SHIELD_BAR_WIDTH, FORWARD_SHIELD_BAR_HEIGHT);
@@ -1080,7 +1198,7 @@ static BOOL hostiles;
 }
 
 - (void) drawAftShieldBar:(NSDictionary *) info
-{	
+{
     int x = AFT_SHIELD_BAR_CENTRE_X;
 	int y = AFT_SHIELD_BAR_CENTRE_Y;
 	NSSize siz = NSMakeSize( AFT_SHIELD_BAR_WIDTH, AFT_SHIELD_BAR_HEIGHT);
@@ -1113,7 +1231,7 @@ static BOOL hostiles;
 }
 
 - (void) drawFuelBar:(NSDictionary *) info
-{	
+{
     float fu = [player dial_fuel];
 	float hr = [player dial_hyper_range];
 	int x = FUEL_BAR_CENTRE_X;
@@ -1131,7 +1249,7 @@ static BOOL hostiles;
 	// draw fuel bar
 	glColor4fv(yellow_color);
 	hudDrawBarAt( x, y, z1, siz, fu);
-	
+
 	// draw range indicator
 	if ((hr > 0)&&(hr <= 1.0))
 	{
@@ -1141,7 +1259,7 @@ static BOOL hostiles;
 }
 
 - (void) drawCabinTempBar:(NSDictionary *) info
-{	
+{
     int x = CABIN_TEMP_BAR_CENTRE_X;
 	int y = CABIN_TEMP_BAR_CENTRE_Y;
 	NSSize siz = NSMakeSize( CABIN_TEMP_BAR_WIDTH, CABIN_TEMP_BAR_HEIGHT);
@@ -1170,7 +1288,7 @@ static BOOL hostiles;
 }
 
 - (void) drawWeaponTempBar:(NSDictionary *) info
-{	
+{
     int x = WEAPON_TEMP_BAR_CENTRE_X;
 	int y = WEAPON_TEMP_BAR_CENTRE_Y;
 	NSSize siz = NSMakeSize( WEAPON_TEMP_BAR_WIDTH, WEAPON_TEMP_BAR_HEIGHT);
@@ -1194,7 +1312,7 @@ static BOOL hostiles;
 }
 
 - (void) drawAltitudeBar:(NSDictionary *) info
-{	
+{
     int x = ALTITUDE_BAR_CENTRE_X;
 	int y = ALTITUDE_BAR_CENTRE_Y;
 	NSSize siz = NSMakeSize( ALTITUDE_BAR_WIDTH, ALTITUDE_BAR_HEIGHT);
@@ -1223,7 +1341,7 @@ static BOOL hostiles;
 }
 
 - (void) drawMissileDisplay:(NSDictionary *) info
-{	
+{
     int x = MISSILES_DISPLAY_X;
 	int y = MISSILES_DISPLAY_Y;
 	int sp = MISSILES_DISPLAY_SPACING;
@@ -1346,7 +1464,7 @@ static BOOL hostiles;
 		glColor4f( 0.0, 1.0, 0.0, 1.0);
 		drawString( [player dial_target_name], x + sp, y, z1, NSMakeSize( siz.width, siz.height));
 	}
-	
+
 }
 
 - (void) drawTargetReticle:(NSDictionary *) info;
@@ -1356,7 +1474,7 @@ static BOOL hostiles;
 //	if (([info objectForKey:EQUIPMENT_REQUIRED_KEY])&&
 //		(![player has_extra_equipment:(NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY]]))
 //		return;
-//	
+//
 	if ([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
 	{
 		//Entity *target = [player getPrimaryTarget];
@@ -1419,23 +1537,23 @@ static BOOL hostiles;
 }
 
 - (void) drawDirectionCue:(NSDictionary *) info
-{	
+{
  	// the direction cue is an advanced option
 	// so we need to check for its extra equipment flag first
 	if (([info objectForKey:EQUIPMENT_REQUIRED_KEY])&&
 		(![player has_extra_equipment:(NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY]]))
 		return;
-	
+
 	if ([[player universe] displayGUI])
 		return;
-	
+
 	if ([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
 	{
 		GLfloat clear_color[4] = {0.0, 1.0, 0.0, 0.0};
 		Entity *target = [player getPrimaryTarget];
 		if (!target)
 			return;
-		
+
 		// draw the direction cue
 		Matrix rotMatrix;
 		Vector position = player->position;
@@ -1487,7 +1605,7 @@ static BOOL hostiles;
     int x = CLOCK_DISPLAY_X;
 	int y = CLOCK_DISPLAY_Y;
 	NSSize siz = NSMakeSize( CLOCK_DISPLAY_WIDTH, CLOCK_DISPLAY_HEIGHT);
-	
+
 	if ([info objectForKey:X_KEY])
 		x = [(NSNumber *)[info objectForKey:X_KEY] intValue];
 	if ([info objectForKey:Y_KEY])
@@ -1504,22 +1622,22 @@ static BOOL hostiles;
 - (void) drawFPSInfoCounter:(NSDictionary *) info
 {
     Universe* universe = [player universe];
-	
+
 	if (![universe displayFPS])
 		return;
-	
+
 	if ((!player)||(!universe))
 		return;
-	
+
 	NSString* positionInfo = [universe expressPosition:player->position inCoordinateSystem:@"pwm"];
-	
+
 	NSString* collDebugInfo = [NSString stringWithFormat:@"%@ - %@", [player dial_objinfo], [universe collisionDescription]];
-	
+
 	int x = FPSINFO_DISPLAY_X;
 	int y = FPSINFO_DISPLAY_Y;
 	NSSize siz = NSMakeSize( FPSINFO_DISPLAY_WIDTH, FPSINFO_DISPLAY_HEIGHT);
 	NSSize siz08 = NSMakeSize( 0.8 * FPSINFO_DISPLAY_WIDTH, 0.8 * FPSINFO_DISPLAY_HEIGHT);
-	
+
 	if ([info objectForKey:X_KEY])
 		x = [(NSNumber *)[info objectForKey:X_KEY] intValue];
 	if ([info objectForKey:Y_KEY])
@@ -1533,7 +1651,7 @@ static BOOL hostiles;
 	drawString( [player dial_fpsinfo], x, y, z1, siz);
 //	drawString( [player dial_objinfo], x, y - siz.height, z1, siz);
 	drawString( collDebugInfo, x, y - siz.height, z1, siz);
-	
+
 	drawString( positionInfo, x, y - 1.8 * siz.height, z1, siz08);
 }
 
@@ -1563,7 +1681,7 @@ static BOOL hostiles;
 	GLfloat a1 = alpha * 0.5f * (1.0f + sin(t * 8.0f));
 	GLfloat a2 = alpha * 0.5f * (1.0f + sin(t * 8.0f - 1.0f));
 	GLfloat a3 = alpha * 0.5f * (1.0f + sin(t * 8.0f - 2.0f));
-		
+
 	switch (scoop_status)
 	{
 		case SCOOP_STATUS_NOT_INSTALLED :
@@ -1602,7 +1720,7 @@ static BOOL hostiles;
 		s2c[3] = alpha;
 		s3c[3] = alpha;
 	}
-	
+
 	GLfloat w1 = siz.width / 8.0;
 	GLfloat w2 = 2.0 * w1;
 //	GLfloat w3 = 3.0 * w1;
@@ -1611,7 +1729,7 @@ static BOOL hostiles;
 	GLfloat h2 = 2.0 * h1;
 	GLfloat h3 = 3.0 * h1;
 	GLfloat h4 = 4.0 * h1;
-	
+
 	glDisable(GL_TEXTURE_2D);
 	glBegin( GL_QUADS);
 	// section 1
@@ -1626,11 +1744,11 @@ static BOOL hostiles;
 		glVertex3f( x, y - h4, z1);	glVertex3f( x - w2, y - h2, z1);	glVertex3f( x - w2, y - h1, z1);	glVertex3f( x, y - h2, z1);
 		glVertex3f( x, y - h4, z1);	glVertex3f( x + w2, y - h2, z1);	glVertex3f( x + w2, y - h1, z1);	glVertex3f( x, y - h2, z1);
 	glEnd();
-	
+
 }
 
 - (void) drawGreenSurround:(NSDictionary *) info
-{	
+{
     int x, y;
 	NSSize siz;
 	if ([info objectForKey:X_KEY])
@@ -1656,7 +1774,7 @@ static BOOL hostiles;
 }
 
 - (void) drawYellowSurround:(NSDictionary *) info
-{	
+{
     int x, y;
 	NSSize siz;
 	if ([info objectForKey:X_KEY])
@@ -1682,10 +1800,10 @@ static BOOL hostiles;
 }
 
 - (void) drawTrumbles:(NSDictionary *) info
-{	
+{
 	if (!player)
 		return;
-		
+
 	OOTrumble** trumbles = [player trumbleArray];
 	int i;
 	for (i = [player n_trumbles]; i > 0; i--)
@@ -1694,10 +1812,10 @@ static BOOL hostiles;
 //		NSPoint trumpos = [trum position];
 //		trumpos.x -= 32;
 //		trumpos.y += 32;
-		
+
 //		[trum updateTrumble:dt];
 		[trum drawTrumble: z1];
-		
+
 //		glColor4fv(yellow_color);
 //		hudDrawSurroundAt(trumpos.x, trumpos.y, z1, NSMakeSize(32, 12));
 //		hudDrawBarAt(trumpos.x, trumpos.y + 4, z1, NSMakeSize(32, 4), [trum discomfort]);
@@ -1766,7 +1884,7 @@ void hudDrawBarAt( GLfloat x, GLfloat y, GLfloat z, NSSize siz, double amount)
 	if (fabs(siz.width) > fabs(siz.height))
 	{
 		GLfloat position =  dial_ox + amount * siz.width;
-		
+
 		glBegin(GL_QUADS);
 			glVertex3f( dial_ox, dial_oy, z);
 			glVertex3f( position, dial_oy, z);
@@ -1777,7 +1895,7 @@ void hudDrawBarAt( GLfloat x, GLfloat y, GLfloat z, NSSize siz, double amount)
 	else
 	{
 		GLfloat position =  dial_oy + amount * siz.height;
-		
+
 		glBegin(GL_QUADS);
 			glVertex3f( dial_ox, dial_oy, z);
 			glVertex3f( dial_ox, position, z);
@@ -1807,7 +1925,7 @@ void hudDrawSpecialIconAt(NSArray* ptsArray, int x, int y, int z, NSSize siz)
 	int ox = x - siz.width / 2.0;
 	int oy = y - siz.height / 2.0;
 	int w = siz.width / 4.0;
-	int h = siz.height / 4.0; 
+	int h = siz.height / 4.0;
 	int i = 0;
 	int npts = [ptsArray count] & 0xfffe;	// make sure it's an even number
 	while (i < npts)
@@ -1823,7 +1941,7 @@ void hudDrawMissileIconAt(int x, int y, int z, NSSize siz)
 	int ox = x - siz.width / 2.0;
 	int oy = y - siz.height / 2.0;
 	int w = siz.width / 4.0;
-	int h = siz.height / 4.0; 
+	int h = siz.height / 4.0;
 
 	glVertex3i( ox, oy + 3 * h, z);
 	glVertex3i( ox + 2 * w, oy, z);
@@ -1839,7 +1957,7 @@ void hudDrawMineIconAt(int x, int y, int z, NSSize siz)
 	int ox = x - siz.width / 2.0;
 	int oy = y - siz.height / 2.0;
 	int w = siz.width / 4.0;
-	int h = siz.height / 4.0; 
+	int h = siz.height / 4.0;
 
 	glVertex3i( ox, oy + 2 * h, z);
 	glVertex3i( ox + w, oy + h, z);
@@ -1854,7 +1972,7 @@ void hudDrawStatusIconAt(int x, int y, int z, NSSize siz)
 	int ox = x - siz.width / 2.0;
 	int oy = y - siz.height / 2.0;
 	int w = siz.width / 4.0;
-	int h = siz.height / 4.0; 
+	int h = siz.height / 4.0;
 
 	glVertex3i( ox, oy + h, z);
 	glVertex3i( ox, oy + 3 * h, z);
@@ -1885,19 +2003,19 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 			legal_desc = [(NSArray *)[[[player1 universe] descriptions] objectForKey:@"legal_status"] objectAtIndex:legal_i];
 		}
 		break;
-	
+
 		case CLASS_THARGOID :
 		legal_desc = @"Alien";
 		break;
-		
+
 		case CLASS_POLICE :
 		legal_desc = @"System Vessel";
 		break;
-		
+
 		case CLASS_MILITARY :
 		legal_desc = @"Military Vessel";
 		break;
-		
+
 		default :
 		case CLASS_BUOY :
 		case CLASS_CARGO :
@@ -1909,13 +2027,13 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 		break;
 	}
 
-	
+
 	if ([player1 gui_screen] != GUI_SCREEN_MAIN)	// don't draw on text screens
 		return;
-	
+
 	if (!target)
 		return;
-	
+
 	gl_matrix	back_mat;
     Quaternion  back_q = player1->q_rotation;
 	back_q.w = -back_q.w;   // invert
@@ -1925,15 +2043,15 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 	double rdist = sqrt(magnitude2(p1));
 //	double rsize = target->actual_radius;
 	double rsize = target->collision_radius;
-	
+
 	if (rsize < rdist * ONE_SIXTYFOURTH)
 		rsize = rdist * ONE_SIXTYFOURTH;
-	
+
 	double rs0 = rsize;
 	//double rs3 = rsize * 0.75;
 	double rs2 = rsize * 0.50;
 	//double rs1 = rsize * 0.25;
-	
+
 	glPushMatrix();
 	//
 	// deal with view directions
@@ -1955,7 +2073,7 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 			view_dir.x = -1.0;   view_dir.y = 0.0;   view_dir.z = 0.0;
 			quaternion_rotate_about_axis(&back_q,vector_up_from_quaternion(back_q),-PI/2.0);
 			break;
-		
+
 		case VIEW_DOCKED :
 		case VIEW_BREAK_PATTERN :
 		default :
@@ -1972,7 +2090,7 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 	glTranslatef(p1.x, p1.y, p1.z);
 	//rotate to face player1
 	glMultMatrixf(back_mat);
-	// draw the reticle	
+	// draw the reticle
 	glColor4fv(green_color);
 	glBegin(GL_LINES);
 		glVertex2f(rs0,rs2);	glVertex2f(rs0,rs0);
@@ -1986,11 +2104,11 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 
 		glVertex2f(-rs0,-rs2);	glVertex2f(-rs0,-rs0);
 		glVertex2f(-rs0,-rs0);	glVertex2f(-rs2,-rs0);
-	
+
 //	NSLog(@"DEBUG rs0 %.3f %.3f",rs0, rs2);
-	
+
 	glEnd();
-	
+
 	// add text for reticle here
 	float range = sqrt(target->zero_distance)/1000;
 	NSSize textsize = NSMakeSize( rdist * ONE_SIXTYFOURTH, rdist * ONE_SIXTYFOURTH);
@@ -2000,7 +2118,7 @@ void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1)
 	// no need to set color - tis green already!
 	drawString( info1, rs0, 0.5 * rs2, 0, textsize);
 	drawString( info2, rs0, 0.5 * rs2 - line_height, 0, textsize);
-	
+
 	glPopMatrix();
 }
 
@@ -2010,7 +2128,7 @@ double drawCharacterQuad(int chr, double x, double y, double z, NSSize siz)
 		return 0;
 	double texture_x = ONE_SIXTEENTH * (chr & 0x0f);
 	double texture_y = ONE_EIGHTH * (chr >> 4);		// divide by 16 fast
-	
+
 	glTexCoord2f( texture_x, texture_y + ONE_EIGHTH);
 	glVertex3f( x, y, z);
 	glTexCoord2f( texture_x + ONE_SIXTEENTH, texture_y + ONE_EIGHTH);
@@ -2023,6 +2141,7 @@ double drawCharacterQuad(int chr, double x, double y, double z, NSSize siz)
 	return siz.width * 0.13 * char_widths[chr];
 }
 
+#ifndef NEWFONTS
 void drawString(NSString *text, double x, double y, double z, NSSize siz)
 {
 	int i;
@@ -2030,7 +2149,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 	const char *string;
 	char simple[2] = {0, 0};
 	unsigned ch, next, length;
-	
+
 //	NSLog(@"DEBUG drawing string (%@) at %.1f, %.1f, %.1f (%.1f x %.1f)", text, x, y, z, siz.width, siz.height);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -2057,7 +2176,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 				}
 			}
 		}
-		
+
 		if (0x7f < ch) string = toAscii(ch);
 		else
 		{
@@ -2066,7 +2185,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 			simple[0] = ch;
 			string = simple;
 		}
-		
+
 		while (*string)
 		{
 			assert(!(*string & 0x80));
@@ -2076,7 +2195,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
-	
+
 }
 
 static const char *toAscii(unsigned inCodePoint)
@@ -2089,21 +2208,21 @@ static const char *toAscii(unsigned inCodePoint)
 		case 0x2019:	// Right single quotation mark
 		case 0x201B:	// Single high-reversed-9 quotation mark
 			return "'";
-		
+
 		case 0x201A:	// Single low-9 quotation mark
 			return ",";
-		
+
 		case 0x201C:	// Left double quotation mark
 		case 0x201D:	// Right double quotation mark
 		case 0x201F:	// Double high-reversed-9 quotation mark
 			return "\"";
-		
+
 		case 0x201E:	// Double low-9 quotation mark
 			return ",,";
-		
+
 		case 0x2026:	// Horizontal ellipsis
 			return "...";
-		
+
 		case 0x2010:	// Hyphen
 		case 0x2011:	// Hyphen
 		case 0x00AD:	// Soft hyphen
@@ -2111,41 +2230,98 @@ static const char *toAscii(unsigned inCodePoint)
 		case 0x2013:	// En dash
 		case 0x00B7:	// Middle dot
 			return "-";
-		
+
 		case 0x2014:	// Em dash
 		case 0x2015:	// Horizontal bar
 			return "--";
-		
+
 		case 0x2318:	// Place of interest sign (Command key)
 			return "(Cmd)";
-		
+
 		case 0x2325:	// Option Key
 			return "(Option)";
-		
+
 		case 0x2303:	// Up arrowhead (Control Key)
 			return "(Control)";
-		
+
 		// For GrowlTunes:
 		case 0x2605:	// Black star
 		case 0x272F:	// Pinwheel star
 			return "*";
-		
+
 		case 0x2606:	// White star
 			return "-";
-		
+
 		case 0x266D:	// Musical flat sign
 			return "b";
-		
+
 		case 0x266E:	// Musical natural sign
 			return "=";
-		
+
 		case 0x266F:	// Musical sharp sign
 			return "#";
-		
+
 		default:
 			return "?";
 	}
 }
+
+#else
+
+void drawString(NSString *text, double x, double y, double z, NSSize siz)
+{
+	GLuint texture;
+	int w, h;
+	GLfloat texcoord[4], strX;
+	GLfloat texMinX, texMinY;
+	GLfloat texMaxX, texMaxY;
+	SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
+	SDL_Surface *screen = SDL_GetVideoSurface();
+
+	//NSLog(@"drawString(%@, %f, %f, %f, %f, %f", text, x, y, z, siz.width, siz.height);
+
+	SDL_Surface *textSurface = TTF_RenderUTF8_Solid(gui_font, [text UTF8String], white);
+	if ( ! textSurface)
+		return;
+	w = textSurface->w;
+	h = textSurface->h;
+	texture = SDL_GL_LoadTexture(textSurface, texcoord);
+
+	strX = [text length] * siz.width * 0.60;
+
+	texMinX = texcoord[0];
+	texMinY = texcoord[1];
+	texMaxX = texcoord[2];
+	texMaxY = texcoord[3];
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glBegin(GL_TRIANGLE_STRIP);
+		glTexCoord2f(texMinX, texMaxY); glVertex3f(x, y, z);
+		glTexCoord2f(texMaxX, texMaxY); glVertex3f(x+strX, y, z);
+		glTexCoord2f(texMinX, texMinY); glVertex3f(x, y+siz.height, z);
+		glTexCoord2f(texMaxX, texMinY); glVertex3f(x+strX, y+siz.height, z);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+
+	glDeleteTextures(1, &texture); // Delete the string texture from video memory
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix(); // restore ship projection matrix
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix(); // restore ship model/view matrix
+
+	SDL_FreeSurface(textSurface);
+	//glPopAttrib();
+}
+
+#endif
 
 void drawPlanetInfo(int gov, int eco, int tec, double x, double y, double z, NSSize siz)
 {
@@ -2161,13 +2337,13 @@ void drawPlanetInfo(int gov, int eco, int tec, double x, double y, double z, NSS
 	double cx = x;
 	int tl = tec + 1;
 	GLfloat ce1 = 1.0 - 0.125 * eco;
-	
+
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBindTexture(GL_TEXTURE_2D, ascii_texture_name);
 
 	glBegin(GL_QUADS);
-	
+
 	glColor4f( ce1, 1.0, 0.0, 1.0);
 	cx += drawCharacterQuad( 23 - eco, cx, y, z, siz);	// characters 16..23 are economy symbols
 	glColor3fv(&govcol[gov * 3]);
@@ -2179,11 +2355,12 @@ void drawPlanetInfo(int gov, int eco, int tec, double x, double y, double z, NSS
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
-		
+
 }
 
 NSRect rectForString(NSString *text, double x, double y, NSSize siz)
 {
+//#ifndef NEWFONTS
 	int i;
 	double w = 0;
 	for (i = 0; i < [text length]; i++)
@@ -2194,6 +2371,36 @@ NSRect rectForString(NSString *text, double x, double y, NSSize siz)
 	}
 
 	return NSMakeRect( x, y, w, siz.height);
+/*
+#else
+
+	int w, h;
+	double dw;
+	if (gui_font && text)
+	{
+		NSLog(@"calling TTF_SizeUTF8 for: %@", text);
+		TTF_SizeUTF8(gui_font, [text UTF8String], &w, &h);
+		NSLog(@"size is %dx%d", w, h);
+		dw = (float)w * 0.6;
+		w = (int)dw;
+	}
+	else
+	{
+		int i;
+		double dw = 0;
+		for (i = 0; i < [text length]; i++)
+		{
+			int ch = (int)[text characterAtIndex:i];
+			ch = ch & 0x7f;
+			dw += siz.width * 0.13 * char_widths[ch];
+		}
+
+		return NSMakeRect( x, y, dw, siz.height);
+	}
+
+	return NSMakeRect(x, y, w, siz.height);
+#endif
+*/
 }
 
 void drawScannerGrid( double x, double y, double z, NSSize siz, int v_dir, GLfloat thickness, double zoom)
@@ -2208,9 +2415,9 @@ void drawScannerGrid( double x, double y, double z, NSSize siz, int v_dir, GLflo
 	GLfloat km_scan = 0.001 * SCANNER_MAX_RANGE / zoom;	// calculate kilometer divisions
 	GLfloat hdiv = 0.5 * siz.height / km_scan;
 	GLfloat wdiv = 0.25 * siz.width / km_scan;
-	
+
 	int i, ii;
-	
+
 	if (wdiv < 4.0)
 	{
 		wdiv *= 2.0;
@@ -2220,13 +2427,13 @@ void drawScannerGrid( double x, double y, double z, NSSize siz, int v_dir, GLflo
 	{
 		ii = 1;
 	}
-	
+
 	glLineWidth(2.0 * thickness);
-	
-	drawOval( x, y, z, siz, 4);	
-	
+
+	drawOval( x, y, z, siz, 4);
+
 	glLineWidth(thickness);
-	
+
 	glBegin(GL_LINES);
 		glVertex3f(x, y - hh, z);	glVertex3f(x, y + hh, z);
 		glVertex3f(x - ww, y, z);	glVertex3f(x + ww, y, z);

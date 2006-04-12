@@ -45,6 +45,9 @@ Your fair use and other rights are in no way affected by the above.
 #import "vector.h"
 #import "MyOpenGLView.h"
 
+#ifdef NEWFONTS
+#import "SDL_ttf.h"
+#endif
 
 #define SCANNER_CENTRE_X	0
 #define SCANNER_CENTRE_Y	-180
@@ -193,20 +196,19 @@ extern int debug;
 @interface HeadUpDisplay : NSObject {
 
 	PlayerEntity*   player;
-	
+
 	NSMutableArray  *legendArray;
 	NSMutableArray  *dialArray;
-	
+
 	// zoom level
 	double			scanner_zoom;
-	
+
 	//where to draw it
 	GLfloat			z1;
-	
+
 	GLfloat			line_width;
-	
+
 	int				last_transmitter;
-	
 }
 
 - (void) setPlayer:(PlayerEntity *) player_entity;
