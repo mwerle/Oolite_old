@@ -42,7 +42,6 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "HeadUpDisplay.h"
 #import "ResourceManager.h"
-//#import "OpenGLSprite.h"
 #import "PlayerEntity.h"
 #import "PlanetEntity.h"
 #import "Universe.h"
@@ -50,11 +49,11 @@ Your fair use and other rights are in no way affected by the above.
 #import "OOTrumble.h"
 
 static const char *toAscii(unsigned inCodePoint);
-
+/*
 #ifdef NEWFONTS
 	TTF_Font *gui_font = 0;
 #endif
-
+*/
 /* Quick utility function for texture creation */
 static int power_of_two(int input)
 {
@@ -65,7 +64,7 @@ static int power_of_two(int input)
 	}
 	return value;
 }
-
+/*
 GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 {
 	GLuint texture;
@@ -75,19 +74,19 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 	Uint32 saved_flags;
 	Uint8  saved_alpha;
 
-	/* Use the surface width and height expanded to powers of 2 */
+	// Use the surface width and height expanded to powers of 2
 	w = power_of_two(surface->w);
 	h = power_of_two(surface->h);
-	texcoord[0] = 0.0f;			/* Min X */
-	texcoord[1] = 0.0f;			/* Min Y */
-	texcoord[2] = (GLfloat)surface->w / w;	/* Max X */
-	texcoord[3] = (GLfloat)surface->h / h;	/* Max Y */
+	texcoord[0] = 0.0f;			// Min X
+	texcoord[1] = 0.0f;			// Min Y
+	texcoord[2] = (GLfloat)surface->w / w;	// Max X
+	texcoord[3] = (GLfloat)surface->h / h;	// Max Y
 
 	image = SDL_CreateRGBSurface(
 			SDL_SWSURFACE,
 			w, h,
 			32,
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN /* OpenGL RGBA masks */
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN // OpenGL RGBA masks
 			0x000000FF,
 			0x0000FF00,
 			0x00FF0000,
@@ -103,26 +102,26 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 		return 0;
 	}
 
-	/* Save the alpha blending attributes */
+	// Save the alpha blending attributes
 	saved_flags = surface->flags&(SDL_SRCALPHA|SDL_RLEACCELOK);
 	saved_alpha = surface->format->alpha;
 	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
 		SDL_SetAlpha(surface, 0, 0);
 	}
 
-	/* Copy the surface into the GL texture image */
+	// Copy the surface into the GL texture image
 	area.x = 0;
 	area.y = 0;
 	area.w = surface->w;
 	area.h = surface->h;
 	SDL_BlitSurface(surface, &area, image, &area);
 
-	/* Restore the alpha blending attributes */
+	// Restore the alpha blending attributes
 	if ( (saved_flags & SDL_SRCALPHA) == SDL_SRCALPHA ) {
 		SDL_SetAlpha(surface, saved_flags, saved_alpha);
 	}
 
-	/* Create an OpenGL texture for the image */
+	// Create an OpenGL texture for the image
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -135,11 +134,11 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 		     GL_RGBA,
 		     GL_UNSIGNED_BYTE,
 		     image->pixels);
-	SDL_FreeSurface(image); /* No longer needed */
+	SDL_FreeSurface(image);
 
 	return texture;
 }
-
+*/
 @implementation HeadUpDisplay
 
 GLfloat red_color[4] =		{1.0, 0.0, 0.0, 1.0};
@@ -166,7 +165,7 @@ float char_widths[128] = {
 	BOOL areTrumblesToBeDrawn = NO;
 
 	self = [super init];
-
+/*
 #ifdef NEWFONTS
 	NSLog(@"initialising SDL_ttf");
 	if ( TTF_Init() < 0 )
@@ -179,42 +178,16 @@ float char_widths[128] = {
 
 	// TODO: Get the font from the defaults file
 	NSLog(@"loading font");
-	gui_font = TTF_OpenFont("C:\\WINDOWS\\Fonts\\ANDALEWT.TTF", 48);
+	gui_font = TTF_OpenFont("C:\\WINDOWS\\Fonts\\ANDALEWT.TTF", 36);
 	if (gui_font)
 		NSLog(@"loaded font OK");
 	else
 		NSLog(@"could not load font");
 #endif
-
+*/
 	line_width = 1.0;
 
 	setUpSinTable();
-
-//	int ch;
-//    NSMutableDictionary *stringAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-//        [NSFont fontWithName:@"Helvetica-Bold" size:28], NSFontAttributeName,
-//        [OOColor blackColor], NSForegroundColorAttributeName, NULL];
-//	for (ch = 32; ch < 127; ch++)
-//	{
-//		unichar	 uch = (unichar) ch;
-//		NSString* chr = [NSString stringWithCharacters:&uch length:1];
-//		NSSize strsize = [chr sizeWithAttributes:stringAttributes];
-//		if ((ch < 48)||(ch > 57))	// exclude the digits which should be fixed width
-//			char_widths[ch] = strsize.width * .225;
-//	}
-//
-//	// output the character sizes for hardcoding
-//	//
-//	printf("hard code this:\n\nfloat char_widths[128] = {");
-//	for (ch = 0; ch < 128; ch++)
-//	{
-//		if (!(ch & 15))
-//			printf("\n");
-//		printf("\t%.3f", char_widths[ch]);
-//		if (ch < 127)
-//			printf(",");
-//	}
-//	printf("\n\n");
 
 	// init arrays
 	dialArray = [[NSMutableArray alloc] initWithCapacity:16];   // alloc retains
@@ -254,7 +227,7 @@ float char_widths[128] = {
 {
     if (legendArray)			[legendArray release];
     if (dialArray)				[dialArray release];
-
+/*
 #ifdef NEWFONTS
 	if (gui_font)
 	{
@@ -264,7 +237,7 @@ float char_widths[128] = {
 		gui_font = 0;
 	}
 #endif
-
+*/
     [super dealloc];
 }
 
@@ -2141,7 +2114,7 @@ double drawCharacterQuad(int chr, double x, double y, double z, NSSize siz)
 	return siz.width * 0.13 * char_widths[chr];
 }
 
-#ifndef NEWFONTS
+//#ifndef NEWFONTS
 void drawString(NSString *text, double x, double y, double z, NSSize siz)
 {
 	int i;
@@ -2265,7 +2238,7 @@ static const char *toAscii(unsigned inCodePoint)
 			return "?";
 	}
 }
-
+/*
 #else
 
 void drawString(NSString *text, double x, double y, double z, NSSize siz)
@@ -2277,6 +2250,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 	GLfloat texMaxX, texMaxY;
 	SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
 	SDL_Surface *screen = SDL_GetVideoSurface();
+	NSRect r = rectForString(text, x, y, siz);
 
 	//NSLog(@"drawString(%@, %f, %f, %f, %f, %f", text, x, y, z, siz.width, siz.height);
 
@@ -2287,7 +2261,7 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 	h = textSurface->h;
 	texture = SDL_GL_LoadTexture(textSurface, texcoord);
 
-	strX = [text length] * siz.width * 0.60;
+	//strX = [text length] * siz.width * 0.60;
 
 	texMinX = texcoord[0];
 	texMinY = texcoord[1];
@@ -2303,26 +2277,20 @@ void drawString(NSString *text, double x, double y, double z, NSSize siz)
 
 	glBegin(GL_TRIANGLE_STRIP);
 		glTexCoord2f(texMinX, texMaxY); glVertex3f(x, y, z);
-		glTexCoord2f(texMaxX, texMaxY); glVertex3f(x+strX, y, z);
-		glTexCoord2f(texMinX, texMinY); glVertex3f(x, y+siz.height, z);
-		glTexCoord2f(texMaxX, texMinY); glVertex3f(x+strX, y+siz.height, z);
+		glTexCoord2f(texMaxX, texMaxY); glVertex3f(x+r.size.width, y, z);
+		glTexCoord2f(texMinX, texMinY); glVertex3f(x, y+r.size.height, z);
+		glTexCoord2f(texMaxX, texMinY); glVertex3f(x+r.size.width, y+r.size.height, z);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
 
 	glDeleteTextures(1, &texture); // Delete the string texture from video memory
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix(); // restore ship projection matrix
-
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix(); // restore ship model/view matrix
-
 	SDL_FreeSurface(textSurface);
 	//glPopAttrib();
 }
 
 #endif
-
+*/
 void drawPlanetInfo(int gov, int eco, int tec, double x, double y, double z, NSSize siz)
 {
 	GLfloat govcol[] = {	0.5, 0.0, 0.7,

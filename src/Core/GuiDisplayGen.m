@@ -43,67 +43,112 @@ Your fair use and other rights are in no way affected by the above.
 #import "ResourceManager.h"
 #import "OOSound.h"
 
+#ifdef NEWFONTS
+#include <string.h>
+#include <cftgl.h>
+#import "TextureStore.h"
+const GLfloat CHAR_WIDTH = 10.0;
+const GLfloat LINE_HEIGHT = 16.0;
+#define TEXT_BUFFER_SIZE 4096
+unsigned short textBuffer[TEXT_BUFFER_SIZE];
+#endif
 
 @implementation GuiDisplayGen
 
 - (id) init
 {
 	self = [super init];
-		
+
 	size_in_pixels  = NSMakeSize( MAIN_GUI_PIXEL_WIDTH, MAIN_GUI_PIXEL_HEIGHT);
 	n_columns		= 6;
 	n_rows			= 24;
 	pixel_row_center = size_in_pixels.width / 2;
+
+#ifndef NEWFONTS
 	pixel_row_height = MAIN_GUI_ROW_HEIGHT;
+#else
+	pixel_row_height = LINE_HEIGHT;
+#endif
+
 	pixel_row_start	= MAIN_GUI_PIXEL_ROW_START;		// first position down the page...
 
 	pixel_text_size = NSMakeSize( 0.9 * pixel_row_height, pixel_row_height);	// main gui has 18x20 characters
-	
+
 	has_title		= YES;
 	pixel_title_size = NSMakeSize( pixel_row_height * 1.75, pixel_row_height * 1.5);
-	
+
 	int stops[6] = {0, 192, 256, 320, 384, 448};
 	int i;
-	
+
 	rowRange = NSMakeRange(0,n_rows);
 
 	rowText =   [[NSMutableArray alloc] initWithCapacity:n_rows];   // alloc retains
 	rowKey =	[[NSMutableArray alloc] initWithCapacity:n_rows];   // alloc retains
 	rowColor =	[[NSMutableArray alloc] initWithCapacity:n_rows];   // alloc retains
-	
+
 	for (i = 0; i < n_rows; i++)
 	{
 		[rowText addObject:@"."];
 		[rowKey addObject:[NSString stringWithFormat:@"%d",i]];
 		[rowColor addObject:[OOColor yellowColor]];
 		rowPosition[i].x = 0.0;
+#ifndef NEWFONTS
 		rowPosition[i].y = size_in_pixels.height - (pixel_row_start + i * pixel_row_height);
+#else
+		rowPosition[i].y = (size_in_pixels.height / 2) - pixel_row_start - i * LINE_HEIGHT;
+#endif
 		rowAlignment[i] = GUI_ALIGN_LEFT;
 	}
-	
+
 	for (i = 0; i < n_columns; i++)
 	{
 		tabStops[i] = stops[i];
 	}
-	
+
 	selectedRow = 0;
 	selectableRange = NSMakeRange(0,0);
-	
+
 	title = @"Test Page";
-	
+
 	guiclick =  [[ResourceManager ooSoundNamed:@"guiclick.ogg" inFolder:@"Sounds"] retain];
 
 	backgroundImage = nil;
 	backgroundColor = nil;
 	textColor = [[OOColor yellowColor] retain];
 
+#ifdef NEWFONTS
+	NSLog(@"initialising main UI");
+	mainUI = YES;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *titleFontPath;
+    NSString *textFontPath;
+    int titleFontSize;
+    int textFontSize;
+
+    NSLog(@"loading font information from:\n%@", [userDefaults description]);
+    if ([userDefaults objectForKey:@"title_font_path"])
+		titleFontPath = [userDefaults stringForKey:@"title_font_path"];
+    if ([userDefaults objectForKey:@"title_font_size"])
+		titleFontSize = [userDefaults integerForKey:@"title_font_size"];
+
+    if ([userDefaults objectForKey:@"text_font_path"])
+		textFontPath = [userDefaults stringForKey:@"text_font_path"];
+    if ([userDefaults objectForKey:@"text_font_size"])
+		textFontSize = [userDefaults integerForKey:@"text_font_size"];
+
+    NSLog(@"title font = %@ %d pt", titleFontPath, titleFontSize);
+    NSLog(@"text font = %@ %d pt", textFontPath, textFontSize);
+    
+	titleFont = loadFont([titleFontPath cString], titleFontSize);
+	textFont = loadFont([textFontPath cString], textFontSize);
+#endif
 	return self;
 }
 
 - (id) initWithPixelSize:(NSSize) gui_size Columns:(int) gui_cols Rows:(int) gui_rows RowHeight:(int) gui_row_height RowStart:(int) gui_row_start Title:(NSString*) gui_title
 {
 	self = [super init];
-		
+
 	size_in_pixels  = gui_size;
 	n_columns		= gui_cols;
 	n_rows			= gui_rows;
@@ -112,18 +157,18 @@ Your fair use and other rights are in no way affected by the above.
 	pixel_row_start	= gui_row_start;		// first position down the page...
 
 	pixel_text_size = NSMakeSize( pixel_row_height, pixel_row_height);
-	
+
 	has_title		= (gui_title != nil);
 	pixel_title_size = NSMakeSize( pixel_row_height * 1.75, pixel_row_height * 1.5);
-	
+
 	int i;
-	
+
 	rowRange = NSMakeRange(0,n_rows);
 
 	rowText =   [[NSMutableArray alloc] initWithCapacity:n_rows];   // alloc retains
 	rowKey =	[[NSMutableArray alloc] initWithCapacity:n_rows];   // alloc retains
 	rowColor =	[[NSMutableArray alloc] initWithCapacity:n_rows];   // alloc retains
-	
+
 	for (i = 0; i < n_rows; i++)
 	{
 		[rowText addObject:@""];
@@ -133,18 +178,25 @@ Your fair use and other rights are in no way affected by the above.
 		rowPosition[i].y = size_in_pixels.height - (pixel_row_start + i * pixel_row_height);
 		rowAlignment[i] = GUI_ALIGN_LEFT;
 	}
-	
+
 	selectedRow = 0;
 	selectableRange = NSMakeRange(0,0);
-	
+
 	title = [gui_title retain];
-	
+
 	guiclick =  [[ResourceManager ooSoundNamed:@"guiclick.ogg" inFolder:@"Sounds"] retain];
 
 	backgroundImage = nil;
 	backgroundColor = nil;
 	textColor = [[OOColor yellowColor] retain];
-
+/*
+#ifdef NEWFONTS
+	NSLog(@"initialising other UI: %@", gui_title);
+	mainUI = NO;
+	titleFont = loadFont("C:\\WINDOWS\\FONTS\\ANDALEWT.TTF", 24);
+	textFont = loadFont("C:\\WINDOWS\\FONTS\\ANDALEWT.TTF", 16);
+#endif
+*/
 	return self;
 }
 
@@ -158,6 +210,12 @@ Your fair use and other rights are in no way affected by the above.
 	if (rowText)		[rowText release];
 	if (rowKey)			[rowKey release];
 	if (rowColor)		[rowColor release];
+
+#ifdef NEWFONTS
+	unloadFont(titleFont);
+	unloadFont(textFont);
+#endif
+
 	[super dealloc];
 }
 
@@ -213,11 +271,11 @@ Your fair use and other rights are in no way affected by the above.
 
 - (void) click
 {
-#ifdef HAVE_SOUND  
+#ifdef HAVE_SOUND
 	if ([guiclick isPlaying])
 		[guiclick stop];
 	[guiclick play];
-#endif   
+#endif
 }
 
 - (void) setColor:(OOColor *) color forRow:(int) row
@@ -359,7 +417,7 @@ Your fair use and other rights are in no way affected by the above.
 {
 	if (title)  [title release];
 	title = [str retain];
-	
+
 	if (str)
 		has_title = ![str isEqual:@""];
 	else
@@ -422,7 +480,7 @@ Your fair use and other rights are in no way affected by the above.
 - (void) printLongText: (NSString *) str Align:(int) alignment Color:(OOColor*) text_color FadeTime:(float) text_fade Key:(NSString*) text_key AddToArray:(NSMutableArray*) text_array
 {
 //	NSLog(@"GUI printing text '%@'", str);
-	
+
 	// print a multi-line message
 	//
 	if ([str rangeOfString:@"\n"].location != NSNotFound)
@@ -433,7 +491,7 @@ Your fair use and other rights are in no way affected by the above.
 			[self printLongText:(NSString *)[lines objectAtIndex:i] Align:alignment Color:text_color FadeTime:text_fade Key:text_key AddToArray:text_array];
 		return;
 	}
-	
+
 	int row = currentRow;
 	if (row == n_rows - 1)
 		[self scrollUp:1];
@@ -581,10 +639,10 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		backgroundImage = [bg_image retain];
 #ifdef GNUSTEP
- 		backgroundSprite = [[OpenGLSprite alloc]
- 								initWithSurface:backgroundImage
- 								cropRectangle:NSMakeRect( 0.0, 0.0, [backgroundImage size].width, [backgroundImage size].height)
- 								size:[backgroundImage size]];	// retained
+		backgroundSprite = [[OpenGLSprite alloc]
+								initWithSurface:backgroundImage
+								cropRectangle:NSMakeRect( 0.0, 0.0, [backgroundImage size].width, [backgroundImage size].height)
+								size:[backgroundImage size]];	// retained
 #else
 
 		backgroundSprite = [[OpenGLSprite alloc]
@@ -620,7 +678,7 @@ Your fair use and other rights are in no way affected by the above.
 			[self drawGalaxyChart:x - 0.5 * size_in_pixels.width :y - 0.5 * size_in_pixels.height :z :alpha forUniverse:universe];
 		}
 	}
-	
+
 	if (fade_sign)
 	{
 		fade_alpha += fade_sign * [universe getTimeDelta];
@@ -637,7 +695,6 @@ Your fair use and other rights are in no way affected by the above.
 	}
 }
 
-
 - (void) drawGLDisplay:(GLfloat) x :(GLfloat) y :(GLfloat) z :(GLfloat) alpha forUniverse:(Universe*) universe
 {
 	NSSize  strsize;
@@ -645,7 +702,15 @@ Your fair use and other rights are in no way affected by the above.
 	double	delta_t = [universe getTimeDelta];
 	NSSize characterSize = pixel_text_size;
 	NSSize titleCharacterSize = pixel_title_size;
-	
+
+#ifdef NEWFONTS
+	if (mainUI == YES)
+	{
+		[self drawGLUnicodeDisplay:x :y :z :alpha forUniverse:universe];
+		return;
+	}
+#endif
+
 	// do backdrop
 	//
 	if (backgroundColor)
@@ -658,20 +723,20 @@ Your fair use and other rights are in no way affected by the above.
 			glVertex3f( x + 0.0,					y + size_in_pixels.height,	z);
 		glEnd();
 	}
-	
+
 	// show background image...
 	//
 	if (backgroundSprite)
 	{
 		[backgroundSprite blitCentredToX:x + 0.5 * size_in_pixels.width Y:y + 0.5 * size_in_pixels.height Z:z Alpha:alpha];
 	}
-	
+
 	if ((selectedRow < selectableRange.location)||(selectedRow >= selectableRange.location + selectableRange.length))
 		selectedRow = -1;   // out of Range;
-	
-    ////
+
+	////
 	// drawing operations here
-	
+
 	if (has_title)
 	{
 		//
@@ -680,7 +745,7 @@ Your fair use and other rights are in no way affected by the above.
 		strsize = rectForString(title, 0.0, 0.0, titleCharacterSize).size;
 		glColor4f( 1.0, 0.0, 0.0, alpha);	// red
 		drawString( title, x + pixel_row_center - strsize.width/2.0, y + size_in_pixels.height - pixel_title_size.height, z, titleCharacterSize);
-		
+
 		// draw a horizontal divider
 		//
 		glColor4f( 0.75, 0.75, 0.75, alpha);	// 75% gray
@@ -691,7 +756,7 @@ Your fair use and other rights are in no way affected by the above.
 			glVertex3f( x + 0,					y + size_in_pixels.height - pixel_title_size.height + 2,		z);
 		glEnd();
 	}
-	
+
 	// draw each row of text
 	//
 	for (i = 0; i < n_rows; i++)
@@ -711,7 +776,7 @@ Your fair use and other rights are in no way affected by the above.
 				row_alpha *= rowFadeTime[i];
 		}
 		glColor4f( [row_color redComponent], [row_color greenComponent], [row_color blueComponent], row_alpha);
-		
+
 		if ([[rowText objectAtIndex:i] isKindOfClass:[NSString class]])
 		{
 			NSString*   text = (NSString *)[rowText objectAtIndex:i];
@@ -743,7 +808,7 @@ Your fair use and other rights are in no way affected by the above.
 					glColor4f( 0.0, 0.0, 0.0, row_alpha);	// black
 				}
 				drawString( text, x + rowPosition[i].x, y + rowPosition[i].y, z, characterSize);
-				
+
 				// draw cursor at end of current Row
 				//
 				if ((showTextCursor)&&(i == currentRow))
@@ -805,9 +870,9 @@ Your fair use and other rights are in no way affected by the above.
 	NSPoint	galaxy_coordinates = [player galaxy_coordinates];
 	NSPoint	cursor_coordinates = [player cursor_coordinates];
 	NSPoint	cu;
-	
+
 	double fuel = 35.0 * [player dial_fuel];
-	
+
 	Random_Seed g_seed;
 	double		hcenter = size_in_pixels.width/2.0;
 	double		vcenter = 160.0;
@@ -817,10 +882,10 @@ Your fair use and other rights are in no way affected by the above.
 	double		voffset = size_in_pixels.height - pixel_title_size.height - 5 - vcenter - galaxy_coordinates.y*vscale;
 	int			i;
 	NSPoint		star;
-	
+
 	if ((abs(cursor_coordinates.x-galaxy_coordinates.x)>=20)||(abs(cursor_coordinates.y-galaxy_coordinates.y)>=38))
 		cursor_coordinates = galaxy_coordinates;	// home
-	
+
 	// get a list of systems marked as contract destinations
 	NSArray* markedDestinations = [player markedDestinations];
 
@@ -830,7 +895,7 @@ Your fair use and other rights are in no way affected by the above.
 	glLineWidth(2.0);
 	cu = NSMakePoint(hscale*galaxy_coordinates.x+hoffset,vscale*galaxy_coordinates.y+voffset);
 	drawOval( x + cu.x, y + cu.y, z, NSMakeSize( fuel*hscale, 2*fuel*vscale), 5);
-		
+
 	// draw marks and stars
 	//
 	glLineWidth( 1.5);
@@ -839,16 +904,16 @@ Your fair use and other rights are in no way affected by the above.
 	for (i = 0; i < 256; i++)
 	{
 		g_seed = [universe systemSeedForSystemNumber:i];
-		
+
 		int dx, dy;
 		float blob_size = 4.0 + 0.5 * (g_seed.f & 15);
-				
+
 		star.x = g_seed.d * hscale + hoffset;
 		star.y = g_seed.b * vscale + voffset;
-		
+
 		dx = abs(galaxy_coordinates.x - g_seed.d);
 		dy = abs(galaxy_coordinates.y - g_seed.b);
-		
+
 		if ((dx < 20)&&(dy < 38))
 		{
 			if ([(NSNumber*)[markedDestinations objectAtIndex:i] boolValue])	// is marked
@@ -866,22 +931,22 @@ Your fair use and other rights are in no way affected by the above.
 			drawFilledOval( x + star.x, y + star.y, z, NSMakeSize(blob_size,blob_size), 15);
 		}
 	}
-	
+
 	// draw names
 	//
 	glColor4f(1.0, 1.0, 0.0, alpha);	// yellow
 	for (i = 0; i < 256; i++)
 	{
 		g_seed = [universe systemSeedForSystemNumber:i];
-		
+
 		int dx, dy;
-		
+
 		star.x = g_seed.d * hscale + hoffset;
 		star.y = g_seed.b * vscale + voffset;
-		
+
 		dx = abs(galaxy_coordinates.x - g_seed.d);
 		dy = abs(galaxy_coordinates.y - g_seed.b);
-		
+
 		if ((dx < 20)&&(dy < 38))
 		{
 			NSDictionary* sys_info = [universe generateSystemData:g_seed];
@@ -895,7 +960,7 @@ Your fair use and other rights are in no way affected by the above.
 				drawPlanetInfo( gov, eco, tec, x + star.x + 2.0, y + star.y + 2.0, z, NSMakeSize(pixel_row_height,pixel_row_height));
 		}
 	}
-	
+
 	// draw cross-hairs over current location
 	//
 	glColor4f( 0.0, 1.0, 0.0, alpha);	//	green
@@ -909,7 +974,7 @@ Your fair use and other rights are in no way affected by the above.
 		glVertex3f( x + cu.x + 14,	y + cu.y + 1,	z);
 		glVertex3f( x + cu.x - 14,	y + cu.y + 1,	z);
 	glEnd();
-	
+
 	// draw cross hairs over cursor
 	//
 	glColor4f( 1.0, 0.0, 0.0, alpha);	//	red
@@ -937,11 +1002,11 @@ Your fair use and other rights are in no way affected by the above.
 
 	// get a list of systems marked as contract destinations
 	NSArray* markedDestinations = [player markedDestinations];
-	
+
 	BOOL* systems_found = [universe systems_found];
-	
+
 	NSPoint		star, cu;
-	
+
 	Random_Seed g_seed;
 	double		hscale = size_in_pixels.width / 256.0;
 	double		vscale = -1.0 * size_in_pixels.height / 512.0;
@@ -955,7 +1020,7 @@ Your fair use and other rights are in no way affected by the above.
 	glLineWidth(2.0);
 	cu = NSMakePoint(hscale*galaxy_coordinates.x+hoffset,vscale*galaxy_coordinates.y+voffset);
 	drawOval( x + cu.x, y + cu.y, z, NSMakeSize( fuel*hscale, 2*fuel*vscale), 5);
-	
+
 	// draw cross-hairs over current location
 	//
 	glBegin( GL_QUADS);
@@ -968,7 +1033,7 @@ Your fair use and other rights are in no way affected by the above.
 		glVertex3f( x + cu.x + 14,	y + cu.y + 1,	z);
 		glVertex3f( x + cu.x - 14,	y + cu.y + 1,	z);
 	glEnd();
-	
+
 	// draw cross hairs over cursor
 	//
 	glColor4f( 1.0, 0.0, 0.0, alpha);	//	red
@@ -983,7 +1048,7 @@ Your fair use and other rights are in no way affected by the above.
 		glVertex3f( x + cu.x + 7,	y + cu.y + 1,	z);
 		glVertex3f( x + cu.x - 7,	y + cu.y + 1,	z);
 	glEnd();
-	
+
 	// draw marks
 	//
 	glLineWidth( 1.5);
@@ -1004,7 +1069,7 @@ Your fair use and other rights are in no way affected by the above.
 			glEnd();
 		}
 	}
-	
+
 	// draw stars
 	//
 	glColor4f( 1.0, 1.0, 1.0, alpha);
@@ -1012,19 +1077,19 @@ Your fair use and other rights are in no way affected by the above.
 	for (i = 0; i < 256; i++)
 	{
 		g_seed = [universe systemSeedForSystemNumber:i];
-		
+
 		star.x = g_seed.d * hscale + hoffset;
 		star.y = g_seed.b * vscale + voffset;
 
 		double sz = (4.0 + 0.5 * (0x03 | (g_seed.f & 0x0f))) / 7.0;
-		
+
 		glVertex3f( x + star.x,			y + star.y + sz,	z);
 		glVertex3f( x + star.x + sz,	y + star.y,			z);
 		glVertex3f( x + star.x,			y + star.y - sz,	z);
 		glVertex3f( x + star.x - sz,	y + star.y,			z);
 	}
 	glEnd();
-		
+
 	// draw found stars and captions
 	//
 	glLineWidth( 1.5);
@@ -1046,7 +1111,7 @@ Your fair use and other rights are in no way affected by the above.
 			drawString([universe systemNameIndex:i] , x + star.x + 2.0, y + star.y - 10.0, z, NSMakeSize(10,10));
 		}
 	}
-	
+
 	// draw bottom horizontal divider
 	//
 	glColor4f( 0.75, 0.75, 0.75, alpha);	// 75% gray
@@ -1058,5 +1123,211 @@ Your fair use and other rights are in no way affected by the above.
 	glEnd();
 
 }
+
+
+#ifdef NEWFONTS
+NSRect ttf_rectForString(NSString *text, float x, float y, void *font)
+{
+	float lx, ly, tx, ty;
+
+	memset(textBuffer, 0x00, sizeof(unsigned short) * TEXT_BUFFER_SIZE);
+	[text getCharacters:textBuffer];
+
+	getBoundingBox(font, textBuffer, &lx, &ly, &tx, &ty);
+	return NSMakeRect(x, y, (tx-lx), (ty-ly));
+}
+
+void drawTitle(GLfloat z, NSString *text, void *font, Universe *universe)
+{
+	float lx, ly, tx, ty, w, h;
+
+	memset(textBuffer, 0x00, sizeof(unsigned short) * 4096);
+	[text getCharacters:textBuffer];
+
+	getBoundingBox(font, textBuffer, &lx, &ly, &tx, &ty);
+	w = (tx - lx);
+	h = (ty - ly);
+	GLfloat x = 0 - (w / 2);
+	GLfloat y = 240 - h;
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTranslatef(x,y,z);
+	drawUnicodeString(font, x, y, z, textBuffer);
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+}
+
+void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Universe *universe)
+{
+	memset(textBuffer, 0x00, sizeof(unsigned short) * 4096);
+	[text getCharacters:textBuffer];
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTranslatef(x,y,z);
+	drawUnicodeString(font, x, y, z, textBuffer);
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+}
+
+- (void) drawGLUnicodeDisplay:(GLfloat) x :(GLfloat) y :(GLfloat) z :(GLfloat) alpha forUniverse:(Universe*) universe
+{
+	NSSize  strsize;
+	int i;
+	double	delta_t = [universe getTimeDelta];
+	NSSize characterSize = pixel_text_size;
+	NSSize titleCharacterSize = pixel_title_size;
+
+	// do backdrop
+	if (backgroundColor)
+	{
+		glColor4f( [backgroundColor redComponent], [backgroundColor greenComponent], [backgroundColor blueComponent], alpha * [backgroundColor alphaComponent]);
+		//glColor4f(0.0, 0.33, 0.33, 0.33);
+		glBegin(GL_QUADS);
+			glVertex3f( x + 0.0,					y + 0.0,					z);
+			glVertex3f( x + size_in_pixels.width,	y + 0.0,					z);
+			glVertex3f( x + size_in_pixels.width,	y + size_in_pixels.height,	z);
+			glVertex3f( x + 0.0,					y + size_in_pixels.height,	z);
+		glEnd();
+	}
+
+	// show background image...
+	if (backgroundSprite)
+	{
+		[backgroundSprite blitCentredToX:x + 0.5 * size_in_pixels.width Y:y + 0.5 * size_in_pixels.height Z:z Alpha:alpha];
+	}
+
+	if ((selectedRow < selectableRange.location)||(selectedRow >= selectableRange.location + selectableRange.length))
+		selectedRow = -1;   // out of Range;
+
+	if (has_title)
+	{
+		//
+		// draw the title
+		//
+		//strsize = ttf_rectForString(title, 0.0, 0.0, titleFont).size;
+		glColor4f( 1.0, 0.0, 0.0, alpha);	// red
+		drawTitle(z, title, titleFont, universe);
+
+		// draw a horizontal divider
+		//
+		glColor4f( 0.75, 0.75, 0.75, alpha);	// 75% gray
+		glBegin( GL_QUADS);
+			glVertex3f( x + 0,					    y + size_in_pixels.height - pixel_title_size.height + 2,		z);
+			glVertex3f( x + size_in_pixels.width,	y + size_in_pixels.height - pixel_title_size.height + 2,		z);
+			glVertex3f( x + size_in_pixels.width,	y + size_in_pixels.height - pixel_title_size.height + 4,	z);
+			glVertex3f( x + 0,					    y + size_in_pixels.height - pixel_title_size.height + 4,	z);
+		glEnd();
+	}
+
+	// draw each row of text
+	//
+	for (i = 0; i < n_rows; i++)
+	{
+		OOColor* row_color = (OOColor *)[rowColor objectAtIndex:i];
+		GLfloat row_alpha = alpha;
+		if (rowFadeTime[i] > 0.0)
+		{
+			rowFadeTime[i] -= delta_t;
+			if (rowFadeTime[i] < 0.0)
+			{
+				[rowText replaceObjectAtIndex:i withObject:@""];
+				rowFadeTime[i] = 0.0;
+			}
+			if ((rowFadeTime[i] > 0.0)&&(rowFadeTime[i] < 1.0))
+				row_alpha *= rowFadeTime[i];
+		}
+		glColor4f( [row_color redComponent], [row_color greenComponent], [row_color blueComponent], row_alpha);
+
+		if ([[rowText objectAtIndex:i] isKindOfClass:[NSString class]])
+		{
+			NSString*   text = (NSString *)[rowText objectAtIndex:i];
+			if (![text isEqual:@""])
+			{
+				strsize = ttf_rectForString(text, 0.0, 0.0, textFont).size;
+				switch (rowAlignment[i])
+				{
+					case GUI_ALIGN_LEFT :
+						rowPosition[i].x = 0.0;
+						break;
+					case GUI_ALIGN_RIGHT :
+						rowPosition[i].x = size_in_pixels.width - strsize.width;
+						break;
+					case GUI_ALIGN_CENTER :
+						rowPosition[i].x = (size_in_pixels.width - strsize.width)/2.0;
+						break;
+				}
+				if (i == selectedRow)
+				{
+					NSRect block = ttf_rectForString(text, x + rowPosition[i].x + 2, rowPosition[i].y + 2, textFont);
+					glColor4f( 1.0, 0.0, 0.0, row_alpha);	// red
+					glBegin(GL_QUADS);
+						glVertex3f( block.origin.x,						block.origin.y,						z);
+						glVertex3f( block.origin.x + block.size.width,	block.origin.y,						z);
+						glVertex3f( block.origin.x + block.size.width,	block.origin.y + block.size.height,	z);
+						glVertex3f( block.origin.x,						block.origin.y + block.size.height,	z);
+					glEnd();
+					glColor4f( 0.0, 0.0, 0.0, row_alpha);	// black
+				}
+				drawText(x + rowPosition[i].x, rowPosition[i].y, z, text, textFont, universe);
+
+				// draw cursor at end of current Row
+				//
+				if ((showTextCursor)&&(i == currentRow))
+				{
+					NSRect	tr = rectForString( text, 0.0, 0.0, characterSize);
+					NSPoint cu = NSMakePoint( x + rowPosition[i].x + tr.size.width + 0.2 * characterSize.width, y + rowPosition[i].y);
+					tr.origin = cu;
+					tr.size.width = 0.5 * characterSize.width;
+					GLfloat g_alpha = 0.5 * (1.0 + sin(6 * [universe getTime]));
+					glColor4f( 1.0, 0.0, 0.0, row_alpha * g_alpha);	// red
+					glBegin(GL_QUADS);
+						glVertex3f( tr.origin.x,					tr.origin.y,					z);
+						glVertex3f( tr.origin.x + tr.size.width,	tr.origin.y,					z);
+						glVertex3f( tr.origin.x + tr.size.width,	tr.origin.y + tr.size.height,	z);
+						glVertex3f( tr.origin.x,					tr.origin.y + tr.size.height,	z);
+					glEnd();
+				}
+			}
+		}
+		if ([[rowText objectAtIndex:i] isKindOfClass:[NSArray class]])
+		{
+			int j;
+			NSArray*	array = (NSArray *)[rowText objectAtIndex:i];
+			for (j = 0; ((j < [array count])&&(j < n_columns)) ; j++)
+			{
+				if ([array objectAtIndex:j])
+				{
+					NSString*   text = (NSString *)[array objectAtIndex:j];
+					if (![text isEqual:@""])
+					{
+						rowPosition[i].x = tabStops[j];
+						if (i == selectedRow)
+						{
+							NSRect block = ttf_rectForString(text, x + rowPosition[i].x + 2, rowPosition[i].y + 2, textFont);
+							glColor4f( 1.0, 0.0, 0.0, row_alpha);	// red
+							glBegin(GL_QUADS);
+								glVertex3f( block.origin.x,						block.origin.y,						z);
+								glVertex3f( block.origin.x + block.size.width,	block.origin.y,						z);
+								glVertex3f( block.origin.x + block.size.width,	block.origin.y + block.size.height,	z);
+								glVertex3f( block.origin.x,						block.origin.y + block.size.height,	z);
+							glEnd();
+							glColor4f( 0.0, 0.0, 0.0, row_alpha);	// black
+						}
+						drawText(x + rowPosition[i].x, rowPosition[i].y, z,  text, textFont, universe);
+					}
+				}
+			}
+		}
+	}
+}
+#endif
 
 @end

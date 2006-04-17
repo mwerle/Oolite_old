@@ -70,10 +70,10 @@ extern int debug;
 	int				pixel_row_height;
 	int				pixel_row_start;
 	NSSize			pixel_text_size;
-	
+
 	BOOL			has_title;
 	NSSize			pixel_title_size;
-	
+
 	OOSound			*guiclick;
 
 #ifdef GNUSTEP
@@ -83,33 +83,40 @@ extern int debug;
 #endif
 	OOColor			*backgroundColor;
 	OOColor			*textColor;
-	
+
 	OpenGLSprite	*backgroundSprite;
-	
+
 	NSString		*title;
-	
+
 	NSMutableArray  *rowText;
 	NSMutableArray  *rowKey;
 	NSMutableArray  *rowColor;
-	
+
 	NSPoint			rowPosition[GUI_MAX_ROWS];
 	int				rowAlignment[GUI_MAX_ROWS];
 	float			rowFadeTime[GUI_MAX_ROWS];
-	
+
 	int				tabStops[GUI_MAX_COLUMNS];
-	
+
 	NSRange			rowRange;
 
 	int				selectedRow;
 	NSRange			selectableRange;
-	
+
 	BOOL			showTextCursor;
 	int				currentRow;
-	
+
 	GLfloat			fade_alpha;			// for fade-in / fade-out
 	double			fade_duration;		// period
 	double			fade_from_time;		// from [universe getTime]
 	GLfloat			fade_sign;			//	-1.0 to 1.0
+
+#ifdef NEWFONTS
+	BOOL			mainUI;
+	void			*titleFont;
+	void			*textFont;
+#endif
+
 }
 
 - (id) init;
@@ -177,6 +184,9 @@ extern int debug;
 - (void) drawGUI:(GLfloat) x :(GLfloat) y :(GLfloat) z :(GLfloat) alpha forUniverse:(Universe*) universe;
 
 - (void) drawGLDisplay:(GLfloat) x :(GLfloat) y :(GLfloat) z :(GLfloat) alpha forUniverse:(Universe*) universe;
+#ifdef NEWFONTS
+- (void) drawGLUnicodeDisplay:(GLfloat) x :(GLfloat) y :(GLfloat) z :(GLfloat) alpha forUniverse:(Universe*) universe;
+#endif
 
 - (void) drawStarChart:(GLfloat) x:(GLfloat) y:(GLfloat) z:(GLfloat) alpha forUniverse:(Universe*) universe;
 - (void) drawGalaxyChart:(GLfloat) x:(GLfloat) y:(GLfloat) z:(GLfloat) alpha forUniverse:(Universe*) universe;

@@ -4270,6 +4270,7 @@ double scoopSoundPlayTime = 0.0;
 	NSDictionary*   descriptions = [universe descriptions];
 	NSString*		systemName;
 	NSString*		targetSystemName;
+	NSString*       text;
 
 	//NSLog(@"DEBUG original hold size = %d",original_hold_size);
 
@@ -4310,19 +4311,21 @@ double scoopSoundPlayTime = 0.0;
 		NSString*   rating_desc = [NSString stringWithFormat:@"%@ (%d)",[(NSArray *)[descriptions objectForKey:@"rating"] objectAtIndex:rating], ship_kills];
 		NSString*   alert_desc = (NSString *)[(NSArray *)[descriptions objectForKey:@"condition"] objectAtIndex:[self alert_condition]];
 		[gui clear];
-		[gui setTitle:[NSString stringWithFormat:@"Commander %@",   player_name]];
+
+		text = [descriptions objectForKey:@"status-commander-@"];
+		[gui setTitle:[NSString stringWithFormat:text, player_name]];
 		//
 		[gui setText:shipName forRow:0 align:GUI_ALIGN_CENTER];
 		//
-		[gui setArray:[NSArray arrayWithObjects:@"Present System:", systemName, nil]			forRow:1];
-		[gui setArray:[NSArray arrayWithObjects:@"Hyperspace System:", targetSystemName, nil]	forRow:2];
-		[gui setArray:[NSArray arrayWithObjects:@"Condition:", alert_desc, nil]					forRow:3];
-		[gui setArray:[NSArray arrayWithObjects:@"Fuel:", [NSString stringWithFormat:@"%.1f Light Years", fuel/10.0], nil]	forRow:4];
-		[gui setArray:[NSArray arrayWithObjects:@"Cash:", [NSString stringWithFormat:@"%.1f Cr", credits/10.0], nil]		forRow:5];
-		[gui setArray:[NSArray arrayWithObjects:@"Legal Status:", legal_desc, nil]				forRow:6];
-		[gui setArray:[NSArray arrayWithObjects:@"Rating:", rating_desc, nil]					forRow:7];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"status-present-system"], systemName, nil]			forRow:1];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"status-hyperspace-system"], targetSystemName, nil]	forRow:2];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"status-condition"], alert_desc, nil]					forRow:3];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"status-fuel"], [NSString stringWithFormat:@"%.1f Light Years", fuel/10.0], nil]	forRow:4];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"status-cash"], [NSString stringWithFormat:@"%.1f Cr", credits/10.0], nil]		forRow:5];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"status-legal-status"], legal_desc, nil]				forRow:6];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"status-rating"], rating_desc, nil]					forRow:7];
 		//
-		[gui setText:@"Equipment:"  forRow:9];
+		[gui setText:[descriptions objectForKey:@"status-equipment"] forRow:9];
 
 		int i = 0;
 		int n_equip_rows = 5;
@@ -4409,16 +4412,23 @@ double scoopSoundPlayTime = 0.0;
 	}
 
 	if (forward_weapon > 0)
-		[quip addObject:[NSString stringWithFormat:@"Forward %@",(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:forward_weapon]]];
+		[quip addObject:[NSString stringWithFormat:[descriptions objectForKey:@"equipment-fwd-weapon-@"],(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:forward_weapon]]];
 	if (aft_weapon > 0)
-		[quip addObject:[NSString stringWithFormat:@"Aft %@",(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:aft_weapon]]];
+		[quip addObject:[NSString stringWithFormat:[descriptions objectForKey:@"equipment-aft-weapon-@"],(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:aft_weapon]]];
 	if (starboard_weapon > 0)
-		[quip addObject:[NSString stringWithFormat:@"Starboard %@",(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:starboard_weapon]]];
+		[quip addObject:[NSString stringWithFormat:[descriptions objectForKey:@"equipment-stb-weapon-@"],(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:starboard_weapon]]];
 	if (port_weapon > 0)
-		[quip addObject:[NSString stringWithFormat:@"Port %@",(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:port_weapon]]];
+		[quip addObject:[NSString stringWithFormat:[descriptions objectForKey:@"equipment-port-weapon-@"],(NSString *)[(NSArray *)[descriptions objectForKey:@"weapon_name"] objectAtIndex:port_weapon]]];
 
 	if (max_passengers > 0)
-		[quip addObject:[NSString stringWithFormat:@"%d Passenger Berth%@", max_passengers, (max_passengers > 1)? @"s" : @""]];
+	{
+		// Using distinct strings for single and multiple passenger berths because different languages
+		// may have quite different ways of phrasing the two.
+		if (max_passengers > 1)
+			[quip addObject:[NSString stringWithFormat:[descriptions objectForKey:@"equipment-multiple-pass-berth-@"], max_passengers]];
+		else
+			[quip addObject:[descriptions objectForKey:@"equipment-single-pass-berth-@"]];
+	}
 
 	return [NSArray arrayWithArray:quip];
 }
@@ -4426,7 +4436,11 @@ double scoopSoundPlayTime = 0.0;
 - (NSArray *) cargoList
 {
 	NSMutableArray* manifest = [NSMutableArray arrayWithCapacity:32];
-	//
+	NSDictionary*   descriptions = [universe descriptions];
+	NSString *tons = (NSString *)[descriptions objectForKey:@"cargo-tons-symbol"];
+	NSString *grams = (NSString *)[descriptions objectForKey:@"cargo-grams-symbol"];
+	NSString *kilograms = (NSString *)[descriptions objectForKey:@"cargo-kilograms-symbol"];
+
 //	NSLog(@"DEBUG ::::: %@", [shipCommodityData description]);
 
 	if (specialCargo)
@@ -4450,9 +4464,9 @@ double scoopSoundPlayTime = 0.0;
 		if (in_hold[i] > 0)
 		{
 			int unit = [universe unitsForCommodity:i];
-			NSString* units = @"t";
-			if (unit == UNITS_KILOGRAMS)  units = @"kg";
-			if (unit == UNITS_GRAMS)  units = @"g";
+			NSString* units = [NSString stringWithString:tons];
+			if (unit == UNITS_KILOGRAMS)  units = [NSString stringWithString:kilograms];
+			if (unit == UNITS_GRAMS)  units = [NSString stringWithString:grams];
 			NSString* desc = (NSString *)[(NSArray *)[shipCommodityData objectAtIndex:i] objectAtIndex:MARKET_NAME];
 			[manifest addObject:[NSString stringWithFormat:@"%d%@ x %@", in_hold[i], units, desc]];
 		}
@@ -4513,20 +4527,20 @@ double scoopSoundPlayTime = 0.0;
 		}
 
 		[gui clear];
-		[gui setTitle:[NSString stringWithFormat:@"Data on %@",   targetSystemName]];
+		[gui setTitle:[NSString stringWithFormat:[descriptions objectForKey:@"sysdata-planet-name-@"],   targetSystemName]];
 		//
-		[gui setArray:[NSArray arrayWithObjects:@"Economy:", economy_desc, nil]						forRow:1];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-eco"], economy_desc, nil]						forRow:1];
 		//
-		[gui setArray:[NSArray arrayWithObjects:@"Government:", government_desc, nil]				forRow:3];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-govt"], government_desc, nil]				forRow:3];
 		//
-		[gui setArray:[NSArray arrayWithObjects:@"Tech Level:", [NSString stringWithFormat:@"%d", techlevel + 1], nil]	forRow:5];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-tl"], [NSString stringWithFormat:@"%d", techlevel + 1], nil]	forRow:5];
 		//
-		[gui setArray:[NSArray arrayWithObjects:@"Population:", [NSString stringWithFormat:@"%.1f Billion", 0.1*population], nil]	forRow:7];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-pop"], [NSString stringWithFormat:@"%.1f Billion", 0.1*population], nil]	forRow:7];
 		[gui setArray:[NSArray arrayWithObjects:@"", [NSString stringWithFormat:@"(%@)", inhabitants], nil]				forRow:8];
 		//
-		[gui setArray:[NSArray arrayWithObjects:@"Gross Productivity:", @"", [NSString stringWithFormat:@"%5d M Cr.", productivity], nil]	forRow:10];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-prod"], @"", [NSString stringWithFormat:@"%5d M Cr.", productivity], nil]	forRow:10];
 		//
-		[gui setArray:[NSArray arrayWithObjects:@"Average radius:", @"", [NSString stringWithFormat:@"%5d km", radius], nil]	forRow:12];
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-radius"], @"", [NSString stringWithFormat:@"%5d km", radius], nil]	forRow:12];
 		//
 		int i = [gui addLongText:system_desc startingAtRow:15 align:GUI_ALIGN_LEFT];
 		missionTextRow = i;
@@ -5457,19 +5471,17 @@ static int last_outfitting_index;
 
 - (void) setGuiToIntro2Screen
 {
+	NSString *text;
 	GuiDisplayGen* gui = [universe gui];
 
-	// GUI stuff
-	{
 		[gui clear];
 		[gui setTitle:@"Oolite"];
 		//
-		[gui setText:@"Press Space Commander" forRow:21 align:GUI_ALIGN_CENTER];
+	text = [universe expandDescription:@"[press-space-commander]" forSystem:system_seed];
+	[gui setText:text forRow:21 align:GUI_ALIGN_CENTER];
 		[gui setColor:[OOColor yellowColor] forRow:21];
 		//
 		[gui setShowTextCursor:NO];
-	}
-	/* ends */
 
 	[universe set_up_intro2];
 
