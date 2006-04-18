@@ -876,7 +876,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 
 - (id) init
 {
-    self = [super init];
+	self = [super init];
 	//
 	compass_mode = COMPASS_MODE_BASIC;
 	//
@@ -901,7 +901,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	target_memory_index = 0;
 	//
-    return self;
+	return self;
 }
 
 - (void) set_up
@@ -1012,10 +1012,10 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	thrust =			32.0;
 	roll_delta =		2.0 * max_flight_roll;
 	pitch_delta =		2.0 * max_flight_pitch;
-    //
-    displayListName =   0;
-    //
-    status =			STATUS_TEST;
+	//
+	displayListName =   0;
+	//
+	status =			STATUS_TEST;
 	//
 	shield_booster =			1;
 	shield_enhancer =			0;
@@ -1057,7 +1057,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	shot_time =			0.0;
 	shot_counter =		0;
-    //
+	//
 	if (shipAI)		[shipAI release];
 	shipAI = [[AI alloc] initWithStateMachine:AI_DOCKING_COMPUTER andState:@"GLOBAL"]; // alloc retains dealloc'd by ShipEntity
 	[shipAI setOwner:self];
@@ -1170,7 +1170,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	roll_delta =		2.0 * max_flight_roll;
 	pitch_delta =		2.0 * max_flight_pitch;
-    //
+	//
 
 	//
 	if ([dict objectForKey:@"thrust"])
@@ -1440,14 +1440,14 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 
 - (void) dealloc
 {
-    if (ship_desc)				[ship_desc release];
+	if (ship_desc)				[ship_desc release];
 
 	if (hud)					[hud release];
 
 	if (comm_log)				[comm_log release];
 
-    if (script)					[script release];
-    if (mission_variables)		[mission_variables release];
+	if (script)					[script release];
+	if (mission_variables)		[mission_variables release];
 
 	if (local_variables)
 	{
@@ -1464,7 +1464,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 
 	if (lastTextKey)			[lastTextKey release];
 
-    if (extra_equipment)		[extra_equipment release];
+	if (extra_equipment)		[extra_equipment release];
 
 	if (reputation)				[reputation release];
 	if (passengers)				[passengers release];
@@ -1474,10 +1474,10 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	if (missionDestinations)	[missionDestinations release];
 	if (shipyard_record)		[shipyard_record release];
 
-    if (missionBackgroundImage) [missionBackgroundImage release];
+	if (missionBackgroundImage) [missionBackgroundImage release];
 
-    if (player_name)			[player_name release];
-    if (shipCommodityData)		[shipCommodityData release];
+	if (player_name)			[player_name release];
+	if (shipCommodityData)		[shipCommodityData release];
 
 	if (specialCargo)			[specialCargo release];
 
@@ -1498,7 +1498,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 			[trumble[i] release];
 	}
 
-    [super dealloc];
+	[super dealloc];
 }
 
 
@@ -2173,8 +2173,8 @@ double scoopSoundPlayTime = 0.0;
 	if (climb1)
 		quaternion_rotate_about_x( &q_rotation, -climb1);
 
-    quaternion_normalise(&q_rotation);	// probably not strictly necessary but good to do to keep q_rotation sane
-    quaternion_into_gl_matrix(q_rotation, rotMatrix);
+	quaternion_normalise(&q_rotation);	// probably not strictly necessary but good to do to keep q_rotation sane
+	quaternion_into_gl_matrix(q_rotation, rotMatrix);
 
 	v_right.x = rotMatrix[0];
 	v_right.y = rotMatrix[4];
@@ -2195,7 +2195,7 @@ double scoopSoundPlayTime = 0.0;
 
 - (GLfloat *) drawRotationMatrix	// override to provide the 'correct' drawing matrix
 {
-    return playerRotMatrix;
+	return playerRotMatrix;
 }
 
 - (void) moveForward:(double) amount
@@ -3869,7 +3869,7 @@ double scoopSoundPlayTime = 0.0;
 	[universe setSystemTo:system_seed];
 	galaxy_coordinates.x = system_seed.d;
 	galaxy_coordinates.y = system_seed.b;
-    ranrot_srand([[NSDate date] timeIntervalSince1970]);	// seed randomiser by time
+	ranrot_srand([[NSDate date] timeIntervalSince1970]);	// seed randomiser by time
 	market_rnd = ranrot_rand() & 255;						// random factor for market values is reset
 	legal_status = 0;
 	[universe set_up_universe_from_witchspace];
@@ -3948,7 +3948,7 @@ double scoopSoundPlayTime = 0.0;
 	//  perform any check here for forced witchspace encounters
 	//
 	int malfunc_chance = 253;
-    if (ship_trade_in_factor < 80)
+	if (ship_trade_in_factor < 80)
 		malfunc_chance -= (1 + ranrot_rand() % (81-ship_trade_in_factor)) / 2;	// increase chance of misjump in worn-out craft
 	ranrot_srand([[NSDate date] timeIntervalSince1970]);	// seed randomiser by time
 	BOOL malfunc = ((ranrot_rand() & 0xff) > malfunc_chance);
@@ -4147,13 +4147,13 @@ double scoopSoundPlayTime = 0.0;
 - (void) loadPlayer
 {
 #ifndef GNUSTEP
-    int result;
-    NSArray *fileTypes = [NSArray arrayWithObject:@"oolite-save"];
-    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
+	int result;
+	NSArray *fileTypes = [NSArray arrayWithObject:@"oolite-save"];
+	NSOpenPanel *oPanel = [NSOpenPanel openPanel];
 
-    [oPanel setAllowsMultipleSelection:NO];
-    result = [oPanel runModalForDirectory:nil file:nil types:fileTypes];
-    if (result == NSOKButton)
+	[oPanel setAllowsMultipleSelection:NO];
+	result = [oPanel runModalForDirectory:nil file:nil types:fileTypes];
+	if (result == NSOKButton)
 		[self loadPlayerFromFile:[oPanel filename]];
 #endif
 }
@@ -4495,63 +4495,57 @@ double scoopSoundPlayTime = 0.0;
 	if ([targetSystemData objectForKey:@"sun_gone_nova"])
 		sun_gone_nova = YES;
 
-	// GUI stuff
+	GuiDisplayGen* gui = [universe gui];
+
+	int tab_stops[GUI_MAX_COLUMNS];
+	tab_stops[0] = 0;
+	tab_stops[1] = 96;
+	tab_stops[2] = 144;
+	[gui setTabStops:tab_stops];
+
+	int government =	[(NSNumber *)[targetSystemData objectForKey:KEY_GOVERNMENT] intValue];
+	int economy =		[(NSNumber *)[targetSystemData objectForKey:KEY_ECONOMY] intValue];
+	int techlevel =		[(NSNumber *)[targetSystemData objectForKey:KEY_TECHLEVEL] intValue];
+	int population =	[(NSNumber *)[targetSystemData objectForKey:KEY_POPULATION] intValue];
+	int productivity =	[(NSNumber *)[targetSystemData objectForKey:KEY_PRODUCTIVITY] intValue];
+	int radius =		[(NSNumber *)[targetSystemData objectForKey:KEY_RADIUS] intValue];
+
+	NSString*   government_desc =   (NSString *)[(NSArray *)[descriptions objectForKey:KEY_GOVERNMENT] objectAtIndex:government];
+	NSString*   economy_desc =		(NSString *)[(NSArray *)[descriptions objectForKey:KEY_ECONOMY] objectAtIndex:economy];
+	NSString*   inhabitants =		(NSString *)[targetSystemData objectForKey:KEY_INHABITANTS];
+	NSString*   system_desc =		(NSString *)[targetSystemData objectForKey:KEY_DESCRIPTION];
+
+	if ((sun_gone_nova && equal_seeds( target_system_seed, system_seed) && [[universe sun] goneNova])||
+		(sun_gone_nova && (!equal_seeds( target_system_seed, system_seed))))
 	{
-		GuiDisplayGen* gui = [universe gui];
-
-		int tab_stops[GUI_MAX_COLUMNS];
-		tab_stops[0] = 0;
-		tab_stops[1] = 96;
-		tab_stops[2] = 144;
-		[gui setTabStops:tab_stops];
-
-		int government =	[(NSNumber *)[targetSystemData objectForKey:KEY_GOVERNMENT] intValue];
-		int economy =		[(NSNumber *)[targetSystemData objectForKey:KEY_ECONOMY] intValue];
-		int techlevel =		[(NSNumber *)[targetSystemData objectForKey:KEY_TECHLEVEL] intValue];
-		int population =	[(NSNumber *)[targetSystemData objectForKey:KEY_POPULATION] intValue];
-		int productivity =	[(NSNumber *)[targetSystemData objectForKey:KEY_PRODUCTIVITY] intValue];
-		int radius =		[(NSNumber *)[targetSystemData objectForKey:KEY_RADIUS] intValue];
-
-		NSString*   government_desc =   (NSString *)[(NSArray *)[descriptions objectForKey:KEY_GOVERNMENT] objectAtIndex:government];
-		NSString*   economy_desc =		(NSString *)[(NSArray *)[descriptions objectForKey:KEY_ECONOMY] objectAtIndex:economy];
-		NSString*   inhabitants =		(NSString *)[targetSystemData objectForKey:KEY_INHABITANTS];
-		NSString*   system_desc =		(NSString *)[targetSystemData objectForKey:KEY_DESCRIPTION];
-
-		if ((sun_gone_nova && equal_seeds( target_system_seed, system_seed) && [[universe sun] goneNova])||
-			(sun_gone_nova && (!equal_seeds( target_system_seed, system_seed))))
-		{
-			population = 0;
-			productivity = 0;
-			radius = 0;
-			system_desc = [universe expandDescription:@"[nova-system-description]" forSystem:target_system_seed];
-		}
-
-		[gui clear];
-		[gui setTitle:[NSString stringWithFormat:[descriptions objectForKey:@"sysdata-planet-name-@"],   targetSystemName]];
-		//
-		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-eco"], economy_desc, nil]						forRow:1];
-		//
-		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-govt"], government_desc, nil]				forRow:3];
-		//
-		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-tl"], [NSString stringWithFormat:@"%d", techlevel + 1], nil]	forRow:5];
-		//
-		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-pop"], [NSString stringWithFormat:@"%.1f Billion", 0.1*population], nil]	forRow:7];
-		[gui setArray:[NSArray arrayWithObjects:@"", [NSString stringWithFormat:@"(%@)", inhabitants], nil]				forRow:8];
-		//
-		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-prod"], @"", [NSString stringWithFormat:@"%5d M Cr.", productivity], nil]	forRow:10];
-		//
-		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-radius"], @"", [NSString stringWithFormat:@"%5d km", radius], nil]	forRow:12];
-		//
-		int i = [gui addLongText:system_desc startingAtRow:15 align:GUI_ALIGN_LEFT];
-		missionTextRow = i;
-		for (i-- ; i > 14 ; i--)
-			[gui setColor:[OOColor greenColor] forRow:i];
-		//
-
-		[gui setShowTextCursor:NO];
-
+		population = 0;
+		productivity = 0;
+		radius = 0;
+		system_desc = [universe expandDescription:@"[nova-system-description]" forSystem:target_system_seed];
 	}
-	/* ends */
+
+	[gui clear];
+	[gui setTitle:[NSString stringWithFormat:[descriptions objectForKey:@"sysdata-planet-name-@"],   targetSystemName]];
+	//
+	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-eco"], economy_desc, nil]						forRow:1];
+	//
+	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-govt"], government_desc, nil]				forRow:3];
+	//
+	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-tl"], [NSString stringWithFormat:@"%d", techlevel + 1], nil]	forRow:5];
+	//
+	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-pop"], [NSString stringWithFormat:@"%.1f Billion", 0.1*population], nil]	forRow:7];
+	[gui setArray:[NSArray arrayWithObjects:@"", [NSString stringWithFormat:@"(%@)", inhabitants], nil]				forRow:8];
+	//
+	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-prod"], @"", [NSString stringWithFormat:@"%5d M Cr.", productivity], nil]	forRow:10];
+	//
+	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-radius"], @"", [NSString stringWithFormat:@"%5d km", radius], nil]	forRow:12];
+	//
+	int i = [gui addLongText:system_desc startingAtRow:15 align:GUI_ALIGN_LEFT];
+	missionTextRow = i;
+	for (i-- ; i > 14 ; i--)
+		[gui setColor:[OOColor greenColor] forRow:i];
+
+	[gui setShowTextCursor:NO];
 
 	//NSLog(@"gui_screen = GUI_SCREEN_SYSTEM_DATA for system %@ at (%d,%d)",targetSystemName,target_system_seed.d,target_system_seed.b);
 
@@ -4594,6 +4588,7 @@ double scoopSoundPlayTime = 0.0;
 
 - (void) setGuiToLongRangeChartScreen
 {
+	NSDictionary*   descriptions = [universe descriptions];
 	NSString*   targetSystemName;
 	double		distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
 	int			i;
@@ -4618,15 +4613,15 @@ double scoopSoundPlayTime = 0.0;
 		GuiDisplayGen* gui = [universe gui];
 
 		[gui clear];
-		[gui setTitle:[NSString stringWithFormat:@"Galactic Chart %d",   galaxy_number+1]];
+		[gui setTitle:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-title-@"], galaxy_number+1]];
 		//
-		[gui setText:targetSystemName														forRow:17];
-		[gui setText:[NSString stringWithFormat:@"Distance:\t%.1f Light Years", distance]   forRow:18];
+		[gui setText:targetSystemName forRow:17];
+		[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-distance-@"], distance] forRow:18];
 		//
 		if (planetSearchString)
-			[gui setText:[NSString stringWithFormat:@"Find planet: %@", [planetSearchString capitalizedString]]  forRow:16];
+			[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-find-@"], [planetSearchString capitalizedString]] forRow:16];
 		else
-			[gui setText:@"Find planet: "  forRow:16];
+			[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-find-@"], @""] forRow:16];
 		[gui setColor:[OOColor cyanColor] forRow:16];
 
 		[gui setShowTextCursor:YES];
@@ -4837,6 +4832,7 @@ double scoopSoundPlayTime = 0.0;
 
 - (void) setGuiToShortRangeChartScreen
 {
+	NSDictionary*   descriptions = [universe descriptions];
 	NSString*   targetSystemName;
 	double		distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
 
@@ -4854,10 +4850,10 @@ double scoopSoundPlayTime = 0.0;
 			cursor_coordinates = galaxy_coordinates;	// home
 
 		[gui clear];
-		[gui setTitle:@"Short Range Chart"];
+		[gui setTitle:[descriptions objectForKey:@"localchart-title"]];
 		//
-		[gui setText:targetSystemName														forRow:19];
-		[gui setText:[NSString stringWithFormat:@"Distance:\t%.1f Light Years", distance]   forRow:20];
+		[gui setText:targetSystemName forRow:19];
+		[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-distance-@"], distance] forRow:20];
 		//
 
 		[gui setShowTextCursor:NO];
@@ -5249,7 +5245,7 @@ static int last_outfitting_index;
 		[gui clear];
 		[gui setTitle:@"Ship Outfitting"];
 		//
-		[gui setText:[NSString stringWithFormat:@"Cash:\t%.1f Cr.", 0.1*credits]  forRow: GUI_ROW_EQUIPMENT_CASH];
+		[gui setText:[NSString stringWithFormat:@"Cash: %.1f Cr.", 0.1*credits]  forRow: GUI_ROW_EQUIPMENT_CASH];
 		//
 		tab_stops[0] = 0;
 		tab_stops[1] = 320;
@@ -5880,7 +5876,7 @@ static int last_outfitting_index;
 		if ([cargo count] > 0)
 			current_cargo = ([cargo count] <= max_cargo) ? [cargo count] : max_cargo;  // actually count the containers and things (may be > max_cargo)
 		//
-		[gui setText:[NSString stringWithFormat:@"Cash:\t%.1f Cr.\t\tLoad %d of %d t.", 0.1*credits, current_cargo, max_cargo]  forRow: GUI_ROW_MARKET_CASH];
+		[gui setText:[NSString stringWithFormat:@"Cash: %.1f Cr.  Load %d of %d t.", 0.1*credits, current_cargo, max_cargo]  forRow: GUI_ROW_MARKET_CASH];
 		//
 		if (status == STATUS_DOCKED)	// can only buy or sell in dock
 		{

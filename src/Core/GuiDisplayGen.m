@@ -1229,12 +1229,13 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 
 		// draw a horizontal divider
 		//
+		strsize = [self ttf_rectForString:title :0.0 :0.0 :titleFont].size;
 		glColor4f( 0.75, 0.75, 0.75, alpha);	// 75% gray
 		glBegin( GL_QUADS);
-			glVertex3f( x + 0,					    y + size_in_pixels.height - pixel_title_size.height + 2,		z);
-			glVertex3f( x + size_in_pixels.width,	y + size_in_pixels.height - pixel_title_size.height + 2,		z);
-			glVertex3f( x + size_in_pixels.width,	y + size_in_pixels.height - pixel_title_size.height + 4,	z);
-			glVertex3f( x + 0,					    y + size_in_pixels.height - pixel_title_size.height + 4,	z);
+			glVertex3f( x + 0,					    y + size_in_pixels.height - strsize.height - 4,		z);
+			glVertex3f( x + size_in_pixels.width,	y + size_in_pixels.height - strsize.height - 4,		z);
+			glVertex3f( x + size_in_pixels.width,	y + size_in_pixels.height - strsize.height - 2,	z);
+			glVertex3f( x + 0,					    y + size_in_pixels.height - strsize.height - 2,	z);
 		glEnd();
 	}
 

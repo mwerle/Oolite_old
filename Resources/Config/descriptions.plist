@@ -921,6 +921,17 @@
 	<key>sysdata-radius</key>
 	<string>Average radius:</string>
 
+    <!-- Long range chart -->
+    <key>galchart-title-@</key>
+    <string>Galactic Chart %d</string>
+    <key>galchart-distance-@</key>
+    <string>Distance: %.1f Light Years</string>
+    <key>galchart-find-@</key>
+    <string>Find planet: %@</string>
+
+	<key>localchart-title</key>
+	<string>Short Range Chart</string>
+
 	<!-- background scenes for GUI screens -->
 	<key>gui-scene-show-planet</key>
 	<string>target-planet	120 80 640</string>
