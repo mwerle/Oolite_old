@@ -49,7 +49,6 @@ Your fair use and other rights are in no way affected by the above.
 #import "TextureStore.h"
 #define TEXT_BUFFER_SIZE 4096
 unsigned short textBuffer[TEXT_BUFFER_SIZE];
-NSRect ttf_rectForString(NSString *text, float x, float y, void *font);
 #endif
 
 @implementation GuiDisplayGen
@@ -74,7 +73,6 @@ NSRect ttf_rectForString(NSString *text, float x, float y, void *font);
     int titleFontSize;
     int textFontSize;
 
-    NSLog(@"loading font information from:\n%@", [userDefaults description]);
     if ([userDefaults objectForKey:@"title_font_path"])
 		titleFontPath = [userDefaults stringForKey:@"title_font_path"];
     if ([userDefaults objectForKey:@"title_font_size"])
@@ -108,6 +106,14 @@ NSRect ttf_rectForString(NSString *text, float x, float y, void *font);
 
 	has_title		= YES;
 	pixel_title_size = NSMakeSize( pixel_row_height * 1.75, pixel_row_height * 1.5);
+
+#ifdef NEWFONTS
+    // redo text sizes
+    pixel_text_size = NSMakeSize( (tx-lx), pixel_row_height);
+
+	getBoundingBox(titleFont, textBuffer, &lx, &ly, &tx, &ty);
+    pixel_title_size = NSMakeSize( (tx-lx), (ty-ly));
+#endif
 
 	int stops[6] = {0, 192, 256, 320, 384, 448};
 	int i;
@@ -1291,9 +1297,9 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 				if ((showTextCursor)&&(i == currentRow))
 				{
 					NSRect	tr = [self ttf_rectForString:text :0.0 :0.0 :textFont];
-					NSPoint cu = NSMakePoint( x + rowPosition[i].x + tr.size.width + 0.2 * characterSize.width, y + rowPosition[i].y);
+					NSPoint cu = NSMakePoint( x + rowPosition[i].x + tr.size.width + 4, rowPosition[i].y - 4);
 					tr.origin = cu;
-					tr.size.width = 0.5 * characterSize.width;
+					tr.size.width = characterSize.width * 0.75;
 					GLfloat g_alpha = 0.5 * (1.0 + sin(6 * [universe getTime]));
 					glColor4f( 1.0, 0.0, 0.0, row_alpha * g_alpha);	// red
 					glBegin(GL_QUADS);
