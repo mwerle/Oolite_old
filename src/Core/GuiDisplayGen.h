@@ -185,6 +185,7 @@ extern int debug;
 
 - (void) drawGLDisplay:(GLfloat) x :(GLfloat) y :(GLfloat) z :(GLfloat) alpha forUniverse:(Universe*) universe;
 #ifdef NEWFONTS
+- (NSRect) ttf_rectForString:(NSString *)text :(GLfloat) x :(GLfloat) y :(void *)font;
 - (void) drawGLUnicodeDisplay:(GLfloat) x :(GLfloat) y :(GLfloat) z :(GLfloat) alpha forUniverse:(Universe*) universe;
 #endif
 

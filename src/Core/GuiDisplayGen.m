@@ -47,10 +47,9 @@ Your fair use and other rights are in no way affected by the above.
 #include <string.h>
 #include <cftgl.h>
 #import "TextureStore.h"
-const GLfloat CHAR_WIDTH = 10.0;
-const GLfloat LINE_HEIGHT = 16.0;
 #define TEXT_BUFFER_SIZE 4096
 unsigned short textBuffer[TEXT_BUFFER_SIZE];
+NSRect ttf_rectForString(NSString *text, float x, float y, void *font);
 #endif
 
 @implementation GuiDisplayGen
@@ -67,7 +66,40 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 #ifndef NEWFONTS
 	pixel_row_height = MAIN_GUI_ROW_HEIGHT;
 #else
-	pixel_row_height = LINE_HEIGHT;
+	NSLog(@"initialising main UI");
+	mainUI = YES;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *titleFontPath;
+    NSString *textFontPath;
+    int titleFontSize;
+    int textFontSize;
+
+    NSLog(@"loading font information from:\n%@", [userDefaults description]);
+    if ([userDefaults objectForKey:@"title_font_path"])
+		titleFontPath = [userDefaults stringForKey:@"title_font_path"];
+    if ([userDefaults objectForKey:@"title_font_size"])
+		titleFontSize = [userDefaults integerForKey:@"title_font_size"];
+
+    if ([userDefaults objectForKey:@"text_font_path"])
+		textFontPath = [userDefaults stringForKey:@"text_font_path"];
+    if ([userDefaults objectForKey:@"text_font_size"])
+		textFontSize = [userDefaults integerForKey:@"text_font_size"];
+
+    NSLog(@"title font = %@ %d pt", titleFontPath, titleFontSize);
+    NSLog(@"text font = %@ %d pt", textFontPath, textFontSize);
+    
+	titleFont = loadFont([titleFontPath cString], titleFontSize);
+	textFont = loadFont([textFontPath cString], textFontSize);
+
+	float lx, ly, tx, ty;
+
+	memset(textBuffer, 0x00, sizeof(unsigned short) * TEXT_BUFFER_SIZE);
+    NSString *m = @"M";
+	[m getCharacters:textBuffer];
+	getBoundingBox(textFont, textBuffer, &lx, &ly, &tx, &ty);
+
+    pixel_row_height = ((int)(ty-ly))+7;
+    NSLog(@"pixel_row_height = %d", pixel_row_height);
 #endif
 
 	pixel_row_start	= MAIN_GUI_PIXEL_ROW_START;		// first position down the page...
@@ -95,7 +127,7 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 #ifndef NEWFONTS
 		rowPosition[i].y = size_in_pixels.height - (pixel_row_start + i * pixel_row_height);
 #else
-		rowPosition[i].y = (size_in_pixels.height / 2) - pixel_row_start - i * LINE_HEIGHT;
+		rowPosition[i].y = (size_in_pixels.height / 2) - pixel_row_start - (i * pixel_row_height);
 #endif
 		rowAlignment[i] = GUI_ALIGN_LEFT;
 	}
@@ -116,32 +148,6 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 	backgroundColor = nil;
 	textColor = [[OOColor yellowColor] retain];
 
-#ifdef NEWFONTS
-	NSLog(@"initialising main UI");
-	mainUI = YES;
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString *titleFontPath;
-    NSString *textFontPath;
-    int titleFontSize;
-    int textFontSize;
-
-    NSLog(@"loading font information from:\n%@", [userDefaults description]);
-    if ([userDefaults objectForKey:@"title_font_path"])
-		titleFontPath = [userDefaults stringForKey:@"title_font_path"];
-    if ([userDefaults objectForKey:@"title_font_size"])
-		titleFontSize = [userDefaults integerForKey:@"title_font_size"];
-
-    if ([userDefaults objectForKey:@"text_font_path"])
-		textFontPath = [userDefaults stringForKey:@"text_font_path"];
-    if ([userDefaults objectForKey:@"text_font_size"])
-		textFontSize = [userDefaults integerForKey:@"text_font_size"];
-
-    NSLog(@"title font = %@ %d pt", titleFontPath, titleFontSize);
-    NSLog(@"text font = %@ %d pt", textFontPath, textFontSize);
-    
-	titleFont = loadFont([titleFontPath cString], titleFontSize);
-	textFont = loadFont([textFontPath cString], textFontSize);
-#endif
 	return self;
 }
 
@@ -1126,7 +1132,7 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 
 
 #ifdef NEWFONTS
-NSRect ttf_rectForString(NSString *text, float x, float y, void *font)
+- (NSRect) ttf_rectForString:(NSString *)text :(GLfloat) x :(GLfloat) y :(void *)font
 {
 	float lx, ly, tx, ty;
 
@@ -1134,7 +1140,7 @@ NSRect ttf_rectForString(NSString *text, float x, float y, void *font)
 	[text getCharacters:textBuffer];
 
 	getBoundingBox(font, textBuffer, &lx, &ly, &tx, &ty);
-	return NSMakeRect(x, y, (tx-lx), (ty-ly));
+	return NSMakeRect(x, y, (tx-lx), pixel_row_height);
 }
 
 void drawTitle(GLfloat z, NSString *text, void *font, Universe *universe)
@@ -1153,7 +1159,7 @@ void drawTitle(GLfloat z, NSString *text, void *font, Universe *universe)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH);
+	//glDisable(GL_DEPTH);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTranslatef(x,y,z);
 	drawUnicodeString(font, x, y, z, textBuffer);
@@ -1169,7 +1175,7 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH);
+	//glDisable(GL_DEPTH);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTranslatef(x,y,z);
 	drawUnicodeString(font, x, y, z, textBuffer);
@@ -1212,7 +1218,6 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 		//
 		// draw the title
 		//
-		//strsize = ttf_rectForString(title, 0.0, 0.0, titleFont).size;
 		glColor4f( 1.0, 0.0, 0.0, alpha);	// red
 		drawTitle(z, title, titleFont, universe);
 
@@ -1251,7 +1256,7 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 			NSString*   text = (NSString *)[rowText objectAtIndex:i];
 			if (![text isEqual:@""])
 			{
-				strsize = ttf_rectForString(text, 0.0, 0.0, textFont).size;
+				strsize = [self ttf_rectForString:text :0.0 :0.0 :textFont].size;
 				switch (rowAlignment[i])
 				{
 					case GUI_ALIGN_LEFT :
@@ -1266,7 +1271,10 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 				}
 				if (i == selectedRow)
 				{
-					NSRect block = ttf_rectForString(text, x + rowPosition[i].x + 2, rowPosition[i].y + 2, textFont);
+					NSRect block = [self ttf_rectForString:text :x + rowPosition[i].x + 2 :rowPosition[i].y - 4 :textFont];
+                    block.size.width += 2;
+                    block.size.height += 2;
+                    //NSLog(@"block: origin = %f,%f, size = %f,%f", block.origin.x, block.origin.y, block.size.width, block.size.height);
 					glColor4f( 1.0, 0.0, 0.0, row_alpha);	// red
 					glBegin(GL_QUADS);
 						glVertex3f( block.origin.x,						block.origin.y,						z);
@@ -1282,7 +1290,7 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 				//
 				if ((showTextCursor)&&(i == currentRow))
 				{
-					NSRect	tr = rectForString( text, 0.0, 0.0, characterSize);
+					NSRect	tr = [self ttf_rectForString:text :0.0 :0.0 :textFont];
 					NSPoint cu = NSMakePoint( x + rowPosition[i].x + tr.size.width + 0.2 * characterSize.width, y + rowPosition[i].y);
 					tr.origin = cu;
 					tr.size.width = 0.5 * characterSize.width;
@@ -1311,7 +1319,11 @@ void drawText(GLfloat x, GLfloat y, GLfloat z, NSString *text, void *font, Unive
 						rowPosition[i].x = tabStops[j];
 						if (i == selectedRow)
 						{
-							NSRect block = ttf_rectForString(text, x + rowPosition[i].x + 2, rowPosition[i].y + 2, textFont);
+							NSRect block = [self ttf_rectForString:text :x + rowPosition[i].x + 2 :rowPosition[i].y - 4 :textFont];
+                            block.size.width += 2;
+                            block.size.height += 2;
+
+                            //NSLog(@"block: origin = %f,%f, size = %f,%f", block.origin.x, block.origin.y, block.size.width, block.size.height);
 							glColor4f( 1.0, 0.0, 0.0, row_alpha);	// red
 							glBegin(GL_QUADS);
 								glVertex3f( block.origin.x,						block.origin.y,						z);
