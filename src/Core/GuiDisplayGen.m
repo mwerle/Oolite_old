@@ -461,8 +461,19 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 
 - (int) addLongText: (NSString *) str startingAtRow:(int) row align:(int) alignment
 {
+	//NSLog(@"addLongText printing text '%@'", str);
+
 	NSSize chSize = pixel_text_size;
-	NSSize strsize = rectForString( str, 0.0, 0.0, chSize).size;
+	NSSize strsize;
+	
+#ifndef NEWFONTS
+	strsize = rectForString( str, 0.0, 0.0, chSize).size;
+#else
+	if (mainUI)
+		strsize = [self ttf_rectForString:str :0.0 :0.0 :textFont].size;
+	else
+		strsize = rectForString( str, 0.0, 0.0, chSize).size;
+#endif
 	if (strsize.width < size_in_pixels.width)
 	{
 		[self setText:str forRow:row align:alignment];
@@ -479,9 +490,25 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 			[string1 appendString:(NSString *)[words objectAtIndex:0]];
 			[string1 appendString:@" "];
 			[words removeObjectAtIndex:0];
+#ifndef NEWFONTS
 			strsize = rectForString( string1, 0.0, 0.0, chSize).size;
+#else
+			if (mainUI)
+				strsize = [self ttf_rectForString:string1 :0.0 :0.0 :textFont].size;
+			else
+				strsize = rectForString( string1, 0.0, 0.0, chSize).size;
+#endif
 			if ([words count] > 0)
+			{
+#ifndef NEWFONTS
 				strsize.width += rectForString( (NSString *)[words objectAtIndex:0], 0.0, 0.0, chSize).size.width;
+#else
+				if (mainUI)
+					strsize.width += [self ttf_rectForString:(NSString *)[words objectAtIndex:0] :0.0 :0.0 :textFont].size.width;
+				else
+					strsize.width += rectForString( (NSString *)[words objectAtIndex:0], 0.0, 0.0, chSize).size.width;
+#endif
+			}
 		}
 		[string2 appendString:[words componentsJoinedByString:@" "]];
 		[self setText:string1		forRow:row			align:alignment];
@@ -491,7 +518,7 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 
 - (void) printLongText: (NSString *) str Align:(int) alignment Color:(OOColor*) text_color FadeTime:(float) text_fade Key:(NSString*) text_key AddToArray:(NSMutableArray*) text_array
 {
-//	NSLog(@"GUI printing text '%@'", str);
+	//NSLog(@"printLongText printing text '%@'", str);
 
 	// print a multi-line message
 	//
@@ -507,8 +534,17 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 	int row = currentRow;
 	if (row == n_rows - 1)
 		[self scrollUp:1];
+
 	NSSize chSize = pixel_text_size;
-	NSSize strsize = rectForString( str, 0.0, 0.0, chSize).size;
+	NSSize strsize;
+#ifndef NEWFONTS
+	strsize = rectForString( str, 0.0, 0.0, chSize).size;
+#else
+	if (mainUI)
+		strsize = [self ttf_rectForString:str :0.0 :0.0 :textFont].size;
+	else
+		strsize = rectForString( str, 0.0, 0.0, chSize).size;
+#endif
 	if (strsize.width < size_in_pixels.width)
 	{
 		[self setText:str forRow:row align:alignment];
@@ -533,9 +569,25 @@ unsigned short textBuffer[TEXT_BUFFER_SIZE];
 			[string1 appendString:(NSString *)[words objectAtIndex:0]];
 			[string1 appendString:@" "];
 			[words removeObjectAtIndex:0];
+#ifndef NEWFONTS
 			strsize = rectForString( string1, 0.0, 0.0, chSize).size;
+#else
+			if (mainUI)
+				strsize = [self ttf_rectForString:string1 :0.0 :0.0 :textFont].size;
+			else
+				strsize = rectForString( string1, 0.0, 0.0, chSize).size;
+#endif
 			if ([words count] > 0)
+			{
+#ifndef NEWFONTS
 				strsize.width += rectForString( (NSString *)[words objectAtIndex:0], 0.0, 0.0, chSize).size.width;
+#else
+				if (mainUI)
+					strsize.width += [self ttf_rectForString:(NSString *)[words objectAtIndex:0] :0.0 :0.0 :textFont].size.width;
+				else
+					strsize.width += rectForString( (NSString *)[words objectAtIndex:0], 0.0, 0.0, chSize).size.width;
+#endif
+			}
 		}
 		[string2 appendString:[words componentsJoinedByString:@" "]];
 		[self setText:string1		forRow:row			align:alignment];
