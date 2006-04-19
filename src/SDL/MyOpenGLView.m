@@ -43,6 +43,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "SDL_syswm.h"
 #import "OOSound.h"
 #import "OOFileManager.h" // to find savedir
+#import "ResourceManager.h"
 
 #include <ctype.h>
 
@@ -108,6 +109,9 @@ Your fair use and other rights are in no way affected by the above.
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	SDL_Surface *icon = [[ResourceManager surfaceNamed:@"Oolite32.PNG" inFolder:@"Images"] surface];
+	SDL_WM_SetIcon(icon, 0);
 
    NSLog(@"CREATING MODE LIST");
    [self populateFullScreenModelist];
@@ -192,7 +196,6 @@ Your fair use and other rights are in no way affected by the above.
 {
 	return allowingStringInput;
 }
-
 
 - (NSString *) typedString
 {
@@ -377,6 +380,8 @@ Your fair use and other rights are in no way affected by the above.
 			SDL_ShowCursor(SDL_ENABLE);
 	}
 
+	SDL_WM_SetCaption("Oolite", "Oolite");
+	
 	glShadeModel(GL_FLAT);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
