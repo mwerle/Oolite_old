@@ -1,0 +1,3 @@
+attack = "afterburner-in.ogg"; 
+sustain = ( "afterburner-sustain-1.ogg", "afterburner-sustain-2.ogg" ); 
+decay = "afterburner-out.ogg"; 
