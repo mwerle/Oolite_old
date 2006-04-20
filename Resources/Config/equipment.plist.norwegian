@@ -1,316 +1,316 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-	<array>
-		<integer>0</integer>
-		<integer>2</integer>
-		<string>Fuel</string>
-		<string>EQ_FUEL</string>
-		<string>Fuel for the witchspace engines.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>1</integer>
-		<integer>300</integer>
-		<string>Missil</string>
-		<string>EQ_MISSILE</string>
-		<string>Faulcon de Lacy HM3 homing missile, fast and accurate when used in conjunction with standard targetting scanners.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>1</integer>
-		<integer>4000</integer>
-		<string>Utvidet Lasterom</string>
-		<string>EQ_CARGO_BAY</string>
-		<string>Retro-fitted hull extensions permit the enclosure of a few extra tons of cargo capacity.</string>
-	</array>
-	<array>
-		<integer>2</integer>
-		<integer>6000</integer>
-		<string>Antimissilsystem</string>
-		<string>EQ_ECM</string>
-		<string>High power disruptor circuits capable of remotely detonating inbound missiles.</string>
-	</array>
-	<array>
-		<integer>5</integer>
-		<integer>5250</integer>
-		<string>Fuel Scoops</string>
-		<string>EQ_FUEL_SCOOPS</string>
-		<string>Wide cargo entrance and magnetic scoops enable in-flight capture of mined materials, fuel gasses from the solar corona, and salvage of space debris.</string>
-	</array>
-	<array>
-		<integer>6</integer>
-		<integer>10000</integer>
-		<string>Redningsfartøy</string>
-		<string>EQ_ESCAPE_POD</string>
-		<string>A simple emergency capsule with a life-support system, purchase includes comprehensive insurance for your ship and systems.</string>
-	</array>
-	<array>
-		<integer>7</integer>
-		<integer>9000</integer>
-		<string>Energibombe</string>
-		<string>EQ_ENERGY_BOMB</string>
-		<string>A one-shot super-weapon capable of destroying all small craft within range.</string>
-	</array>
-	<array>
-		<integer>8</integer>
-		<integer>15000</integer>
-		<string>Ekstra Energi Enhet</string>
-		<string>EQ_ENERGY_UNIT</string>
-		<string>An improved efficiency energy recharge unit.</string>
-	</array>
+       <array>
+               <integer>0</integer>
+               <integer>2</integer>
+               <string>Drivstoff</string>
+               <string>EQ_FUEL</string>
+               <string>Drivstoff for witchspace motorene.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>1</integer>
+               <integer>300</integer>
+               <string>Missil</string>
+               <string>EQ_MISSILE</string>
+               <string>Faulcon de Lacy HM3 søkende missil, rask og presis når brukt i samsvar med standard målsøkende scanner.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>1</integer>
+               <integer>4000</integer>
+               <string>Utvidet Lasterom</string>
+               <string>EQ_CARGO_BAY</string>
+               <string>Retro-fitted hull extensions permit the enclosure of a few extra tons of cargo capacity.</string>
+       </array>
+       <array>
+               <integer>2</integer>
+               <integer>6000</integer>
+               <string>ECM Antimissilsystem</string>
+               <string>EQ_ECM</string>
+               <string>Kraftig forstyrringsmekanisme i stand til å detonere inkommende missiler på avstand</string>
+       </array>
+       <array>
+               <integer>5</integer>
+               <integer>5250</integer>
+               <string>Drivstofføse</string>
+               <string>EQ_FUEL_SCOOPS</string>
+               <string>Bred lasteromsluke og magnetisk øse i stand til å samle opp utvinnede maineraler, drivstoffgasser fra en sols corona, og berging av mindre objekter i drift.</string>
+       </array>
+       <array>
+               <integer>6</integer>
+               <integer>10000</integer>
+               <string>Redningsjolle</string>
+               <string>EQ_ESCAPE_POD</string>
+               <string>En enkel redningsjolle med systemer for bærekraftige livsfunksjoner. Inkludert i prisen er en fullstendig forsikringspakke som dekker skip og instrumenter.</string>
+       </array>
+       <array>
+               <integer>7</integer>
+               <integer>9000</integer>
+               <string>Energibombe</string>
+               <string>EQ_ENERGY_BOMB</string>
+               <string>Et supervåpen til engangsbruk, kapabel til å ødelegge alle mindre fartøy innen en viss distanse.</string>
+       </array>
+       <array>
+               <integer>8</integer>
+               <integer>15000</integer>
+               <string>Ekstra Energienhet</string>
+               <string>EQ_ENERGY_UNIT</string>
+               <string>En forbedret enhet for økt regenrasjonrate av energi.</string>
+       </array>
 <!-- next item has a TL too high to be available at all -->
-	<array>
-		<integer>99</integer>
-		<integer>500000</integer>
-		<string>Naval Energy Unit</string>
-		<string>EQ_NAVAL_ENERGY_UNIT</string>
-		<string>A special improved efficiency energy recharge unit, as supplied to Navy vessels.</string>
-	</array>
-	<array>
-		<integer>9</integer>
-		<integer>15000</integer>
-		<string>Autolos datasystem</string>
-		<string>EQ_DOCK_COMP</string>
-		<string>A simple autopilot and in-system communication system interlocking with local station systems.</string>
-	</array>
-	<array>
-		<integer>10</integer>
-		<integer>50000</integer>
-		<string>Galaktisk Hyperdrive</string>
-		<string>EQ_GAL_DRIVE</string>
-		<string>A one-shot overcharge for the witchspace engines, enabling inter-galactic travel.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>3</integer>
-		<integer>4000</integer>
-		<string>Pulslaser</string>
-		<string>EQ_WEAPON_PULSE_LASER</string>
-		<string>High powered pulse laser, a basic defense configuration.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>4</integer>
-		<integer>10000</integer>
-		<string>Strålelaser</string>
-		<string>EQ_WEAPON_BEAM_LASER</string>
-		<string>Rapid cycle laser, delivers more energy in less time for more effective results.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>10</integer>
-		<integer>8000</integer>
-		<string>Utvinningslaser</string>
-		<string>EQ_WEAPON_MINING_LASER</string>
-		<string>High power, slow recharge. Ideal for mineral extraction from large asteroids.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>10</integer>
-		<integer>60000</integer>
-		<string>Millitærlaser</string>
-		<string>EQ_WEAPON_MILITARY_LASER</string>
-		<string>Increased power beam laser, developed for Naval use.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<!-- next item has a TL too high to be available at all -->
-	<array>
-		<integer>99</integer>
-		<integer>500000</integer>
-		<string>Cloaking Device</string>
-		<string>EQ_CLOAKING_DEVICE</string>
-		<string>Experimental Naval cloaking device.</string>
-	</array>
+       <array>
+               <integer>99</integer>
+               <integer>500000</integer>
+               <string>Marine Energienhet</string>
+               <string>EQ_NAVAL_ENERGY_UNIT</string>
+               <string>En spesiell regenererende enhet av forbedret effektivitet, av typen distibuert til Marinefartøy.</string>
+       </array>
+       <array>
+               <integer>9</integer>
+               <integer>15000</integer>
+               <string>Autopilot lossystem</string>
+               <string>EQ_DOCK_COMP</string>
+               <string>En enkel autopilot og internt kommunikasjonssystem med samband til lokale stasjonssystemer.</string>
+       </array>
+       <array>
+               <integer>10</integer>
+               <integer>50000</integer>
+               <string>Galaktisk Hyperdrive</string>
+               <string>EQ_GAL_DRIVE</string>
+               <string>En overbelastningsplombe til witchspacemotorene som muliggjør et intergalaktisk hopp.  Kun til engangsbruk.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>3</integer>
+               <integer>4000</integer>
+               <string>Pulslaser</string>
+               <string>EQ_WEAPON_PULSE_LASER</string>
+               <string>En høyenergi pulslaser, som utgjør et grunneggende forsvarsvåpen.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>4</integer>
+               <integer>10000</integer>
+               <string>Strålelaser</string>
+               <string>EQ_WEAPON_BEAM_LASER</string>
+               <string>En rask sykluslaser som leverer økt energi på kortere tid, for mer effektive resultater.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>10</integer>
+               <integer>8000</integer>
+               <string>Utvinningslaser</string>
+               <string>EQ_WEAPON_MINING_LASER</string>
+               <string>Leverer en stråle av høy energi men med treg regenerasjon. Ideell for mineralutvinning og gruvedrift på asteroider.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>10</integer>
+               <integer>60000</integer>
+               <string>Millitærlaser</string>
+               <string>EQ_WEAPON_MILITARY_LASER</string>
+               <string>Kraftig økning i energikraft på en strålelaser. Utviklet for Marinen.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <!-- next item has a TL too high to be available at all -->
+       <array>
+               <integer>99</integer>
+               <integer>500000</integer>
+               <string>Kamuflasjemekanisme</string>
+               <string>EQ_CLOAKING_DEVICE</string>
+               <string>Eksperimentelt instrument utviklet av marinen for nær-usynliggjøring av et fartøy.</string>
+       </array>
 <!-- next items are new items, don't place new items before this mark -->
-	<array><!-- Passenger Compartment, like missiles this can be bought multiple times -->
-		<integer>5</integer>
-		<integer>8250</integer>
-		<string>Passasjerkupé - takes up 5t of cargo space</string>
-		<string>EQ_PASSENGER_BERTH</string>
-		<string>Provides life support, entertainment and comfort for a single passenger.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array><!-- Passenger Compartment Removal -->
-		<integer>1</integer>
-		<integer>1000</integer>
-		<string>Remove Passenger Berth - reclaims 5t of cargo space</string>
-		<string>EQ_PASSENGER_BERTH_REMOVAL</string>
-		<string>Removes a passenger berth.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array><!-- Missile Removal -->
-		<integer>1</integer>
-		<integer>200</integer>
-		<string>Unmount and sell all pylon mounted weapons</string>
-		<string>EQ_MISSILE_REMOVAL</string>
-		<string>Unmounts, safes, and re-sells at full market value all missiles and mines currently mounted on your craft.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array><!-- ecm hardened missile -->
-		<integer>9</integer>
-		<integer>3500</integer>
-		<string>AntiECM missil</string>
-		<string>EQ_HARDENED_MISSILE</string>
-		<string>Faulcon de Lacy HMX5 homing missile - hardened against ECM.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>10</integer>
-		<integer>6000</integer>
-		<string>Witchdrive forgasser</string>
-		<string>EQ_FUEL_INJECTION</string>
-		<string>A convertor added to your in-system drive that can inject unused witch-drive fuel into your exhaust, massively increasing your speed.</string>
-	</array>
-	<array>
-		<integer>11</integer>
-		<integer>4500</integer>
-		<string>Oppgradert Målscanner</string>
-		<string>EQ_SCANNER_SHOW_MISSILE_TARGET</string>
-		<string>Adds a visible indicator, range and legal status display around the target currently locked into your targetting computer.</string>
-	</array>
-	<array>
-		<integer>5</integer>
-		<integer>3250</integer>
-		<string>Fler-målssystem</string>
-		<string>EQ_MULTI_TARGET</string>
-		<string>Allows switching between missile stations and multiple target locks.</string>
-	</array>
-	<array>
-		<integer>7</integer>
-		<integer>6500</integer>
-		<string>Avansert Romkompass</string>
-		<string>EQ_ADVANCED_COMPASS</string>
-		<string>A Tyley-Feynman GW-99 astro-navigation compass with user-selectable target modes.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>8</integer>
-		<integer>12500</integer>
-		<string>Missil målminnesystem</string>
-		<string>EQ_TARGET_MEMORY</string>
-		<string>A sixteen core target memory matrix. Allows selection of previous target locks.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>99</integer>
-		<integer>150000</integer>
-		<string>Thargoid Laser</string>
-		<string>EQ_WEAPON_THARGOID_LASER</string>
-		<string>Captured Thargoid weapon, self-aiming.</string>
-	</array>
-	<array>
-		<integer>6</integer>
-		<integer>25000</integer>
-		<string>Quirium kjedemine</string>
-		<string>EQ_QC_MINE</string>
-		<string>Tyley-Feynman Quirium cascade mine. Mounts in place of a missile, but deploys to the rear of your craft. Capable of massive destruction and triggering chain reactions in the witchdrives of ships caught in its blast range.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<array>
-		<integer>10</integer>
-		<integer>147500</integer>
-		<string>Skjoldforsterker</string>
-		<string>EQ_SHIELD_BOOSTER</string>
-		<string>Shield boosting technology dramatically increases the capability of standard defensive shields.</string>
-	</array>
-	<array>
-		<integer>13</integer>
-		<integer>475500</integer>
-		<string>Militær Skjoldoppgradering</string>
-		<string>EQ_NAVAL_SHIELD_BOOSTER</string>
-		<string>Military technology, used in conjunction with ordinary shields and shield boosting technology, further increases the capability of standard defensive shields.</string>
-	</array>
-	<!-- next item was a test item -->
-	<array>
-		<integer>2</integer>
-		<integer>2000</integer>
-		<string>Twin Plasma Cannon</string>
-		<string>EQ_WEAPON_TWIN_PLASMA_CANNON</string>
-		<string>Basic cannon delivering charged plasma bursts at sublight speed.</string>
-	</array>
-	<!-- new items -->
-	<array>
-		<integer>4</integer>
-		<integer>15000</integer>
-		<string>Utvendig heteskjold</string>
-		<string>EQ_HEAT_SHIELD</string>
-		<string>Additional ceramid-fibre blanketing and tiles, no armour value but provides extra solar insulation.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<!-- renovation -->
-	<array>
-		<integer>6</integer>
-		<integer>1000</integer>	<!-- dummy value, actually 10% of the ship's value which will vary by ship -->
-		<string>Maintenance Overhaul</string>
-		<string>EQ_RENOVATION</string>
-		<string>Covers dry docking fees, cleaning and replating of damaged hull sections, shield and scoop system de-ionization, systems tune-up, repainting and detailed valeting.</string>
-		<dict>
-			<key>available_to_all</key>
-			<true/>
-		</dict>
-	</array>
-	<!-- next item has a TL too high to be available at all -->
-	<array>
-		<integer>99</integer>
-		<integer>1500000</integer>
-		<string>Military Anti-Scanner Countermeasures (MASC'M)</string>
-		<string>EQ_MILITARY_JAMMER</string>
-		<string>Developed from experimental cloaking prototypes, this jamming device stops enemy ships from scanning your craft.</string>
-	</array>
-	<!-- next item has a TL too high to be available at all -->
-	<array>
-		<integer>99</integer>
-		<integer>250000</integer>
-		<string>Military Scanner Filtering</string>
-		<string>EQ_MILITARY_SCANNER_FILTER</string>
-		<string>Filters out the jamming signals from MASC'M devices.</string>
-	</array>
+       <array><!-- Passenger Compartment, like missiles this can be bought multiple times -->
+               <integer>5</integer>
+               <integer>8250</integer>
+               <string>Passasjerkupé - tar opp 5t lasteromsplass</string>
+               <string>EQ_PASSENGER_BERTH</string>
+               <string>Tilrettelegger bærekraftige overlevelsessytemer, underholdning og hygge for én ekel passasjer.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array><!-- Passenger Compartment Removal -->
+               <integer>1</integer>
+               <integer>1000</integer>
+               <string>Fjern Passasjerkupé - gir tilbake 5t lasteromsplass</string>
+               <string>EQ_PASSENGER_BERTH_REMOVAL</string>
+               <string>Fjerner én passasjerkupé.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array><!-- Missile Removal -->
+               <integer>1</integer>
+               <integer>200</integer>
+               <string>Demontér og selg rakettvåpen</string>
+               <string>EQ_MISSILE_REMOVAL</string>
+               <string>Fjerner, sikrer og selger til full markedspris, alle miner og missiler på fartøyet.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array><!-- ecm hardened missile -->
+               <integer>9</integer>
+               <integer>3500</integer>
+               <string>AntiECM missil</string>
+               <string>EQ_HARDENED_MISSILE</string>
+               <string>En Faulcon de Lacy HMX5 søkemissil - forsterket mot ECM Antimissilsytemer.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>10</integer>
+               <integer>6000</integer>
+               <string>Witchdrive Drivstoffinjeksjon</string>
+               <string>EQ_FUEL_INJECTION</string>
+               <string>En installert forgasser som kan utvinne Witchdrive drivstoff til systemmotorene, noe som øker prestasjonsevnen kraftig. </string>
+       </array>
+       <array>
+               <integer>11</integer>
+               <integer>4500</integer>
+               <string>Oppgradert Målscanner</string>
+               <string>EQ_SCANNER_SHOW_MISSILE_TARGET</string>
+               <string>Tilrettelegger en visuell målramme, gir distansesdata, og øvrig lovstatusinformasjon om IDcomputerens målemne.</string>
+       </array>
+       <array>
+               <integer>5</integer>
+               <integer>3250</integer>
+               <string>Fler-målssystem</string>
+               <string>EQ_MULTI_TARGET</string>
+               <string>Muliggjør å bla gjennom missilstasjoner og flerfoldige målemner.</string>
+       </array>
+       <array>
+               <integer>7</integer>
+               <integer>6500</integer>
+               <string>Avansert Romkompass</string>
+               <string>EQ_ADVANCED_COMPASS</string>
+               <string>Et Tyley-Feynman GW-99 astro-navigasjonskompass med brukervennlige indikasjonsvalg.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>8</integer>
+               <integer>12500</integer>
+               <string>Missil målminnesystem</string>
+               <string>EQ_TARGET_MEMORY</string>
+               <string>En minnekjerne-matrix på 16 målemner. Tillater muligheten å velge tidligere målemner.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>99</integer>
+               <integer>150000</integer>
+               <string>Thargoid Laser</string>
+               <string>EQ_WEAPON_THARGOID_LASER</string>
+               <string>Konfiskert Thargoid våpen, selv-siktende.</string>
+       </array>
+       <array>
+               <integer>6</integer>
+               <integer>25000</integer>
+               <string>Quirium kjedemine</string>
+               <string>EQ_QC_MINE</string>
+               <string>En Tyley-Feynman Quirium kjede-eksplosiv mine. Monteres i en raketttube i stedet for en missil, men deponeres akterut. I stand til å produsere massiv ødeleggelse, og igangsette kjedereaksjoner av eksploderende witchdrivemotorer fanget innenfor eksplosjonens slagkraft.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <array>
+               <integer>10</integer>
+               <integer>147500</integer>
+               <string>Skjoldforsterker</string>
+               <string>EQ_SHIELD_BOOSTER</string>
+               <string>Økt skjoldeffektivitet som fører til dramatisk forbedring av skipets defensive kapasitet.</string>
+       </array>
+       <array>
+               <integer>13</integer>
+               <integer>475500</integer>
+               <string>Militær Skjoldoppgradering</string>
+               <string>EQ_NAVAL_SHIELD_BOOSTER</string>
+               <string>Militærteknologi som, når brukt i samsvar med normale skjold, ytterligere forsterker skipets skjoldstyrke.</string>
+       </array>
+       <!-- next item was a test item -->
+       <array>
+               <integer>2</integer>
+               <integer>2000</integer>
+               <string>Plasma Tvillingkanon</string>
+               <string>EQ_WEAPON_TWIN_PLASMA_CANNON</string>
+               <string>Standard kanon som leverer energiladede plasmakuler under lyshastighet.</string>
+       </array>
+       <!-- new items -->
+       <array>
+               <integer>4</integer>
+               <integer>15000</integer>
+               <string>Utvendig heteskjold</string>
+               <string>EQ_HEAT_SHIELD</string>
+               <string>Utvortes ceramid-fiber deksel, som ikke yter noen defensiv forsterkning men bidrar til besyttelse fra solradiasjon.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <!-- renovation -->
+       <array>
+               <integer>6</integer>
+               <integer>1000</integer> <!-- dummy value, actually 10% of the ship's value which will vary by ship -->
+               <string>Teknisk Overhaling</string>
+               <string>EQ_RENOVATION</string>
+               <string>Dekker kostnader for tørrdokk, vask og utskiftning av skader på skrog, skjold og øse, samt de-ionisering, trimming og et strøk maling.</string>
+               <dict>
+                       <key>available_to_all</key>
+                       <true/>
+               </dict>
+       </array>
+       <!-- next item has a TL too high to be available at all -->
+       <array>
+               <integer>99</integer>
+               <integer>1500000</integer>
+               <string>Militær Anti-Scanner Motgrep (MASC'M)</string>
+               <string>EQ_MILITARY_JAMMER</string>
+               <string>Utviklet fra eksperimentelle kamuflasjeprototyper, denne enheten hindrer andre fartøy i å scanne skipet ditt.</string>
+       </array>
+       <!-- next item has a TL too high to be available at all -->
+       <array>
+               <integer>99</integer>
+               <integer>250000</integer>
+               <string>Militært Scannerfilter</string>
+               <string>EQ_MILITARY_SCANNER_FILTER</string>
+               <string>Filtrerer bort signalene fra MASC'M-enheter.</string>
+       </array>
 </array>
 </plist>

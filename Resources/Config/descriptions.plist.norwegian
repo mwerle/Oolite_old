@@ -1,940 +1,940 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-       <key>condition</key>
-       <array>
-               <string>Ved Kai</string>
-               <string>Grønn</string>
-               <string>Gul</string>
-               <string>Rød</string>
-       </array>
-       <key>economy</key>
-       <array>
-               <string>Rikt Industrisamfunn</string>
-               <string>Middels Industrisamfunn</string>
-               <string>Fattig Industrisamfunn</string>
-               <string>Hovedsaklig Industri</string>
-               <string>Hovedsaklig Landbruk</string>
-               <string>Rikt Landbrukssamfunn</string>
-               <string>Middels Landbrukssamfunn</string>
-               <string>Fattig Landbrukssamfunn</string>
-       </array>
-       <key>government</key>
-       <array>
-               <string>Anarki</string>
-               <string>Føydalt</string>
-               <string>Flerdelt Regime</string>
-               <string>Diktatur</string>
-               <string>Kommunisme</string>
-               <string>Konfererat Regime</string>
-               <string>Demokrati</string>
-               <string>Korporasjonsregime</string>
-       </array>
-       <key>inhabitants</key>
-       <array>
-               <array>
-                       <string>Store</string>
-                       <string>Hissige</string>
-                       <string>Små</string>
-               </array>
-               <array>
-                       <string>Grønne</string>
-                       <string>Røde</string>
-                       <string>Gule</string>
-                       <string>Blå</string>
-                       <string>Sorte</string>
-                       <string>Harmløse</string>
-               </array>
-               <array>
-                       <string>Slimete</string>
-                       <string>Stilkøyde</string>
-                       <string>Hornete</string>
-                       <string>Benete</string>
-                       <string>Fete</string>
-                       <string>Pelskledte</string>
-               </array>
-               <array>
-                       <string>Gnager</string>
-                       <string>Frosk</string>
-                       <string>Øgle</string>
-                       <string>Hummer</string>
-                       <string>Fugl</string>
-                       <string>Menneskeart</string>
-                       <string>Kattedyr</string>
-                       <string>Insekt</string>
-               </array>
-       </array>
-       <key>legal_status</key>
-       <array>
-               <string>Ren</string>
-               <string>Kriminell</string>
-               <string>Flyktning</string>
-       </array>
-       <key>rating</key>
-       <array>
-               <string>Harmløs</string>
-               <string>Stort Sett Harmløs</string>
-               <string>Dårlig</string>
-               <string>Middels</string>
-               <string>Mer Enn Middels</string>
-               <string>Brukbar</string>
-               <string>Farlig</string>
-               <string>Dødelig</string>
-               <string>---- E L I T E ----</string>
-       </array>
-       <key>system_description</key>
-       <array>
-               <array>
-                       <string>berømt</string>
-                       <string>bemerket</string>
-                       <string>kjent</string>
-                       <string>famøst</string>
-                       <string>beryktet</string>
-               </array>
-               <array>
-                       <string>svært</string>
-                       <string>noe</string>
-                       <string>meget</string>
-                       <string>relativt</string>
-                       <string></string>
-               </array>
-               <array>
-                       <string>eldgammelt</string>
-                       <string>[20]</string>
-                       <string>stor</string>
-                       <string>utstrakt</string>
-                       <string>rosa</string>
-               </array>
-               <array>
-                       <string>[29] [28] plantasjer</string>
-                       <string>fjell</string>
-                       <string>[27]</string>
-                       <string>[19] skoger</string>
-                       <string>hav</string>
-               </array>
-               <array>
-                       <string>skyhet</string>
-                       <string>tåpelighet</string>
-                       <string>parringsritualer</string>
-                       <string>avsky for [5]</string>
-                       <string>begeistring for [5]</string>
-               </array>
-               <array>
-                       <string>matblandere</string>
-                       <string>turister</string>
-                       <string>poesi</string>
-                       <string>diskotek</string>
-                       <string>[13]</string>
-               </array>
-               <array>
-                       <string>snakkende tre</string>
-                       <string>krabbe</string>
-                       <string>flaggermus</string>
-                       <string>hummer</string>
-                       <string>%R</string>
-               </array>
-               <array>
-                       <string>rammet</string>
-                       <string>plaget</string>
-                       <string>besatt</string>
-                       <string>hjemsøkt</string>
-                       <string>brydd</string>
-               </array>
-               <array>
-                       <string>[21] borgerkrig</string>
-                       <string>[26] [23] [24]s</string>
-                       <string>[26] sykdom</string>
-                       <string>[21] jordskjelv</string>
-                       <string>[21] solaktivitet</string>
-               </array>
-               <array>
-                       <string>sine [2] [3]</string>
-                       <string>%I [23] [24]</string>
-                       <string>dets befolknings [25] [4]</string>
-                       <string>[32]</string>
-                       <string>sine [12] [13]</string>
-               </array>
-               <array>
-                       <string>saft</string>
-                       <string>konjakk</string>
-                       <string>vann</string>
-                       <string>brygg</string>
-                       <string>gargle blastere</string>
-               </array>
-               <array>
-                       <string>%R</string>
-                       <string>%I [24]</string>
-                       <string>%I %R</string>
-                       <string>%I [26]</string>
-                       <string>[26] %R</string>
-               </array>
-               <array>
-                       <string>fantastiske</string>
-                       <string>eksotiske</string>
-                       <string>molefunkne</string>
-                       <string>uvanlige</string>
-                       <string>spennende</string>
-               </array>
-               <array>
-                       <string>cuisine</string>
-                       <string>nattliv</string>
-                       <string>kasinore</string>
-                       <string>situasjonskomedier</string>
-                       <string>[32]</string>
-               </array>
-               <array>
-                       <string>%H</string>
-                       <string>Planeten %H</string>
-                       <string>Verdenen %H</string>
-                       <string>Denne planeten</string>
-                       <string>Denne verdenen</string>
-               </array>
-               <array>
-                       <string> ubemerkelsesverdig</string>
-                       <string> kjedelig</string>
-                       <string> tam</string>
-                       <string> platt</string>
-                       <string> frastøtende</string>
-               </array>
-               <array>
-                       <string>planeten</string>
-                       <string>verdenen</string>
-                       <string>sted</string>
-                       <string>lille planeten</string>
-                       <string>dynge</string>
-               </array>
-               <array>
-                       <string>veps</string>
-                       <string>møll</string>
-                       <string>larve</string>
-                       <string>maur</string>
-                       <string>%R</string>
-               </array>
-               <array>
-                       <string>poet</string>
-                       <string>kunstskoleelev</string>
-                       <string>yak</string>
-                       <string>snegle</string>
-                       <string>snegl</string>
-               </array>
-               <array>
-                       <string>tropisk</string>
-                       <string>tett</string>
-                       <string>regn</string>
-                       <string>ugjennomtrengelig</string>
-                       <string>overstrømmende</string>
-               </array>
-               <array>
-                       <string>morsom</string>
-                       <string>underlig</string>
-                       <string>uvanlig</string>
-                       <string>rar</string>
-                       <string>pussig</string>
-               </array>
-               <array>
-                       <string>hyppige</string>
-                       <string>tidige</string>
-                       <string>uberegnelige</string>
-                       <string>forferdelige</string>
-                       <string>dødelige</string>
-               </array>
-               <array>
-                       <string>[1] [0] for [9]</string>
-                       <string>[1] [0] for [9] og [9]</string>
-                       <string>[7] av [8]</string>
-                       <string>[1] [0] for [9] men [7] av [8]</string>
-                       <string>[15] [16]</string>
-               </array>
-               <array>
-                       <string>[26]</string>
-                       <string>fjell</string>
-                       <string>spiselig</string>
-                       <string>tre</string>
-                       <string>flekkete</string>
-               </array>
-               <array>
-                       <string>[30]</string>
-                       <string>[31]</string>
-                       <string>[6]oid</string>
-                       <string>[18]</string>
-                       <string>[17]</string>
-               </array>
-               <array>
-                       <string>urgammelt</string>
-                       <string>eksepsjonell</string>
-                       <string>eksentrisk</string>
-                       <string>inngrodd</string>
-                       <string>[20]</string>
-               </array>
-               <array>
-                       <string>morder</string>
-                       <string>dødelig</string>
-                       <string>ond</string>
-                       <string>livsfarlig</string>
-                       <string>rått</string>
-               </array>
-               <array>
-                       <string>parkometer</string>
-                       <string>støvskyer</string>
-                       <string>isfjell</string>
-                       <string>stenformasjoner</string>
-                       <string>vulkaner</string>
-               </array>
-               <array>
-                       <string>planter</string>
-                       <string>tulipan</string>
-                       <string>banan</string>
-                       <string>mais</string>
-                       <string>%Rugress</string>
-               </array>
-               <array>
-                       <string>%R</string>
-                       <string>%I %R</string>
-                       <string>%I [26]</string>
-                       <string>beboer</string>
-                       <string>%I %R</string>
-               </array>
-               <array>
-                       <string>furie</string>
-                       <string>beist</string>
-                       <string>bison</string>
-                       <string>slange</string>
-                       <string>ulv</string>
-               </array>
-               <array>
-                       <string>leopard</string>
-                       <string>katt</string>
-                       <string>apekatt</string>
-                       <string>geit</string>
-                       <string>fisk</string>
-               </array>
-               <array>
-                       <string>[11] [10]</string>
-                       <string>%I [30] [33]</string>
-                       <string>sine [12] [31] [33]</string>
-                       <string>[34] [35]</string>
-                       <string>[11] [10]</string>
-               </array>
-               <array>
-                       <string>kjøtt</string>
-                       <string>kotelett</string>
-                       <string>stek</string>
-                       <string>burgere</string>
-                       <string>suppe</string>
-               </array>
-               <array>
-                       <string>is</string>
-                       <string>gjørme</string>
-                       <string>Null-G</string>
-                       <string>vakuum</string>
-                       <string>%I ultra</string>
-               </array>
-               <array>
-                       <string>hockey</string>
-                       <string>basse</string>
-                       <string>karate</string>
-                       <string>polo</string>
-                       <string>tennis</string>
-               </array>
-       </array>
-       <key>weapon_name</key>
-       <array>
-               <string>none</string>
-               <string>Twlling Plasma Kannon</string>
-               <string>Pulslaser</string>
-               <string>Strålelaser</string>
-               <string>Utvinningslaser</string>
-               <string>Militærlaser</string>
-       </array>
-       <key>digrams</key><!-- this string must always be the same length -->
-       <string>ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA'ERATENBERALAVETIEDORQUANTEISRION</string>
-       <key>phonograms</key><!-- this string represents the 4 character phonemes associated with each digram -->
-       <string>AEb=UW==sEH=IHt=IHl=EHt=st==AAn=lOW=nUW=T===nOW=AEl=lEY=hEY=JEH=zEY=sEH=bIY=sOW=UHs=EHz=AEr=mAE=IHn=dIY=rEY=EH==UXr=AEt=EHn=bEH=rAX=lAX=vEH=tIY=EHd=AAr=kw==AXn=tEY=IHz=rIY=AAn=</string>
-       <!-- Messages used when awarding bounties -->
-       <key>bounty-d</key>
-       <array>
-               <string>Bounty: %d</string>
-       </array>
-       <key>total-f-credits</key>
-       <array>
-               <string>Total: %.1f Cr</string>
-       </array>
-       <key>right-on-commander</key>
-       <array>
-               <string>Sterkt Gjort, Kommandant!</string>
-       </array>
-       <!-- Assorted messages used by the onboard computer -->
-       <key>autopilot-on</key>
-       <array>
-               <string>Autopilot operativ.</string>
-       </array>
-       <key>autopilot-off</key>
-       <array>
-               <string>Autopilot inoperativ.</string>
-       </array>
-       <key>autopilot-out-of-range</key>
-       <array>
-               <string>Kunne ikke kontakte stasjon for los-koordinater.</string>
-       </array>
-       <key>autopilot-denied</key>
-       <array>
-               <string>Stasjonen nekter å frigi los-koordinater.</string>
-       </array>
-       <key>witch-to-@-in-f-seconds</key>
-       <array>
-               <string>Witchspace til %@ in %.0f s.</string>
-       </array>
-       <key>witch-blocked-by-@</key>
-       <array>
-               <string>Witchspace hopp abortert (for nærme %@.)</string>
-       </array>
-       <key>witch-user-abort</key>
-       <array>
-               <string>Witchspace hopp abortert.</string>
-       </array>
-       <key>witch-no-target</key>
-       <array>
-               <string>Destinasjonsmål ikke indikert.</string>
-       </array>
-       <key>witch-no-fuel</key>
-       <array>
-               <string>Utilstrekkelig drivstoff for witchspace hopp.</string>
-       </array>
-       <key>witch-engine-malfunction</key>
-       <array>
-               <string>Witchspace motorfeil!</string>
-       </array>
-       <key>witch-galactic-in-f-seconds</key>
-       <array>
-               <string>Intergalaktisk hopp innen %.0f s.</string>
-       </array>
-       <key>game-paused</key>
-       <array>
-               <string>Pause i spillet.</string>
-       </array>
-       <key>game-paused-options</key>
-       <array>
-               <string>Tast F2 for valg, P for å fortsette.</string>
-       </array>
-       <key>game-saved</key>
-       <array>
-               <string>Spill lagret.</string>
-       </array>
-       <key>mouse-on</key>
-       <array>
-               <string>Musekontroll aktiv.</string>
-       </array>
-       <key>mouse-off</key>
-       <array>
-               <string>Musekontroll inaktiv.</string>
-       </array>
-       <key>target-lost</key>
-       <array>
-               <string>Målemne mistet.</string>
-       </array>
-       <key>@-locked-onto-@</key>
-       <array>
-               <string>%@ målemne låst til %@.</string>
-       </array>
-       <key>ecm-on</key>
-       <array>
-               <string>ECMsystemet aktivt.</string>
-       </array>
-       <key>ecm-out-of-juice</key>
-       <array>
-               <string>ECMsystemet deaktivert (utilstrekkelig energi).</string>
-       </array>
-       <key>jump-mass-locked</key>
-       <array>
-               <string>Hyperhastighet masse-låst.</string>
-       </array>
-       <key>fuel-inject-on</key>
-       <array>
-               <string>Drivstoffinjeksjon aktiv.</string>
-       </array>
-       <key>fuel-out</key>
-       <array>
-               <string>Tom for drivstoff.</string>
-       </array>
-       <key>ident-on</key>
-       <array>
-               <string>IDsystem aktivert.</string>
-       </array>
-       <key>ident-off</key>
-       <array>
-               <string>IDsystem deaktivert.</string>
-       </array>
-       <key>missile-locked-onto-@</key>
-       <array>
-               <string>Missil låst til %@.</string>
-       </array>
-       <key>missile-armed</key>
-       <array>
-               <string>Missil armert.</string>
-       </array>
-       <key>mine-armed</key>
-       <array>
-               <string>Mine armert.</string>
-       </array>
-       <key>missile-safe</key>
-       <array>
-               <string>Missil sikret.</string>
-       </array>
-       <key>incoming-missile</key>
-       <array>
-               <string>Inkommende missil.</string>
-       </array>
-       <key>energy-low</key>
-       <array>
-               <string>Energinivå lavt.</string>
-       </array>
-       <key>energy-bomb-activated</key>
-       <array>
-               <string>Energibombe utløst.</string>
-       </array>
-       <key>weapon-overheat</key>
-       <array>
-               <string>Våpensystem overhetet.</string>
-       </array>
-       <key>weapon-out-of-juice</key>
-       <array>
-               <string>Våpensystem inaktivt (tom for energi).</string>
-       </array>
-       <key>escape-sequence</key>
-       <array>
-               <string>Fluktsekvens aktivert.</string>
-       </array>
-       <key>@-ejected</key>
-       <array>
-               <string>%@ utskutt.</string>
-       </array>
-       <key>@-ready-to-eject</key>
-       <array>
-               <string>Klar for utskytning %@.</string>
-       </array>
-       <key>ready-to-eject-@</key>
-       <array>
-               <string>Klar for utskytning %@.</string>
-       </array>
-       <key>@-scooped</key>
-       <array>
-               <string>%@ oppøset.</string>
-       </array>
-       <key>fuel-scoop-active</key>
-       <array>
-               <string>Drivstofføse aktivert.</string>
-       </array>
-       <key>hold-locked</key>
-       <array>
-               <string>Last-dumpmekanisme inoperativ (for høy hastighet).</string>
-       </array>
-       <!-- holds full -->
-       <key>hold-full</key>
-       <array>
-               <string>Lasterom fullt.</string>
-       </array>
-       <!-- cloaking device .. -->
-       <key>cloak-on</key>
-       <array>
-               <string>Kamuflasjemekanisme aktivert.</string>
-       </array>
-       <key>cloak-off</key>
-       <array>
-               <string>Kamuflasjemekanisme deaktivert.</string>
-       </array>
-       <key>cloak-low-juice</key>
-       <array>
-               <string>Ikke tilstrekkelig energi for å aktivere kamuflasjemekanisme.</string>
-       </array>
-       <!-- Assorted messages sent out by ships etc.. -->
-       <!--    %H - homeworld
-                       %I - homeworld+ian
-                       %R - random digrams
-                       %@ - text to be inserted at this point
-                       %d, %f, %x etc. - printf type variables to be inserted
-                       [$text] = $text is an entry here that will be expanded
-       -->
-       <key>beg-for-mercy</key>
-       <array>
-               <string>Nei!</string>
-               <string>Hjelp! Noen!</string>
-               <string>Vare instrmenter svikter, la oss flykte!</string>
-               <string>La oss være i fred!</string>
-               <string>Ikke skyt, vær så snill!</string>
-               <string>Stopp! Vis nåde!</string>
-               <string>Vær så snill ikke drep oss! Jeg trygler!</string>
-               <string>S.O.S. ... S.O.S. ... S.O.S. ...</string>
-       </array>
-       <key>describe-pirate</key>
-       <array>
-               <string>banditt</string>
-               <string>pirat</string>
-               <string>tyv</string>
-               <string>skurk</string>
-               <string>korsar</string>
-       </array>
-       <key>describe-Pirate</key>
-       <array>
-               <string>Banditt</string>
-               <string>Pirat</string>
-               <string>Tyv</string>
-               <string>Skurk</string>
-               <string>Korsar</string>
-       </array>
-       <key>distress-call</key>
-       <array>
-               <string>Vi er [7] av [describe-pirate]er! Allernådigst, hjelp!</string>
-               <string>Skipet vårt er under angrep, vennligst hjelp.</string>
-               <string>[describe-Pirate]er angriper oss. Vi trenger bistand!</string>
-               <string>Hjelp! Noen!</string>
-               <string>Mayday! Mayday! Mayday! Vi blir angrepet.</string>
-               <string>Hjelp! De skyter på oss!</string>
-               <string>Mayday! Beskytt oss. Mayday! Beskytt oss.</string>
-               <string>S.O.S. ... S.O.S. ... S.O.S. ...</string>
-       </array>
-       <key>buoy-distress-call</key>
-       <array>
-               <string>Du har angrepet et Navigasjonsfyrtårn. Dette er svært ulovlig.</string>
-               <string>%H Navigasjonsfyrtårn rapporterer om et tilfelle av ulovlig vandalisme.</string>
-               <string>%H Navigasjonsfyrtårn til angripende skip. Vennligst opphør angrepet.</string>
-               <string>Angrep på Navigasjonsfyrtårn er ulovlig. Politiet er på vei.</string>
-       </array>
-       <key>thanks-for-assist</key>
-       <array>
-               <string>Takk for assistanse.</string>
-               <string>Takk!.</string>
-               <string>%R velsigne deg!</string>
-               <string>Ah takk! Hjelp omsider!</string>
-       </array>
-       <key>police-thanks-for-assist</key>
-       <array>
-               <string>Takk for assistanse.</string>
-               <string>%H Politistyrker takker dem for assistansen.</string>
-       </array>
-       <key>thargoid_curses</key>
-       <array>
-               <string>Værn om [4], menneske [18]-[31]!</string>
-               <string>Spis [6], [5]!</string>
-               <string>Vi skal bruke dine [20] [27] for våre [33]!</string>
-               <string>%R! %R! %R!</string>
-       </array>
-       <key>police-warning</key>
-       <array>
-               <string>Kriminelle skip, dette er %H Politiet. De har blitt scannet og vil få bøter om de velger å legge til kai her.</string>
-               <string>[describe-Pirate], dette er %H Politiet. Bøter blir utstedt om de lander her.</string>
-               <string>Dette er politiet. Å legge til kai ved %H vil medføre juridisk kompensasjon for deres lovbrudd.</string>
-               <string>Dette er politiet. %H Station vill bøtelegge dem for deres lovbrudd når de legger til kai.</string>
-       </array>
-       <key>police-attack-warning</key>
-       <array>
-               <string>Lovbryter, deres skip kommer til å bli tilintetgjort etter GalCop praksis.</string>
-               <string>Sakk farten og prøv ikke å dukke unna vår laserild, [describe-pirate]!</string>
-               <string>%R! Vend om nå, eller motta Politiets straff.</string>
-               <string>[describe-Pirate], de er uvelkommen i dette systemet.</string>
-               <string>Kriminelle skip, dette er %H Politiet. Vend om nå eller bli beskutt.</string>
-               <string>[describe-Pirate], de er herved innvilget umiddelbar destruksjon.</string>
-               <string>Forlat %H nå eller bli tilintetgjort.</string>
-               <string>%H Politi. Lovkrenkende skip identifisert. Rykker inn for angrep.</string>
-       </array>
-       <!-- /general docking -->
-       <key>docking-welcome</key>
-       <array>
-               <string>Los-systemer aktive.</string>
-               <string>Kaitillatelse innvilget. Deres autopilot vil nå motta los-instruksjoner.</string>
-       </array>
-       <key>docking-begin-final-aproach</key>
-       <array>
-               <string>De er nå i endelig adkomstrute.</string>
-               <string>Begynner endelig adkomstrutesekvens.</string>
-       </array>
-       <!-- /general docking -->
-       <!-- station -->
-       <key>station-welcome</key>
-       <array>
-               <string>Velkommen til %H romkai.</string>
-               <string>Los-systemer er aktive. Velkommen til %H.</string>
-               <string>Velkommen til %H. Vennligst klargjør deres skips manifest for inspeksjon ved ankomst.</string>
-               <string>Dette er %H stasjon. Vi har lastet opp los-instruksjoner til deres instrumenter.</string>
-               <string>Hilsener rom-reisende! Velkommen til %H.</string>
-               <string>%H ønsker dem velkommen. los-sekvensen skal kun ta få minutter, vennligst vent.</string>
-               <string>Velkommen til %H. Vennligst vis tålmodighet mens vi fører deres fartøy inn til kai.</string>
-               <string>Hilsener! %H Stasjon traffikkkontroll ønsker dem velkommen.</string>
-       </array>
-       <key>station-begin-final-aproach</key>
-       <array>
-               <string>De er nå i endelig adkomstrute til %H Station.</string>
-               <string>De entrer nå %H rom-kai.</string>
-               <string>Begynner endelig adkomstrutesekvens.</string>
-               <string>Begynner endelig adkomstrutesekvens til %H Station.</string>
-       </array>
-       <key>station-hold-position</key>
-       <array>
-               <string>Vennligst vis tålmodighet - de venter i kø mot rom-kaien.</string>
-               <string>Innlosingsprosessen vil forstette snarlig. Takk for at de viser tålmodighet.</string>
-               <string>Trafikken er tung for øyeblikket, vennligst vent mens vi klargjør en innlosingsrute for dem.</string>
-               <string>De er satt i kø for innlosing. Takk for deres tålmodighet.</string>
-       </array>
-       <key>station-docking-refused-to-fugitive</key>
-       <array>
-               <string>%H Stasjon ønsker IKKE rømlinger velkommen!</string>
-       </array>
-       <!-- /station -->
-       <key>fined</key>
-       <array>
-               <string>De har blitt bøtelagt %d cr.</string>
-               <string>De har blitt bøtelagt %d cr., og er dømt til å plukke søppel på hangardekk 1.</string>
-               <string>De har blitt bøtelagt %d cr., og ytterligere dømt til å vaske opp sølet etter [6]oidene.</string>
-               <string>De har blitt bøtelagt %d cr., og er dømt til å undergå et program innen 'adferdstilpasning'.</string>
-       </array>
-       <!-- system description after a nova -->
-       <key>nova-system-description</key>
-       <array>
-               <string>%Is sol gikk nova, en prosess som ødela alt liv her. Vær varsom ovenfor navigasjonsmessige og radioaktive farer i dette systemet.</string>
-       </array>
-       <!-- trumbles -->
-       <key>trumbles-eat-@</key>
-       <array>
-               <string>Trumblere har spist en fraktcontainer med %@.</string>
-       </array>
-       <!-- internal damage -->
-       <key>@-damaged</key>
-       <array>
-               <string>%@ redusert.</string>
-       </array>
-       <key>@-destroyed</key>
-       <array>
-               <string>%@ ødelagt.</string>
-       </array>
-       <!-- icons for the hud -->
-       <key>EQ_HARDENED_MISSILE</key>
-       <array>
-               <integer>0</integer>    <integer>3</integer>
-               <integer>2</integer>    <integer>1</integer>
-               <integer>2</integer>    <integer>-3</integer>
-               <integer>0</integer>    <integer>-1</integer>
-               <integer>-2</integer>   <integer>-3</integer>
-               <integer>-2</integer>   <integer>1</integer>
-       </array>
-       <!-- human surname namegen -->
-       <key>nom</key>
-       <array>
-               <string>%R</string>
-               <string>[nom1]</string>
-       </array>
-       <key>nom1</key>
-       <array>
-               <string>ben [nom11]</string>
-               <string>Mc[nom11]</string>
-               <string>O'[nom11]</string>
-               <string>Ath[enom2]</string>
-               <string>Br[nomvoweliy]an</string>
-               <string>Bran[nom2]</string>
-               <string>C[nomvowelar][nom2]</string>
-               <string>D[nomvowelar][nom2]</string>
-               <string>Dav[nomvoweliy][nom2]</string>
-               <string>Denn[nomvoweliy][nom2]</string>
-               <string>Eccl[enom2]</string>
-               <string>Fa[nomvoweliy]r[nom2]</string>
-               <string>Folk[nom2]</string>
-               <string>Garr[enom2]</string>
-               <string>Good[nom2]</string>
-               <string>Hector</string>
-               <string>Inn[enom2]</string>
-               <string>Jam[enom2]</string>
-               <string>Jon[nom2]</string>
-               <string>Kir[nom2]</string>
-               <string>L[nomvoweliy]ttle[nom2]</string>
-               <string>L[nomvowelar][nom2]</string>
-               <string>Na[nomvoweliy]l[nom2]</string>
-               <string>Neil[nom2]</string>
-               <string>Peter[nom2]</string>
-               <string>Orbit[nom2]</string>
-               <string>Roger[nom2]</string>
-               <string>Sam[nom2]</string>
-               <string>Star[nom2]</string>
-               <string>Th[nomvowelur]r[nom2]</string>
-               <string>Wilkin[nom2]</string>
-               <string>William[nom2]</string>
-               <string>%H[nom2]</string>
-               <string>%R[nom2]</string>
-               <string>%R-[nom1]</string>
-               <string>[nom1]-[nom11]</string>
-       </array>
-       <key>nom11</key>
-       <array>
-               <string>Ath[enom2]</string>
-               <string>Br[nomvoweliy]an</string>
-               <string>Bran[nom2]</string>
-               <string>C[nomvowelar][nom2]</string>
-               <string>D[nomvowelar][nom2]</string>
-               <string>Dav[nomvoweliy][nom2]</string>
-               <string>Denn[nomvoweliy][nom2]</string>
-               <string>Folk[nom2]</string>
-               <string>Garri[nom2]</string>
-               <string>Good[nom2]</string>
-               <string>Hector</string>
-               <string>Inn[enom2]</string>
-               <string>Jam[enom2]</string>
-               <string>Jon[nom2]</string>
-               <string>Kir[nom2]</string>
-               <string>L[nomvoweliy]ttle[nom2]</string>
-               <string>L[nomvowelar][nom2]</string>
-               <string>Na[nomvoweliy]l[nom2]</string>
-               <string>Neil[nom2]</string>
-               <string>Peter[nom2]</string>
-               <string>Roger[nom2]</string>
-               <string>Sam[nom2]</string>
-               <string>Star[nom2]</string>
-               <string>Th[nomvowelur]r[nom2]</string>
-               <string>Wilkin[nom2]</string>
-               <string>William[nom2]</string>
-               <string>%H[nom2]</string>
-               <string>%R[nom2]</string>
-       </array>
-       <key>nom2</key>
-       <array>
-               <string></string>
-               <string>b[nomvowelur]rn</string>
-               <string>f[nomvowelur]r</string>
-               <string>st[nomvowelur]n</string>
-               <string>sen</string>
-               <string>son</string>
-               <string>son</string>
-               <string>sdott[nomvoweliy]r</string>
-               <string>s</string>
-               <string>s</string>
-               <string>sby</string>
-               <string>er</string>
-               <string>f[nomvoweliy]re</string>
-               <string>l[nomvoweliy]ng</string>
-       </array>
-       <key>enom2</key>
-       <array>
-               <string>e</string>
-               <string>[nomvowelie]b[nomvowelur]rn</string>
-               <string>[nomvowelie]f[nomvowelur]r</string>
-               <string>[nomvowelie]st[nomvowelur]n</string>
-               <string>[nomvowelie]sen</string>
-               <string>[nomvowelie]son</string>
-               <string>eson</string>
-               <string>[nomvowelie]sdott[nomvoweliy]r</string>
-               <string>[nomvowelie]s</string>
-               <string>es</string>
-               <string>esby</string>
-               <string>[nomvowelie]f[nomvoweliy]re</string>
-               <string>l[nomvoweliy]ng</string>
-       </array>
-       <key>nomvowelie</key>
-       <array>
-               <string>i</string>
-               <string>e</string>
-               <string>e</string>
-               <string>ie</string>
-       </array>
-       <key>nomvowelar</key>
-       <array>
-               <string>ar</string>
-               <string>aw</string>
-               <string>arre</string>
-               <string>our</string>
-       </array>
-       <key>nomvowelur</key>
-       <array>
-               <string>e</string>
-               <string>o</string>
-               <string>u</string>
-               <string>ou</string>
-               <string>ai</string>
-       </array>
-       <key>nomvoweliy</key>
-       <array>
-               <string>i</string>
-               <string>y</string>
-       </array>
+      <key>condition</key>
+      <array>
+              <string>Ved Kai</string>
+              <string>Grønn</string>
+              <string>Gul</string>
+              <string>Rød</string>
+      </array>
+      <key>economy</key>
+      <array>
+              <string>Rikt Industrisamfunn</string>
+              <string>Middels Industrisamfunn</string>
+              <string>Fattig Industrisamfunn</string>
+              <string>Hovedsaklig Industri</string>
+              <string>Hovedsaklig Landbruk</string>
+              <string>Rikt Landbrukssamfunn</string>
+              <string>Middels Landbrukssamfunn</string>
+              <string>Fattig Landbrukssamfunn</string>
+      </array>
+      <key>government</key>
+      <array>
+              <string>Anarki</string>
+              <string>Føydalt</string>
+              <string>Flerdelt Regime</string>
+              <string>Diktatur</string>
+              <string>Kommunisme</string>
+              <string>Konfererat Regime</string>
+              <string>Demokrati</string>
+              <string>Korporasjonsregime</string>
+      </array>
+      <key>inhabitants</key>
+      <array>
+              <array>
+                      <string>Store</string>
+                      <string>Hissige</string>
+                      <string>Små</string>
+              </array>
+              <array>
+                      <string>Grønne</string>
+                      <string>Røde</string>
+                      <string>Gule</string>
+                      <string>Blå</string>
+                      <string>Sorte</string>
+                      <string>Harmløse</string>
+              </array>
+              <array>
+                      <string>Slimete</string>
+                      <string>Stilkøyde</string>
+                      <string>Hornete</string>
+                      <string>Benete</string>
+                      <string>Fete</string>
+                      <string>Pelskledte</string>
+              </array>
+              <array>
+                      <string>Gnager</string>
+                      <string>Frosk</string>
+                      <string>Øgle</string>
+                      <string>Hummer</string>
+                      <string>Fugl</string>
+                      <string>Menneskeart</string>
+                      <string>Kattedyr</string>
+                      <string>Insekt</string>
+              </array>
+      </array>
+      <key>legal_status</key>
+      <array>
+              <string>Ren</string>
+              <string>Kriminell</string>
+              <string>Flyktning</string>
+      </array>
+      <key>rating</key>
+      <array>
+              <string>Harmløs</string>
+              <string>Stort Sett Harmløs</string>
+              <string>Dårlig</string>
+              <string>Middels</string>
+              <string>Mer Enn Middels</string>
+              <string>Brukbar</string>
+              <string>Farlig</string>
+              <string>Dødelig</string>
+              <string>---- E L I T E ----</string>
+      </array>
+      <key>system_description</key>
+      <array>
+              <array>
+                      <string>berømt</string>
+                      <string>bemerket</string>
+                      <string>kjent</string>
+                      <string>famøst</string>
+                      <string>beryktet</string>
+              </array>
+              <array>
+                      <string>svært</string>
+                      <string>noe</string>
+                      <string>meget</string>
+                      <string>relativt</string>
+                      <string></string>
+              </array>
+              <array>
+                      <string>eldgammelt</string>
+                      <string>[20]</string>
+                      <string>stor</string>
+                      <string>utstrakt</string>
+                      <string>rosa</string>
+              </array>
+              <array>
+                      <string>[29] [28] plantasjer</string>
+                      <string>fjell</string>
+                      <string>[27]</string>
+                      <string>[19] skoger</string>
+                      <string>hav</string>
+              </array>
+              <array>
+                      <string>skyhet</string>
+                      <string>tåpelighet</string>
+                      <string>parringsritualer</string>
+                      <string>avsky for [5]</string>
+                      <string>begeistring for [5]</string>
+              </array>
+              <array>
+                      <string>matblandere</string>
+                      <string>turister</string>
+                      <string>poesi</string>
+                      <string>diskotek</string>
+                      <string>[13]</string>
+              </array>
+              <array>
+                      <string>snakkende tre</string>
+                      <string>krabbe</string>
+                      <string>flaggermus</string>
+                      <string>hummer</string>
+                      <string>%R</string>
+              </array>
+              <array>
+                      <string>rammet</string>
+                      <string>plaget</string>
+                      <string>besatt</string>
+                      <string>hjemsøkt</string>
+                      <string>brydd</string>
+              </array>
+              <array>
+                      <string>[21] borgerkrig</string>
+                      <string>[26] [23] [24]s</string>
+                      <string>[26] sykdom</string>
+                      <string>[21] jordskjelv</string>
+                      <string>[21] solaktivitet</string>
+              </array>
+              <array>
+                      <string>sine [2] [3]</string>
+                      <string>%I [23] [24]</string>
+                      <string>dets befolknings [25] [4]</string>
+                      <string>[32]</string>
+                      <string>sine [12] [13]</string>
+              </array>
+              <array>
+                      <string>saft</string>
+                      <string>konjakk</string>
+                      <string>vann</string>
+                      <string>brygg</string>
+                      <string>gargle blastere</string>
+              </array>
+              <array>
+                      <string>%R</string>
+                      <string>%I [24]</string>
+                      <string>%I %R</string>
+                      <string>%I [26]</string>
+                      <string>[26] %R</string>
+              </array>
+              <array>
+                      <string>fantastiske</string>
+                      <string>eksotiske</string>
+                      <string>molefunkne</string>
+                      <string>uvanlige</string>
+                      <string>spennende</string>
+              </array>
+              <array>
+                      <string>cuisine</string>
+                      <string>nattliv</string>
+                      <string>kasinore</string>
+                      <string>situasjonskomedier</string>
+                      <string>[32]</string>
+              </array>
+              <array>
+                      <string>%H</string>
+                      <string>Planeten %H</string>
+                      <string>Verdenen %H</string>
+                      <string>Denne planeten</string>
+                      <string>Denne verdenen</string>
+              </array>
+              <array>
+                      <string> ubemerkelsesverdig</string>
+                      <string> kjedelig</string>
+                      <string> tam</string>
+                      <string> platt</string>
+                      <string> frastøtende</string>
+              </array>
+              <array>
+                      <string>planeten</string>
+                      <string>verdenen</string>
+                      <string>sted</string>
+                      <string>lille planeten</string>
+                      <string>dynge</string>
+              </array>
+              <array>
+                      <string>veps</string>
+                      <string>møll</string>
+                      <string>larve</string>
+                      <string>maur</string>
+                      <string>%R</string>
+              </array>
+              <array>
+                      <string>poet</string>
+                      <string>kunstskoleelev</string>
+                      <string>yak</string>
+                      <string>snegle</string>
+                      <string>snegl</string>
+              </array>
+              <array>
+                      <string>tropisk</string>
+                      <string>tett</string>
+                      <string>regn</string>
+                      <string>ugjennomtrengelig</string>
+                      <string>overstrømmende</string>
+              </array>
+              <array>
+                      <string>morsom</string>
+                      <string>underlig</string>
+                      <string>uvanlig</string>
+                      <string>rar</string>
+                      <string>pussig</string>
+              </array>
+              <array>
+                      <string>hyppige</string>
+                      <string>tidige</string>
+                      <string>uberegnelige</string>
+                      <string>forferdelige</string>
+                      <string>dødelige</string>
+              </array>
+              <array>
+                      <string>[1] [0] for [9]</string>
+                      <string>[1] [0] for [9] og [9]</string>
+                      <string>[7] av [8]</string>
+                      <string>[1] [0] for [9] men [7] av [8]</string>
+                      <string>[15] [16]</string>
+              </array>
+              <array>
+                      <string>[26]</string>
+                      <string>fjell</string>
+                      <string>spiselig</string>
+                      <string>tre</string>
+                      <string>flekkete</string>
+              </array>
+              <array>
+                      <string>[30]</string>
+                      <string>[31]</string>
+                      <string>[6]oid</string>
+                      <string>[18]</string>
+                      <string>[17]</string>
+              </array>
+              <array>
+                      <string>urgammelt</string>
+                      <string>eksepsjonell</string>
+                      <string>eksentrisk</string>
+                      <string>inngrodd</string>
+                      <string>[20]</string>
+              </array>
+              <array>
+                      <string>morder</string>
+                      <string>dødelig</string>
+                      <string>ond</string>
+                      <string>livsfarlig</string>
+                      <string>rått</string>
+              </array>
+              <array>
+                      <string>parkometer</string>
+                      <string>støvskyer</string>
+                      <string>isfjell</string>
+                      <string>stenformasjoner</string>
+                      <string>vulkaner</string>
+              </array>
+              <array>
+                      <string>planter</string>
+                      <string>tulipan</string>
+                      <string>banan</string>
+                      <string>mais</string>
+                      <string>%Rugress</string>
+              </array>
+              <array>
+                      <string>%R</string>
+                      <string>%I %R</string>
+                      <string>%I [26]</string>
+                      <string>beboer</string>
+                      <string>%I %R</string>
+              </array>
+              <array>
+                      <string>furie</string>
+                      <string>beist</string>
+                      <string>bison</string>
+                      <string>slange</string>
+                      <string>ulv</string>
+              </array>
+              <array>
+                      <string>leopard</string>
+                      <string>katt</string>
+                      <string>apekatt</string>
+                      <string>geit</string>
+                      <string>fisk</string>
+              </array>
+              <array>
+                      <string>[11] [10]</string>
+                      <string>%I [30] [33]</string>
+                      <string>sine [12] [31] [33]</string>
+                      <string>[34] [35]</string>
+                      <string>[11] [10]</string>
+              </array>
+              <array>
+                      <string>kjøtt</string>
+                      <string>kotelett</string>
+                      <string>stek</string>
+                      <string>burgere</string>
+                      <string>suppe</string>
+              </array>
+              <array>
+                      <string>is</string>
+                      <string>gjørme</string>
+                      <string>Null-G</string>
+                      <string>vakuum</string>
+                      <string>%I ultra</string>
+              </array>
+              <array>
+                      <string>hockey</string>
+                      <string>basse</string>
+                      <string>karate</string>
+                      <string>polo</string>
+                      <string>tennis</string>
+              </array>
+      </array>
+      <key>weapon_name</key>
+      <array>
+              <string>none</string>
+              <string>Twlling Plasma Kannon</string>
+              <string>Pulslaser</string>
+              <string>Strålelaser</string>
+              <string>Utvinningslaser</string>
+              <string>Militærlaser</string>
+      </array>
+      <key>digrams</key><!-- this string must always be the same length -->
+      <string>ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA'ERATENBERALAVETIEDORQUANTEISRION</string>
+      <key>phonograms</key><!-- this string represents the 4 character phonemes associated with each digram -->
+      <string>AEb=UW==sEH=IHt=IHl=EHt=st==AAn=lOW=nUW=T===nOW=AEl=lEY=hEY=JEH=zEY=sEH=bIY=sOW=UHs=EHz=AEr=mAE=IHn=dIY=rEY=EH==UXr=AEt=EHn=bEH=rAX=lAX=vEH=tIY=EHd=AAr=kw==AXn=tEY=IHz=rIY=AAn=</string>
+      <!-- Messages used when awarding bounties -->
+      <key>bounty-d</key>
+      <array>
+              <string>Bounty: %d</string>
+      </array>
+      <key>total-f-credits</key>
+      <array>
+              <string>Total: %.1f Cr</string>
+      </array>
+      <key>right-on-commander</key>
+      <array>
+              <string>Sterkt Gjort, Kommandant!</string>
+      </array>
+      <!-- Assorted messages used by the onboard computer -->
+      <key>autopilot-on</key>
+      <array>
+              <string>Autopilot operativ.</string>
+      </array>
+      <key>autopilot-off</key>
+      <array>
+              <string>Autopilot inoperativ.</string>
+      </array>
+      <key>autopilot-out-of-range</key>
+      <array>
+              <string>Kunne ikke kontakte stasjon for los-koordinater.</string>
+      </array>
+      <key>autopilot-denied</key>
+      <array>
+              <string>Stasjonen nekter å frigi los-koordinater.</string>
+      </array>
+      <key>witch-to-@-in-f-seconds</key>
+      <array>
+              <string>Witchspace til %@ in %.0f s.</string>
+      </array>
+      <key>witch-blocked-by-@</key>
+      <array>
+              <string>Witchspace hopp abortert (for nærme %@.)</string>
+      </array>
+      <key>witch-user-abort</key>
+      <array>
+              <string>Witchspace hopp abortert.</string>
+      </array>
+      <key>witch-no-target</key>
+      <array>
+              <string>Destinasjonsmål ikke indikert.</string>
+      </array>
+      <key>witch-no-fuel</key>
+      <array>
+              <string>Utilstrekkelig drivstoff for witchspace hopp.</string>
+      </array>
+      <key>witch-engine-malfunction</key>
+      <array>
+              <string>Witchspace motorfeil!</string>
+      </array>
+      <key>witch-galactic-in-f-seconds</key>
+      <array>
+              <string>Intergalaktisk hopp innen %.0f s.</string>
+      </array>
+      <key>game-paused</key>
+      <array>
+              <string>Pause i spillet.</string>
+      </array>
+      <key>game-paused-options</key>
+      <array>
+              <string>Tast F2 for valg, P for å fortsette.</string>
+      </array>
+      <key>game-saved</key>
+      <array>
+              <string>Spill lagret.</string>
+      </array>
+      <key>mouse-on</key>
+      <array>
+              <string>Musekontroll aktiv.</string>
+      </array>
+      <key>mouse-off</key>
+      <array>
+              <string>Musekontroll inaktiv.</string>
+      </array>
+      <key>target-lost</key>
+      <array>
+              <string>Målemne mistet.</string>
+      </array>
+      <key>@-locked-onto-@</key>
+      <array>
+              <string>%@ målemne låst til %@.</string>
+      </array>
+      <key>ecm-on</key>
+      <array>
+              <string>ECMsystemet aktivt.</string>
+      </array>
+      <key>ecm-out-of-juice</key>
+      <array>
+              <string>ECMsystemet deaktivert (utilstrekkelig energi).</string>
+      </array>
+      <key>jump-mass-locked</key>
+      <array>
+              <string>Hyperhastighet masse-låst.</string>
+      </array>
+      <key>fuel-inject-on</key>
+      <array>
+              <string>Drivstoffinjeksjon aktiv.</string>
+      </array>
+      <key>fuel-out</key>
+      <array>
+              <string>Tom for drivstoff.</string>
+      </array>
+      <key>ident-on</key>
+      <array>
+              <string>IDsystem aktivert.</string>
+      </array>
+      <key>ident-off</key>
+      <array>
+              <string>IDsystem deaktivert.</string>
+      </array>
+      <key>missile-locked-onto-@</key>
+      <array>
+              <string>Missil låst til %@.</string>
+      </array>
+      <key>missile-armed</key>
+      <array>
+              <string>Missil armert.</string>
+      </array>
+      <key>mine-armed</key>
+      <array>
+              <string>Mine armert.</string>
+      </array>
+      <key>missile-safe</key>
+      <array>
+              <string>Missil sikret.</string>
+      </array>
+      <key>incoming-missile</key>
+      <array>
+              <string>Inkommende missil.</string>
+      </array>
+      <key>energy-low</key>
+      <array>
+              <string>Energinivå lavt.</string>
+      </array>
+      <key>energy-bomb-activated</key>
+      <array>
+              <string>Energibombe utløst.</string>
+      </array>
+      <key>weapon-overheat</key>
+      <array>
+              <string>Våpensystem overhetet.</string>
+      </array>
+      <key>weapon-out-of-juice</key>
+      <array>
+              <string>Våpensystem inaktivt (tom for energi).</string>
+      </array>
+      <key>escape-sequence</key>
+      <array>
+              <string>Fluktsekvens aktivert.</string>
+      </array>
+      <key>@-ejected</key>
+      <array>
+              <string>%@ utskutt.</string>
+      </array>
+      <key>@-ready-to-eject</key>
+      <array>
+              <string>Klar for utskytning %@.</string>
+      </array>
+      <key>ready-to-eject-@</key>
+      <array>
+              <string>Klar for utskytning %@.</string>
+      </array>
+      <key>@-scooped</key>
+      <array>
+              <string>%@ oppøset.</string>
+      </array>
+      <key>fuel-scoop-active</key>
+      <array>
+              <string>Drivstofføse aktivert.</string>
+      </array>
+      <key>hold-locked</key>
+      <array>
+              <string>Last-dumpmekanisme inoperativ (for høy hastighet).</string>
+      </array>
+      <!-- holds full -->
+      <key>hold-full</key>
+      <array>
+              <string>Lasterom fullt.</string>
+      </array>
+      <!-- cloaking device .. -->
+      <key>cloak-on</key>
+      <array>
+              <string>Kamuflasjemekanisme aktivert.</string>
+      </array>
+      <key>cloak-off</key>
+      <array>
+              <string>Kamuflasjemekanisme deaktivert.</string>
+      </array>
+      <key>cloak-low-juice</key>
+      <array>
+              <string>Ikke tilstrekkelig energi for å aktivere kamuflasjemekanisme.</string>
+      </array>
+      <!-- Assorted messages sent out by ships etc.. -->
+      <!--    %H - homeworld
+                      %I - homeworld+ian
+                      %R - random digrams
+                      %@ - text to be inserted at this point
+                      %d, %f, %x etc. - printf type variables to be inserted
+                      [$text] = $text is an entry here that will be expanded
+      -->
+      <key>beg-for-mercy</key>
+      <array>
+              <string>Nei!</string>
+              <string>Hjelp! Noen!</string>
+              <string>Vare instrmenter svikter, la oss flykte!</string>
+              <string>La oss være i fred!</string>
+              <string>Ikke skyt, vær så snill!</string>
+              <string>Stopp! Vis nåde!</string>
+              <string>Vær så snill ikke drep oss! Jeg trygler!</string>
+              <string>S.O.S. ... S.O.S. ... S.O.S. ...</string>
+      </array>
+      <key>describe-pirate</key>
+      <array>
+              <string>banditt</string>
+              <string>pirat</string>
+              <string>tyv</string>
+              <string>skurk</string>
+              <string>korsar</string>
+      </array>
+      <key>describe-Pirate</key>
+      <array>
+              <string>Banditt</string>
+              <string>Pirat</string>
+              <string>Tyv</string>
+              <string>Skurk</string>
+              <string>Korsar</string>
+      </array>
+      <key>distress-call</key>
+      <array>
+              <string>Vi er [7] av [describe-pirate]er! Allernådigst, hjelp!</string>
+              <string>Skipet vårt er under angrep, vennligst hjelp.</string>
+              <string>[describe-Pirate]er angriper oss. Vi trenger bistand!</string>
+              <string>Hjelp! Noen!</string>
+              <string>Mayday! Mayday! Mayday! Vi blir angrepet.</string>
+              <string>Hjelp! De skyter på oss!</string>
+              <string>Mayday! Beskytt oss. Mayday! Beskytt oss.</string>
+              <string>S.O.S. ... S.O.S. ... S.O.S. ...</string>
+      </array>
+      <key>buoy-distress-call</key>
+      <array>
+              <string>Du har angrepet et Navigasjonsfyrtårn. Dette er svært ulovlig.</string>
+              <string>%H Navigasjonsfyrtårn rapporterer om et tilfelle av ulovlig vandalisme.</string>
+              <string>%H Navigasjonsfyrtårn til angripende skip. Vennligst opphør angrepet.</string>
+              <string>Angrep på Navigasjonsfyrtårn er ulovlig. Politiet er på vei.</string>
+      </array>
+      <key>thanks-for-assist</key>
+      <array>
+              <string>Takk for assistanse.</string>
+              <string>Takk!.</string>
+              <string>%R velsigne deg!</string>
+              <string>Ah takk! Hjelp omsider!</string>
+      </array>
+      <key>police-thanks-for-assist</key>
+      <array>
+              <string>Takk for assistanse.</string>
+              <string>%H Politistyrker takker dem for assistansen.</string>
+      </array>
+      <key>thargoid_curses</key>
+      <array>
+              <string>Værn om [4], menneske [18]-[31]!</string>
+              <string>Spis [6], [5]!</string>
+              <string>Vi skal bruke dine [20] [27] for våre [33]!</string>
+              <string>%R! %R! %R!</string>
+      </array>
+      <key>police-warning</key>
+      <array>
+              <string>Kriminelle skip, dette er %H Politiet. De har blitt scannet og vil få bøter om de velger å legge til kai her.</string>
+              <string>[describe-Pirate], dette er %H Politiet. Bøter blir utstedt om de lander her.</string>
+              <string>Dette er politiet. Å legge til kai ved %H vil medføre juridisk kompensasjon for deres lovbrudd.</string>
+              <string>Dette er politiet. %H Station vill bøtelegge dem for deres lovbrudd når de legger til kai.</string>
+      </array>
+      <key>police-attack-warning</key>
+      <array>
+              <string>Lovbryter, deres skip kommer til å bli tilintetgjort etter GalCop praksis.</string>
+              <string>Sakk farten og prøv ikke å dukke unna vår laserild, [describe-pirate]!</string>
+              <string>%R! Vend om nå, eller motta Politiets straff.</string>
+              <string>[describe-Pirate], de er uvelkommen i dette systemet.</string>
+              <string>Kriminelle skip, dette er %H Politiet. Vend om nå eller bli beskutt.</string>
+              <string>[describe-Pirate], de er herved innvilget umiddelbar destruksjon.</string>
+              <string>Forlat %H nå eller bli tilintetgjort.</string>
+              <string>%H Politi. Lovkrenkende skip identifisert. Rykker inn for angrep.</string>
+      </array>
+      <!-- /general docking -->
+      <key>docking-welcome</key>
+      <array>
+              <string>Los-systemer aktive.</string>
+              <string>Kaitillatelse innvilget. Deres autopilot vil nå motta los-instruksjoner.</string>
+      </array>
+      <key>docking-begin-final-aproach</key>
+      <array>
+              <string>De er nå i endelig adkomstrute.</string>
+              <string>Begynner endelig adkomstrutesekvens.</string>
+      </array>
+      <!-- /general docking -->
+      <!-- station -->
+      <key>station-welcome</key>
+      <array>
+              <string>Velkommen til %H romkai.</string>
+              <string>Los-systemer er aktive. Velkommen til %H.</string>
+              <string>Velkommen til %H. Vennligst klargjør deres skips manifest for inspeksjon ved ankomst.</string>
+              <string>Dette er %H stasjon. Vi har lastet opp los-instruksjoner til deres instrumenter.</string>
+              <string>Hilsener rom-reisende! Velkommen til %H.</string>
+              <string>%H ønsker dem velkommen. los-sekvensen skal kun ta få minutter, vennligst vent.</string>
+              <string>Velkommen til %H. Vennligst vis tålmodighet mens vi fører deres fartøy inn til kai.</string>
+              <string>Hilsener! %H Stasjon traffikkkontroll ønsker dem velkommen.</string>
+      </array>
+      <key>station-begin-final-aproach</key>
+      <array>
+              <string>De er nå i endelig adkomstrute til %H Station.</string>
+              <string>De entrer nå %H rom-kai.</string>
+              <string>Begynner endelig adkomstrutesekvens.</string>
+              <string>Begynner endelig adkomstrutesekvens til %H Station.</string>
+      </array>
+      <key>station-hold-position</key>
+      <array>
+              <string>Vennligst vis tålmodighet - de venter i kø mot rom-kaien.</string>
+              <string>Innlosingsprosessen vil forstette snarlig. Takk for at de viser tålmodighet.</string>
+              <string>Trafikken er tung for øyeblikket, vennligst vent mens vi klargjør en innlosingsrute for dem.</string>
+              <string>De er satt i kø for innlosing. Takk for deres tålmodighet.</string>
+      </array>
+      <key>station-docking-refused-to-fugitive</key>
+      <array>
+              <string>%H Stasjon ønsker IKKE rømlinger velkommen!</string>
+      </array>
+      <!-- /station -->
+      <key>fined</key>
+      <array>
+              <string>De har blitt bøtelagt %d cr.</string>
+              <string>De har blitt bøtelagt %d cr., og er dømt til å plukke søppel på hangardekk 1.</string>
+              <string>De har blitt bøtelagt %d cr., og ytterligere dømt til å vaske opp sølet etter [6]oidene.</string>
+              <string>De har blitt bøtelagt %d cr., og er dømt til å undergå et program innen 'adferdstilpasning'.</string>
+      </array>
+      <!-- system description after a nova -->
+      <key>nova-system-description</key>
+      <array>
+              <string>%Is sol gikk nova, en prosess som ødela alt liv her. Vær varsom ovenfor navigasjonsmessige og radioaktive farer i dette systemet.</string>
+      </array>
+      <!-- trumbles -->
+      <key>trumbles-eat-@</key>
+      <array>
+              <string>Trumblere har spist en fraktcontainer med %@.</string>
+      </array>
+      <!-- internal damage -->
+      <key>@-damaged</key>
+      <array>
+              <string>%@ redusert.</string>
+      </array>
+      <key>@-destroyed</key>
+      <array>
+              <string>%@ ødelagt.</string>
+      </array>
+      <!-- icons for the hud -->
+      <key>EQ_HARDENED_MISSILE</key>
+      <array>
+              <integer>0</integer>    <integer>3</integer>
+              <integer>2</integer>    <integer>1</integer>
+              <integer>2</integer>    <integer>-3</integer>
+              <integer>0</integer>    <integer>-1</integer>
+              <integer>-2</integer>   <integer>-3</integer>
+              <integer>-2</integer>   <integer>1</integer>
+      </array>
+      <!-- human surname namegen -->
+      <key>nom</key>
+      <array>
+              <string>%R</string>
+              <string>[nom1]</string>
+      </array>
+      <key>nom1</key>
+      <array>
+              <string>ben [nom11]</string>
+              <string>Mc[nom11]</string>
+              <string>O'[nom11]</string>
+              <string>Ath[enom2]</string>
+              <string>Br[nomvoweliy]an</string>
+              <string>Bran[nom2]</string>
+              <string>C[nomvowelar][nom2]</string>
+              <string>D[nomvowelar][nom2]</string>
+              <string>Dav[nomvoweliy][nom2]</string>
+              <string>Denn[nomvoweliy][nom2]</string>
+              <string>Eccl[enom2]</string>
+              <string>Fa[nomvoweliy]r[nom2]</string>
+              <string>Folk[nom2]</string>
+              <string>Garr[enom2]</string>
+              <string>Good[nom2]</string>
+              <string>Hector</string>
+              <string>Inn[enom2]</string>
+              <string>Jam[enom2]</string>
+              <string>Jon[nom2]</string>
+              <string>Kir[nom2]</string>
+              <string>L[nomvoweliy]ttle[nom2]</string>
+              <string>L[nomvowelar][nom2]</string>
+              <string>Na[nomvoweliy]l[nom2]</string>
+              <string>Neil[nom2]</string>
+              <string>Peter[nom2]</string>
+              <string>Orbit[nom2]</string>
+              <string>Roger[nom2]</string>
+              <string>Sam[nom2]</string>
+              <string>Star[nom2]</string>
+              <string>Th[nomvowelur]r[nom2]</string>
+              <string>Wilkin[nom2]</string>
+              <string>William[nom2]</string>
+              <string>%H[nom2]</string>
+              <string>%R[nom2]</string>
+              <string>%R-[nom1]</string>
+              <string>[nom1]-[nom11]</string>
+      </array>
+      <key>nom11</key>
+      <array>
+              <string>Ath[enom2]</string>
+              <string>Br[nomvoweliy]an</string>
+              <string>Bran[nom2]</string>
+              <string>C[nomvowelar][nom2]</string>
+              <string>D[nomvowelar][nom2]</string>
+              <string>Dav[nomvoweliy][nom2]</string>
+              <string>Denn[nomvoweliy][nom2]</string>
+              <string>Folk[nom2]</string>
+              <string>Garri[nom2]</string>
+              <string>Good[nom2]</string>
+              <string>Hector</string>
+              <string>Inn[enom2]</string>
+              <string>Jam[enom2]</string>
+              <string>Jon[nom2]</string>
+              <string>Kir[nom2]</string>
+              <string>L[nomvoweliy]ttle[nom2]</string>
+              <string>L[nomvowelar][nom2]</string>
+              <string>Na[nomvoweliy]l[nom2]</string>
+              <string>Neil[nom2]</string>
+              <string>Peter[nom2]</string>
+              <string>Roger[nom2]</string>
+              <string>Sam[nom2]</string>
+              <string>Star[nom2]</string>
+              <string>Th[nomvowelur]r[nom2]</string>
+              <string>Wilkin[nom2]</string>
+              <string>William[nom2]</string>
+              <string>%H[nom2]</string>
+              <string>%R[nom2]</string>
+      </array>
+      <key>nom2</key>
+      <array>
+              <string></string>
+              <string>b[nomvowelur]rn</string>
+              <string>f[nomvowelur]r</string>
+              <string>st[nomvowelur]n</string>
+              <string>sen</string>
+              <string>son</string>
+              <string>son</string>
+              <string>sdott[nomvoweliy]r</string>
+              <string>s</string>
+              <string>s</string>
+              <string>sby</string>
+              <string>er</string>
+              <string>f[nomvoweliy]re</string>
+              <string>l[nomvoweliy]ng</string>
+      </array>
+      <key>enom2</key>
+      <array>
+              <string>e</string>
+              <string>[nomvowelie]b[nomvowelur]rn</string>
+              <string>[nomvowelie]f[nomvowelur]r</string>
+              <string>[nomvowelie]st[nomvowelur]n</string>
+              <string>[nomvowelie]sen</string>
+              <string>[nomvowelie]son</string>
+              <string>eson</string>
+              <string>[nomvowelie]sdott[nomvoweliy]r</string>
+              <string>[nomvowelie]s</string>
+              <string>es</string>
+              <string>esby</string>
+              <string>[nomvowelie]f[nomvoweliy]re</string>
+              <string>l[nomvoweliy]ng</string>
+      </array>
+      <key>nomvowelie</key>
+      <array>
+              <string>i</string>
+              <string>e</string>
+              <string>e</string>
+              <string>ie</string>
+      </array>
+      <key>nomvowelar</key>
+      <array>
+              <string>ar</string>
+              <string>aw</string>
+              <string>arre</string>
+              <string>our</string>
+      </array>
+      <key>nomvowelur</key>
+      <array>
+              <string>e</string>
+              <string>o</string>
+              <string>u</string>
+              <string>ou</string>
+              <string>ai</string>
+      </array>
+      <key>nomvoweliy</key>
+      <array>
+              <string>i</string>
+              <string>y</string>
+      </array>
 
-       <!-- Intro1 screen -->
-       <key>game-copyright</key>
-       <string>av Giles Williams (C) 2003-2006</string>
-       <key>theme-music-credit</key>
-       <string>Oolite Temamusikk av NoSleep (C) 2004</string>
-       <key>load-previous-commander</key>
-       <string>Åpne Tidligere Kommandant (Y/N)?</string>
+      <!-- Intro1 screen -->
+      <key>game-copyright</key>
+      <string>av Giles Williams (C) 2003-2006</string>
+      <key>theme-music-credit</key>
+      <string>Oolite Temamusikk av NoSleep (C) 2004</string>
+      <key>load-previous-commander</key>
+      <string>Åpne Tidligere Kommandant (Y/N)?</string>
 
-       <!-- Intro2 screen -->
-       <key>press-space-commander</key>
-       <string>Tast Space, Kommandant</string>
+      <!-- Intro2 screen -->
+      <key>press-space-commander</key>
+      <string>Tast Space, Kommandant</string>
 
-       <!-- Status screen -->
-       <key>status-commander-@</key>
-       <string>Kommandant %@</string>
-       <key>status-present-system</key>
-       <string>Nåværende Solsystem:</string>
-       <key>status-hyperspace-system</key>
-       <string>Destinasjon Solsystem:</string>
-       <key>status-condition</key>
-       <string>Tilstand:</string>
-       <key>status-fuel</key>
-       <string>Drivstoff:</string>
-       <key>status-cash</key>
-       <string>Formue:</string>
-       <key>status-legal-status</key>
-       <string>Lovlig Status:</string>
-       <key>status-rating</key>
-       <string>Vurdering:</string>
-       <key>status-equipment</key>
-       <string>Utstyr:</string>
-       <key>equipment-fwd-weapon-@</key>
-       <string>Baug %@</string>
-       <key>equipment-aft-weapon-@</key>
-       <string>Akterut %@</string>
-       <key>equipment-stb-weapon-@</key>
-       <string>Styrbord %@</string>
-       <key>equipment-port-weapon-@</key>
-       <string>Babord %@</string>
-       <key>equipment-single-pass-berth-@</key>
-       <string>1 Passasjerkupé</string>
-       <key>equipment-multiple-pass-berth-@</key>
-       <string>%d Passasjerkupéer</string>
+      <!-- Status screen -->
+      <key>status-commander-@</key>
+      <string>Kommandant %@</string>
+      <key>status-present-system</key>
+      <string>Nåværende Solsystem:</string>
+      <key>status-hyperspace-system</key>
+      <string>Destinasjon Solsystem:</string>
+      <key>status-condition</key>
+      <string>Tilstand:</string>
+      <key>status-fuel</key>
+      <string>Drivstoff:</string>
+      <key>status-cash</key>
+      <string>Formue:</string>
+      <key>status-legal-status</key>
+      <string>Lovlig Status:</string>
+      <key>status-rating</key>
+      <string>Vurdering:</string>
+      <key>status-equipment</key>
+      <string>Utstyr:</string>
+      <key>equipment-fwd-weapon-@</key>
+      <string>Baug %@</string>
+      <key>equipment-aft-weapon-@</key>
+      <string>Akterut %@</string>
+      <key>equipment-stb-weapon-@</key>
+      <string>Styrbord %@</string>
+      <key>equipment-port-weapon-@</key>
+      <string>Babord %@</string>
+      <key>equipment-single-pass-berth-@</key>
+      <string>1 Passasjerkupé</string>
+      <key>equipment-multiple-pass-berth-@</key>
+      <string>%d Passasjerkupéer</string>
 
-       <!-- Market screen -->
-       <key>cargo-tons-symbol</key>
-       <string>t</string>
-       <key>cargo-grams-symbol</key>
-       <string>g</string>
-       <key>cargo-kilograms-symbol</key>
-       <string>kg</string>
+      <!-- Market screen -->
+      <key>cargo-tons-symbol</key>
+      <string>t</string>
+      <key>cargo-grams-symbol</key>
+      <string>g</string>
+      <key>cargo-kilograms-symbol</key>
+      <string>kg</string>
 
-       <!-- System data screen -->
-       <key>sysdata-planet-name-@</key>
-       <string>Data om %@</string>
-       <key>sysdata-eco</key>
-       <string>Økonomi:</string>
-       <key>sysdata-govt</key>
-       <string>Myndighet:</string>
-       <key>sysdata-tl</key>
-       <string>Teknisk Nivå:</string>
-       <key>sysdata-pop</key>
-       <string>Folketall:</string>
-       <key>sysdata-prod</key>
-       <string>Brutto Produktivitet:</string>
-       <key>sysdata-radius</key>
-       <string>Gjennomsnittsradius:</string>
+      <!-- System data screen -->
+      <key>sysdata-planet-name-@</key>
+      <string>Data om %@</string>
+      <key>sysdata-eco</key>
+      <string>Økonomi:</string>
+      <key>sysdata-govt</key>
+      <string>Myndighet:</string>
+      <key>sysdata-tl</key>
+      <string>Teknisk Nivå:</string>
+      <key>sysdata-pop</key>
+      <string>Folketall:</string>
+      <key>sysdata-prod</key>
+      <string>Brutto Produktivitet:</string>
+      <key>sysdata-radius</key>
+      <string>Gjennomsnittsradius:</string>
 
-       <!-- Long range chart -->
-       <key>galchart-title-@</key>
-       <string>Galactic Chart %d</string>
-       <key>galchart-distance-@</key>
-       <string>Distance: %.1f Light Years</string>
-       <key>galchart-find-@</key>
-       <string>Find planet: %@</string>
+      <!-- Long range chart -->
+      <key>galchart-title-@</key>
+      <string>Galaktisk Stjernekart %d</string>
+      <key>galchart-distance-@</key>
+      <string>Distance: %.1f Lysår</string>
+      <key>galchart-find-@</key>
+      <string>Finn planet: %@</string>
 
-       <key>localchart-title</key>
-       <string>Short Range Chart</string>
+      <key>localchart-title</key>
+      <string>Lokalt Stjernekart</string>
 
-       <!-- background scenes for GUI screens -->
-       <key>gui-scene-show-planet</key>
-       <string>target-planet   120 80 640</string>
+      <!-- background scenes for GUI screens -->
+      <key>gui-scene-show-planet</key>
+      <string>target-planet   120 80 640</string>
 
 </dict>
 </plist>
