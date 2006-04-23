@@ -1979,7 +1979,8 @@ static int shipsFound;
 		return NO;
 	NSString* i_key = [(NSString*)[i_info objectAtIndex:0] lowercaseString];
 	
-	NSLog(@"..... processing %@ (%@)", i_info, i_key);
+	if (debug)
+		NSLog(@"..... processing %@ (%@)", i_info, i_key);
 	
 	//
 	// recursively add further scenes:
@@ -2074,6 +2075,62 @@ static int shipsFound;
 		[doppelganger setPitch: 0.0];
 		[doppelganger setVelocity: make_vector( 0.0f, 0.0f, 0.0f)];
 		[doppelganger setBehaviour: BEHAVIOUR_STOP_STILL];
+
+		[doppelganger release];
+		return YES;
+	}
+	//
+	// Add local planet model:
+	//
+	if ([i_key isEqual:@"local-planet"])
+	{
+		if ([i_info count] != 4)	// must be local-planet_x_y_z
+			return NO;				//		   0........... 1 2 3
+			
+		PlanetEntity* doppelganger = [[PlanetEntity alloc] initMiniatureFromPlanet:[universe planet]];   // retain count = 1
+		if (!doppelganger)
+			return NO;
+			
+		Vector	model_p0 = [Entity vectorFromString:[[i_info subarrayWithRange:NSMakeRange( 1, 3)] componentsJoinedByString:@" "]];
+		Quaternion model_q = { 0.707, 0.707, 0.0, 0.0 };
+		model_p0.x += off.x;
+		model_p0.y += off.y;
+		model_p0.z += off.z;
+
+		if (debug)
+			NSLog(@"::::: adding local-planet to scene:'%@'", doppelganger);
+		[doppelganger setQRotation: model_q];
+		[doppelganger setPosition: model_p0];
+		[universe addEntity: doppelganger];
+
+		[doppelganger release];
+		return YES;
+	}
+	//
+	// Add target planet model:
+	//
+	if ([i_key isEqual:@"target-planet"])
+	{
+		if ([i_info count] != 4)	// must be local-planet_x_y_z
+			return NO;				//		   0........... 1 2 3
+		
+		PlanetEntity* targetplanet = [[[PlanetEntity alloc] initWithSeed:target_system_seed fromUniverse:universe] autorelease];
+		
+		PlanetEntity* doppelganger = [[PlanetEntity alloc] initMiniatureFromPlanet:targetplanet];   // retain count = 1
+		if (!doppelganger)
+			return NO;
+			
+		Vector	model_p0 = [Entity vectorFromString:[[i_info subarrayWithRange:NSMakeRange( 1, 3)] componentsJoinedByString:@" "]];
+		Quaternion model_q = { 0.707, 0.707, 0.0, 0.0 };
+		model_p0.x += off.x;
+		model_p0.y += off.y;
+		model_p0.z += off.z;
+
+		if (debug)
+			NSLog(@"::::: adding target-planet to scene:'%@'", doppelganger);
+		[doppelganger setQRotation: model_q];
+		[doppelganger setPosition: model_p0];
+		[universe addEntity: doppelganger];
 
 		[doppelganger release];
 		return YES;

@@ -67,6 +67,9 @@ Your fair use and other rights are in no way affected by the above.
 // 10m/s forward drift
 #define	OG_ELITE_FORWARD_DRIFT			10.0f
 
+GLfloat extYRot;
+GLfloat extYRotDelta = 0.1;
+
 
 @implementation PlayerEntity
 
@@ -128,6 +131,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	key_next_target = 45;			// '+'
 	key_previous_target = 43;		// '-'
+
 	//
 	// now check the keyconfig dictionary...
 	if ([kdic objectForKey:@"key_roll_left"])		key_roll_left = [(NSNumber *)[kdic objectForKey:@"key_roll_left"] intValue];
@@ -193,6 +197,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	if ([kdic objectForKey:@"key_map_info"])
 		key_map_info = [(NSNumber *)[kdic objectForKey:@"key_map_info"] intValue];
+
 	//
 	// other keys are SET and cannot be varied
 
@@ -901,6 +906,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	target_memory_index = 0;
 	//
+
 	return self;
 }
 
@@ -1720,8 +1726,20 @@ double scoopSoundPlayTime = 0.0;
 				go = NO;
 			}
 
+			// check max distance permitted
+			double jump_distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
+			if (jump_distance > 7.0)
+			{
+				[universe clearPreviousMessage];
+				[universe addMessage:[universe expandDescription:@"[witch-too-far]" forSystem:system_seed] forCount: 4.5];
+				if (![universe playCustomSound:@"[witch-too-far]"])
+					[witchAbortSound play];
+				status = STATUS_IN_FLIGHT;
+				go = NO;
+			}
+
 			// check fuel level
-			double		fuel_required = 10.0 * distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
+			double		fuel_required = 10.0 * jump_distance;
 			if (galactic_witchjump)
 				fuel_required = 0.0;
 			if (fuel < fuel_required)
@@ -2220,17 +2238,18 @@ double scoopSoundPlayTime = 0.0;
 		return viewpoint;	// center view for break pattern
 
 	Vector offset = make_vector ( 0, 0, 0);
-	switch ([universe viewDir])
-	{
-		case VIEW_FORWARD:
-			offset = forwardViewOffset;	break;
-		case VIEW_AFT:
-			offset = aftViewOffset;	break;
-		case VIEW_PORT:
-			offset = portViewOffset;	break;
-		case VIEW_STARBOARD:
-			offset = starboardViewOffset;	break;
-	}
+		switch ([universe viewDir])
+		{
+			case VIEW_FORWARD:
+				offset = forwardViewOffset;	break;
+			case VIEW_AFT:
+				offset = aftViewOffset;	break;
+			case VIEW_PORT:
+				offset = portViewOffset;	break;
+			case VIEW_STARBOARD:
+				offset = starboardViewOffset;	break;
+		}
+
 	if (offset.x)
 	{
 		viewpoint.x += offset.x * v_right.x;	viewpoint.y += offset.x * v_right.y;	viewpoint.z += offset.x * v_right.z;
@@ -2252,17 +2271,18 @@ double scoopSoundPlayTime = 0.0;
 	if ([universe breakPatternHide])
 		return make_vector( 0.0f, 0.0f, 0.0f);	// center view for break pattern
 
-	switch ([universe viewDir])
-	{
-		case VIEW_FORWARD:
-			return forwardViewOffset;
-		case VIEW_AFT:
-			return aftViewOffset;
-		case VIEW_PORT:
-			return portViewOffset;
-		case VIEW_STARBOARD:
-			return starboardViewOffset;
-	}
+		switch ([universe viewDir])
+		{
+			case VIEW_FORWARD:
+				return forwardViewOffset;
+			case VIEW_AFT:
+				return aftViewOffset;
+			case VIEW_PORT:
+				return portViewOffset;
+			case VIEW_STARBOARD:
+				return starboardViewOffset;
+		}
+		return make_vector( 0.0f, 0.0f, 0.0f);
 
 	return make_vector( 0.0f, 0.0f, 0.0f);
 }
@@ -2391,7 +2411,7 @@ double scoopSoundPlayTime = 0.0;
 	PlanetEntity* nearest_planet = nil;
 	int i;
 	for (i = 0; ((i < ent_count)&&(!nearest_planet)); i++)
-		if (uni_entities[i]->isPlanet)
+		if ((uni_entities[i]->isPlanet) && (uni_entities[i]->status != STATUS_DEMO))
 			nearest_planet = [uni_entities[i] retain];		//	retained
 
 	if (!nearest_planet)
@@ -2402,14 +2422,6 @@ double scoopSoundPlayTime = 0.0;
 	double alt = sqrt(zd) - cr;
 
 	[nearest_planet release];
-
-//	PlanetEntity	*planet =   [universe planet];
-//	PlanetEntity	*sun =		[universe sun];
-//	double  planet_zd = (planet)? planet->zero_distance : PLAYER_SUPER_ALTITUDE2;
-//	double  sun_zd = (sun)? sun->zero_distance : PLAYER_SUPER_ALTITUDE2;
-//	double  planet_cr = (planet)? planet->collision_radius : 0;
-//	double  sun_cr = (sun)? sun->collision_radius : 0;
-//	double alt = (planet_zd < sun_zd) ? (sqrt(planet_zd) - planet_cr) : (sqrt(sun_zd) - sun_cr);
 
 	alt /= PLAYER_DIAL_MAX_ALTITUDE;
 
@@ -4495,57 +4507,63 @@ double scoopSoundPlayTime = 0.0;
 	if ([targetSystemData objectForKey:@"sun_gone_nova"])
 		sun_gone_nova = YES;
 
-	GuiDisplayGen* gui = [universe gui];
-
-	int tab_stops[GUI_MAX_COLUMNS];
-	tab_stops[0] = 0;
-	tab_stops[1] = 96;
-	tab_stops[2] = 144;
-	[gui setTabStops:tab_stops];
-
-	int government =	[(NSNumber *)[targetSystemData objectForKey:KEY_GOVERNMENT] intValue];
-	int economy =		[(NSNumber *)[targetSystemData objectForKey:KEY_ECONOMY] intValue];
-	int techlevel =		[(NSNumber *)[targetSystemData objectForKey:KEY_TECHLEVEL] intValue];
-	int population =	[(NSNumber *)[targetSystemData objectForKey:KEY_POPULATION] intValue];
-	int productivity =	[(NSNumber *)[targetSystemData objectForKey:KEY_PRODUCTIVITY] intValue];
-	int radius =		[(NSNumber *)[targetSystemData objectForKey:KEY_RADIUS] intValue];
-
-	NSString*   government_desc =   (NSString *)[(NSArray *)[descriptions objectForKey:KEY_GOVERNMENT] objectAtIndex:government];
-	NSString*   economy_desc =		(NSString *)[(NSArray *)[descriptions objectForKey:KEY_ECONOMY] objectAtIndex:economy];
-	NSString*   inhabitants =		(NSString *)[targetSystemData objectForKey:KEY_INHABITANTS];
-	NSString*   system_desc =		(NSString *)[targetSystemData objectForKey:KEY_DESCRIPTION];
-
-	if ((sun_gone_nova && equal_seeds( target_system_seed, system_seed) && [[universe sun] goneNova])||
-		(sun_gone_nova && (!equal_seeds( target_system_seed, system_seed))))
+	// GUI stuff
 	{
-		population = 0;
-		productivity = 0;
-		radius = 0;
-		system_desc = [universe expandDescription:@"[nova-system-description]" forSystem:target_system_seed];
+		GuiDisplayGen* gui = [universe gui];
+
+		int tab_stops[GUI_MAX_COLUMNS];
+		tab_stops[0] = 0;
+		tab_stops[1] = 96;
+		tab_stops[2] = 144;
+		[gui setTabStops:tab_stops];
+
+		int government =	[(NSNumber *)[targetSystemData objectForKey:KEY_GOVERNMENT] intValue];
+		int economy =		[(NSNumber *)[targetSystemData objectForKey:KEY_ECONOMY] intValue];
+		int techlevel =		[(NSNumber *)[targetSystemData objectForKey:KEY_TECHLEVEL] intValue];
+		int population =	[(NSNumber *)[targetSystemData objectForKey:KEY_POPULATION] intValue];
+		int productivity =	[(NSNumber *)[targetSystemData objectForKey:KEY_PRODUCTIVITY] intValue];
+		int radius =		[(NSNumber *)[targetSystemData objectForKey:KEY_RADIUS] intValue];
+
+		NSString*   government_desc =   (NSString *)[(NSArray *)[descriptions objectForKey:KEY_GOVERNMENT] objectAtIndex:government];
+		NSString*   economy_desc =		(NSString *)[(NSArray *)[descriptions objectForKey:KEY_ECONOMY] objectAtIndex:economy];
+		NSString*   inhabitants =		(NSString *)[targetSystemData objectForKey:KEY_INHABITANTS];
+		NSString*   system_desc =		(NSString *)[targetSystemData objectForKey:KEY_DESCRIPTION];
+
+		if ((sun_gone_nova && equal_seeds( target_system_seed, system_seed) && [[universe sun] goneNova])||
+			(sun_gone_nova && (!equal_seeds( target_system_seed, system_seed))))
+		{
+			population = 0;
+			productivity = 0;
+			radius = 0;
+			system_desc = [universe expandDescription:@"[nova-system-description]" forSystem:target_system_seed];
+		}
+
+		[gui clear];
+		[gui setTitle:[NSString stringWithFormat:[descriptions objectForKey:@"sysdata-planet-name-@"],   targetSystemName]];
+		//
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-eco"], economy_desc, nil]						forRow:1];
+		//
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-govt"], government_desc, nil]				forRow:3];
+		//
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-tl"], [NSString stringWithFormat:@"%d", techlevel + 1], nil]	forRow:5];
+		//
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-pop"], [NSString stringWithFormat:@"%.1f Billion", 0.1*population], nil]	forRow:7];
+		[gui setArray:[NSArray arrayWithObjects:@"", [NSString stringWithFormat:@"(%@)", inhabitants], nil]				forRow:8];
+		//
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-prod"], @"", [NSString stringWithFormat:@"%5d M Cr.", productivity], nil]	forRow:10];
+		//
+		[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-radius"], @"", [NSString stringWithFormat:@"%5d km", radius], nil]	forRow:12];
+		//
+		int i = [gui addLongText:system_desc startingAtRow:15 align:GUI_ALIGN_LEFT];
+		missionTextRow = i;
+		for (i-- ; i > 14 ; i--)
+			[gui setColor:[OOColor greenColor] forRow:i];
+		//
+
+		[gui setShowTextCursor:NO];
+
 	}
-
-	[gui clear];
-	[gui setTitle:[NSString stringWithFormat:[descriptions objectForKey:@"sysdata-planet-name-@"],   targetSystemName]];
-	//
-	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-eco"], economy_desc, nil]						forRow:1];
-	//
-	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-govt"], government_desc, nil]				forRow:3];
-	//
-	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-tl"], [NSString stringWithFormat:@"%d", techlevel + 1], nil]	forRow:5];
-	//
-	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-pop"], [NSString stringWithFormat:@"%.1f Billion", 0.1*population], nil]	forRow:7];
-	[gui setArray:[NSArray arrayWithObjects:@"", [NSString stringWithFormat:@"(%@)", inhabitants], nil]				forRow:8];
-	//
-	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-prod"], @"", [NSString stringWithFormat:@"%5d M Cr.", productivity], nil]	forRow:10];
-	//
-	[gui setArray:[NSArray arrayWithObjects:[descriptions objectForKey:@"sysdata-radius"], @"", [NSString stringWithFormat:@"%5d km", radius], nil]	forRow:12];
-	//
-	int i = [gui addLongText:system_desc startingAtRow:15 align:GUI_ALIGN_LEFT];
-	missionTextRow = i;
-	for (i-- ; i > 14 ; i--)
-		[gui setColor:[OOColor greenColor] forRow:i];
-
-	[gui setShowTextCursor:NO];
+	/* ends */
 
 	//NSLog(@"gui_screen = GUI_SCREEN_SYSTEM_DATA for system %@ at (%d,%d)",targetSystemName,target_system_seed.d,target_system_seed.b);
 
@@ -4564,6 +4582,17 @@ double scoopSoundPlayTime = 0.0;
 	[universe setDisplayText: YES];
 	[universe setDisplayCursor: NO];
 	[universe setViewDirection: VIEW_DOCKED];
+
+	if (status == STATUS_DOCKED)
+	{
+		// set gui background to show a copy of the planet
+		//
+		[universe removeDemoShips];
+		[self setBackgroundFromDescriptionsKey:@"gui-scene-show-planet"];
+		//
+		////
+	}
+
 }
 
 - (NSArray *) markedDestinations
@@ -4588,7 +4617,6 @@ double scoopSoundPlayTime = 0.0;
 
 - (void) setGuiToLongRangeChartScreen
 {
-	NSDictionary*   descriptions = [universe descriptions];
 	NSString*   targetSystemName;
 	double		distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
 	int			i;
@@ -4613,15 +4641,15 @@ double scoopSoundPlayTime = 0.0;
 		GuiDisplayGen* gui = [universe gui];
 
 		[gui clear];
-		[gui setTitle:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-title-@"], galaxy_number+1]];
+		[gui setTitle:[NSString stringWithFormat:@"Galactic Chart %d",   galaxy_number+1]];
 		//
-		[gui setText:targetSystemName forRow:17];
-		[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-distance-@"], distance] forRow:18];
+		[gui setText:targetSystemName														forRow:17];
+		[gui setText:[NSString stringWithFormat:@"Distance:\t%.1f Light Years", distance]   forRow:18];
 		//
 		if (planetSearchString)
-			[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-find-@"], [planetSearchString capitalizedString]] forRow:16];
+			[gui setText:[NSString stringWithFormat:@"Find planet: %@", [planetSearchString capitalizedString]]  forRow:16];
 		else
-			[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-find-@"], @""] forRow:16];
+			[gui setText:@"Find planet: "  forRow:16];
 		[gui setColor:[OOColor cyanColor] forRow:16];
 
 		[gui setShowTextCursor:YES];
@@ -4832,7 +4860,6 @@ double scoopSoundPlayTime = 0.0;
 
 - (void) setGuiToShortRangeChartScreen
 {
-	NSDictionary*   descriptions = [universe descriptions];
 	NSString*   targetSystemName;
 	double		distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
 
@@ -4850,10 +4877,10 @@ double scoopSoundPlayTime = 0.0;
 			cursor_coordinates = galaxy_coordinates;	// home
 
 		[gui clear];
-		[gui setTitle:[descriptions objectForKey:@"localchart-title"]];
+		[gui setTitle:@"Short Range Chart"];
 		//
-		[gui setText:targetSystemName forRow:19];
-		[gui setText:[NSString stringWithFormat:[descriptions objectForKey:@"galchart-distance-@"], distance] forRow:20];
+		[gui setText:targetSystemName														forRow:19];
+		[gui setText:[NSString stringWithFormat:@"Distance:\t%.1f Light Years", distance]   forRow:20];
 		//
 
 		[gui setShowTextCursor:NO];
@@ -5245,7 +5272,7 @@ static int last_outfitting_index;
 		[gui clear];
 		[gui setTitle:@"Ship Outfitting"];
 		//
-		[gui setText:[NSString stringWithFormat:@"Cash: %.1f Cr.", 0.1*credits]  forRow: GUI_ROW_EQUIPMENT_CASH];
+		[gui setText:[NSString stringWithFormat:@"Cash:\t%.1f Cr.", 0.1*credits]  forRow: GUI_ROW_EQUIPMENT_CASH];
 		//
 		tab_stops[0] = 0;
 		tab_stops[1] = 320;
@@ -5470,14 +5497,14 @@ static int last_outfitting_index;
 	NSString *text;
 	GuiDisplayGen* gui = [universe gui];
 
-		[gui clear];
-		[gui setTitle:@"Oolite"];
-		//
+	[gui clear];
+	[gui setTitle:@"Oolite"];
+	//
 	text = [universe expandDescription:@"[press-space-commander]" forSystem:system_seed];
 	[gui setText:text forRow:21 align:GUI_ALIGN_CENTER];
-		[gui setColor:[OOColor yellowColor] forRow:21];
-		//
-		[gui setShowTextCursor:NO];
+	[gui setColor:[OOColor yellowColor] forRow:21];
+	//
+	[gui setShowTextCursor:NO];
 
 	[universe set_up_intro2];
 
@@ -5876,7 +5903,7 @@ static int last_outfitting_index;
 		if ([cargo count] > 0)
 			current_cargo = ([cargo count] <= max_cargo) ? [cargo count] : max_cargo;  // actually count the containers and things (may be > max_cargo)
 		//
-		[gui setText:[NSString stringWithFormat:@"Cash: %.1f Cr.  Load %d of %d t.", 0.1*credits, current_cargo, max_cargo]  forRow: GUI_ROW_MARKET_CASH];
+		[gui setText:[NSString stringWithFormat:@"Cash:\t%.1f Cr.\t\tLoad %d of %d t.", 0.1*credits, current_cargo, max_cargo]  forRow: GUI_ROW_MARKET_CASH];
 		//
 		if (status == STATUS_DOCKED)	// can only buy or sell in dock
 		{
@@ -6225,20 +6252,21 @@ OOSound* burnersound;
 	starboardViewOffset = make_vector( boundingBox.max.x - halfWidth, 0.0, 0.0);
 }
 
+// Could be done away with? Looks close to a duplicate of getViewpointOffset
 - (Vector) viewOffset
 {
-	switch ([universe viewDir])
-	{
-		case VIEW_FORWARD:
-			return forwardViewOffset;
-		case VIEW_AFT:
-			return aftViewOffset;	break;
-		case VIEW_PORT:
-			return portViewOffset;	break;
-		case VIEW_STARBOARD:
-			return starboardViewOffset;	break;
-	}
-	return make_vector ( 0, 0, 0);
+		switch ([universe viewDir])
+		{
+			case VIEW_FORWARD:
+				return forwardViewOffset;
+			case VIEW_AFT:
+				return aftViewOffset;	break;
+			case VIEW_PORT:
+				return portViewOffset;	break;
+			case VIEW_STARBOARD:
+				return starboardViewOffset;	break;
+		}
+		return make_vector ( 0, 0, 0);
 }
 
 - (void) setDefaultWeaponOffsets
