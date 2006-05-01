@@ -1,0 +1,137 @@
+ ***************************************************************************
+ *    You can get this code at: http://www.SoftOrchestra.com/downloads/
+ ***************************************************************************
+ *                        E  D  I  T        L  O  G
+ *
+ *  Edit        Date        Person  Modification
+ ***************************************************************************
+ 
+  close( s )    5/23/2005   Cosme Sevestre <cosme.sevestre@hp.com>
+                                    fixed several places where sockets could leak.
+                                    these changes were sent in by Jean II for Cosme.
+                                    See http.c for mods. 
+
+  http_request
+                4/2/2003    Jean II all requests are not limited to an 8k URL,
+                                    mainly because if you need to send more than
+                                    8k, you will need to use a post. More so, you
+                                    must use a POST if you want to send more than
+                                    8k, GET will not work. There is now a new struct
+                                    to pass the extra header info, post data, and
+                                    the length of the post data, and this will now
+                                    allow for binary data to be transfered without
+                                    having to UUENCODE it.
+                                    
+                                    NOTE:   this breaks the API on previous versions,
+                                            but it will only be calls to http_request
+                                            which previously used entities, which are
+                                            mostly a small percentage of cases. New
+                                            struct is HTTP_Extra.
+ 
+    LIBHTTP_VERSION
+                3/27/2003   ajd     add in a version to be used in the User-Agent
+                                    entity of the header for requests.
+                                    
+    parse_url   3/27/2003   jjsa    Sarton Jean-Jacques <jean-jacques.sarton@siemens.com>
+                                    change return type to NULL rather than (char *)"", so
+                                    it won't get free'd in http_request.
+    
+    http_request3/27/2003   jjsa    Sarton Jean-Jacques <jean-jacques.sarton@siemens.com>
+                                    error info added if can't calloc for pBuf, account for
+                                    NULL return from parse_url, use strdup() instead of
+                                    assigning in_URL to path, remove realloc when size
+                                    doesn't change
+                                    
+    do_file     3/27/2003   jjsa    Sarton Jean-Jacques <jean-jacques.sarton@siemens.com>
+                                    add error info
+ 
+    HFLAG_FORCE_NO_PROXY
+                3/5/2003    Jean II Jean Tourrilhes <jt@hpl.hp.com>
+                                    added flag to force a no use of the proxy,
+                                    which is handy if you're inside of a firewall
+                                    and have a server inside you don't need to
+                                    use the firewall to access.
+ 
+    http_request()
+                10/13/2002  ajd     parse_url previously allocated the working
+                                    on the stack, and this was a problem seen
+                                    by the path becoming corrupted upon a call
+                                    to gethostbyname(). data is allocated inside
+                                    parse_url and free'd in http_request().
+                                    Thanks to Erick Briere and JacoboQ for
+                                    pointing that out! libhttp-0.6
+ 
+    parse_url   10/13/2002  ajd     fix bug inside parse_url where the url
+                                    sent into the function from a POST could
+                                    be longer than 8k, but turl was allocated
+                                    on the stack and was of an 8k size. This
+                                    was pointed out by  Erick Briere. Thanks!
+                                    libhttp-0.6
+ 
+    http_proxy  5/14/2002   Jean II Jean Tourrilhes <jt@hpl.hp.com>
+                                    add proxy changes. these changes appear
+                                    to override the changes from jjsa below,
+                                    and I'll need to test and validate this to
+                                    make sure it works, hopefully for both
+                                    cases.
+
+    http_request()
+                5/13/2002   Jean II Jean Tourrilhes <jt@hpl.hp.com>
+                                    add compile time options, allowing sections
+                                    of the library to be optional. Defines in
+                                    http.h.
+                                    add bitfield to http_request to allow flags,
+                                    currently to return header info.
+                                    add ability to specifiy "Content-Type:" on
+                                    post.
+                                    add ability to return headers to caller
+                                    add helper function to parse HTTP header
+                                    
+    NOTE:   many thanks to to Jean II for not just this patch, but for the countless
+            hours that his Wireless Lan resource for Linux webpage has saved *ME*!
+            Thanks ever so much!
+            http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/
+
+    http_proxy  2/17/2002   jjsa    Sarton Jean-Jacques <jean-jacques.sarton@siemens.com>
+                                    sent in a patch when a proxy is passed, libhttp
+                                    was not storing the url into the path before
+                                    making the call. This is being added into 0.3 
+
+    do_file     2/17/2002   crh     Chris Hawks <chrish@syscon-intl.com> sent in
+                                    a patch for adding a local html file for a
+                                    device, as well as some patches for POST.
+                                    Thanks a bunch! This was added to 0.2, but
+                                    I fogot to add a comment.
+
+    hhead       9/5/2001    ajd     tool that wraps http_request for kHMethodHead
+
+    kHMethodHead9/5/2001    ajd     add support for kHMethodHead
+    
+    Host:       9/5/2001    ajd     add Host: entity to fix 403 on some servers
+
+    in_ReqAddition
+                9/5/2001    ajd     ability to add request header entities 
+
+    szHErr      9/4/2001    ajd     add in http response code and message
+    
+    libhttp.so  9/3/2001    ajd     configure is working, installs in /usr/local
+
+    hpost       9/3/2001    ajd     kHMethodPost now works.
+    
+    host w/path 9/3/2001    ajd     annoying bug with no host and recent some httpd
+    
+    in_Method   8/27/2001   ajd     support for http method, implement POST
+
+    malloc/realloc
+                8/27/2001   ajd     store data to memory, realloc it as
+                                    it grows.
+
+    header_size 8/26/2001   ajd     calc/sub header size from total
+       
+    http_request                
+                8/25/2001   ajd     httpget hits the butcher block.
+    
+    last_change 02/10/1995  sti     last change by Sami
+    
+    create      1994        sti     initial creation
+

@@ -1,0 +1,96 @@
+AC_INIT(http.c)
+
+dnl find and test the C compiler
+AC_PROG_CC
+
+dnl find the libtool
+AC_PROG_LIBTOOL
+
+AC_LANG_C
+
+dnl AC_CONFIG_HEADERS(config.h)
+dnl AM_CONFIG_HEADERS(config.h)
+        
+AC_HEADER_STDC
+                  
+VERSION="1.1"
+AC_SUBST(VERSION)
+
+AC_CANONICAL_SYSTEM
+
+PACKAGE=libhttp
+AC_ARG_PROGRAM(libhttp)
+AM_INIT_AUTOMAKE(libhttp, 1.1)
+
+AC_PROG_INSTALL(/usr/local/lib)
+
+dnl AC_PACKAGE(libhttp)
+
+dnl The following are examples of working code on the old
+dnl automake/autoconf/libtool to fix the problem where
+dnl both the socket and nsl libraries are not included
+dnl in the standard libraries on Solaris and/or other
+dnl flavors of SVR4
+
+dnl not sure about this one...
+dnl case $host in
+dnl     *-*-solaris*)
+dnl         LDFLAGS="-lsocket -lnsl"
+dnl         ;;
+dnl esac
+
+dnl Make sure we don't use -lnsl and -lsun on Irix systems.
+dnl case "$target" in
+dnl     *-*-solaris*)
+dnl                         AC_CHECK_LIB(socket,main)
+dnl                         ;;
+dnl     *)
+dnl                         AC_CHECK_LIB(nsl,main)
+dnl                         AC_CHECK_LIB(socket,main)
+dnl                         AC_CHECK_LIB(sun,main)
+dnl                         ;;
+dnl esac
+
+dnl AC_CHECK_FUNCS(connect)
+dnl if test x"$ac_cv_func_connect" = x"no"; then
+dnl     case "$LIBS" in
+dnl     *-lnsl*) ;;
+dnl     *) AC_CHECK_LIB(nsl_s, printf) ;;
+dnl     esac
+dnl     case "$LIBS" in
+dnl     *-lnsl*) ;;
+dnl     *) AC_CHECK_LIB(nsl, printf) ;;
+dnl     esac
+dnl     case "$LIBS" in
+dnl     *-lsocket*) ;;
+dnl     *) AC_CHECK_LIB(socket, connect) ;;
+dnl     esac
+dnl     case "$LIBS" in
+dnl     *-linet*) ;;
+dnl     *) AC_CHECK_LIB(inet, connect) ;;
+dnl     esac
+dnl     dnl We can't just call AC_CHECK_FUNCS(connect) here, because the value
+dnl     dnl has been cached.
+dnl     if test x"$ac_cv_lib_socket_connect" = x"yes" ||
+dnl        test x"$ac_cv_lib_inet_connect" = x"yes"; then
+dnl         # ac_cv_func_connect=yes
+dnl         # don't!  it would cause AC_CHECK_FUNC to succeed next time configure is run
+dnl         # AC_DEFINE(HAVE_CONNECT)
+dnl     fi
+dnl fi
+
+dnl The rat's nest of networking libraries.  The common cases are not to
+dnl need any extra libraries, or to need -lsocket -lnsl.  We need to avoid
+dnl linking with libnsl unless we need it, though, since on some OSes where
+dnl it isn't necessary it will totally break networking.  Unisys also
+dnl includes gethostbyname in libsocket but needs libnsl for socket().
+AC_SEARCH_LIBS(gethostbyname, nsl)
+AC_CHECK_FUNC(socket, , [
+    AC_CHECK_LIB(socket, socket, LIBS="$LIBS -lsocket", [
+        AC_CHECK_LIB(nsl, socket, LIBS="$LIBS -lsocket -lnsl", , -lsocket)
+    ], "$LIBS")
+])
+
+dnl read Makefile.in and write Makefile
+AC_OUTPUT(Makefile)
+

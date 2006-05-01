@@ -1,0 +1,73 @@
+# change XCOMP to reflect the cross compiler prefix.
+# in the case of PPC, powerpc-linux is used as the
+# compiler will be powerpc-linux-gcc for a ppc
+# target
+
+# ppc 823
+XCOMP = powerpc-linux-
+LDFLAGS   := -mcpu=823 -msoft-float -D_SOFT_FLOAT -Wall -O2 
+
+# Solaris
+#  XCOMP := 
+#  LDFLAGS := -Wall -O3 -lsocket -lnsl
+
+# Intel x86
+# XCOMP := 
+# LDFLAGS := -Wall -O3
+
+
+# C preprocessor
+
+CPPFLAGS :=
+
+# C
+
+CC     := $(XCOMP)gcc
+CFLAGS  := -Wall -Werror ${SEARCHDIRS}
+
+%.o : %.c
+	${CC} ${CFLAGS} -c $< -o $@
+
+# linker
+
+LINKER    := $(XCOMP)gcc
+
+# ppc 823
+
+# x86
+
+LOADLIBES :=
+
+.PHONY : all
+all: ./hget ./hpost http.o
+
+./hget : ./hget.o ./http.o
+	${LINKER} ${LDFLAGS} -o $@ ${filter-out %.a %.so, $^} ${LOADLIBES}
+
+./hpost : ./hpost.o ./http.o
+	${LINKER} ${LDFLAGS} -o $@ ${filter-out %.a %.so, $^} ${LOADLIBES}
+
+./http.o : ./http.c
+	${CC} ${CFLAGS} -c ${filter-out %.a %.so, $^} ${LOADLIBES}
+
+# target for making everything
+
+# .PHONY : libhttp.lo
+# libhttp.lo: ./http.o
+# 	libtool gcc -c http.c
+# 	rm libhttp.lo
+# 	gcc -c -fPIC -DPIC http.c -o libhttp.lo
+# 	gcc -c http.c -o http.o >/dev/null 2>&1
+
+# target for removing all object files
+
+.PHONY : tidy
+tidy::
+	@${RM} core ./hget ./hget.o ./hpost ./hpost.o ./http.o
+
+# target for removing all object files
+
+.PHONY : clean
+clean:: tidy
+	@${RM} ./hget ./hget.o ./hpost ./hpost.o ./http.o
+

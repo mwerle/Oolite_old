@@ -1,0 +1,344 @@
+libhttp release 1.1
+
+timeout issues, allow the user to write their own watchdog and
+export the socket. Changes submitted by Jean Tourrilhes.
+
+libhttp release 0.8
+
+Add LIBHTTP_VERSION define inside the http.h file, this is used
+for the User-Agent in the header of the requests. ajd 3/27/2003
+
+Several changes were submitted by Jean-Jacques Sarton, change
+return type of if parse_url can't calloc for turl to NULL, add
+error info in http_request if it can't calloc for pBuf, account
+for NULL return from parse_url in http_request, use strdup()
+instead of assigning, add error info, etc..
+
+
+libhttp release 0.7
+
+Ability to force a no use of a proxy. This can come in handy
+if you're using libhttp inside of a firewall and need to access
+a server that is not going through the proxy. Thanks Jean II!
+
+libhttp release 0.6
+
+Fixes some nasties where a POST variable could get corrupt by
+the stack, everyone should run this level at minimum, especially
+if you're using POST.
+
+libhttp release 0.5
+
+You can download this code from:
+
+http://www.SoftOrchestra.com/downloads/
+
+Several changes have been put in to fix a few bugs and add some 
+funtionality, please see the ChangeLog for more details.
+
+
+libhttp release 0.1
+
+
+These are the release notes for libhttp.  Read them carefully,
+as they tell you what this is all about, explain any recent
+problems and/or work arounds.
+
+----- 
+Linux
+-----
+
+No known problems with Linux. This was developed on Debain GNU/Linux using 
+woody with a 2.4.9 kernel and tested on potato with a 2.2.17 as well.
+
+-------
+FreeBSD
+-------
+
+No known problems with FreeBSD 4.3 STABLE or FreeBSD 3.2 STABLE
+
+-----------
+Solaris x86
+-----------
+
+No known problems now that I have configure.in sorted out and it appears 
+to work on Solaris x86...thanks to the CVS project for their 
+AC_CHECK_FUNCS call.
+
+-----------------
+PowerPC 823 Linux
+-----------------
+
+No known problems. cross compiled on a Debian woody host using the 2.95.2 
+cross compiler. The code ran fine on an embedded 823 chip.
+
+----------------
+WHAT IS libhttp?
+----------------
+
+libhttp is a small library to use in c/c++ applications
+where streaming data transfers need to occur over a socket. In it's
+first minor release it only supports GET or POST methods but was
+designed to add other methods later (HEAD, PUT, OPTIONS, DELETE, etc...).
+
+The original code was written back in '94 by a gent named Sami Tikka
+who was at the Helsinki University of Technology. The original source
+code is included in this distribution, please see:
+
+httpget.c
+
+----------
+Build Info
+----------
+
+Because I want/need to use this across several different platforms
+and/or different processors, I've put this together with autoconf,
+automake, and libtool.
+
+If you are compiling on the host you will be running the code on,
+you can do that with:
+
+./configure
+make
+make install (you will need to be root to install)
+
+If you have the gnu cross compiler installed, you can configure for the 
+specific host. In my case I cross compile to the PowerPC 823 chip, and I 
+would build it as: 
+
+./configure --build=i686-pc-linux --host=powerpc-linux
+make
+
+In the case you were compiling this code for the ipaq running Linux, the 
+following should work, but I don't have an ipaq:-( An ipaq running linux 
+with 802.11b would be a nice setup. I believe it should be prefixed as 
+such.
+
+./configure --build-i686-pc-linux --host=arm-linux
+make
+
+Watch closely after you configure, since if autoconf/automake doesn't find 
+the cross compiler with the host prefix, it will default to using the 
+natvie gcc. The host above would replace the tool prefix, (i.e., 
+powerpc-linux-gcc and arm-linux-gcc).
+
+DO NOT install in the case where you cross compile as it will install it 
+on the host that it was compiled on. Instead get the binaries and/or
+shared library and place it on your device.
+
+The library and tools will be installed in /usr/local/ by default, feel
+free to change the --prefix when you configure.
+
+---------------
+libhttp package
+---------------
+
+There are 3 pieces, the shared library, and 2 programs that are useful
+to call libhttp from the command line in the form of hget and hpost.
+See the source code for most information, and below.
+
+1) The shared library is located in libhttp-x.x/.libs/
+
+2) hget  (sends a GET request to an http server)
+
+           Usage = hget URL <output.file> <extra-entities>
+
+             URL = any valid http scheme
+   <output.file> = OPTIONAL, default file is ./temp.out
+<extra-entities> = OPTIONAL, additional header entities
+                             do not add a final newline
+                             only add newlines between
+                             each entity.
+
+                             <output.file> required when specifying <extra-entities>
+
+    Example usage:
+
+    hget http://localhost/ ./index.html
+    hget http://www.SoftOrchestra.com/images/music.png ./music.png
+    hget http://localhost/ ./local.html "If-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+    hget http://localhost/ ./local.html "If-Match: \"xxx\"\nIf-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+
+3) hpost  (sends a POST request to an http server)
+
+           Usage = hpost URL <output.file> <extra-entities>
+
+             URL = any valid http scheme
+   <output.file> = OPTIONAL, default file is ./temp.out
+<extra-entities> = OPTIONAL, additional header entities
+                             do not add a final newline
+                             only add newlines between
+                             each entity.
+
+                             <output.file> required when specifying <extra-entities>
+
+    Example usage:
+
+    hpost http://host/path/doc.xml?firstname=John\&lastname=Doe\&state=CA
+          (you must escape the '&' chars on the command line)
+
+    hpost http://host/path/doc.xml?firstname=John\&lastname=Doe ./local.html "If-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+
+4) hhead  (requests a header for a specific request, currently limited to an 8k request)
+
+           Usage = hhead URL <output.file> <extra-entities>
+
+             URL = any valid http scheme
+   <output.file> = OPTIONAL, default file is ./temp.out
+<extra-entities> = OPTIONAL, additional header entities
+                             do not add a final newline
+                             only add newlines between
+                             each entity.
+
+                             <output.file> required when specifying <extra-entities>
+
+    Example usage:
+
+    hhead http://localhost/ ./index.html
+    hhead http://www.SoftOrchestra.com/images/music.png ./music.png
+    hhead http://localhost/ ./local.html "If-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+    hhead http://localhost/ ./local.html "If-Match: \"xxx\"\nIf-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+
+------------------------
+Syntax of http_request()
+------------------------
+
+HTTP_Response http_request( char *in_URL, HTTP_Extra *in_Extra, HTTP_Method in_Method, unsigned long in_Flags );
+
+char *in_URL = a valid http URL. This could be a binary file, html document
+               or any valid http scheme.
+               
+HTTP_Extra *in_Extra = struct containing:
+    char *Headers =     additional entities if there are any to be sent.
+                        This could be one of the commonly used entities
+                        such as "If-Modified-Since", "If-Match",
+                        or "If-Range" type entities. It's also possible
+                        to work out a schema with the server to send
+                        your own entities, and the net's the limit in
+                        that regard. You might want to send a checksum
+                        for encoded data processed with a POST request,
+                        or similar, so the server can be certain the
+                        data which was transferred is correct.
+    char *PostData =    pointer to data for kHMethodPost
+    int PostLen =       length of data for kHMethodPost
+               
+HTTP_Method in_Method = method enum, as defined in the http.h header file.
+                        currently only kHMethodGet and kHMethodPost are
+                        supported, the rest of the defines default to
+                        using the GET method.
+                        
+unsigned long in_Flags =    additional flags. can be HFLAG_NONE, HFLAG_RETURN_HEADER
+                            HFLAG_POST_USER_TYPE, or HFLAG_FORCE_NO_PROXY
+
+------------------
+http_request usage
+------------------
+
+#include <http.h>
+...
+HTTP_Response hResponse;
+...
+hResponse = http_request( "http://host/path/doc", "", kHMethodGet, HGLAG_NONE );
+
+if( hResponse.lSize > 0 )
+{
+    do_something( hResponse.pData, hResponse.lSize );
+    if( hResponse.pData ) free( hResponse.pData );
+}
+else
+{
+    handle_error( ); // whatever you need to do
+}
+
+That's pretty much it, you only need to link the library in with your app! 
+If you install the shared library, apps can share it. Otherwise link 
+static and/or change to your preference.
+
+** NOTE ** NOTE ** NOTE ** NOTE ** NOTE ** NOTE ** NOTE ** NOTE **
+
+http_request will allocate memory for the data that it transfers. This requires
+that the caller free's the memory *OR* you can suffer quite a bit of memory loss
+while your program is running!<duh>
+
+** NOTE ** NOTE ** NOTE ** NOTE ** NOTE ** NOTE ** NOTE ** NOTE **
+
+-----------------------
+HTTP_Response structure
+-----------------------
+
+#define HCODESIZE 4
+#define HMSGSIZE 32
+
+typedef struct
+{
+    char *pData;
+    long lSize;
+    int  iError;
+    char *pError;
+    char szHCode[HCODESIZE];
+    char szHMsg[HMSGSIZE];
+} HTTP_Response, *PHTTP_Response;
+
+
+pData
+ 
+Pointer to data transferred. http_request will dynamically 
+allocate/reallocate the memory as it transfers data.  pData will be a 
+pointer to that data.  It is important to to understand this as the caller 
+is responsible to free the memory.
+
+lSize
+
+The size of pData. This value will be zero until a successful transfer is 
+completed.
+
+iError
+
+This will be set to errno upon system errors.
+
+pError
+
+Pointer to the text for iError as returned from strerror.
+
+szHCode[HERRSIZE]
+
+The http response code (i.e., 200, 404, 303, etc...).
+
+szHMsg[HMSGSIZE]
+
+The http message associated with the response code. OK, Not Found, Not 
+Modified, etc...
+
+
+-------------------------
+Possible Future Additions
+-------------------------
+
+1) more methods, HEAD, OPTIONS, PUT, DELETE, and TRACE are methods not supported.
+
+2) support a username and password to an http server
+
+3) support for https and/or other secure protocols
+
+4) ability to entities from the header of the response. this would be nice 
+in the case where a checksum value is needed and was sent in one of the 
+response header entities for instance.
+
+
+---------------
+Makefile.simple
+---------------
+
+This makefile is included to help assist in being able to compile without using the
+automake, autoconf, and libtool set of tools. It's simpler to use in the case where
+a problem occurs and someone would be trying to get the code to compile. On Solaris
+for instance, both the socket and nsl libraries need to be included when the code
+is compiled.
+
+To use the Makefile.simple, edit the XCOMP to refer to the proper 
+compiler prefix, and build the source with:
+
+make -f Makefile.simple
+
+This does not produce a shared library, but does compile the code.
+

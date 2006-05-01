@@ -1,0 +1,502 @@
+There is certainly no denying that the web is here to stay.  Not only high 
+tech companies, but most people are realizing that the web is a vast 
+resource of information.  During the past 6 or 7 years a phenomena has 
+been happening, and it's not just the internet.  This phenomena is also 
+transpiring inside of many companies with intranets as well.  
+
+Working with web servers is something that most of us will find ourselves 
+interacting much more in the future.  The phenomena of the web has not 
+only surfaced very rapidly, it has been one of the biggest changes to 
+development over the past 10 years.  Such a large percentage of people are 
+using http servers to display content these days, whether internal or 
+external, the usage continues to rise.  
+
+My intent for this article is to discuss how to deal with transferring 
+data over the web, using the HTTP protocol.  Not only is this a widely 
+used protocol nowadays, it's becoming more and more needed for embedded 
+devices.  Once inside a device, we often find we don't have the resource 
+or the power in some cases to support the use of a large, slow library.  
+It is also my intent to create a shared library to demonstrate this. This 
+way we should be able to reuse the code for linking with our C/C++ 
+applications.
+
+First, let's discuss the reason for such a library. There are some 
+solutions available today that actually accomplish this task fairly well. 
+While they might not be as simple to call as I would care for, they do in 
+fact solve the problem of transferring data over HTTP.
+
+Many of the libraries available have some nice bells and whistles in the 
+way of features and function.  The curl library for instance, has support 
+for secure HTTP transfers, and that is definitely needed in many 
+situations.  However, the curl library also has a lot of other features 
+that are not needed by every embedded device, and more so, there are often 
+reasons where you specifically want the smallest leanest solution 
+available within arm's reach (intentional iPaq humor;-).  The 
+documentation looks pretty good for the curl library, and it's the most 
+complete in features.  It's just big, and space is often the biggest 
+concern for any implementation inside of an embedded device.  
+
+Another library that is a bit more lean is the GNOME HTTP library.  This 
+library is smaller, but has less features.  This produces a smaller 
+footprint for the space required for such a library, by sacrificing some 
+features.  A couple things were annoying about the GNOME HTTP library for 
+my own use.  It was very difficult to manage the data being transferred, 
+and the library seems to make copies of the data for the transfer and the 
+storage of it.  The library required that you initialize and maintain the 
+request and the documentation is very sparse.  The actual control over the 
+data being transferred is limited. Even with these limitations, the 
+library does work and is fairly easy to use.
+
+I've run into a low resource situation when re-flashing a device over the 
+net.  The images needed are often 8mb or even 16mb these days, and the RAM 
+available places constraints on the way we download and store that data 
+before writing it to flash. On workstations and servers we don't have the 
+same constraints on resource, where we do have on embedded devices. For 
+this situation where no extra resource can be spared, there will be little 
+choice but to roll your own socket code anyway.
+
+In one case, I really needed a small footprint, and I ended up writing 
+some socket code to perform such a task.  Sadly, the code was contained 
+within a proprietary piece of code I wrote while working for another 
+company.  For obvious reasons I couldn't use that code for a generic 
+solution for even myself, since it belonged to the company that paid for 
+the work.  With this in mind I set out to create a small compact library 
+that everyone could use, and I decided to do it by starting out with a 
+piece of source code I found on the net some time back.  The original 
+source code is included in the the distribution of the source code being 
+used in this article.  Please see the file named httpget.c for more 
+information.  
+
+Size, it really matters in a lot of situations
+----------------------------------------------
+
+By rolling our own http transfer, we can bring down the requirements quite 
+a bit, and this code will be useful to many people that need only the 
+basic features of such a solution. Not only on embedded devices, but this 
+code should work across most all flavors of UNIX/Linux available. The 
+configure script might not handle all flavors properly, but it should be 
+possible to compile the code.
+
+Let's look at the sizes of these libraries so we can see where some real 
+value can be seen in hard numbers. It might be good to note that this is 
+the non-ssl version of the curl library. These have been compiled on the 
+Intel x86 architecture. This is important as more often than not a RISC 
+processor will be used in embedded devices. The RISC processor will often 
+produce larger binaries than on the x86 CISC platform.
+
+ 1156704 Sep 21 19:03 libcurl.a                         
+     703 Sep 21 19:03 libcurl.la                        
+      16 Sep 21 19:03 libcurl.so -> libcurl.so.2.0.1    
+      16 Sep 21 19:03 libcurl.so.2 -> libcurl.so.2.0.1  
+  322521 Sep 21 19:03 libcurl.so.2.0.1                  
+
+  209950 Sep 21 19:36 libghttp.a                        
+     648 Sep 21 19:36 libghttp.la                       
+      17 Sep 21 19:36 libghttp.so -> libghttp.so.1.0.0  
+      17 Sep 21 19:36 libghttp.so.1 -> libghttp.so.1.0.0
+  110479 Sep 21 19:36 libghttp.so.1.0.0                 
+
+   40380 Oct 23 01:30 libhttp.a
+     699 Oct 23 01:30 libhttp.la
+      16 Oct 23 01:30 libhttp.so -> libhttp.so.1.0.0
+      16 Oct 23 01:30 libhttp.so.1 -> libhttp.so.1.0.0
+   45508 Oct 23 01:30 libhttp.so.1.0.0
+
+Size is by far the biggest (or smallest as it may be;-) reason to use 
+libhttp to begin with.  On platforms that have more resource available it 
+could make sense to use one of the other libraries that offers more 
+features. However, size will vary quite a bit between processors, as well 
+as numbers changing whether one links static or dynamic.
+
+I modified the httpget.c source code to become a shared library for use in 
+C/C++ applications.  Something that is easy to use, and doesn't 
+require a bunch of preparation and setup beforehand.  Most importantly, 
+that it is small enough to fit in most any embedded device that has such a 
+need. It would be nice to see easy cross compiling also as to use the code 
+on any variety of processors supported by the GNU cross compiler.
+
+Port 80, a friend you can usually depend on
+-------------------------------------------
+
+There is yet an important reason for using http to transfer data.  
+That being that port 80, the common http port used, is more often than not 
+left open by most firewall admin.  Because of this I've often found it 
+safe to use http to transfer data through firewalls. This program
+will allow for a transfer of data to happen over http, and it's a handy 
+utility to have on any embedded device with an ethernet connection to the 
+internet. But more importantly it should be noted that port 80 is 
+usually our friend.
+
+Caller is required to free memory
+---------------------------------
+
+The shared library or static code should compile with most all C/C++ 
+applications and on most any platform that supports the GNU compiler.  It 
+should be able to be called by any C/C++ application to perform the 
+transfer and pass back an allocated pointer to the caller.  I suppose that 
+most developers have their own way of how such a call should work, but I 
+like to put the burden on the caller to free the memory that has been 
+allocated.  This is dangerous in the event the memory is not free'd up as 
+this will create large memory leaks quickly, so let this be the first word 
+of advice I can offer with this library.  The caller is required to free 
+memory!  
+
+For this article I will not cover all of the methods of http, but will 
+focus on the 3 methods currently implemented in libhttp.  Those methods 
+are GET, POST, and HEAD.
+  
+GET and POST will produce a very similar result in most cases.  However, 
+there are some differences between these methods.  
+
+The GET method is limited to a request size of 8k, or 8192 bytes.  The 
+POST method, is not limited in size for the request, but requires that the 
+request be setup a bit different.  Specifically it requires that you use 
+the Content-Length header as a part of your request.  This header informs 
+the server how large the request is so that the server can allocate enough 
+storage.  In the case of the GET method the server should end up 
+truncating the request if the size goes over the 8k limit.  Most times 
+this will result in a bad request.
+
+Another difference between the GET and POST methods is that a GET request 
+should result in the same response from the server, even when called in 
+succession.  The POST may or may not produce the same results, and often a 
+web server will take multiple requests and have some type of data handler 
+sort things out for the response.  The POST method is often used with 
+forms, so the content of the form can and will change depending on the 
+information entered.  But it need not be used only for forms, and it is a 
+good way to stream encoded data back to a server.  
+
+For most requests, the GET method works well.  If you do need to pass a 
+large request, you'll be glad that the POST method is available.  
+
+The HEAD method will transfer the header information for a request that is 
+sent to a particular server. 
+
+For the purpose of this article I am using these methods as a means to 
+transfer data only.  The beauty of http is that it is so common nowadays 
+that there are few places that do block port 80.  Even if they were to 
+block the port, chances are there would be a proxy to use as it's 
+replacement.  I'm not trying to discuss security here, just pointing out 
+that if you have a device which connects to the world through ethernet 
+(workstations, servers, and even embedded clients alike), this will be a 
+concern when you need to get that data through a firewall.  Especially if 
+they have the port blocked.  The data can be anything from a binary 
+program, MP3 audio, MPEG video, to a PNG image.  As I've mentioned above, 
+Port 80 seems be our friend in this regards, and few places will block 
+streaming http, even if they did require a proxy.  
+
+I found some source code when I was looking at finding a solution which 
+I could use in my embedded device.  A program I stumbled across is called 
+httpget and it was written in '94 by a gent of the name of Sami Tikka.  
+What's kind of interesting is that this source code was written about the 
+same time the browser was being introduced to the masses, not long after 
+Linux was first created.  
+
+I will attempt to tackle a couple modifications to httpget.  The problem 
+of needing a POST rather than the GET method will be added to the code.  A 
+shared library will also be created that can be linked with any 
+application running on a UNIX/Linux system.  While I primarily use Linux 
+for all of my development, this code is generic and will compile and run 
+on a wide variety of hosts.  It runs on all the different flavors of 
+UNIX/Linux I use for development. The automake/autoconf/libtool files seem 
+touchy at best between platforms however, and specific problems which 
+prevent the distribution from building, installing, and executing
+
+At the same time I realized that this type of code is much more useful 
+when the --build, --host, and --target can be configured for the various 
+cross compilers which the gnu compiler is capable of building.  
+
+For the most part this code should configure, build, and install on most 
+every UNIX/Linux platform.  That seems to be the case for all of the 
+systems I have to test it on.  I use a Debian woody system for 
+development, currently with a 2.4.9 kernel.  I am using gcc 2.95.4 
+natively, and gcc 2.95.2 to cross compile to a PowerPC 823 chip.  I know 
+there is a more recent cross compiler available, but this compiler has 
+worked well and will most likely work until I can get around to upgrading.  
+
+To configure libhttp for running on Linux x86 natively, we can run the 
+following commands.
+
+./configure
+make
+make install   (installs to the /usr/local --prefix, also requires root)
+
+To cross compile to a specific target, configure for a host, such as a 
+PowerPC as I do, one could configure and build with the following. 
+
+./configure --host=powerpc-linux
+make clean     (safe to get rid of any old architectures laying around)
+make
+
+Note: If you are cross compiling, do not install libhttp as the binaries 
+will not run on your development host most likely.  Instead, get the 
+library out of the .libs subdirectory, and copy it to your target.  
+
+Let me discuss some of the modifications I made to the original httpget 
+code (included in the distribution as httpget.c).  Originally it output 
+the data to stdout.  I modified it so that it will allocate a chunk of 
+memory and then store the data read from the socket to memory.  Currently 
+it allocates memory for the entire size of the data to transfer, 
+dynamically reallocating as it reads the data.  This is the simplest type 
+of interface to call however, since it doesn't require the caller allocate 
+the memory before hand.  Modifications could be made to support writing 
+chunks of data to a file so less memory would be needed, but for all 
+practical purposes I want to have a pointer to the entire data.  
+
+I'll mention another modification that would be nice, since we're talking 
+about allocation.  Shared memory is a wonder form of IPC on Linux, as it 
+has very low overhead of all forms of IPC in comparison to allocating 
+memory using malloc, calloc, or similar.  When memory is constrained as it 
+can be inside an embedded device, shared memory can come in handy.  This 
+would require setting up the memory, and returning the project character 
+used to create the IPC Key with ftok(). I like working with shared memory 
+though and it's very convenient.  
+
+The following defines are the size of the buffer to read data from the 
+socket, and the length of the transfer buffer to store those reads into. I 
+have placed these in header defines to make it easy to change the size on 
+them. Depending on the type of data and requirements placed on the 
+library, these values could need changing. This is one of those features 
+that "would be nice to have", being able to adjust these type of 
+parameters by the caller.
+
+#define BUFLEN 8192
+#define XFERLEN 65536
+
+The way it is used is such that a 64k chunk of memory is allocated, and 
+http_request will read the data from the socket in 8k chunks, and 
+dynamically reallocates additional 64k chunks.  Essentially this will 
+provide 8 reads for each additional reallocation of memory.  I have done 
+quite a bit of testing with this and files in size of 25mb-30mb don't have 
+any apparent problem with these sizes.  Change the values to suit 
+yourself. Most web pages will fit in the first 64k chunk allocated, it's 
+the binary files that would need more attention.
+
+If you look at the source code for hget.c, you will see that it is very 
+simple to call http_request().  You pass it the http URL and it will 
+connect to the server and the response is returned in HTTP_Response.pData.  
+Along with the URL you pass additional entities to be placed in the 
+request header, and enum for the http method type. Currently
+libhttp only supports the GET and POST methods, and all other method types 
+will default to a GET request. 
+
+-----
+Proxy
+-----
+
+The http_proxy environment setting can be used to set a proxy server. If 
+set, this will specify a proxy server in the format of:
+
+http://proxy-pita.my.net:8080/
+
+You can set that in bash with:
+
+$ export http_proxy=http://proxy-pita.my.net:8080/
+
+http_proxy is a common environment variable used for a proxy server of 
+various applications, so this seems a good way to handle this.
+
+------------------------
+Syntax of http_request()
+------------------------
+
+HTTP_Response http_request( char *in_URL, char *in_ReqAddition, HTTP_Method in_Method );
+
+char *in_URL = a valid http URL. This could be a binary file, HTML document
+               or any valid http scheme.
+               
+char *in_ReqAddition = additional entities if there are any to be sent.
+                       This could be one of the commonly used entities
+                       such as "If-Modified-Since", "If-Match",
+                       or "If-Range" type entities. It's also possible
+                       to work out a schema with the server to send
+                       your own entities, and the net's the limit in
+                       that regard. You might want to send a checksum
+                       for encoded data processed with a POST request,
+                       or similar, so the server can be certain the
+                       data which was transferred is correct.
+                       
+NOTE: the http request is very specific how newline characters are 
+interpeted. There are 2 placed at the end of a request. For this reason, 
+it is very important that we format the additional entities properly. You 
+must NOT put the last newline on your additions, but you should put them 
+in between multiple entities. I figure most people will use a single 
+entity, such as "If-Modified-Since", .
+               
+HTTP_Method in_Method = method enum, as defined in the http.h header file.
+                        currently only kHMethodGet and kHMethodPost are
+                        supported, the rest of the defines default to
+                        using the GET method.
+
+
+HTTP_Response hResponse;
+hResponse = http_request( "http://kernel.org/", "", kHMethodGet );
+
+// now you can check hResponse.lSize to see if anything
+// was allocated. Don't forget you must free any memory
+// as the caller!
+
+// might want to check szHCode and szHMsg members as well
+
+if( (hResponse.lSize > 0) && (hResponse.lError != 0) )
+{
+    // process data
+    // don't forget to free allocations!
+    if( hResponse.pData ) free( hResponse.pData );
+}
+else
+{
+    // handle error
+}
+
+-----------------------
+HTTP_Response structure
+-----------------------
+
+The HTTP_Response structure is how http_request() returns the data to the 
+caller. Notice in the declarations I have character arrays rather than 
+pointers. The reason I've selected to do that is that I don't want the 
+caller to worry about allocating any of the structure members and/or 
+having to free it later. pData does need to be concerned and worried 
+about, since http_request will allocate it. Even in the case of a failure, 
+it's possible that data is actually transferred for the error HTML. That 
+will need to be free'd just like any other request (i.e., pData). The 
+caller should always verify pData doesn't have a non-zero value and free 
+it appropriately.
+
+#define HCODESIZE 4
+#define HMSGSIZE 32
+
+typedef struct
+{
+    char *pData;                            //  pointer to data
+    long lSize;                             //  size of data allocated
+    int  iError;                            //  error upon failures
+    char *pError;                           //  text description of error
+    char szHCode[HCODESIZE];                //  http response code
+    char szHMsg[HMSGSIZE];                  //  message/description of http code
+} HTTP_Response, *PHTTP_Response;
+
+
+pData
+ 
+Pointer to data transferred. http_request will dynamically 
+allocate/reallocate the memory as it transfers data.  pData will be a 
+pointer to that data.  It is important to to understand this as the caller 
+is responsible to free the memory. BTW, if I hadn't mentioned it, the 
+caller is responsible to free the memory allocated to pData!<g>
+
+lSize
+
+The size of pData. This value will be zero until a successful transfer is 
+completed.
+
+iError
+
+This will be set to errno upon system errors.
+
+pError
+
+Pointer to the text for iError as returned from strerror().
+
+szHCode[HERRSIZE]
+
+The http response code (i.e., 200, 404, 303, etc...).
+
+szHMsg[HMSGSIZE]
+
+The http message associated with the response code. OK, Not Found, Not 
+Modified, etc...
+
+------------------
+Practical Examples
+------------------
+
+There are 2 examples of using http_request(), hget and hpost.  Both use a 
+very similar syntax as above.  Call http_request() and write the data to a 
+file.  Both are also installed in /usr/local/bin, if libhttp is installed.  
+
+----
+hget
+----
+           Usage = hget URL <output.file> <extra-entities>
+
+             URL = any valid http scheme
+   <output.file> = OPTIONAL, default file is ./temp.out
+<extra-entities> = OPTIONAL, additional header entities
+                             do not add a final newline
+                             only add newlines between
+                             each entity.
+
+                             <output.file> required when specifying <extra-entities>
+
+    Example usage:
+
+    hget http://localhost/ ./index.html
+    hget http://www.SoftOrchestra.com/images/music.png ./music.png
+    hget http://localhost/ ./local.html "If-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+    hget http://localhost/ ./local.html "If-Match: \"xxx\"\nIf-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+
+Using hget, you can get a new kernel tarball with:
+
+hget http://www.kernel.org/pub/linux/kernel/v2.4/linux-2.4.9.tar.bz2 ./linux-2.4.9.tar.bz2 
+(be careful on embedded devices with low resources!;-)
+
+-----
+hpost
+-----
+           Usage = hpost URL <output.file> <extra-entities>
+
+             URL = any valid http scheme
+   <output.file> = OPTIONAL, default file is ./temp.out
+<extra-entities> = OPTIONAL, additional header entities
+                             do not add a final newline
+                             only add newlines between
+                             each entity.
+
+                             <output.file> required when specifying <extra-entities>
+
+    Example usage:
+
+    hpost http://host/path/doc.xml?firstname=John\&lastname=Doe\&state=CA
+          (you must escape the '&' chars on the command line)
+
+    hpost http://host/path/doc.xml?firstname=John\&lastname=Doe ./local.html "If-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+
+The hpost will perform almost the same task as hget but will use a POST 
+request.  Depending on how the http server is setup you may or may not be 
+able to use the POST request.  hpost will also require that you have a '?' 
+in your URL, since it needs to separate the request from the content.  
+
+-----
+hhead
+-----
+           Usage = hhead URL <output.file> <extra-entities>
+
+             URL = any valid http scheme
+   <output.file> = OPTIONAL, default file is ./temp.out
+<extra-entities> = OPTIONAL, additional header entities
+                             do not add a final newline
+                             only add newlines between
+                             each entity.
+
+                             <output.file> required when specifying <extra-entities>
+
+    Example usage:
+
+    hhead http://localhost/ ./index.html
+    hhead http://www.SoftOrchestra.com/images/music.png ./music.png
+    hhead http://localhost/ ./local.html "If-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+    hhead http://localhost/ ./local.html "If-Match: \"xxx\"\nIf-Modified-Since: Mon, 18 Sep 2000 16:00:00 GMT"
+
+There is various different functionality that would be nice to implement.  
+Some of that functionality would be: 
+
+1)username and password support for server authentication
+2)https support and/or other secure protocols
+3)ability to chunk data to a file where large xfers are needed.
+4)support for additional http methods (PUT, TRACE, etc...)
+5)use of shared memory so that different processes can use the data.
+
+As it is, libhttp should provide a simple base for building a 
+communications library to handle http data transfers.

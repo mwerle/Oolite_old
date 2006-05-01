@@ -1,0 +1,17 @@
+Authors of libhttp.
+
+Sami Tikka <sti@iki.fi> wrote original httpget code in '94.
+ It was last updated in Feb. of '95
+
+Alan DuBoff <aland@SoftOrchestra.com> modified and butchered up
+ Sami's code in Aug. 2001 and turned it into the base of libhttp.
+ 
+Chris Hawks <chrish@syscon-intl.com>
+submitted patches
+
+Jean-Jacques Sarton <jean-jacques.sarton@siemens.com>
+submitted patches
+
+Jean Tourrilhes <jt@hpl.hp.com>
+submitted patches
+
