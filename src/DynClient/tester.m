@@ -17,7 +17,7 @@ int main(int argc, char **argv)
    BOOL rc;
 
    DOOFetch *fetcher=[[DOOFetch alloc] initWithURL: 
-      @"http://www.alioth.net/cgi-bin/dtest.pl"
+      [NSURL URLWithString: @"http://www.alioth.net/cgi-bin/dtest.pl"]
       savePath: @"."];
    [fetcher importOXPVariables: vars OXPVersions: vers];
    rc=[fetcher requestOXPs];

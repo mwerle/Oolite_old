@@ -49,6 +49,7 @@ DOOFetch.h - Created 2006-05-01: Dylan Smith
 #define HTTP_TIMEOUT 30 /* seconds */
 #define COMMAND      @"cmd=requestoxp"
 
+#include <http.h>
 #import <Foundation/Foundation.h>
 
 @class PlayerEntity;
@@ -56,7 +57,8 @@ DOOFetch.h - Created 2006-05-01: Dylan Smith
 @interface DOOFetch : NSObject
 {
    @protected
-      NSString *baseurl;
+      HTTP_Extra hExtra;
+      NSURL *baseurl;
       NSString *savePath;
       
       NSDictionary *OXPvars;
@@ -65,10 +67,11 @@ DOOFetch.h - Created 2006-05-01: Dylan Smith
       int playerCredits;
       int playerKills;
       NSString *playerGuid;
+
 }
 
 + (NSString *) dictToPostString: (NSDictionary *)dict withVar: (NSString *)var;
-- (id) initWithURL: (NSString *)url savePath: (NSString *)path;
+- (id) initWithURL: (NSURL *)url savePath: (NSString *)path;
 
 - (void) setPlayerData: (NSString *)guid credits: (int)credits
                         kills: (int)kills;
@@ -76,6 +79,9 @@ DOOFetch.h - Created 2006-05-01: Dylan Smith
                 OXPVersions: (NSDictionary *)vers;
 
 - (BOOL) requestOXPs;
+
+// Used only internally.
+- (BOOL) downloadOXP: (NSURL *)url;
 
 @end
 

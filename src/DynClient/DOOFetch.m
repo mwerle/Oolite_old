@@ -50,40 +50,7 @@ the Mac OS X http stuff if required).
  
 */
 
-#include <http.h>
-
-// note to self: get more memory, install VMware Server and make a Windows
-// test machine for builds
-#ifndef WIN32
-#include <signal.h>
-#include <unistd.h>
-#endif
-
 #import "DOOFetch.h"
-
-// libhttp signal handlers
-static HTTP_Extra hExtra;
-static void sigalarm_handler(int signum)
-{
-	signum = signum;
-	/* Tell libhttp to give up */
-	if(hExtra.Socket > 0)
-	{
-		fprintf( stderr, "Watchdog : canceling HTTP connection\n");
-		close(hExtra.Socket);
-	}
-}
-
-void sigalarm_handler_setup()
-{
-   struct sigaction sa;
-   
-   sigemptyset(&sa.sa_mask);
-   sa.sa_flags=0;
-   sa.sa_handler=&sigalarm_handler;
-   sigaction(SIGALRM, &sa, NULL);
-   alarm(HTTP_TIMEOUT);
-}
 
 @implementation DOOFetch
 
@@ -117,7 +84,7 @@ void sigalarm_handler_setup()
    return pstring;
 }
    
-- (id) initWithURL: (NSString *)url savePath: (NSString *)path
+- (id) initWithURL: (NSURL *)url savePath: (NSString *)path
 {
    baseurl=url;
    savePath=path;
@@ -161,14 +128,10 @@ void sigalarm_handler_setup()
    hExtra.PostData=(char *)[postdata UTF8String];
    hExtra.PostLen=strlen(hExtra.PostData);
 
-   // make the request. Will signal SIGALRM if the request times out.
-   sigalarm_handler_setup();
-   hResponse=http_request((char *)[baseurl UTF8String], &hExtra, 
-                           kHMethodPost, HFLAG_NONE);
+   // Make the request.
+   hResponse=http_request((char *)[[baseurl absoluteString] UTF8String], 
+                        &hExtra, kHMethodPost, HFLAG_NONE);
 
-   // Complete; cancel alarm signal.
-   alarm(0);
-   
    // Debugging stuff - let us see in real time what we got back
    NSLog(@"debug: lSize: %ld iError: %d", hResponse.lSize, hResponse.iError);
    NSLog(@"debug: pError: %s", hResponse.pError);
@@ -176,20 +139,52 @@ void sigalarm_handler_setup()
    NSLog(@"debug: szHMsg: %s", hResponse.szHMsg);
    if(hResponse.lSize > 0 && hResponse.iError == 0)
    {
-      // fd=1 = stderr
-      NSLog(@"debug: DATA THAT CAME BACK:");
-      write(1, hResponse.pData, (size_t)hResponse.lSize);
-      NSLog(@"debug: End of data.");
-
-      // cleanup
+      NSString *ret=[NSString stringWithFormat: @"%s", hResponse.pData];
       if(hResponse.pData)
+      {
+         NSArray *fetchList=[ret componentsSeparatedByString: @","];
          free(hResponse.pData);
+
+         NSLog(@"debug: Fetchlist: %@", fetchList);      
+         if(fetchList)
+         {
+            int i;
+            for(i=0; i < [fetchList count]; i++)
+            {
+               // simple way of validating the strings we got back - put
+               // them in an NSURL.
+               NSString *urlstring=[fetchList objectAtIndex: i];
+               NSURL *url=[NSURL URLWithString: urlstring];
+               if(url)
+                  [self downloadOXP: url];
+               else
+                  NSLog(@"%@ could not be turned into an URL", urlstring);
+
+            }
+         }
+      }
    }
    else
    {
       NSLog(@"debug: oops, server didn't send any data back");
       return NO;
    }
+}
+
+- (BOOL) downloadOXP: (NSURL *)url
+{
+   NSString *signfile=
+         [NSString stringWithFormat: @"%@.sign", [url absoluteString]];
+
+   HTTP_Response hResponse=http_request
+      ((char *)[[url absoluteString] UTF8String], NULL,
+               kHMethodGet, HFLAG_NONE);
+   NSLog(@"debug: Tried to get %@", url);
+   NSLog(@"debug: lsize=%ld iError=%d", 
+         hResponse.lSize, hResponse.iError);
+   NSLog(@"debug: pError: %s", hResponse.pError);
+   NSLog(@"debug: szHError: %s", hResponse.szHCode);
+   NSLog(@"debug: szHMsg: %s", hResponse.szHMsg);
    return YES;
 }
 
