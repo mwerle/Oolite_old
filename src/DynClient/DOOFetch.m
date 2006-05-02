@@ -105,9 +105,10 @@ the Mac OS X http stuff if required).
    playerKills=kills;
 }
 
-- (BOOL) requestOXPs
+- (NSArray *) requestOXPs
 {
    HTTP_Response hResponse;
+   NSMutableArray *downloaded=[[NSMutableArray alloc] init];
    NSMutableString *postdata=[NSMutableString stringWithFormat: COMMAND];
 
    memset(&hExtra, 0x00, sizeof(hExtra));
@@ -124,7 +125,7 @@ the Mac OS X http stuff if required).
    [postdata appendFormat:
       @"&kills=%d&credits=%d&guid=%@", playerKills, playerCredits, playerGuid];
 
-   NSLog(@"debug: Postdata contains: %@", postdata);
+   //NSLog(@"debug: Postdata contains: %@", postdata);
    hExtra.PostData=(char *)[postdata UTF8String];
    hExtra.PostLen=strlen(hExtra.PostData);
 
@@ -133,11 +134,12 @@ the Mac OS X http stuff if required).
                         &hExtra, kHMethodPost, HFLAG_NONE);
 
    // Debugging stuff - let us see in real time what we got back
-   NSLog(@"debug: lSize: %ld iError: %d", hResponse.lSize, hResponse.iError);
-   NSLog(@"debug: pError: %s", hResponse.pError);
-   NSLog(@"debug: szHCode: %s", hResponse.szHCode);
-   NSLog(@"debug: szHMsg: %s", hResponse.szHMsg);
-   if(hResponse.lSize > 0 && hResponse.iError == 0)
+   //NSLog(@"debug: lSize: %ld iError: %d", hResponse.lSize, hResponse.iError);
+   //NSLog(@"debug: pError: %s", hResponse.pError);
+   //NSLog(@"debug: szHCode: %s", hResponse.szHCode);
+   //NSLog(@"debug: szHMsg: %s", hResponse.szHMsg);
+   if(hResponse.lSize > 0 && !hResponse.iError && 
+         !strcmp(hResponse.szHCode, "200"))
    {
       NSString *ret=[NSString stringWithFormat: @"%s", hResponse.pData];
       if(hResponse.pData)
@@ -156,7 +158,13 @@ the Mac OS X http stuff if required).
                NSString *urlstring=[fetchList objectAtIndex: i];
                NSURL *url=[NSURL URLWithString: urlstring];
                if(url)
-                  [self downloadOXP: url];
+               {
+                  NSString *pathToOXP=[self downloadOXP: url];
+                  if(pathToOXP)
+                  {
+                     [downloaded addObject: pathToOXP];
+                  }
+               }
                else
                   NSLog(@"%@ could not be turned into an URL", urlstring);
 
@@ -167,14 +175,22 @@ the Mac OS X http stuff if required).
    else
    {
       NSLog(@"debug: oops, server didn't send any data back");
-      return NO;
    }
+
+   return downloaded;
 }
 
-- (BOOL) downloadOXP: (NSURL *)url
+- (NSString *) downloadOXP: (NSURL *)url
 {
    NSString *signfile=
          [NSString stringWithFormat: @"%@.sign", [url absoluteString]];
+
+   NSString *filename=[[url path] lastPathComponent];
+   if(![filename hasSuffix: @".oxp.zip"])
+   {
+      NSLog(@"%@ is apparently not an OXP", [url path]);
+      return nil;
+   }
 
    HTTP_Response hResponse=http_request
       ((char *)[[url absoluteString] UTF8String], NULL,
@@ -185,7 +201,25 @@ the Mac OS X http stuff if required).
    NSLog(@"debug: pError: %s", hResponse.pError);
    NSLog(@"debug: szHError: %s", hResponse.szHCode);
    NSLog(@"debug: szHMsg: %s", hResponse.szHMsg);
-   return YES;
+   
+   if(hResponse.lSize > 0 && !hResponse.iError && hResponse.pData
+         && !strcmp(hResponse.szHCode, "200"))
+   {
+      NSData *oxp=[NSData dataWithBytes: hResponse.pData 
+                                 length: hResponse.lSize];
+      NSString *destination=[savePath stringByAppendingPathComponent: filename];
+      BOOL rc=[[NSFileManager defaultManager]
+                  createFileAtPath: destination
+                  contents: oxp
+                  attributes: nil];
+      if(!rc)
+      {
+         NSLog(@"Unable to write %@", destination);
+      }
+      free(hResponse.pData);
+      return destination;
+   }
+   return nil;
 }
 
 @end

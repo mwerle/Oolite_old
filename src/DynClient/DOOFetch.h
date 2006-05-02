@@ -78,10 +78,10 @@ DOOFetch.h - Created 2006-05-01: Dylan Smith
 - (void) importOXPVariables: (NSDictionary *)vars 
                 OXPVersions: (NSDictionary *)vers;
 
-- (BOOL) requestOXPs;
+- (NSArray *) requestOXPs;
 
 // Used only internally.
-- (BOOL) downloadOXP: (NSURL *)url;
+- (NSString *) downloadOXP: (NSURL *)url;
 
 @end
 
