@@ -4,7 +4,7 @@
 <dict>
 	<key>condition</key>
 	<array>
-		<string>Docked</string>
+		<string>в космическом доке</string>
 		<string>отбой тревоги</string>
 		<string>повышенная готовность</string>
 		<string>боевая тревога</string>
