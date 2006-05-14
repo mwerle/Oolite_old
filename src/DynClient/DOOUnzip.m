@@ -52,6 +52,7 @@ DOOUnzip.m - Created 2006-05-14: Dylan Smith
 {
    srcPath=spath;
    destPath=dpath;
+   [self addFilesFromSrcPath];
    return self;
 }
 
