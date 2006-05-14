@@ -114,10 +114,16 @@ DOOUnzip.m - Created 2006-05-14: Dylan Smith
       NSString *zipfile=[fileList objectAtIndex: i];
       unzargv[4]=(char *)[zipfile UTF8String];
       int rc=UzpMain(UNZ_NUMARGS, unzargv);
+
+      // rc=0 means the unzipping was successful
       if(!rc)
       {
-         // success
          [successful addObject: zipfile];
+         if(![[NSFileManager defaultManager] 
+               removeFileAtPath: zipfile handler:nil])
+         {
+            NSLog(@"Unable to remove %@", zipfile);
+         }
       }
       else
       {
