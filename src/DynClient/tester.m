@@ -4,6 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import "DOOFetch.h"
+#import "DOOUnzip.h"
 
 int main(int argc, char **argv)
 {
@@ -29,6 +30,12 @@ int main(int argc, char **argv)
    NSArray *downloaded=[fetcher requestOXPs];
 
    NSLog(@"Fetcher complete: rc=%@", downloaded);
+
+   DOOUnzip *unzipper=[[DOOUnzip alloc] initWithSrcPath: @"."
+                           destPath: @"unpack"];
+   [unzipper setFileList: downloaded];
+   [unzipper unpackFileList];
+   
    [downloaded release];
    
    [pool release];
