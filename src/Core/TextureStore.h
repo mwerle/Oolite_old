@@ -56,6 +56,11 @@ extern int debug;
 - (void) dealloc;
 
 - (GLuint) getTextureNameFor:(NSString *)filename;
+
+#ifdef LIBNOISE_PLANETS
+- (GLuint) getTextureNameForRandom_Seed:(Random_Seed)seed;
+#endif
+
 - (NSSize) getSizeOfTexture:(NSString *)filename;
 
 - (void) reloadTextures;

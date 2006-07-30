@@ -3,7 +3,7 @@
 /*
 
 Provides utility routines for Vectors, Quaternions, rotation matrices, and conversion to OpenGL transformation matrices
- 
+
  *
  *  Oolite
  *
@@ -58,6 +58,10 @@ Your fair use and other rights are in no way affected by the above.
 #define CUBE_FACE_BOTTOM	0x08
 #define CUBE_FACE_FRONT		0x10
 #define CUBE_FACE_BACK		0x20
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct vector
 {
@@ -222,7 +226,7 @@ static inline GLfloat distance2 (Vector v1, Vector v2)
 static inline GLfloat dot_product (Vector first, Vector second) GCC_ATTR((always_inline, pure));
 static inline GLfloat dot_product (Vector first, Vector second)
 {
-	return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);	
+	return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);
 }
 
 // make a vector
@@ -247,3 +251,6 @@ static inline Vector vector_between (Vector a, Vector b)
 
 #endif
 
+#ifdef __cplusplus
+}
+#endif

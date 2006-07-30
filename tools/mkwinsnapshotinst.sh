@@ -1,9 +1,8 @@
 # Assumed to be running in the root of a working copy (eg trunk, tags/1.64, etc)
 # so this script has to be run like: tools/mkwinsnapshotinst.sh
 
-svn up
+#svn up
 
-export SRC="/c/Program Files/Oolite"
 export DST=$GNUSTEP_LOCAL_ROOT/oolite/tmp
 export VER=`awk -- '/SoftwareVersion/ { print $2 }' autopackage/default.apspec`
 export SVNREV=`svn info . | awk -- '/Revision:/ { print $2 }'`
@@ -18,9 +17,9 @@ mkdir $DST
 mkdir $DST/oolite.app
 mkdir $DST/AddOns
 
-echo "making Oolite"
-make clean
-make
+#echo "making Oolite"
+#make clean
+#make
 
 echo "copying new build to setup folder"
 cp -r oolite.app/* $DST/oolite.app

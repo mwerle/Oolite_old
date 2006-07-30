@@ -276,7 +276,7 @@ void setUpSinTable()
     //
 	position = planet->position;
 	q_rotation = planet->q_rotation;
-	
+
 	if (planet->planet_type == PLANET_TYPE_GREEN)
 		collision_radius = planet->collision_radius + ATMOSPHERE_DEPTH; //  atmosphere is 500m deep only
 	if (planet->planet_type == PLANET_TYPE_MINIATURE)
@@ -415,12 +415,18 @@ void setUpSinTable()
 	NSDictionary*   planetinfo = [uni generateSystemData:p_seed];
 	int radius_km =		[(NSNumber *)[planetinfo objectForKey:KEY_RADIUS] intValue];
 	int techlevel =		[(NSNumber *)[planetinfo objectForKey:KEY_TECHLEVEL] intValue];
-	//NSLog(@"Generating planet %@ with radius %dkm",[planetinfo objectForKey:KEY_NAME],radius_km);
+	NSLog(@"Generating planet %@ with radius %dkm",[planetinfo objectForKey:KEY_NAME],radius_km);
+
 	if ([planetinfo objectForKey:@"texture"])
 	{
 		textureName = [[uni textureStore] getTextureNameFor:(NSString*)[planetinfo objectForKey:@"texture"]];
 		isTextured = (textureName != 0);
 	}
+
+#ifdef LIBNOISE_PLANETS
+	textureName = [[uni textureStore] getTextureNameForRandom_Seed:p_seed];
+	isTextured = (textureName != 0);
+#endif
 
 	shuttles_on_ground = 1 + floor(techlevel * 0.5);
 	last_launch_time = 0.0;
@@ -532,8 +538,8 @@ void setUpSinTable()
 
 	// do atmosphere
 	//
-	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
-	[atmosphere setUniverse:universe];
+//	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
+//	[atmosphere setUniverse:universe];
 
 	//
 	usingVAR = [self OGL_InitVAR];
@@ -550,7 +556,7 @@ void setUpSinTable()
 }
 
 - (id) initMiniatureFromPlanet:(PlanetEntity*) planet
-{    
+{
     int		i;
 	double  aleph =  1.0 / sqrt(2.0);
 	//
@@ -560,13 +566,13 @@ void setUpSinTable()
 	textureName = [planet textureName];	//debug texture
 	//
 	planet_seed = [planet planet_seed];	// pseudo-random set-up for vertex colours
-	
+
 	shuttles_on_ground = 0;
 	last_launch_time = 8400.0;
 	shuttle_launch_interval = 8400.0;
-	
+
 	//NSLog(@"shuttles on ground:%d launch_interval:%.1f minutes", shuttles_on_ground, shuttle_launch_interval/60);
-	
+
 	collision_radius = [planet collisionRadius] * PLANET_MINIATURE_FACTOR; // teeny tiny
 	//
 	scan_class = CLASS_NO_DRAW;
@@ -593,22 +599,22 @@ void setUpSinTable()
 		amb_polar_land[i] =	[planet amb_polar_land][i];
 		amb_polar_sea[i] =	[planet amb_polar_sea][i];
 	}
-		
+
 	[self initialiseBaseVertexArray];
-	
+
 	int* planet_r_seed = [planet r_seed];
 	for (i = 0; i < n_vertices; i++)
 		r_seed[i] = planet_r_seed[i];  // land or sea
 	[self initialiseBaseTerrainArray: -1];	// use the vertices we just set up
-	
+
 	for (i =  0; i < next_free_vertex; i++)
 		[self paintVertex:i :planet_seed];
-	
+
 	[self scaleVertices];
-	
+
 	// set speed of rotation
 	rotational_velocity = 0.05;
-	
+
 	// do atmosphere
 	//
 	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
@@ -638,6 +644,7 @@ void setUpSinTable()
 	//
 	Random_Seed	p_seed = [uni systemSeed];
     //
+
 	if ([dict objectForKey:@"texture"])
 	{
 		textureName = [[uni textureStore] getTextureNameFor:(NSString*)[dict objectForKey:@"texture"]];
@@ -1063,7 +1070,7 @@ void setUpSinTable()
 {
 	if (debug & DEBUG_COLLISIONS)
 		NSLog(@"PLANET Collision!");
-	
+
 	if (!other)
 		return NO;
 	if (other->isShip)
@@ -1280,12 +1287,12 @@ void setUpSinTable()
 		if (subdivideLevel > 4)
 			subdivideLevel = 4;
 	}
-	
+
 	if (planet_type == PLANET_TYPE_MINIATURE)
 		subdivideLevel = [universe reducedDetail]? 3 : 4 ;		// max detail or less
-		
+
 	lastSubdivideLevel = subdivideLevel;	// record
-	
+
 	glFrontFace(GL_CW);			// face culling - front faces are AntiClockwise!
 
 	/*
@@ -1297,9 +1304,9 @@ void setUpSinTable()
 	distances.
 
 	*/
-	
+
 	BOOL ignoreDepthBuffer = (planet_type == PLANET_TYPE_ATMOSPHERE);
-	
+
 	if (zero_distance > collision_radius * collision_radius * 25) // is 'far away'
 		ignoreDepthBuffer |= YES;
 
@@ -1324,7 +1331,7 @@ void setUpSinTable()
 				}
 
 				glShadeModel(GL_SMOOTH);
-				
+
 				// far enough away to draw flat ?
 				if (ignoreDepthBuffer)
 					glDisable(GL_DEPTH_TEST);
@@ -1765,7 +1772,7 @@ void drawActiveCorona (double inner_radius, double outer_radius, int step, doubl
 				[OOCharacter randomCharacterWithRole: @"trader"
 				andOriginalSystem: [universe systemSeed]
 				inUniverse: universe]]];
-				
+
 		[shuttle_ship setPosition:launch_pos];
 		[shuttle_ship setQRotation:q1];
 

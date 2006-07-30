@@ -22,6 +22,10 @@
 #include <string.h>
 #include "bsd_string.h" /* DJS for Oolite on Linux/win32 */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Copy src to string dst of size siz.  At most siz-1 characters
  * will be copied.  Always NUL terminates (unless siz == 0).
@@ -54,3 +58,6 @@ strlcpy(char *dst, const char *src, size_t siz)
 }
 #endif
 
+#ifdef __cplusplus
+}
+#endif

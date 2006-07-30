@@ -45,6 +45,9 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "TextureStore.h"
 
+#ifdef LIBNOISE_PLANETS
+#import <noise/ptg.h>
+#endif
 
 @implementation TextureStore
 
@@ -285,6 +288,36 @@ Your fair use and other rights are in no way affected by the above.
 	}
 	return texName;
 }
+
+#ifdef LIBNOISE_PLANETS
+- (GLuint) getTextureNameForRandom_Seed:(Random_Seed)seed
+{
+	GLuint texName;
+	int	texture_w = 512;
+	int	texture_h = 256;
+
+	NSLog(@"in getTextureNameForRandom_Seed");
+	unsigned char* texBytes = (unsigned char*)ptg(seed.a, seed.b, seed.c, seed.d, seed.e, seed.f);
+	if (texBytes == 0)
+	{
+		NSLog(@"ptg returned zero");
+		return 0;
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &texName);			// get a new unique texture name
+	glBindTexture(GL_TEXTURE_2D, texName);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// adjust this
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// adjust this
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBytes);
+
+	free(texBytes);
+	return texName;
+}
+#endif
 
 - (NSSize) getSizeOfTexture:(NSString *)filename
 {

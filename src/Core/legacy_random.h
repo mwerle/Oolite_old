@@ -38,6 +38,9 @@ Your fair use and other rights are in no way affected by the above.
 
 */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct rand_seed_6uc
 {
@@ -72,8 +75,8 @@ float cunningFee(float value);
 // an implementation of RANROT
 // pseudo random number generator
 //
-inline void ranrot_srand(unsigned int seed);
-inline int ranrot_rand();
+void ranrot_srand(unsigned int seed);
+int ranrot_rand();
 
 double distanceBetweenPlanetPositions ( int x1, int y1, int x2, int y2);
 double accurateDistanceBetweenPlanetPositions ( int x1, int y1, int x2, int y2);
@@ -83,8 +86,8 @@ void seed_RNG_only_for_planet_description (Random_Seed s_seed);
 RNG_Seed currentRandomSeed (void);
 void setRandomSeed (RNG_Seed a_seed);
 
-inline float randf (void);
-inline float bellf (int n);
+float randf (void);
+float bellf (int n);
 
 int gen_rnd_number (void);
 
@@ -100,3 +103,6 @@ int equal_seeds (Random_Seed seed1, Random_Seed seed2);
 
 #endif
 
+#ifdef __cplusplus
+}
+#endif

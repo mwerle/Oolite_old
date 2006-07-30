@@ -40,6 +40,10 @@ Your fair use and other rights are in no way affected by the above.
 #include <math.h>
 #include "legacy_random.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static struct random_seed   rnd_seed;
 
 static int checksum;
@@ -87,23 +91,23 @@ float cunningFee(float value)
 //
 unsigned int m_high;
 unsigned int m_low;
-inline void ranrot_srand(unsigned int seed)
+void ranrot_srand(unsigned int seed)
 {
 
 //	printf("***** DEBUG Random seed %d\n", seed);
-//	
+//
 	m_low = seed;
 	m_high = ~seed;
 	ranrot_rand();	ranrot_rand();	ranrot_rand();  // mix it up a bit
 }
-inline int ranrot_rand()
+int ranrot_rand()
 {
 	m_high = (m_high<<16) + (m_high>>16);
 	m_high += m_low;
 	m_low += m_high;
 	return m_high & 0x7FFFFFFF;
 }
- 
+
 // a method used to determine interplanetary distances,
 // if accurate, it has to scale distance down by a factor of 7.15:7.0
 // to allow routes navigable in the original!
@@ -129,7 +133,7 @@ void seed_for_planet_description (Random_Seed s_seed)
 	rnd_seed.b = s_seed.d;
 	rnd_seed.c = s_seed.e;
 	rnd_seed.d = s_seed.f;
-		
+
 	ranrot_srand(rnd_seed.a * 0x1000000 + rnd_seed.b * 0x10000 + rnd_seed.c * 0x100 + rnd_seed.d);
 }
 
@@ -152,23 +156,23 @@ void setRandomSeed (RNG_Seed a_seed)
 }
 
 
-inline float randf (void)
+float randf (void)
 {
 //	return 0.0009765625 * (ranrot_rand() & 1023);
 	return (ranrot_rand() & 0x00ffff) / (float)0x010000;
 }
 
-inline float bellf (int n)
+float bellf (int n)
 {
 	int i = n;
 	float total = 0;
-	
+
 	if (i <= 0)
 	{
 		printf("***** ERROR - attempt to generate bellf(%d)\n", n);
 		return 0.0;	// catch possible div-by-zero problem
 	}
-	
+
 	while (i-- > 0)
 		total += (ranrot_rand() & 1023);
 	return 0.0009765625 * total / n;
@@ -262,3 +266,6 @@ int equal_seeds (Random_Seed seed1, Random_Seed seed2)
 	return ((seed1.a == seed2.a)&&(seed1.b == seed2.b)&&(seed1.c == seed2.c)&&(seed1.d == seed2.d)&&(seed1.e == seed2.e)&&(seed1.f == seed2.f));
 }
 
+#ifdef __cplusplus
+}
+#endif

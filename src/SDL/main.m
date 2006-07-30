@@ -19,7 +19,7 @@ int debug = NO;
 
 int main(int argc, char *argv[])
 {
-#ifdef GNUSTEP && !OOLITE_SDL_MAC
+#if defined(GNUSTEP) && !defined(OOLITE_SDL_MAC)
 	int i;
 
 	// Need this because we're not using the default run loop's autorelease
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	// dajt: allocate and set the NSApplication delegate manually because not
 	// using NIB to do this
 	controller = [[GameController alloc] init];
-	
+
 	// Release anything allocated during the controller initialisation that
 	// is no longer required.
 	[pool release];

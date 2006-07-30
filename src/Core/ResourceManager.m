@@ -85,12 +85,12 @@ NSMutableDictionary*	surface_cache;
 - (void) dealloc
 {
 	if (paths)	[paths release];
-	
+
 //	if (dictionary_cache)	[dictionary_cache release];
 //	if (array_cache)		[array_cache release];
 //	if (image_cache)		[image_cache release];
 //	if (sound_cache)		[sound_cache release];
-	
+
 	[super dealloc];
 }
 
@@ -137,7 +137,7 @@ NSMutableDictionary*	surface_cache;
 		[errors release];
 		errors = nil;
 	}
-	
+
 #ifdef WIN32
 	NSString	*app_path = @"oolite.app/Contents/Resources";
 	NSString	*app_addon_path = @"AddOns";
@@ -205,13 +205,13 @@ NSMutableDictionary*	surface_cache;
 			if ([[NSFileManager defaultManager] fileExistsAtPath:requiresPath])
 			{
 				NSDictionary* requires_dic = [NSDictionary dictionaryWithContentsOfFile:requiresPath];
-				
+
 				// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
 				NS_DURING
 					if (!requires_dic)	// try parsing it using our home-grown XML parser
 						requires_dic = (NSDictionary*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:requiresPath]];
 				NS_HANDLER
-					if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here 
+					if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
 					{
 						NSLog(@"***** [ResourceManager pathsUsingAddOns:] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
 						NSLog(@"***** ignoring this path from now on *****",[localException name], [localException reason]);
@@ -220,7 +220,7 @@ NSMutableDictionary*	surface_cache;
 					else
 						[localException raise];
 				NS_ENDHANDLER
-					
+
 				require_test = [ResourceManager areRequirementsFulfilled:requires_dic];
 			}
 			if (require_test)
@@ -303,7 +303,7 @@ NSMutableDictionary*	surface_cache;
 	int i;
 	if (!filename)
 		return nil;
-	
+
 	NSString* dict_key = [NSString stringWithFormat:@"%@:%@", foldername, filename];
 	if (!dictionary_cache)
 		dictionary_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
@@ -311,20 +311,20 @@ NSMutableDictionary*	surface_cache;
 	{
 		return [NSDictionary dictionaryWithDictionary:(NSDictionary *)[dictionary_cache objectForKey:dict_key]];	// return the cached dictionary
 	}
-	
+
 	for (i = 0; i < [fpaths count]; i++)
 	{
 		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
 		{
 			NSDictionary* found_dic = [NSDictionary dictionaryWithContentsOfFile:filepath];
-			
+
 			// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
 			NS_DURING
 				if (!found_dic)	// try parsing it using our home-grown XML parser
 					found_dic = (NSDictionary*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:filepath]];
 			NS_HANDLER
-				if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here 
+				if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
 				{
 					NSLog(@"***** [ResourceManager dictionaryFromFilesNamed:::] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
 				}
@@ -343,13 +343,13 @@ NSMutableDictionary*	surface_cache;
 			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
 			{
 				NSDictionary* found_dic = [NSDictionary dictionaryWithContentsOfFile:filepath];
-			
+
 				// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
 				NS_DURING
 					if (!found_dic)	// try parsing it using our home-grown XML parser
 						found_dic = (NSDictionary*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:filepath]];
 				NS_HANDLER
-					if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here 
+					if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
 					{
 						NSLog(@"***** [ResourceManager dictionaryFromFilesNamed:::] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
 					}
@@ -357,7 +357,7 @@ NSMutableDictionary*	surface_cache;
 						[localException raise];
 				NS_ENDHANDLER
 
-				
+
 				if (found_dic)
 					[results addObject:found_dic];
 				else
@@ -367,7 +367,7 @@ NSMutableDictionary*	surface_cache;
 	}
 	if ([results count] == 0)
 		return nil;
-		
+
 	// got results we may want to cache
 	//
 	NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:128];
@@ -384,13 +384,13 @@ NSMutableDictionary*	surface_cache;
 			else
 				[result addEntriesFromDictionary:(NSDictionary *)[results objectAtIndex:i]];
 		}
-	}	
+	}
 	//
 	if (result)
 		[dictionary_cache setObject:result forKey:dict_key];
-	
+
 //	NSLog(@"DEBUG ResourceManager dictionary_cache keys:\n%@", [dictionary_cache allKeys]);
-		
+
 	return [NSDictionary dictionaryWithDictionary:result];
 }
 
@@ -407,20 +407,20 @@ NSMutableDictionary*	surface_cache;
 		array_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
 	if ([array_cache objectForKey:array_key])
 		return [NSArray arrayWithArray:(NSArray *)[array_cache objectForKey:array_key]];	// return the cached array
-	
+
 	for (i = 0; i < [fpaths count]; i++)
 	{
 		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
 		{
 			NSArray* found_array = [NSArray arrayWithContentsOfFile:filepath];
-			
+
 			// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
 			NS_DURING
 				if (!found_array)	// try parsing it using our home-grown XML parser
 					found_array = (NSArray*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:filepath]];
 			NS_HANDLER
-				if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here 
+				if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
 				{
 					NSLog(@"***** [ResourceManager arrayFromFilesNamed:::] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
 				}
@@ -437,24 +437,24 @@ NSMutableDictionary*	surface_cache;
 		if (foldername)
 		{
 			filepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:filename];
-			
+
 			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
 			{
 				NSArray* found_array = [NSArray arrayWithContentsOfFile:filepath];
-				
+
 				// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
 				NS_DURING
 					if (!found_array)	// try parsing it using our home-grown XML parser
 						found_array = (NSArray*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:filepath]];
 				NS_HANDLER
-					if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here 
+					if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
 					{
 						NSLog(@"***** [ResourceManager arrayFromFilesNamed:::] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
 					}
 					else
 						[localException raise];
 				NS_ENDHANDLER
-					
+
 				if (found_array)
 					[results addObject:found_array];
 				else
@@ -465,7 +465,7 @@ NSMutableDictionary*	surface_cache;
 	}
 	if ([results count] == 0)
 		return nil;
-	
+
 	// got results we may want to cache
 	//
 	//NSLog(@"---> ResourceManager found %d file(s) with name '%@' (in folder '%@')", [results count], filename, foldername);
@@ -478,10 +478,10 @@ NSMutableDictionary*	surface_cache;
 	{
 		for (i = 0; i < [results count]; i++)
 			[result addObjectsFromArray:(NSArray *)[results objectAtIndex:i]];
-	}	
+	}
 	if (result)
 		[array_cache setObject:result forKey:array_key];
-	
+
 	return [NSArray arrayWithArray:result];
 }
 
@@ -500,7 +500,7 @@ NSMutableDictionary*	surface_cache;
 		sound_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
 	if ([sound_cache objectForKey:music_key])
 		return (OOMusic *)[sound_cache objectForKey:music_key];	// return the cached sound
-	
+
 	for (i = 0; i < [fpaths count]; i++)
 	{
 		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
@@ -520,10 +520,10 @@ NSMutableDictionary*	surface_cache;
 			}
 		}
 	}
-	
+
 	if (result)
 		[sound_cache setObject:result forKey:music_key];
-	
+
 //	NSLog(@"---> ResourceManager found OOMusic %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
 	return result;
 }
@@ -542,7 +542,7 @@ NSMutableDictionary*	surface_cache;
 		sound_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
 	if ([sound_cache objectForKey:sound_key])
 		return (OOSound *)[sound_cache objectForKey:sound_key];	// return the cached sound
-	
+
 	for (i = 0; i < [fpaths count]; i++)
 	{
 		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
@@ -562,10 +562,10 @@ NSMutableDictionary*	surface_cache;
 			}
 		}
 	}
-	
+
 	if (result)
 		[sound_cache setObject:result forKey:sound_key];
-	
+
 //	NSLog(@"---> ResourceManager found OOSound %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
 	return result;
 }
@@ -585,7 +585,7 @@ NSMutableDictionary*	surface_cache;
 		image_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
 	if ([image_cache objectForKey:image_key])
 		return (NSImage *)[image_cache objectForKey:image_key];	// return the cached image
-	
+
 	for (i = 0; i < [fpaths count]; i++)
 	{
 		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
@@ -604,7 +604,7 @@ NSMutableDictionary*	surface_cache;
 			}
 		}
 	}
-	
+
 	if (result)
 		[image_cache setObject:result forKey:image_key];
 	//NSLog(@"---> ResourceManager found %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
@@ -626,7 +626,7 @@ NSMutableDictionary*	surface_cache;
 		string_cache = [[NSMutableDictionary alloc] initWithCapacity:32];
 	if ([string_cache objectForKey:string_key])
 		return (NSString *)[string_cache objectForKey:string_key];	// return the cached string
-	
+
 	for (i = 0; i < [fpaths count]; i++)
 	{
 		NSString *filepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
@@ -645,7 +645,7 @@ NSMutableDictionary*	surface_cache;
 			}
 		}
 	}
-	
+
 	if (result)
 		[string_cache setObject:result forKey:string_key];
 	//NSLog(@"---> ResourceManager found %d file(s) with name '%@' (in folder '%@')", r, filename, foldername);
@@ -915,16 +915,16 @@ NSMutableDictionary*	surface_cache;
 			[elements addObject:[NSArray arrayWithObjects: element.tag, element.content, nil]];
 		}
 	}
-	
+
 	// all done!
 	result.tag = closingTag;
 	if ([elements count])
 		result.content = elements;
 	else
 		result.content = element.content;
-		
+
 //	NSLog(@"DEBUG XML found '%@' = '%@'", result.tag, result.content);
-	
+
 	return result;
 }
 
@@ -935,7 +935,7 @@ NSMutableDictionary*	surface_cache;
 	NS_DURING
 		xml = [ResourceManager parseOOXMLElement:scanner upTo:@"ROOT"];
 	NS_HANDLER
-		if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here 
+		if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
 		{
 			NSLog(@"***** [ResourceManager parseXMLPropertyList:] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
 		}
@@ -1104,8 +1104,8 @@ NSMutableDictionary*	surface_cache;
 				tripletValue *= 64;
 				n_64Chars++;
 			}
-			bytes3[0] = (tripletValue & 0xff0000) >> 16; 
-			bytes3[1] = (tripletValue & 0xff00) >> 8; 
+			bytes3[0] = (tripletValue & 0xff0000) >> 16;
+			bytes3[1] = (tripletValue & 0xff00) >> 8;
 			bytes3[2] = (tripletValue & 0xff);
 			[resultingData appendBytes:(const void *)bytes3 length:3];
 		}
@@ -1219,7 +1219,7 @@ NSMutableDictionary*	surface_cache;
 		NSString *filepath = [NSMutableString stringWithString:xfilepath];
 
 		filepath = [[filepath stringByDeletingPathExtension] stringByAppendingPathExtension:@"oos"];
-		
+
 		//NSLog(@"looking for oos file: %@", filepath);
 		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
 		{
