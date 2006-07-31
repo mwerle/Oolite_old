@@ -46,7 +46,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "TextureStore.h"
 
 #ifdef LIBNOISE_PLANETS
-#import <noise/ptg.h>
+#import "ptg.h"
 #endif
 
 @implementation TextureStore
@@ -303,7 +303,7 @@ Your fair use and other rights are in no way affected by the above.
 	{
 		NSMutableDictionary* texProps = [NSMutableDictionary dictionaryWithCapacity:3];  // autoreleased
 
-		unsigned char* texBytes = (unsigned char*)ptg(seed.a, seed.b, seed.c, seed.d, seed.e, seed.f);
+		unsigned char* texBytes = (unsigned char*)generatePlanet(seed.a, seed.b, seed.c, seed.d, seed.e, seed.f);
 		if (texBytes == 0)
 		{
 			NSLog(@"ptg returned zero");
