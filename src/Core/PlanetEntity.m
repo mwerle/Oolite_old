@@ -424,8 +424,12 @@ void setUpSinTable()
 	}
 
 #ifdef LIBNOISE_PLANETS
-	textureName = [[uni textureStore] getTextureNameForRandom_Seed:p_seed];
-	isTextured = (textureName != 0);
+	// If no OXPs have defined a specific texture for this planet, generate one
+	if (isTextured != YES)
+	{
+		textureName = [[uni textureStore] getTextureNameForRandom_Seed:p_seed];
+		isTextured = (textureName != 0);
+	}
 #endif
 
 	shuttles_on_ground = 1 + floor(techlevel * 0.5);
@@ -538,8 +542,8 @@ void setUpSinTable()
 
 	// do atmosphere
 	//
-//	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
-//	[atmosphere setUniverse:universe];
+	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
+	[atmosphere setUniverse:universe];
 
 	//
 	usingVAR = [self OGL_InitVAR];

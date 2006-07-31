@@ -939,8 +939,7 @@ Your fair use and other rights are in no way affected by the above.
 	seed_for_planet_description(system_seed);
 
 	/*- space sun -*/
-	//double		sun_distance = (20.0 + (ranrot_rand() % 5) - (ranrot_rand() % 5) ) * planet_radius;
-	double		sun_distance = (300.0 + (ranrot_rand() % 5) - (ranrot_rand() % 5) ) * planet_radius;
+	double		sun_distance = (20.0 + (ranrot_rand() % 5) - (ranrot_rand() % 5) ) * planet_radius;
 	double		sun_radius = (2.5 + randf() - randf() ) * planet_radius;
 	Quaternion  q_sun;
 	Vector		sunPos = make_vector( 0.0f, 0.0f, 0.0f);
@@ -5955,26 +5954,7 @@ BOOL maintainLinkedLists(Universe* uni)
 	if ([local_planetinfo_overrides objectForKey:override_key])
 		[systemdata addEntriesFromDictionary:(NSDictionary *)[local_planetinfo_overrides objectForKey:override_key]];
 
-/*
-#ifdef LIBNOISE_PLANETS
-	if (0 == [systemdata objectForKey:@"texture"])
-	{
-		NSString* baseFilename = [NSString stringWithFormat:@"ptex_%d_%d_%d_%d_%d_%d.bmp", s_seed.a, s_seed.b, s_seed.c, s_seed.d, s_seed.e, s_seed.f];
-		NSString* fqFilename = [NSString stringWithFormat:@"AddOns\\texturedplanets.oxp\\Textures\\%@", baseFilename];
-
-		if ([[NSFileManager defaultManager] fileExistsAtPath:fqFilename] != YES) {
-			// Call the external texture generator with this planet's random seed.
-			NSLog(@"creating planet texture with libnoise");
-			NSString* cmd = [NSString stringWithFormat:@"planettexgen %d %d %d %d %d %d", s_seed.a, s_seed.b, s_seed.c, s_seed.d, s_seed.e, s_seed.f];
-			NSLog(cmd);
-			system([cmd cString]);
-		}
-
-		[systemdata setObject:baseFilename forKey:@"texture"];
-	}
-#endif
-*/
-	NSLog(@"Generated system data is :\n%@",[systemdata description]);
+	//NSLog(@"Generated system data is :\n%@",[systemdata description]);
 
 	return [NSDictionary dictionaryWithDictionary:[systemdata autorelease]];
 }
