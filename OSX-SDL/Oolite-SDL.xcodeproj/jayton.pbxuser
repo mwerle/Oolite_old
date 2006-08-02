@@ -7,12 +7,86 @@
 			sepNavVisRect = "{{0, 0}, {1217, 822}}";
 		};
 	};
-	1A0122110937C84100B65160 /* SDL_rotozoom.h */ = {
+	1A1077050A80E3D8007C6218 /* OOColor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 822}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 0}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {2484, 5552}}";
+			sepNavSelRange = "{1600, 0}";
+			sepNavVisRect = "{{0, 487}, {717, 822}}";
 		};
+	};
+	1A10771F0A80E45C007C6218 /* OOColor.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {2484, 1552}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 390}, {717, 822}}";
+		};
+	};
+	1A1079CC0A80F19B007C6218 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A41F99F093644FF009360C8 /* Universe.m */;
+		rLen = 22;
+		rLoc = 3318;
+		rType = 0;
+	};
+	1A1079D10A80F1A7007C6218 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A41F99F093644FF009360C8 /* Universe.m */;
+		name = "Universe.m: 121";
+		rLen = 0;
+		rLoc = 3283;
+		rType = 0;
+		vrLen = 674;
+		vrLoc = 2884;
+	};
+	1A1079FB0A80F609007C6218 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A41F99F093644FF009360C8 /* Universe.m */;
+		name = "Universe.m: 121";
+		rLen = 0;
+		rLoc = 3283;
+		rType = 0;
+		vrLen = 674;
+		vrLoc = 2884;
+	};
+	1A1079FC0A80F60E007C6218 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A41F99F093644FF009360C8 /* Universe.m */;
+		name = "Universe.m: 121";
+		rLen = 0;
+		rLoc = 3283;
+		rType = 0;
+		vrLen = 674;
+		vrLoc = 2884;
+	};
+	1A1079FF0A80F61A007C6218 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A41F99F093644FF009360C8 /* Universe.m */;
+		name = "Universe.m: 121";
+		rLen = 0;
+		rLoc = 3283;
+		rType = 0;
+		vrLen = 674;
+		vrLoc = 2884;
+	};
+	1A107A110A80F71D007C6218 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A41F99F093644FF009360C8 /* Universe.m */;
+		name = "Universe.m: 121";
+		rLen = 0;
+		rLoc = 3283;
+		rType = 0;
+		vrLen = 674;
+		vrLoc = 2884;
+	};
+	1A107A140A80F720007C6218 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A41F99F093644FF009360C8 /* Universe.m */;
+		name = "Universe.m: 121";
+		rLen = 0;
+		rLoc = 3283;
+		rType = 0;
+		vrLen = 674;
+		vrLoc = 2884;
 	};
 	1A41F91F0936432A009360C8 /* Oolite-SDL */ = {
 		isa = PBXExecutable;
@@ -30,6 +104,11 @@
 		dylibVariantSuffix = "";
 		enableDebugStr = 1;
 		environmentEntries = (
+			{
+				active = YES;
+				name = NSZombieEnabled;
+				value = YES;
+			},
 		);
 		executableSystemSymbolLevel = 0;
 		executableUserSymbolLevel = 0;
@@ -39,11 +118,13 @@
 		};
 		sourceDirectories = (
 		);
+		variableFormatDictionary = {
+		};
 	};
 	1A41F9270936432E009360C8 /* Source Control */ = {
 		isa = PBXSourceControlManager;
 		fallbackIsa = XCSourceControlManager;
-		isSCMEnabled = 1;
+		isSCMEnabled = 0;
 		scmConfiguration = {
 		};
 		scmType = scm.subversion;
@@ -96,9 +177,9 @@
 	};
 	1A41F96D093644F1009360C8 /* GuiDisplayGen.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1329, 2912}}";
-			sepNavSelRange = "{2006, 7}";
-			sepNavVisRect = "{{0, 1190}, {983, 228}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1329, 3248}}";
+			sepNavSelRange = "{3647, 8}";
+			sepNavVisRect = "{{0, 1949}, {717, 822}}";
 		};
 	};
 	1A41F96E093644F1009360C8 /* JoystickHandler.h */ = {
@@ -138,9 +219,9 @@
 	};
 	1A41F979093644F1009360C8 /* SDLMusic.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 822}}";
-			sepNavSelRange = "{604, 0}";
-			sepNavVisRect = "{{0, 0}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {717, 822}}";
+			sepNavSelRange = "{753, 0}";
+			sepNavVisRect = "{{0, 0}, {717, 822}}";
 		};
 	};
 	1A41F97A093644F1009360C8 /* PlayerEntity (contracts).h */ = {
@@ -187,16 +268,16 @@
 	};
 	1A41F988093644F1009360C8 /* GameController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {923, 2624}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1070, 2672}}";
 			sepNavSelRange = "{1272, 0}";
-			sepNavVisRect = "{{0, 1570}, {720, 822}}";
+			sepNavVisRect = "{{0, 0}, {1070, 822}}";
 		};
 	};
 	1A41F98A093644F1009360C8 /* PlayerEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {881, 10224}}";
-			sepNavSelRange = "{2446, 0}";
-			sepNavVisRect = "{{0, 1117}, {720, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {881, 11440}}";
+			sepNavSelRange = "{8589, 7}";
+			sepNavVisRect = "{{0, 4973}, {717, 822}}";
 		};
 	};
 	1A41F990093644F1009360C8 /* entities.h */ = {
@@ -208,16 +289,16 @@
 	};
 	1A41F994093644FF009360C8 /* GuiDisplayGen.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1322, 16784}}";
-			sepNavSelRange = "{2639, 0}";
-			sepNavVisRect = "{{0, 587}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1322, 21136}}";
+			sepNavSelRange = "{7879, 8}";
+			sepNavVisRect = "{{0, 4717}, {717, 822}}";
 		};
 	};
 	1A41F995093644FF009360C8 /* GameController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {2288, 14016}}";
-			sepNavSelRange = "{25155, 0}";
-			sepNavVisRect = "{{0, 7393}, {912, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {2288, 15280}}";
+			sepNavSelRange = "{10348, 0}";
+			sepNavVisRect = "{{0, 5536}, {866, 415}}";
 		};
 	};
 	1A41F996093644FF009360C8 /* ResourceManager.m */ = {
@@ -236,16 +317,16 @@
 	};
 	1A41F99D093644FF009360C8 /* SDLMusic.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 3040}}";
-			sepNavSelRange = "{130, 0}";
-			sepNavVisRect = "{{0, 1658}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {717, 3248}}";
+			sepNavSelRange = "{4013, 0}";
+			sepNavVisRect = "{{0, 2135}, {717, 822}}";
 		};
 	};
 	1A41F99F093644FF009360C8 /* Universe.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1560, 117456}}";
-			sepNavSelRange = "{238357, 0}";
-			sepNavVisRect = "{{0, 379}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1560, 128896}}";
+			sepNavSelRange = "{3267, 0}";
+			sepNavVisRect = "{{0, 1549}, {717, 822}}";
 		};
 	};
 	1A41F9A0093644FF009360C8 /* DustEntity.m */ = {
@@ -327,23 +408,30 @@
 	};
 	1A41F9B7093644FF009360C8 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1658, 95376}}";
-			sepNavSelRange = "{180845, 0}";
-			sepNavVisRect = "{{0, 93516}, {720, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1672, 109264}}";
+			sepNavSelRange = "{173307, 10}";
+			sepNavVisRect = "{{0, 88735}, {717, 822}}";
 		};
 	};
 	1A41F9B8093644FF009360C8 /* PlayerEntity_StickMapper.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {748, 5840}}";
-			sepNavSelRange = "{476, 0}";
-			sepNavVisRect = "{{0, 0}, {720, 822}}";
+			sepNavSelRange = "{4965, 60}";
+			sepNavVisRect = "{{0, 2269}, {717, 822}}";
 		};
 	};
-	1A41FA080936471D009360C8 /* SDLMain.m */ = {
+	1A5F22C10A7FA37700F3E9CE /* main.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 6112}}";
-			sepNavSelRange = "{1991, 0}";
-			sepNavVisRect = "{{0, 477}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {717, 1120}}";
+			sepNavSelRange = "{1193, 43}";
+			sepNavVisRect = "{{0, 298}, {717, 822}}";
+		};
+	};
+	1A5F22D30A7FA3F600F3E9CE /* SDLMain.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1070, 6160}}";
+			sepNavSelRange = "{9045, 8}";
+			sepNavVisRect = "{{0, 4413}, {1070, 822}}";
 		};
 	};
 	1ADC7EBD09388E6D00B60602 /* OOOpenGL.h */ = {
@@ -353,25 +441,18 @@
 			sepNavVisRect = "{{0, 0}, {1217, 822}}";
 		};
 	};
-	1AE31F9109364E3500A97D75 /* SDL_syswm.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 822}}";
-			sepNavSelRange = "{13, 0}";
-			sepNavVisRect = "{{0, 0}, {1217, 822}}";
-		};
-	};
 	1AE3202B093651B300A97D75 /* OOBasicSoundSource.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 3008}}";
-			sepNavSelRange = "{1036, 59}";
-			sepNavVisRect = "{{0, 0}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1140, 4112}}";
+			sepNavSelRange = "{3489, 0}";
+			sepNavVisRect = "{{0, 3290}, {1070, 822}}";
 		};
 	};
 	1AE3202C093651B300A97D75 /* OOBasicSoundSource.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 1136}}";
-			sepNavSelRange = "{1108, 13}";
-			sepNavVisRect = "{{0, 314}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1070, 1328}}";
+			sepNavSelRange = "{1220, 14}";
+			sepNavVisRect = "{{0, 490}, {1070, 822}}";
 		};
 	};
 	1AE3202D093651B300A97D75 /* OOBasicSoundReferencePoint.m */ = {
@@ -424,7 +505,6 @@
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Debug;
-		activeBuildStyle = 4A9504CCFFE6A4B311CA0CBA /* Debug */;
 		activeExecutable = 1A41F91F0936432A009360C8 /* Oolite-SDL */;
 		activeTarget = 8D1107260486CEB800E47090 /* Oolite-SDL */;
 		addToTargets = (
@@ -474,6 +554,20 @@
 					PBXErrorsWarningsDataSource_LocationID,
 				);
 			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					188,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
 				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
@@ -514,7 +608,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
 					200,
-					141,
+					120,
 					20,
 					48,
 					43,
@@ -530,18 +624,20 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 156556377;
-			PBXWorkspaceStateSaveDate = 156556377;
+			PBXPerProjectTemplateStateSaveDate = 176217172;
+			PBXWorkspaceStateSaveDate = 176217172;
+		};
+		perUserProjectItems = {
+			1A1079CC0A80F19B007C6218 /* PBXTextBookmark */ = 1A1079CC0A80F19B007C6218 /* PBXTextBookmark */;
+			1A1079D10A80F1A7007C6218 /* PBXTextBookmark */ = 1A1079D10A80F1A7007C6218 /* PBXTextBookmark */;
+			1A1079FB0A80F609007C6218 /* PBXTextBookmark */ = 1A1079FB0A80F609007C6218 /* PBXTextBookmark */;
+			1A1079FC0A80F60E007C6218 /* PBXTextBookmark */ = 1A1079FC0A80F60E007C6218 /* PBXTextBookmark */;
+			1A1079FF0A80F61A007C6218 /* PBXTextBookmark */ = 1A1079FF0A80F61A007C6218 /* PBXTextBookmark */;
+			1A107A110A80F71D007C6218 /* PBXTextBookmark */ = 1A107A110A80F71D007C6218 /* PBXTextBookmark */;
+			1A107A140A80F720007C6218 /* PBXTextBookmark */ = 1A107A140A80F720007C6218 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1A41F9270936432E009360C8 /* Source Control */;
 		userBuildSettings = {
-		};
-	};
-	29B97316FDCFA39411CA2CEA /* main.m */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {983, 1136}}";
-			sepNavSelRange = "{1416, 6}";
-			sepNavVisRect = "{{0, 908}, {983, 228}}";
 		};
 	};
 	32CA4F630368D1EE00C91783 /* Oolite-SDL.pch */ = {
@@ -559,9 +655,9 @@
 	};
 	8D1107310486CEB800E47090 /* Info.plist */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 1552}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 508}, {1217, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {797, 1552}}";
+			sepNavSelRange = "{1419, 0}";
+			sepNavVisRect = "{{0, 275}, {717, 822}}";
 		};
 	};
 }
