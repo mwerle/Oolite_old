@@ -32,13 +32,12 @@
 		08DF8C0A0A5E74B300BCD981 /* wreck5.dat in Resources */ = {isa = PBXBuildFile; fileRef = 08DF8C050A5E74B200BCD981 /* wreck5.dat */; };
 		08DF8C0B0A5E74B300BCD981 /* wreck2.dat in Resources */ = {isa = PBXBuildFile; fileRef = 08DF8C060A5E74B200BCD981 /* wreck2.dat */; };
 		08DF8C2D0A5E74DC00BCD981 /* wreck.png in Resources */ = {isa = PBXBuildFile; fileRef = 08DF8C2C0A5E74DC00BCD981 /* wreck.png */; };
+		1A1076580A80D785007C6218 /* ptg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A1076570A80D785007C6218 /* ptg.cpp */; };
 		1A472917096B5454000E78D8 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472916096B5454000E78D8 /* CoreAudio.framework */; };
 		1A472921096B5468000E78D8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A47291F096B5468000E78D8 /* AudioToolbox.framework */; };
 		1A472922096B5468000E78D8 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472920096B5468000E78D8 /* AudioUnit.framework */; };
 		1A5BF2EA0916D50900BF238F /* Oolite.mdimporter in Copy MDImporter */ = {isa = PBXBuildFile; fileRef = 1A5BF2D50916D50100BF238F /* Oolite.mdimporter */; };
 		1A63E6030A7DF3BA00DB2BDC /* libnoise.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A63E6020A7DF3BA00DB2BDC /* libnoise.a */; };
-		1A63E6140A7E01B700DB2BDC /* ptg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A63E6120A7E01B700DB2BDC /* ptg.h */; };
-		1A63E6150A7E01B700DB2BDC /* ptg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A63E6130A7E01B700DB2BDC /* ptg.cpp */; };
 		1A63E6200A7E01F200DB2BDC /* noiseutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A63E61E0A7E01F200DB2BDC /* noiseutils.h */; };
 		1A63E6210A7E01F200DB2BDC /* noiseutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A63E61F0A7E01F200DB2BDC /* noiseutils.cpp */; };
 		2512833E09BA27C100F43D55 /* Octree.m in Sources */ = {isa = PBXBuildFile; fileRef = 2512833C09BA27C100F43D55 /* Octree.m */; };
@@ -398,7 +397,7 @@
 		083325DC09DDBCDE00F5B8E4 /* OOColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOColor.m; path = src/Core/OOColor.m; sourceTree = "<group>"; };
 		083DB4D30A70E51E00B419B2 /* OOBrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOBrain.h; path = src/Core/OOBrain.h; sourceTree = "<group>"; };
 		083DB4D40A70E51E00B419B2 /* OOBrain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOBrain.m; path = src/Core/OOBrain.m; sourceTree = "<group>"; };
-		0865432206B8447D000CA0AB /* OoliteDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OoliteDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0865432206B8447D000CA0AB /* Oolite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Oolite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0878FD2F086EF845004CB752 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		088496DE0A4C1D1B00F32928 /* gotoWaypointAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = gotoWaypointAI.plist; path = Resources/AIs/gotoWaypointAI.plist; sourceTree = "<group>"; };
 		088496DF0A4C1D1B00F32928 /* receiveDockingAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = receiveDockingAI.plist; path = Resources/AIs/receiveDockingAI.plist; sourceTree = "<group>"; };
@@ -410,14 +409,13 @@
 		08DF8C060A5E74B200BCD981 /* wreck2.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = wreck2.dat; path = Resources/Models/wreck2.dat; sourceTree = "<group>"; };
 		08DF8C2C0A5E74DC00BCD981 /* wreck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wreck.png; path = Resources/Textures/wreck.png; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1A1076570A80D785007C6218 /* ptg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ptg.cpp; path = "deps/Windows-x86-deps/staticlibs/libnoise/ptg.cpp"; sourceTree = "<group>"; };
 		1A472916096B5454000E78D8 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		1A47291F096B5468000E78D8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		1A472920096B5468000E78D8 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		1A5BF2720916D47300BF238F /* Oolite-importer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Oolite-importer.xcodeproj"; path = "Oolite-importer/Oolite-importer.xcodeproj"; sourceTree = "<group>"; };
 		1A5BF2D50916D50100BF238F /* Oolite.mdimporter */ = {isa = PBXFileReference; explicitFileType = wrapper; name = Oolite.mdimporter; path = "Oolite-importer/build/Universal/Oolite.mdimporter"; sourceTree = "<group>"; };
 		1A63E6020A7DF3BA00DB2BDC /* libnoise.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnoise.a; path = "deps/Cocoa-deps/libnoise/libnoise.a"; sourceTree = "<group>"; };
-		1A63E6120A7E01B700DB2BDC /* ptg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ptg.h; path = "deps/Cocoa-deps/libnoise/ptg.h"; sourceTree = "<group>"; };
-		1A63E6130A7E01B700DB2BDC /* ptg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ptg.cpp; path = "deps/Cocoa-deps/libnoise/ptg.cpp"; sourceTree = "<group>"; };
 		1A63E61E0A7E01F200DB2BDC /* noiseutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = noiseutils.h; path = "deps/Cocoa-deps/libnoise/noiseutils/noiseutils.h"; sourceTree = "<group>"; };
 		1A63E61F0A7E01F200DB2BDC /* noiseutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = noiseutils.cpp; path = "deps/Cocoa-deps/libnoise/noiseutils/noiseutils.cpp"; sourceTree = "<group>"; };
 		2512833C09BA27C100F43D55 /* Octree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Octree.m; path = src/Core/Octree.m; sourceTree = "<group>"; };
@@ -1037,7 +1035,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0865432206B8447D000CA0AB /* OoliteDev.app */,
+				0865432206B8447D000CA0AB /* Oolite.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1063,8 +1061,7 @@
 			isa = PBXGroup;
 			children = (
 				1A63E6020A7DF3BA00DB2BDC /* libnoise.a */,
-				1A63E6120A7E01B700DB2BDC /* ptg.h */,
-				1A63E6130A7E01B700DB2BDC /* ptg.cpp */,
+				1A1076570A80D785007C6218 /* ptg.cpp */,
 				1A63E61E0A7E01F200DB2BDC /* noiseutils.h */,
 				1A63E61F0A7E01F200DB2BDC /* noiseutils.cpp */,
 			);
@@ -1320,7 +1317,6 @@
 				08125F0909F9083F00AB9BF9 /* OOGLDefs.h in Headers */,
 				081329B50A6D534900A5C2CE /* OOInstinct.h in Headers */,
 				083DB4D50A70E51E00B419B2 /* OOBrain.h in Headers */,
-				1A63E6140A7E01B700DB2BDC /* ptg.h in Headers */,
 				1A63E6200A7E01F200DB2BDC /* noiseutils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1349,7 +1345,7 @@
 			name = Oolite;
 			productInstallPath = "$(HOME)/Applications";
 			productName = Oolite;
-			productReference = 0865432206B8447D000CA0AB /* OoliteDev.app */;
+			productReference = 0865432206B8447D000CA0AB /* Oolite.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1685,8 +1681,8 @@
 				0831C5CB09E3396D0058029A /* ScriptCompiler.m in Sources */,
 				081329B60A6D534900A5C2CE /* OOInstinct.m in Sources */,
 				083DB4D60A70E51E00B419B2 /* OOBrain.m in Sources */,
-				1A63E6150A7E01B700DB2BDC /* ptg.cpp in Sources */,
 				1A63E6210A7E01F200DB2BDC /* noiseutils.cpp in Sources */,
+				1A1076580A80D785007C6218 /* ptg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

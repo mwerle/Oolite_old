@@ -222,7 +222,7 @@ unsigned char* convertImageToRGBABuffer(utils::Image& image)
       buffer[offset++] = (unsigned char)pSource->green;
       buffer[offset++] = (unsigned char)pSource->blue;
       buffer[offset++] = (unsigned char)pSource->alpha;
-      fprintf(stdout, "alpha = %d ", (unsigned char)pSource->alpha);
+//      fprintf(stdout, "alpha = %d ", (unsigned char)pSource->alpha);
       ++pSource;
     }
   }
