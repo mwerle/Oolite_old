@@ -939,7 +939,11 @@ Your fair use and other rights are in no way affected by the above.
 	seed_for_planet_description(system_seed);
 
 	/*- space sun -*/
-	double		sun_distance = (20.0 + (ranrot_rand() % 5) - (ranrot_rand() % 5) ) * planet_radius;
+	double		sunDistanceModifier = 20.0;
+	if ([systeminfo objectForKey:@"sun_distance_modifier"])
+		sunDistanceModifier = [[systeminfo objectForKey:@"sun_distance_modifier"] doubleValue];
+
+	double		sun_distance = (sunDistanceModifier + (ranrot_rand() % 5) - (ranrot_rand() % 5) ) * planet_radius;
 	double		sun_radius = (2.5 + randf() - randf() ) * planet_radius;
 	Quaternion  q_sun;
 	Vector		sunPos = make_vector( 0.0f, 0.0f, 0.0f);
@@ -1203,6 +1207,7 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	if (the_sun)
 	{
 		GLfloat	sun_ambient[] = { 0.0, 0.0, 0.0, 1.0};	// ambient light about 5%
+
 		sun_diffuse[0] = the_sun->sun_diffuse[0];
 		sun_diffuse[1] = the_sun->sun_diffuse[1];
 		sun_diffuse[2] = the_sun->sun_diffuse[2];
@@ -1211,6 +1216,7 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 		sun_specular[1] = the_sun->sun_specular[1];
 		sun_specular[2] = the_sun->sun_specular[2];
 		sun_specular[3] = the_sun->sun_specular[3];
+
 		glLightfv(GL_LIGHT1, GL_AMBIENT, sun_ambient);
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, sun_diffuse);
 		glLightfv(GL_LIGHT1, GL_SPECULAR, sun_specular);
@@ -1240,6 +1246,7 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 		GLfloat ambient_level = 1.0;
 		if ([systeminfo objectForKey: @"ambient_level"])
 			ambient_level = [[systeminfo objectForKey: @"ambient_level"] floatValue];
+
 		stars_ambient[0] = ambient_level * 0.0625 * (1.0 + r) * (1.0 + r);
 		stars_ambient[1] = ambient_level * 0.0625 * (1.0 + g) * (1.0 + g);
 		stars_ambient[2] = ambient_level * 0.0625 * (1.0 + b) * (1.0 + b);

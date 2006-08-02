@@ -274,6 +274,7 @@ void setUpSinTable()
 	//
 	[self setOwner: planet];
     //
+
 	position = planet->position;
 	q_rotation = planet->q_rotation;
 
@@ -327,6 +328,23 @@ void setUpSinTable()
 	amb_polar_sea[3] = 0.75;	// 75% clouds
 
 	atmosphere = nil;
+
+#ifdef LIBNOISE_PLANETS
+	if (planet->isProcedurallyTextured == YES)
+	{
+		struct planet_info info;
+		info.seed.a = planet->random_seed.a; info.seed.b = planet->random_seed.b; info.seed.c = planet->random_seed.c; info.seed.d = planet->random_seed.d; info.seed.e = planet->random_seed.e; info.seed.f = planet->random_seed.f;
+		// Note in the next two lines the indexes are actually correct - see above the colour arrays are set to RBG
+		info.land_colour[0] = amb_land[0]; info.land_colour[1] = amb_land[2]; info.land_colour[2] = amb_land[1];
+		info.sea_colour[0] = amb_sea[0]; info.sea_colour[1] = amb_sea[2]; info.sea_colour[2] = amb_sea[1];
+
+		textureName = [[[Entity dataStore] textureStore] getTextureNameForAtmosphere:&info];
+		isTextured = (textureName != 0);
+		isProcedurallyTextured = isTextured;
+		[self setModel:(isTextured)? @"icostextured.dat" : @"icosahedron.dat"];
+		[self rescaleTo:1.0];
+	}
+#endif
 
 //	NSLog(@"DEBUG atmosphere testing [PlanetEntity initialiseBaseVertexArray]");
 	[self initialiseBaseVertexArray];
@@ -408,6 +426,7 @@ void setUpSinTable()
 	isTextured = NO;
 	textureName = [[uni textureStore] getTextureNameFor:@"metal.png"];	//debug texture
 	//
+	random_seed = p_seed;
 	planet_seed = p_seed.a * 13 + p_seed.c * 11 + p_seed.e * 7;	// pseudo-random set-up for vertex colours
 	//
 	seed_for_planet_description(p_seed);
@@ -415,22 +434,12 @@ void setUpSinTable()
 	NSDictionary*   planetinfo = [uni generateSystemData:p_seed];
 	int radius_km =		[(NSNumber *)[planetinfo objectForKey:KEY_RADIUS] intValue];
 	int techlevel =		[(NSNumber *)[planetinfo objectForKey:KEY_TECHLEVEL] intValue];
-	NSLog(@"Generating planet %@ with radius %dkm",[planetinfo objectForKey:KEY_NAME],radius_km);
-
+	//NSLog(@"Generating planet %@ with radius %dkm",[planetinfo objectForKey:KEY_NAME],radius_km);
 	if ([planetinfo objectForKey:@"texture"])
 	{
 		textureName = [[uni textureStore] getTextureNameFor:(NSString*)[planetinfo objectForKey:@"texture"]];
 		isTextured = (textureName != 0);
 	}
-
-#ifdef LIBNOISE_PLANETS
-	// If no OXPs have defined a specific texture for this planet, generate one
-	if (isTextured != YES)
-	{
-		textureName = [[uni textureStore] getTextureNameForRandom_Seed:p_seed];
-		isTextured = (textureName != 0);
-	}
-#endif
 
 	shuttles_on_ground = 1 + floor(techlevel * 0.5);
 	last_launch_time = 0.0;
@@ -523,6 +532,36 @@ void setUpSinTable()
 	amb_polar_sea[2] = [[OOColor colorWithCalibratedHue:sea_polar_hsb.x saturation:sea_polar_hsb.y brightness:sea_polar_hsb.z alpha:1.0] greenComponent];
 	amb_polar_sea[3] = 1.0;
 
+	//NSLog(@"sea colour r: %f, g: %f, b: %f", amb_sea[0], amb_sea[2], amb_sea[1]);
+	//NSLog(@"land colour r: %f, g: %f, b: %f", amb_land[0], amb_land[2], amb_land[1]);
+
+#ifdef LIBNOISE_PLANETS
+	int enable_proc_textures = 1;
+	if ([planetinfo objectForKey:@"generate_textures"])
+		enable_proc_textures = [(NSNumber *)[planetinfo objectForKey:@"generate_textures"] intValue];
+
+	if (enable_proc_textures != 0)
+	{
+		// If no OXPs have defined a specific texture for this planet, generate one
+		if (isTextured != YES)
+		{
+			struct planet_info info;
+			info.seed.a = p_seed.a; info.seed.b = p_seed.b; info.seed.c = p_seed.c; info.seed.d = p_seed.d; info.seed.e = p_seed.e; info.seed.f = p_seed.f;
+			// Note in the next two lines the indexes are actually correct - see above the colour arrays are set to RBG
+			info.land_colour[0] = amb_land[0]; info.land_colour[1] = amb_land[2]; info.land_colour[2] = amb_land[1];
+			info.sea_colour[0] = amb_sea[0]; info.sea_colour[1] = amb_sea[2]; info.sea_colour[2] = amb_sea[1];
+
+			//NSLog(@"land colour r: %f, g: %f, b: %f", info.land_colour[0], info.land_colour[1], info.land_colour[2]);
+
+			textureName = [[uni textureStore] getTextureNameForPlanet:&info];
+			isTextured = (textureName != 0);
+			isProcedurallyTextured = isTextured; // used by the atmosphere to see if it should use cloud textures
+			[self setModel:(isTextured)? @"icostextured.dat" : @"icosahedron.dat"];
+			[self rescaleTo:1.0];
+		}
+	}
+#endif
+
 //	NSLog(@"DEBUG testing [PlanetEntity initialiseBaseVertexArray]");
 	[self initialiseBaseVertexArray];
 
@@ -540,10 +579,19 @@ void setUpSinTable()
 	// set speed of rotation
 	rotational_velocity = 0.01 * randf();	// 0.0 .. 0.01 avr 0.005;
 
-	// do atmosphere
-	//
-	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
-	[atmosphere setUniverse:universe];
+#ifdef LIBNOISE_PLANETS
+	int enable_atmosphere = 1;
+	if ([planetinfo objectForKey:@"show_atmosphere"])
+		enable_atmosphere = [(NSNumber *)[planetinfo objectForKey:@"show_atmosphere"] intValue];
+
+	if (enable_atmosphere != 0)
+	{
+		// do atmosphere
+		//
+		atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
+		[atmosphere setUniverse:universe];
+	}
+#endif
 
 	//
 	usingVAR = [self OGL_InitVAR];
@@ -568,7 +616,9 @@ void setUpSinTable()
     //
 	isTextured = [planet isTextured];
 	textureName = [planet textureName];	//debug texture
-	//
+	isProcedurallyTextured = planet->isProcedurallyTextured;
+
+	random_seed = planet->random_seed;
 	planet_seed = [planet planet_seed];	// pseudo-random set-up for vertex colours
 
 	shuttles_on_ground = 0;
@@ -623,7 +673,6 @@ void setUpSinTable()
 	//
 	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
 	[atmosphere setUniverse:universe];
-
 	//
 	usingVAR = [self OGL_InitVAR];
 	//
@@ -1353,15 +1402,18 @@ void setUpSinTable()
 					if (!isTextured)
 					{
 						glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-						//
 						glEnableClientState(GL_COLOR_ARRAY);
 						glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
 					}
 					else
 					{
-						glEnableClientState(GL_COLOR_ARRAY);		// test shading
-						glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
-						//
+						// Enabling the vertex colors for the clouds makes them almost invisible
+						if (planet_type != PLANET_TYPE_ATMOSPHERE)
+						{
+							glEnableClientState(GL_COLOR_ARRAY);		// test shading
+							glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
+						}
+
 						glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 						glTexCoordPointer( 2, GL_FLOAT, 0, vertexdata.uv_array);
 						glBindTexture(GL_TEXTURE_2D, textureName);
@@ -1384,15 +1436,18 @@ void setUpSinTable()
 					if (!isTextured)
 					{
 						glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-						//
 						glEnableClientState(GL_COLOR_ARRAY);
 						glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
 					}
 					else
 					{
-						glEnableClientState(GL_COLOR_ARRAY);		// test shading
-						glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
-						//
+						// Enabling the vertex colors for the clouds makes them almost invisible
+						if (planet_type != PLANET_TYPE_ATMOSPHERE)
+						{
+							glEnableClientState(GL_COLOR_ARRAY);		// test shading
+							glColorPointer( 4, GL_FLOAT, 0, vertexdata.color_array);
+						}
+
 						glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 						glTexCoordPointer( 2, GL_FLOAT, 0, vertexdata.uv_array);
 						glBindTexture(GL_TEXTURE_2D, textureName);
@@ -1427,7 +1482,6 @@ void setUpSinTable()
 
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat1);
 
-
 				if (atmosphere)
 				{
 					glDisable(GL_DEPTH_TEST);
@@ -1439,7 +1493,6 @@ void setUpSinTable()
 					glMultMatrixf([atmosphere rotationMatrix]);
 					// draw atmosphere entity
 					[atmosphere drawEntity:immediate :translucent];
-
 					glEnable(GL_DEPTH_TEST);
 				}
 				else if (ignoreDepthBuffer)

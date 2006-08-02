@@ -40,6 +40,10 @@ Your fair use and other rights are in no way affected by the above.
 #import <Foundation/Foundation.h>
 #import "OOOpenGL.h"
 
+#ifdef LIBNOISE_PLANETS
+#import <noise/ptg.h>
+#endif
+
 #define OOLITE_EXCEPTION_TEXTURE_NOT_FOUND		@"OoliteTextureNotFoundException"
 #define OOLITE_EXCEPTION_TEXTURE_NOT_UNDERSTOOD	@"OoliteTextureNotUnderstoodException"
 #define OOLITE_EXCEPTION_FATAL					@"OoliteFatalException"
@@ -50,6 +54,10 @@ extern int debug;
 @interface TextureStore : NSObject
 {
     NSMutableDictionary	*textureDictionary;
+#ifdef LIBNOISE_PLANETS
+    int max_planet_textures;
+    NSMutableArray* planet_texture_mru_cache;
+#endif
 }
 
 - (id) init;
@@ -58,7 +66,9 @@ extern int debug;
 - (GLuint) getTextureNameFor:(NSString *)filename;
 
 #ifdef LIBNOISE_PLANETS
-- (GLuint) getTextureNameForRandom_Seed:(Random_Seed)seed;
+- (GLuint) getTextureNameForPlanet:(struct planet_info*)info;
+- (GLuint) getTextureNameForAtmosphere:(struct planet_info*)info;
+- (void) updatePlanetTextureCacheWith:(NSString *)filename;
 #endif
 
 - (NSSize) getSizeOfTexture:(NSString *)filename;
