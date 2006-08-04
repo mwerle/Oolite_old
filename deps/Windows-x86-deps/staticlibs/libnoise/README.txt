@@ -1,13 +1,12 @@
-The files in this folder must be used in conjunction with the libnoise source files.
-The steps to create Oolite's version of libnoise (including the Obj-C to C++ bridging code) are:
+This directory contains a copy of the libnoise sources modified to produce no warnings, plus the
+bridge code used by Oolite to use the libnoise objects.
 
-1. Download libnoise source.
-2. Compile libnoise .cpp files to object form using g++, including noiseutils.cpp.
-3. Copy the libnoise and noiseutil headers somewhere appropriate.
-4. Compile ptg.cpp to object form using g++.
-5. Copy the ptg.h file to the same place as the libnoise headers.
-6. Copy the libnoise, noiseutil, and ptg object files to a single directory.
-7. Create libnoise.a with the command "ar cru libnoise.a *.o".
-8. Copy libnoise.a somewhere appropriate.
+A Makefile is also included that can create libnoise.a. To make and install OOlite's libnoise:
+
+1. Type "make"
+2. Copy the libnoise and noiseutil headers somewhere appropriate.
+3. Copy libnoise.a somewhere appropriate.
 
 I use /c/GNUstep/Local/include for header files and /c/GNUstep/Local/lib for the .a file.
+
+The mklib.sh script does all the above.

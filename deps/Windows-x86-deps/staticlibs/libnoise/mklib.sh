@@ -1,8 +1,11 @@
+set -x
 I=/c/GNUstep/Local/include
 L=/c/GNUstep/Local/lib
 
-g++ -c -I${I} ptg.cpp
-cp ptg.h ${I}/noise
-cp ptg.o ${L}/noise
-cd ${L}/noise
-ar cru ../libnoise.a *.o
+make
+# I know, cp -R would have been good, but it doesn't seem to work on GNUstep for Windows
+cd src
+find . -name '*.h' -exec cp --parents -v {} ${I}/noise \;
+cd ..
+cp libnoise.a ${L}
+rm libnoise.a
