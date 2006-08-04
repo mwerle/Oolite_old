@@ -17,6 +17,8 @@ unsigned char* convertImageToRGBABuffer(utils::Image& image);
 extern "C" {
 #endif
 
+#define IMG_WIDTH 512
+#define IMG_HEIGHT 256
 utils::Image* planetBackground;
 
 /*
@@ -25,7 +27,7 @@ utils::Image* planetBackground;
  */
 unsigned char* generatePlanet(struct planet_info* info)
 {
-	int seed; //, x, y;
+	int seed, x, y;
 
 	seed = 0;
 	seed ^= info->seed.a;
@@ -34,11 +36,12 @@ unsigned char* generatePlanet(struct planet_info* info)
 	seed ^= info->seed.d;
 	seed ^= info->seed.e;
 	seed ^= info->seed.f;
-/*
+
 	if (planetBackground == 0) {
 		utils::Color white(255, 255, 255, 255);
-		planetBackground = new utils::Image(512, 256);
-		planetBackground->Clear(utils::Color(0, 0, 0, 255));
+		planetBackground = new utils::Image(IMG_WIDTH, IMG_HEIGHT);
+		planetBackground->Clear(utils::Color(255, 0, 0, 255));
+/*
 		for (y = 0; y < 25; y++) {
 			for (x = 0; x < 512; x++) {
 				planetBackground->SetValue(x, y, white);
@@ -53,8 +56,9 @@ unsigned char* generatePlanet(struct planet_info* info)
 				planetBackground->SetValue(x, 255-y, white);
 			}
 		}
-	}
 */
+	}
+
 	module::Perlin myModule;
 
 	myModule.SetSeed(seed);
@@ -64,42 +68,54 @@ unsigned char* generatePlanet(struct planet_info* info)
 	utils::NoiseMapBuilderSphere heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(512, 256);
+	heightMapBuilder.SetDestSize(IMG_WIDTH, IMG_HEIGHT);
 	heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
 	heightMapBuilder.Build();
 
 	utils::RendererImage renderer;
 	utils::Image image;
 	renderer.SetSourceNoiseMap(heightMap);
-	//renderer.SetBackgroundImage(*planetBackground);
+	renderer.SetBackgroundImage(*planetBackground);
 	renderer.SetDestImage(image);
 	//renderer.BuildTerrainGradient();
 
 	renderer.ClearGradient ();
 
-	int r = (int)(info->sea_colour[0] * 255.0);
-	int g = (int)(info->sea_colour[1] * 255.0);
-	int b = (int)(info->sea_colour[2] * 255.0);
+	if (info->use_oolite_colours == 0) {
+		renderer.AddGradientPoint (-1.00, utils::Color (  0,   0, 128, 255));
+		renderer.AddGradientPoint (-0.20, utils::Color ( 32,  64, 128, 255));
+		renderer.AddGradientPoint (-0.04, utils::Color ( 64,  96, 192, 255));
+		renderer.AddGradientPoint (-0.02, utils::Color (192, 192, 128, 255));
+		renderer.AddGradientPoint ( 0.00, utils::Color (  0, 192,   0, 255));
+		renderer.AddGradientPoint ( 0.25, utils::Color (192, 192,   0, 255));
+		renderer.AddGradientPoint ( 0.75, utils::Color (160,  96,  64, 255));
+		renderer.AddGradientPoint ( 0.90, utils::Color (128, 255, 255, 255));
+		renderer.AddGradientPoint ( 1.00, utils::Color (255, 255, 255, 255));
+	} else {
+		int r = (int)(info->sea_colour[0] * 255.0);
+		int g = (int)(info->sea_colour[1] * 255.0);
+		int b = (int)(info->sea_colour[2] * 255.0);
 
-	//fprintf(stderr, "sea colour (2) r: %f, g: %f, b: %f\r\n", info->sea_colour[0], info->sea_colour[1], info->sea_colour[2]);
-	//fprintf(stderr, "sea colour (2) r: %d, g: %d, b: %d\r\n", r, g, b);
+		//fprintf(stderr, "sea colour (2) r: %f, g: %f, b: %f\r\n", info->sea_colour[0], info->sea_colour[1], info->sea_colour[2]);
+		//fprintf(stderr, "sea colour (2) r: %d, g: %d, b: %d\r\n", r, g, b);
 
-	renderer.AddGradientPoint (-1.00, utils::Color (r, g, b, 255));
-	//renderer.AddGradientPoint (-0.90, utils::Color (r, g, b, 255));
+		renderer.AddGradientPoint (-1.00, utils::Color (r, g, b, 255));
+		//renderer.AddGradientPoint (-0.90, utils::Color (r, g, b, 255));
 
-	r = (int)(info->land_colour[0] * 255.0);
-	g = (int)(info->land_colour[1] * 255.0);
-	b = (int)(info->land_colour[2] * 255.0);
+		r = (int)(info->land_colour[0] * 255.0);
+		g = (int)(info->land_colour[1] * 255.0);
+		b = (int)(info->land_colour[2] * 255.0);
 
-	//fprintf(stderr, "land colour (2) r: %f, g: %f, b: %f\r\n", info->land_colour[0], info->land_colour[1], info->land_colour[2]);
-	//fprintf(stderr, "land colour (2) r: %d, g: %d, b: %d\r\n", r, g, b);
+		//fprintf(stderr, "land colour (2) r: %f, g: %f, b: %f\r\n", info->land_colour[0], info->land_colour[1], info->land_colour[2]);
+		//fprintf(stderr, "land colour (2) r: %d, g: %d, b: %d\r\n", r, g, b);
 
-	//renderer.AddGradientPoint ( 0.00, utils::Color (r, g, b, 255));
-	renderer.AddGradientPoint ( 1.00, utils::Color (r, g, b, 255));
+		//renderer.AddGradientPoint ( 0.00, utils::Color (r, g, b, 255));
+		renderer.AddGradientPoint ( 1.00, utils::Color (r, g, b, 255));
+	}
 
 	renderer.EnableLight();
-	renderer.SetLightContrast(3.0);
-	//renderer.SetLightBrightness(2.0);
+	renderer.SetLightContrast(2.0);
+	renderer.SetLightBrightness(1.5);
 	renderer.Render();
 
 	unsigned char* buffer = convertImageToRGBABuffer(image);
@@ -129,7 +145,7 @@ unsigned char* generateClouds(struct planet_info* info)
 	utils::NoiseMapBuilderSphere heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(512, 256);
+	heightMapBuilder.SetDestSize(IMG_WIDTH, IMG_HEIGHT);
 	heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
 	heightMapBuilder.Build ();
 
@@ -140,7 +156,7 @@ unsigned char* generateClouds(struct planet_info* info)
 	// the output image. For this to happen the background image must have
 	// all pixels set to fully transparent.
 	utils::Image background;
-	background.SetSize(512, 256);
+	background.SetSize(IMG_WIDTH, IMG_HEIGHT);
 	background.Clear(utils::Color(0, 0, 0, 0));
 
 	renderer.SetSourceNoiseMap(heightMap);
@@ -148,25 +164,28 @@ unsigned char* generateClouds(struct planet_info* info)
 	renderer.SetDestImage (image);
 
 	renderer.ClearGradient ();
-	renderer.AddGradientPoint (-1.00, utils::Color (255, 255, 255,   0));
-	renderer.AddGradientPoint (-0.50, utils::Color (255, 255, 255,   0));
-	renderer.AddGradientPoint ( 1.00, utils::Color (255, 255, 255, 255));
-/*
-	int r = (int)(info->sea_colour[0] * 255.0);
-	int g = (int)(info->sea_colour[1] * 255.0);
-	int b = (int)(info->sea_colour[2] * 255.0);
 
-	renderer.AddGradientPoint (-1.00, utils::Color (r, g, b, 0));
+	if (info->use_oolite_colours == 0) {
+		renderer.AddGradientPoint (-1.00, utils::Color (255, 255, 255,   0));
+		renderer.AddGradientPoint (-0.50, utils::Color (255, 255, 255,   0));
+		renderer.AddGradientPoint ( 1.00, utils::Color (255, 255, 255, 255));
+	} else {
+		int r = (int)(info->sea_colour[0] * 255.0);
+		int g = (int)(info->sea_colour[1] * 255.0);
+		int b = (int)(info->sea_colour[2] * 255.0);
 
-	r = (int)(info->land_colour[0] * 255.0);
-	g = (int)(info->land_colour[1] * 255.0);
-	b = (int)(info->land_colour[2] * 255.0);
+		renderer.AddGradientPoint (-1.00, utils::Color (r, g, b, 0));
 
-	renderer.AddGradientPoint ( 0.75, utils::Color (r, g, b, 255));
-*/
+		r = (int)(info->land_colour[0] * 255.0);
+		g = (int)(info->land_colour[1] * 255.0);
+		b = (int)(info->land_colour[2] * 255.0);
+
+		renderer.AddGradientPoint ( 0.75, utils::Color (r, g, b, 255));
+	}
+
 	renderer.EnableLight();
 	renderer.SetLightContrast(2.0);
-  //renderer.SetLightBrightness(2.0);
+	renderer.SetLightBrightness(1.8);
 	renderer.Render();
 
 	unsigned char* buffer = convertImageToRGBABuffer(image);

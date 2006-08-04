@@ -29,6 +29,7 @@ struct x_random_seed {
 
 struct planet_info {
 	struct x_random_seed seed;
+	int use_oolite_colours; // 0 = no, 1 = yes
 	float land_colour[3];
 	float sea_colour[3];
 };

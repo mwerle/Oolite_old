@@ -334,6 +334,7 @@ void setUpSinTable()
 	{
 		struct planet_info info;
 		info.seed.a = planet->random_seed.a; info.seed.b = planet->random_seed.b; info.seed.c = planet->random_seed.c; info.seed.d = planet->random_seed.d; info.seed.e = planet->random_seed.e; info.seed.f = planet->random_seed.f;
+		info.use_oolite_colours = 0;
 		// Note in the next two lines the indexes are actually correct - see above the colour arrays are set to RBG
 		info.land_colour[0] = amb_land[0]; info.land_colour[1] = amb_land[2]; info.land_colour[2] = amb_land[1];
 		info.sea_colour[0] = amb_sea[0]; info.sea_colour[1] = amb_sea[2]; info.sea_colour[2] = amb_sea[1];
@@ -547,6 +548,7 @@ void setUpSinTable()
 		{
 			struct planet_info info;
 			info.seed.a = p_seed.a; info.seed.b = p_seed.b; info.seed.c = p_seed.c; info.seed.d = p_seed.d; info.seed.e = p_seed.e; info.seed.f = p_seed.f;
+			info.use_oolite_colours = 0;
 			// Note in the next two lines the indexes are actually correct - see above the colour arrays are set to RBG
 			info.land_colour[0] = amb_land[0]; info.land_colour[1] = amb_land[2]; info.land_colour[2] = amb_land[1];
 			info.sea_colour[0] = amb_sea[0]; info.sea_colour[1] = amb_sea[2]; info.sea_colour[2] = amb_sea[1];
@@ -2116,10 +2118,14 @@ int baseVertexIndexForEdge(int va, int vb, BOOL textured)
 
 	for (i = 0; i < 4; i++)
 	{
+#ifdef LIBNOISE_PLANETS
+		vertexdata.color_array[vi*4 + i] = 1.0;
+#else
 		paint_color[i] = (r * paint_sea[i])*0.01 + ((100 - r) * paint_land[i])*0.01;
 
 		// finally initialise the color array entry
 		vertexdata.color_array[vi*4 + i] = paint_color[i];
+#endif
 	}
 }
 
