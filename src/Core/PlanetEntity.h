@@ -81,7 +81,6 @@ typedef struct
 														// 4 -> 5120 verts
 														// 5 -> 20480 verts !!
 
-		Universe*   universe;
 		Random_Seed random_seed;
 		BOOL		isProcedurallyTextured;
 
