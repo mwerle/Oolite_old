@@ -5,43 +5,44 @@
 
 using namespace noise;
 
-#ifdef TEST_MAIN
-int main(int argc, char** argv) {
-	return ptg(1,2,3,4,5,6);
-}
-#endif
-
 unsigned char* convertImageToRGBABuffer(utils::Image& image);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define IMG_WIDTH 512
-#define IMG_HEIGHT 256
+#define IMG_WIDTH 1024
+#define IMG_HEIGHT 512
+
 utils::Image* planetBackground;
+
+unsigned char* generateEarthLikePlanet(struct planet_info* info);
+unsigned char* generateMarsLikePlanet(struct planet_info* info);
 
 /*
  * This program generates a planetary texture for Oolite, given the
  * six components of a solar system's Random_Seed value.
  */
-unsigned char* generatePlanet(struct planet_info* info)
-{
-	int seed, x, y;
+unsigned char* generatePlanet(struct planet_info* info) {
+	fprintf(stderr, "generatePlanet: seed = %03d, size = %d x %d\r\n", info->seed, info->texture_width, info->texture_height);
+	if ((info->seed % 2) == 1)
+		return generateMarsLikePlanet(info);
 
-	seed = 0;
-	seed ^= info->seed.a;
-	seed ^= info->seed.b;
-	seed ^= info->seed.c;
-	seed ^= info->seed.d;
-	seed ^= info->seed.e;
-	seed ^= info->seed.f;
+	return generateEarthLikePlanet(info);
+}
 
+
+/*
+ * This program generates a planetary texture for Oolite, given the
+ * six components of a solar system's Random_Seed value.
+ */
+unsigned char* generateEarthLikePlanet(struct planet_info* info) {
+/*
 	if (planetBackground == 0) {
 		utils::Color white(255, 255, 255, 255);
 		planetBackground = new utils::Image(IMG_WIDTH, IMG_HEIGHT);
 		planetBackground->Clear(utils::Color(255, 0, 0, 255));
-/*
+
 		for (y = 0; y < 25; y++) {
 			for (x = 0; x < 512; x++) {
 				planetBackground->SetValue(x, y, white);
@@ -56,31 +57,29 @@ unsigned char* generatePlanet(struct planet_info* info)
 				planetBackground->SetValue(x, 255-y, white);
 			}
 		}
-*/
-	}
 
+	}
+*/
 	module::Perlin myModule;
 
-	myModule.SetSeed(seed);
+	myModule.SetSeed(info->seed);
 	myModule.SetOctaveCount(14);
 
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderSphere heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(IMG_WIDTH, IMG_HEIGHT);
+	heightMapBuilder.SetDestSize(info->texture_width, info->texture_height);
 	heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
 	heightMapBuilder.Build();
 
 	utils::RendererImage renderer;
 	utils::Image image;
 	renderer.SetSourceNoiseMap(heightMap);
-	renderer.SetBackgroundImage(*planetBackground);
+	//renderer.SetBackgroundImage(*planetBackground);
 	renderer.SetDestImage(image);
-	//renderer.BuildTerrainGradient();
 
 	renderer.ClearGradient ();
-
 	if (info->use_oolite_colours == 0) {
 		renderer.AddGradientPoint (-1.00, utils::Color (  0,   0, 128, 255));
 		renderer.AddGradientPoint (-0.20, utils::Color ( 32,  64, 128, 255));
@@ -122,32 +121,64 @@ unsigned char* generatePlanet(struct planet_info* info)
 	return buffer;
 }
 
+unsigned char* generateMarsLikePlanet(struct planet_info* info) {
+
+	module::RidgedMulti myModule;
+
+	myModule.SetSeed(info->seed);
+	myModule.SetOctaveCount(8);
+	myModule.SetFrequency(0.6);
+
+	module::Terrace terrace;
+	terrace.SetSourceModule(0, myModule);
+	terrace.MakeControlPoints(7);
+
+	utils::NoiseMap heightMap;
+	utils::NoiseMapBuilderSphere heightMapBuilder;
+	heightMapBuilder.SetSourceModule(terrace);
+	heightMapBuilder.SetDestNoiseMap(heightMap);
+	heightMapBuilder.SetDestSize(info->texture_width, info->texture_height);
+	heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
+	heightMapBuilder.Build ();
+
+	utils::RendererImage renderer;
+	utils::Image image;
+	renderer.SetSourceNoiseMap(heightMap);
+	renderer.SetDestImage(image);
+
+	// The trick with this one will be to use HSL values, keeping the SL constant
+	// and just changing the hue to get different planets.
+	renderer.ClearGradient ();
+	renderer.AddGradientPoint(-1.00, utils::Color (160, 109, 40, 255));
+	renderer.AddGradientPoint( 1.00, utils::Color (190, 152, 63, 255));
+
+	renderer.EnableLight();
+	renderer.SetLightContrast(1.5);
+	renderer.SetLightBrightness(1.5);
+	renderer.Render ();
+
+	unsigned char* buffer = convertImageToRGBABuffer(image);
+	return buffer;
+}
+
 /*
  * This program generates a planetary texture for Oolite, given the
  * six components of a solar system's Random_Seed value.
  */
-unsigned char* generateClouds(struct planet_info* info)
-{
-	int seed = 0;
-
-	seed ^= info->seed.a;
-	seed ^= info->seed.b;
-	seed ^= info->seed.c;
-	seed ^= info->seed.d;
-	seed ^= info->seed.e;
-	seed ^= info->seed.f;
+unsigned char* generateClouds(struct planet_info* info) {
+	fprintf(stderr, "generateClouds: seed = %03d, size = %d x %d\r\n", info->seed, info->texture_width, info->texture_height);
 
 	module::Billow myModule;
-	myModule.SetSeed(seed);
+	myModule.SetSeed(info->seed);
 	myModule.SetOctaveCount(8);
 
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderSphere heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(IMG_WIDTH, IMG_HEIGHT);
+	heightMapBuilder.SetDestSize(info->texture_width, info->texture_height);
 	heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
-	heightMapBuilder.Build ();
+	heightMapBuilder.Build();
 
 	utils::RendererImage renderer;
 	utils::Image image;
@@ -155,15 +186,16 @@ unsigned char* generateClouds(struct planet_info* info)
 	// It is vital to set a background image to get transparent colours in
 	// the output image. For this to happen the background image must have
 	// all pixels set to fully transparent.
-	utils::Image background;
-	background.SetSize(IMG_WIDTH, IMG_HEIGHT);
-	background.Clear(utils::Color(0, 0, 0, 0));
+	//if (cloudBackground == 0) {
+		utils::Image cloudBackground = utils::Image(info->texture_width, info->texture_height);
+		cloudBackground.Clear(utils::Color(0, 0, 0, 0));
+	//}
 
 	renderer.SetSourceNoiseMap(heightMap);
-	renderer.SetBackgroundImage(background);
-	renderer.SetDestImage (image);
+	renderer.SetBackgroundImage(cloudBackground);
+	renderer.SetDestImage(image);
 
-	renderer.ClearGradient ();
+	renderer.ClearGradient();
 
 	if (info->use_oolite_colours == 0) {
 		renderer.AddGradientPoint (-1.00, utils::Color (255, 255, 255,   0));
@@ -190,15 +222,13 @@ unsigned char* generateClouds(struct planet_info* info)
 
 	unsigned char* buffer = convertImageToRGBABuffer(image);
 	return buffer;
-
 }
 
 #ifdef __cplusplus
 }
 #endif
 
-unsigned char* convertImageToRGBABuffer(utils::Image& image)
-{
+unsigned char* convertImageToRGBABuffer(utils::Image& image) {
 	unsigned char* buffer;
 	int width = image.GetWidth();
 	int height = image.GetHeight();
@@ -216,7 +246,6 @@ unsigned char* convertImageToRGBABuffer(utils::Image& image)
 			buffer[offset++] = (unsigned char)pSource->green;
 			buffer[offset++] = (unsigned char)pSource->blue;
 			buffer[offset++] = (unsigned char)pSource->alpha;
-			fprintf(stdout, "alpha = %d ", (unsigned char)pSource->alpha);
 			++pSource;
 		}
 	}

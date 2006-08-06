@@ -296,11 +296,13 @@ Your fair use and other rights are in no way affected by the above.
 #ifdef LIBNOISE_PLANETS
 - (GLuint) getTextureNameForPlanet:(struct planet_info*)info
 {
-	NSString* filename = [NSString stringWithFormat:@"%d_%d_%d_%d_%d_%d", info->seed.a, info->seed.b, info->seed.c, info->seed.d, info->seed.e, info->seed.f];
+	// Risking a clash of two planets generating the same random identifier now we're just using a single number.
+	NSString* filename = [NSString stringWithFormat:@"planet_%03d", info->seed];
 	GLuint texName;
-	int	texture_w = 512;
-	int	texture_h = 256;
+	//int	texture_w = info->texture_width;
+	//int	texture_h = info->texture_height;
 
+	NSLog(@"getTextureNameForPlanet asking for a %d x %d texture", info->texture_width, info->texture_height);
 	if (![textureDictionary objectForKey:filename])
 	{
 		NSMutableDictionary* texProps = [NSMutableDictionary dictionaryWithCapacity:3];  // autoreleased
@@ -321,13 +323,13 @@ Your fair use and other rights are in no way affected by the above.
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// adjust this
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// adjust this
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info->texture_width, info->texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBytes);
 
 		free(texBytes);
 
 		[texProps setObject:[NSNumber numberWithInt:texName] forKey:@"texName"];
-		[texProps setObject:[NSNumber numberWithInt:texture_w] forKey:@"width"];
-		[texProps setObject:[NSNumber numberWithInt:texture_h] forKey:@"height"];
+		[texProps setObject:[NSNumber numberWithInt:info->texture_width] forKey:@"width"];
+		[texProps setObject:[NSNumber numberWithInt:info->texture_height] forKey:@"height"];
 
 		[textureDictionary setObject:texProps forKey:filename];
 	}
@@ -342,11 +344,13 @@ Your fair use and other rights are in no way affected by the above.
 
 - (GLuint) getTextureNameForAtmosphere:(struct planet_info*)info
 {
-	NSString* filename = [NSString stringWithFormat:@"atmo_%d_%d_%d_%d_%d_%d", info->seed.a, info->seed.b, info->seed.c, info->seed.d, info->seed.e, info->seed.f];
+	// Risking a clash of two planets generating the same random identifier now we're just using a single number.
+	NSString* filename = [NSString stringWithFormat:@"clouds_%03d", info->seed];
 	GLuint texName;
-	int	texture_w = 512;
-	int	texture_h = 256;
+	//int	texture_w = info->texture_width;
+	//int	texture_h = info->texture_height;
 
+	NSLog(@"getTextureNameForAtmosphere asking for a %d x %d texture", info->texture_width, info->texture_height);
 	if (![textureDictionary objectForKey:filename])
 	{
 		NSMutableDictionary* texProps = [NSMutableDictionary dictionaryWithCapacity:3];  // autoreleased
@@ -367,13 +371,13 @@ Your fair use and other rights are in no way affected by the above.
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// adjust this
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// adjust this
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_w, texture_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info->texture_width, info->texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBytes);
 
 		free(texBytes);
 
 		[texProps setObject:[NSNumber numberWithInt:texName] forKey:@"texName"];
-		[texProps setObject:[NSNumber numberWithInt:texture_w] forKey:@"width"];
-		[texProps setObject:[NSNumber numberWithInt:texture_h] forKey:@"height"];
+		[texProps setObject:[NSNumber numberWithInt:info->texture_width] forKey:@"width"];
+		[texProps setObject:[NSNumber numberWithInt:info->texture_height] forKey:@"height"];
 
 		[textureDictionary setObject:texProps forKey:filename];
 	}

@@ -18,18 +18,11 @@
 extern "C" {
 #endif
 
-struct x_random_seed {
-	int a;
-	int b;
-	int c;
-	int d;
-	int e;
-	int f;
-};
-
 struct planet_info {
-	struct x_random_seed seed;
+	int seed;
 	int use_oolite_colours; // 0 = no, 1 = yes
+	int texture_width;
+	int texture_height;
 	float land_colour[3];
 	float sea_colour[3];
 };

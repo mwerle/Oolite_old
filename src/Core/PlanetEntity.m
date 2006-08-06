@@ -42,7 +42,6 @@ Your fair use and other rights are in no way affected by the above.
 #import "OOOpenGL.h"
 
 #import "AI.h"
-#import "Universe.h"
 #import "TextureStore.h"
 #import "MyOpenGLView.h"
 #import "ShipEntity (AI).h"
@@ -333,7 +332,25 @@ void setUpSinTable()
 	if (planet->isProcedurallyTextured == YES)
 	{
 		struct planet_info info;
-		info.seed.a = planet->random_seed.a; info.seed.b = planet->random_seed.b; info.seed.c = planet->random_seed.c; info.seed.d = planet->random_seed.d; info.seed.e = planet->random_seed.e; info.seed.f = planet->random_seed.f;
+		universe = planet->universe;
+
+		RNG_Seed tmp_seed = currentRandomSeed();
+		RNG_Seed new_seed;
+		new_seed.a = (int)(planet->random_seed.a); new_seed.b = (int)(planet->random_seed.b); new_seed.c = (int)(planet->random_seed.c); new_seed.d = (int)(planet->random_seed.d);
+
+		NSDictionary* planetinfo = [universe generateSystemData:planet->random_seed];
+		info.texture_width = 512;
+		info.texture_height = 256;
+		if ([planetinfo objectForKey:@"texture_width"] != 0 && [planetinfo objectForKey:@"texture_height"] != 0)
+		{
+			info.texture_width = [(NSNumber *)[planetinfo objectForKey:@"texture_width"] intValue];
+			info.texture_height = [(NSNumber *)[planetinfo objectForKey:@"texture_height"] intValue];
+		}
+
+		setRandomSeed(new_seed);
+		info.seed = gen_rnd_number();
+		setRandomSeed(tmp_seed);
+
 		info.use_oolite_colours = 0;
 		// Note in the next two lines the indexes are actually correct - see above the colour arrays are set to RBG
 		info.land_colour[0] = amb_land[0]; info.land_colour[1] = amb_land[2]; info.land_colour[2] = amb_land[1];
@@ -429,6 +446,7 @@ void setUpSinTable()
 	//
 	random_seed = p_seed;
 	planet_seed = p_seed.a * 13 + p_seed.c * 11 + p_seed.e * 7;	// pseudo-random set-up for vertex colours
+	universe = uni;
 	//
 	seed_for_planet_description(p_seed);
 	//
@@ -547,7 +565,23 @@ void setUpSinTable()
 		if (isTextured != YES)
 		{
 			struct planet_info info;
-			info.seed.a = p_seed.a; info.seed.b = p_seed.b; info.seed.c = p_seed.c; info.seed.d = p_seed.d; info.seed.e = p_seed.e; info.seed.f = p_seed.f;
+			RNG_Seed tmp_seed = currentRandomSeed();
+			RNG_Seed new_seed;
+			new_seed.a = (int)p_seed.a; new_seed.b = (int)p_seed.b; new_seed.c = (int)p_seed.c; new_seed.d = (int)p_seed.d;
+			setRandomSeed(new_seed);
+			info.seed = gen_rnd_number();
+			setRandomSeed(tmp_seed);
+
+			NSLog(@"%@: %03d", (NSString*)[planetinfo objectForKey:KEY_NAME], info.seed);
+
+			info.texture_width = 512;
+			info.texture_height = 256;
+			if ([planetinfo objectForKey:@"texture_width"] != 0 && [planetinfo objectForKey:@"texture_height"] != 0)
+			{
+				info.texture_width = [(NSNumber *)[planetinfo objectForKey:@"texture_width"] intValue];
+				info.texture_height = [(NSNumber *)[planetinfo objectForKey:@"texture_height"] intValue];
+			}
+
 			info.use_oolite_colours = 0;
 			// Note in the next two lines the indexes are actually correct - see above the colour arrays are set to RBG
 			info.land_colour[0] = amb_land[0]; info.land_colour[1] = amb_land[2]; info.land_colour[2] = amb_land[1];
@@ -560,6 +594,8 @@ void setUpSinTable()
 			isProcedurallyTextured = isTextured; // used by the atmosphere to see if it should use cloud textures
 			[self setModel:(isTextured)? @"icostextured.dat" : @"icosahedron.dat"];
 			[self rescaleTo:1.0];
+
+
 		}
 	}
 #endif
@@ -622,6 +658,7 @@ void setUpSinTable()
 
 	random_seed = planet->random_seed;
 	planet_seed = [planet planet_seed];	// pseudo-random set-up for vertex colours
+	universe = planet->universe;
 
 	shuttles_on_ground = 0;
 	last_launch_time = 8400.0;
@@ -671,10 +708,20 @@ void setUpSinTable()
 	// set speed of rotation
 	rotational_velocity = 0.05;
 
-	// do atmosphere
-	//
-	atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
-	[atmosphere setUniverse:universe];
+#ifdef LIBNOISE_PLANETS
+	int enable_atmosphere = 1;
+	NSDictionary* planetinfo = [universe generateSystemData:planet->random_seed];
+	if ([planetinfo objectForKey:@"show_atmosphere"])
+		enable_atmosphere = [(NSNumber *)[planetinfo objectForKey:@"show_atmosphere"] intValue];
+
+	if (enable_atmosphere != 0)
+	{
+		// do atmosphere
+		//
+		atmosphere = [[PlanetEntity alloc] initAsAtmosphereForPlanet:self];
+		[atmosphere setUniverse:universe];
+	}
+#endif
 	//
 	usingVAR = [self OGL_InitVAR];
 	//

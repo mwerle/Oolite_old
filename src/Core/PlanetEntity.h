@@ -40,6 +40,7 @@ Your fair use and other rights are in no way affected by the above.
 #import <Foundation/Foundation.h>
 
 #import "entities.h"
+#import "Universe.h"
 
 #define PLANET_TYPE_GREEN		100
 #define PLANET_TYPE_SUN			200
@@ -80,6 +81,7 @@ typedef struct
 														// 4 -> 5120 verts
 														// 5 -> 20480 verts !!
 
+		Universe*   universe;
 		Random_Seed random_seed;
 		BOOL		isProcedurallyTextured;
 
