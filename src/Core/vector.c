@@ -1,7 +1,7 @@
 /*
 
 Provides utility routines for Vectors, rotation matrices, and conversion to OpenGL transformation matrices
-
+ 
  *
  *  Oolite
  *
@@ -149,12 +149,12 @@ void mult_vector_gl_matrix (struct vector *vec, GLfloat *glmat)
 		(vec->y * glmat[6]) +
 		(vec->z * glmat[10]) +
 		(1.0 * glmat[13]);
-
+	
 	w = (vec->x * glmat[3]) +
 		(vec->y * glmat[7]) +
 		(vec->z * glmat[11]) +
 		(1.0 * glmat[15]);
-
+	
 	vec->x = x/w;
 	vec->y = y/w;
 	vec->z = z/w;
@@ -173,7 +173,7 @@ Vector cross_product (Vector first, Vector second)
 	mag2 = result.x * result.x + result.y * result.y + result.z * result.z;
 	if (mag2 > 0.0)
 	{
-		det = 1.0 / sqrt(mag2);
+		det = FastInvSqrt(mag2);
 		result.x *= det;	result.y *= det;	result.z *= det;
 		return result;
 	}
@@ -188,11 +188,21 @@ Vector cross_product (Vector first, Vector second)
 Vector normal_to_surface (Vector v1, Vector v2, Vector v3)
 {
 	Vector d0, d1;
-	d0.x = v2.x - v1.x;	d0.y = v2.y - v1.y;	d0.z = v2.z - v1.z;
-	d1.x = v3.x - v2.x;	d1.y = v3.y - v2.y;	d1.z = v3.z - v2.z;
-	return cross_product(d0,d1);
+	d0.x = v2.x - v1.x;	d0.y = v2.y - v1.y;	d0.z = v2.z - v1.z;	
+	d1.x = v3.x - v2.x;	d1.y = v3.y - v2.y;	d1.z = v3.z - v2.z;	
+	return cross_product(d0,d1);	
 }
 
+
+float FastInvSqrt(float x)
+{
+	float xhalf = 0.5f * x;
+	int i = *(int*)&x;
+	i = 0x5f3759df - (i>>1);
+	x = *(float*)&i;
+	x = x * (1.5f - xhalf * x * x);
+	return x;
+}
 
 // Convert a vector into a vector of unit (1) length.
 //
@@ -207,7 +217,7 @@ Vector unit_vector (struct vector *vec)
 	lz = vec->z;
 
 	if (lx || ly || lz)
-		det = 1.0 / sqrt (lx * lx + ly * ly + lz * lz);
+		det = FastInvSqrt(lx * lx + ly * ly + lz * lz);
 	else
 	{
 		det = 1.0;
@@ -311,7 +321,7 @@ GLfloat	bounding_box_max_radius(BoundingBox bb)
 /*
 
         QUATERNION MATH ROUTINES
-
+        
 
 */
 
@@ -351,7 +361,7 @@ void	quaternion_set_rotate_about_axis(struct quaternion *quat, Vector axis, GLfl
 {
     GLfloat a = angle * 0.5;
     GLfloat scale = sin(a);
-
+    
     quat->w = cos(a);
     quat->x = axis.x * scale;
     quat->y = axis.y * scale;
@@ -371,15 +381,15 @@ void	quaternion_into_gl_matrix(Quaternion quat, GLfloat *glmat)
 	GLfloat	x, xz, xy, xx;
 	GLfloat	y, yz, yy;
 	GLfloat	z, zz;
-
+    
 	Quaternion q = quat;
 	quaternion_normalise(&q);
-
+	
 	w = q.w;
 	z = q.z;
 	y = q.y;
 	x = q.x;
-
+    
 	xx = 2.0 * x; yy = 2.0 * y; zz = 2.0 * z;
 	wx = w * xx; wy = w * yy; wz = w * zz;
 	xx = x * xx; xy = x * yy; xz = x * zz;
@@ -400,12 +410,12 @@ Vector	vector_right_from_quaternion(Quaternion quat)
     GLfloat	y, yz, yy;
     GLfloat	z, zz;
     Vector res;
-
+	
     w = quat.w;
     z = quat.z;
     y = quat.y;
     x = quat.x;
-
+    
     xx = 2.0 * x; yy = 2.0 * y; zz = 2.0 * z;
     wx = w * xx; wy = w * yy; wz = w * zz;
     xx = x * xx; xy = x * yy; xz = x * zz;
@@ -428,12 +438,12 @@ Vector	vector_up_from_quaternion(Quaternion quat)
     GLfloat	y, yz, yy;
     GLfloat	z, zz;
     Vector res;
-
+	
     w = quat.w;
     z = quat.z;
     y = quat.y;
     x = quat.x;
-
+    
     xx = 2.0 * x; yy = 2.0 * y; zz = 2.0 * z;
     wx = w * xx; wy = w * yy; wz = w * zz;
     xx = x * xx; xy = x * yy; xz = x * zz;
@@ -441,7 +451,7 @@ Vector	vector_up_from_quaternion(Quaternion quat)
     zz = z * zz;
 
     res.x	= xy + wz;	res.y	= 1.0 - xx - zz;			res.z	= yz - wx;
-
+	
 	if (res.x||res.y||res.z)
 		return unit_vector(&res);
 	else
@@ -456,12 +466,12 @@ Vector	vector_forward_from_quaternion(Quaternion quat)
     GLfloat	y, yz, yy;
     GLfloat	z, zz;
     Vector res;
-
+	
     w = quat.w;
     z = quat.z;
     y = quat.y;
     x = quat.x;
-
+    
     xx = 2.0 * x; yy = 2.0 * y; zz = 2.0 * z;
     wx = w * xx; wy = w * yy; wz = w * zz;
     xx = x * xx; xy = x * yy; xz = x * zz;
@@ -546,7 +556,7 @@ void	quaternion_rotate_about_x(struct quaternion *quat, GLfloat angle)
     result.x = quat->w * scale + quat->x * w;
     result.y = quat->y * w + quat->z * scale;
     result.z = quat->z * w - quat->y * scale;
-
+    
     quat->w = result.w;
     quat->x = result.x;
     quat->y = result.y;
@@ -563,7 +573,7 @@ void	quaternion_rotate_about_y(struct quaternion *quat, GLfloat angle)
     result.x = quat->x * w - quat->z * scale;
     result.y = quat->w * scale + quat->y * w;
     result.z = quat->z * w + quat->x * scale;
-
+    
     quat->w = result.w;
     quat->x = result.x;
     quat->y = result.y;
@@ -575,12 +585,12 @@ void	quaternion_rotate_about_z(struct quaternion *quat, GLfloat angle)
     GLfloat a = angle * 0.5;
     GLfloat w = cos(a);
     GLfloat scale = sin(a);
-
+    
     result.w = quat->w * w - quat->z * scale;
     result.x = quat->x * w + quat->y * scale;
     result.y = quat->y * w - quat->x * scale;
     result.z = quat->w * scale + quat->z * w;
-
+    
     quat->w = result.w;
     quat->x = result.x;
     quat->y = result.y;
@@ -592,25 +602,25 @@ void	quaternion_rotate_about_axis(struct quaternion *quat, Vector axis, GLfloat 
     GLfloat a = angle * 0.5;
     GLfloat w = cos(a);
     GLfloat scale = sin(a);
-
+    
 	//printf("Axis %.1f, %.1f, %.1f : ", axis.x, axis.y, axis.z);
-
+	
     q2.w = w;
     q2.x = axis.x * scale;
     q2.y = axis.y * scale;
     q2.z = axis.z * scale;
 
 	//printf("Quat input %.1f, %.1f, %.1f, %.1f : ", quat->w, quat->x, quat->y, quat->z); // input is OKAY
-
+	
 	//printf("Quat multiplier %.1f, %.1f, %.1f, %.1f : ", q2.w, q2.x, q2.y, q2.z);
-
+	    
     result.w = quat->w * q2.w - q2.x * quat->x - quat->y * q2.y - quat->z * q2.z;
     result.x = quat->w * q2.x + quat->x * q2.w + quat->y * q2.z - quat->z * q2.y;
     result.y = quat->w * q2.y + quat->y * q2.w + quat->z * q2.x - quat->x * q2.z;
     result.z = quat->w * q2.z + quat->z * q2.w + quat->x * q2.y - quat->y * q2.x;
-
+	
 	//printf("Quat result %.1f, %.1f, %.1f, %.1f\n", result.w, result.x, result.y, result.z);
-
+	
     quat->w = result.w;
     quat->x = result.x;
     quat->y = result.y;
@@ -625,8 +635,8 @@ void	quaternion_normalise(struct quaternion *quat)
     GLfloat	x = quat->x;
     GLfloat	y = quat->y;
     GLfloat	z = quat->z;
-    GLfloat	lv = 1.0 / sqrt(w*w + x*x + y*y + z*z);
-
+    GLfloat	lv = FastInvSqrt(w*w + x*x + y*y + z*z);
+    
     quat->w = lv * w;
     quat->x = lv * x;
     quat->y = lv * y;
@@ -722,27 +732,27 @@ Vector lineIntersectionWithFace(Vector p1, Vector p2, long mask, GLfloat rd)
 		return make_vector( rd,
 							p1.y + (p2.y - p1.y) * (rd - p1.x) / (p2.x - p1.x),
 							p1.z + (p2.z - p1.z) * (rd - p1.x) / (p2.x - p1.x));
-
+	
 	if (CUBE_FACE_LEFT & mask)
 		return make_vector( -rd,
 							p1.y + (p2.y - p1.y) * (-rd - p1.x) / (p2.x - p1.x),
 							p1.z + (p2.z - p1.z) * (-rd - p1.x) / (p2.x - p1.x));
-
+	
 	if (CUBE_FACE_TOP & mask)
 		return make_vector( p1.x + (p2.x - p1.x) * (rd - p1.y) / (p2.y - p1.y),
 							rd,
 							p1.z + (p2.z - p1.z) * (rd - p1.y) / (p2.y - p1.y));
-
+	
 	if (CUBE_FACE_BOTTOM & mask)
 		return make_vector( p1.x + (p2.x - p1.x) * (-rd - p1.y) / (p2.y - p1.y),
 							-rd,
 							p1.z + (p2.z - p1.z) * (-rd - p1.y) / (p2.y - p1.y));
-
+	
 	if (CUBE_FACE_FRONT & mask)
 		return make_vector( p1.x + (p2.x - p1.x) * (rd - p1.z) / (p2.z - p1.z),
 							p1.y + (p2.y - p1.y) * (rd - p1.z) / (p2.z - p1.z),
 							rd);
-
+	
 	if (CUBE_FACE_BACK & mask)
 		return make_vector( p1.x + (p2.x - p1.x) * (-rd - p1.z) / (p2.z - p1.z),
 							p1.y + (p2.y - p1.y) * (-rd - p1.z) / (p2.z - p1.z),
@@ -777,37 +787,37 @@ int checkLine(Vector p1, Vector p2, int mask, GLfloat rd)
 	return result;
 }
 
-// line v0 to v1 is compared with a cube centered on the origin (corners at -rd,-rd,-rd to rd,rd,rd).
-// returns -1 if the line intersects the cube.
+// line v0 to v1 is compared with a cube centered on the origin (corners at -rd,-rd,-rd to rd,rd,rd).                    
+// returns -1 if the line intersects the cube. 
 int lineCubeIntersection(Vector v0, Vector v1, GLfloat rd)
 {
 	int	v0_test, v1_test;
 
-	//	compare both vertexes with all six face-planes
+	//	compare both vertexes with all six face-planes 
 	//
 	if ((v0_test = checkFace( v0, rd)) == 0)
 		return -1;	// v0 is inside the cube
 	if ((v1_test = checkFace( v1, rd)) == 0)
 		return -1;	// v1 is inside the cube
-
+	
 	// check they're not both outside one face-plane
 	//
 	if ((v0_test & v1_test) != 0)
 		return 0;	// both v0 and v1 are outside the same face of the cube
 
-	//	Now do the same test for the 12 edge planes
+	//	Now do the same test for the 12 edge planes 
 	//
-	v0_test |= checkBevel( v0, rd) << 8;
-	v1_test |= checkBevel( v1, rd) << 8;
+	v0_test |= checkBevel( v0, rd) << 8; 
+	v1_test |= checkBevel( v1, rd) << 8; 
 	if ((v0_test & v1_test) != 0)
-		return 0; // v0 and v1 outside of the same bevel
+		return 0; // v0 and v1 outside of the same bevel  
 
 	//	Now do the same test for the 8 corner planes
 	//
-	v0_test |= checkCorner( v0, rd) << 24;
-	v1_test |= checkCorner( v1, rd) << 24;
+	v0_test |= checkCorner( v0, rd) << 24; 
+	v1_test |= checkCorner( v1, rd) << 24; 
 	if ((v0_test & v1_test) != 0)
-		return 0; // v0 and v1 outside of same corner
+		return 0; // v0 and v1 outside of same corner   
 
 	// see if the v0-->v1 line intersects the cube.
 	//

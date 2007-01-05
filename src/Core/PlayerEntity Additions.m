@@ -59,12 +59,15 @@ static NSString * mission_key;
 - (void) checkScript
 {
 	int i;
+	int d;
 
 	[self setScript_target:self];
 
 	if (debug & DEBUG_SCRIPT)
 		NSLog(@"----- checkScript");
 
+	d = debug;
+	debug |= DEBUG_SCRIPT;
 	for (i = 0; i < [[script allKeys] count]; i++)
 	{
 		NSString *missionTitle = (NSString *)[[script allKeys] objectAtIndex:i];
@@ -72,6 +75,7 @@ static NSString * mission_key;
 		mission_key = missionTitle;
 		[self scriptActions: mission forTarget: self];
 	}
+	debug = d;
 }
 
 - (void) scriptActions:(NSArray*) some_actions forTarget:(ShipEntity*) a_target
@@ -1763,11 +1767,23 @@ int d100_seed = -1;	// ensure proper random function
 		return;
 	}
 	//
-	Vector posn = [Entity vectorFromString:(NSString *)[dict objectForKey:@"position"]];
-	if (debug & DEBUG_SCRIPT)
+	Vector posn = [universe coordinatesFromCoordinateSystemString:(NSString *)[dict objectForKey:@"position"]];
+	if (posn.x || posn.y || posn.z)
 	{
-		NSLog(@"DEBUG planet position (%.2f %.2f %.2f) derived from %@",
-			posn.x, posn.y, posn.z, [dict objectForKey:@"position"]);
+		if (debug & DEBUG_SCRIPT)
+		{
+			NSLog(@"DEBUG planet position (%.2f %.2f %.2f) derived from %@",
+				posn.x, posn.y, posn.z, [dict objectForKey:@"position"]);
+		}
+	}
+	else
+	{
+		posn = [Entity vectorFromString:(NSString *)[dict objectForKey:@"position"]];
+		if (debug & DEBUG_SCRIPT)
+		{
+			NSLog(@"DEBUG planet position (%.2f %.2f %.2f) derived from %@",
+				posn.x, posn.y, posn.z, [dict objectForKey:@"position"]);
+		}
 	}
 	//
 	[planet setPosition: posn];
@@ -1808,11 +1824,23 @@ int d100_seed = -1;	// ensure proper random function
 		return;
 	}
 	//
-	Vector posn = [Entity vectorFromString:(NSString *)[dict objectForKey:@"position"]];
-	if (debug & DEBUG_SCRIPT)
+	Vector posn = [universe coordinatesFromCoordinateSystemString:(NSString *)[dict objectForKey:@"position"]];
+	if (posn.x || posn.y || posn.z)
 	{
-		NSLog(@"DEBUG moon position (%.2f %.2f %.2f) derived from %@",
-			posn.x, posn.y, posn.z, [dict objectForKey:@"position"]);
+		if (debug & DEBUG_SCRIPT)
+		{
+			NSLog(@"DEBUG moon position (%.2f %.2f %.2f) derived from %@",
+				posn.x, posn.y, posn.z, [dict objectForKey:@"position"]);
+		}
+	}
+	else
+	{
+		posn = [Entity vectorFromString:(NSString *)[dict objectForKey:@"position"]];
+		if (debug & DEBUG_SCRIPT)
+		{
+			NSLog(@"DEBUG moon position (%.2f %.2f %.2f) derived from %@",
+				posn.x, posn.y, posn.z, [dict objectForKey:@"position"]);
+		}
 	}
 	//
 	[planet setPosition: posn];
@@ -2123,7 +2151,7 @@ int d100_seed = -1;	// ensure proper random function
 		if ([i_info count] != 4)	// must be local-planet_x_y_z
 			return NO;				//		   0........... 1 2 3
 
-		PlanetEntity* doppelganger = [[PlanetEntity alloc] initMiniatureFromPlanet:[universe planet]];   // retain count = 1
+		PlanetEntity* doppelganger = [[PlanetEntity alloc] initMiniatureFromPlanet:[universe planet] inUniverse: universe];   // retain count = 1
 		if (!doppelganger)
 			return NO;
 
@@ -2152,7 +2180,7 @@ int d100_seed = -1;	// ensure proper random function
 
 		PlanetEntity* targetplanet = [[[PlanetEntity alloc] initWithSeed:target_system_seed fromUniverse:universe] autorelease];
 
-		PlanetEntity* doppelganger = [[PlanetEntity alloc] initMiniatureFromPlanet:targetplanet];   // retain count = 1
+		PlanetEntity* doppelganger = [[PlanetEntity alloc] initMiniatureFromPlanet:targetplanet inUniverse:universe];   // retain count = 1
 		if (!doppelganger)
 			return NO;
 
@@ -2185,7 +2213,7 @@ int d100_seed = -1;	// ensure proper random function
 		model_p0.x = [[i_info objectAtIndex:2] floatValue] + off.x;
 		model_p0.y = [[i_info objectAtIndex:3] floatValue] + off.y;
 		model_p0.z = off.z;
-		if (![[universe textureStore] getTextureNameFor:texturefile])
+		if (![TextureStore getTextureNameFor:texturefile])
 			return NO;
 
 		ParticleEntity* billboard = [[ParticleEntity alloc] initBillboard:billSize withTexture:texturefile];

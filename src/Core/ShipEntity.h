@@ -198,6 +198,8 @@ Your fair use and other rights are in no way affected by the above.
 		GLfloat		desired_range;		// range to which to journey/scan
 		GLfloat		desired_speed;		// speed at which to travel
 		int			behaviour;			// ship's behavioural state
+		
+		BoundingBox				totalBoundingBox;	// records ship configuration
 
 	@protected
 
@@ -370,6 +372,9 @@ Your fair use and other rights are in no way affected by the above.
 		// DEBUGGING
 		int debug_flag;
 		int debug_condition;
+		
+		// shaders
+		NSMutableDictionary* shader_info;
 }
 
 // ship brains
@@ -623,6 +628,7 @@ BOOL	class_masslocks(int some_class);
 
 - (GLfloat) rangeToDestination;
 - (double) trackDestination:(double) delta_t :(BOOL) retreat;
+//- (double) trackPosition:(Vector) track_pos :(double) delta_t :(BOOL) retreat;
 
 - (Vector) destination;
 - (Vector) one_km_six;

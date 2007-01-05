@@ -41,7 +41,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "OOOpenGL.h"
 
 #ifdef LIBNOISE_PLANETS
-#import <noise/ptg.h>
+#import <ptg.h>
 #endif
 
 #define OOLITE_EXCEPTION_TEXTURE_NOT_FOUND		@"OoliteTextureNotFoundException"
@@ -51,30 +51,49 @@ Your fair use and other rights are in no way affected by the above.
 
 extern int debug;
 
+@class OOColor;
+
 @interface TextureStore : NSObject
 {
-    NSMutableDictionary	*textureDictionary;
-#ifdef LIBNOISE_PLANETS
-    int max_planet_textures;
-    NSMutableArray* planet_texture_mru_cache;
-#endif
 }
 
-- (id) init;
-- (void) dealloc;
++ (GLuint) maxTextureDimension;
 
-- (GLuint) getTextureNameFor:(NSString *)filename;
++ (GLuint) getTextureNameFor:(NSString *)filename;
++ (GLuint) getImageNameFor:(NSString *)filename;
++ (GLuint) getTextureNameFor:(NSString *)filename inFolder:(NSString*) foldername;
++ (NSString*) getNameOfTextureWithGLuint:(GLuint) value;
++ (NSSize) getSizeOfTexture:(NSString *)filename;
 
-#ifdef LIBNOISE_PLANETS
-- (GLuint) getTextureNameForPlanet:(struct planet_info*)info;
-- (GLuint) getTextureNameForAtmosphere:(struct planet_info*)info;
-- (void) updatePlanetTextureCacheWith:(NSString *)filename;
+#ifndef NO_SHADERS
+//+ (GLuint) shaderProgramFromDictionary:(NSDictionary *) shaderDict;
++ (GLhandleARB) shaderProgramFromDictionary:(NSDictionary *) shaderDict;
 #endif
 
-- (NSSize) getSizeOfTexture:(NSString *)filename;
+#ifdef LIBNOISE_PLANETS
++ (GLuint) getTextureNameForPlanet:(struct planet_info*)info;
++ (GLuint) getTextureNameForAtmosphere:(struct planet_info*)info;
++ (void) updatePlanetTextureCacheWith:(NSString *)filename;
+#endif
 
-- (void) reloadTextures;
++ (void) reloadTextures;
+
++ (GLuint) getPlanetTextureNameFor:(NSDictionary*)planetinfo intoData:(unsigned char **)textureData;
++ (GLuint) getPlanetNormalMapNameFor:(NSDictionary*)planetinfo intoData:(unsigned char **)textureData;
++ (GLuint) getCloudTextureNameFor:(OOColor*) color: (GLfloat) impress: (GLfloat) bias intoData:(unsigned char **)textureData;
+
+void fillRanNoiseBuffer();
 
 void fillSquareImageDataWithBlur(unsigned char * imageBuffer, int width, int nplanes);
+
+void addNoise(float * buffer, int p, int n, float scale);
+void fillSquareImageDataWithSmoothNoise(unsigned char * imageBuffer, int width, int nplanes);
+void fillSquareImageDataWithCloudTexture(unsigned char * imageBuffer, int width, int nplanes, OOColor* cloudcolor, float impress, float bias);
+void fillSquareImageWithPlanetTex(unsigned char * imageBuffer, int width, int nplanes, float impress, float bias,
+	OOColor* seaColor,
+	OOColor* paleSeaColor,
+	OOColor* landColor,
+	OOColor* paleLandColor);
+void fillSquareImageWithPlanetNMap(unsigned char * imageBuffer, int width, int nplanes, float impress, float bias, float factor);
 
 @end

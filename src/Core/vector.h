@@ -3,7 +3,7 @@
 /*
 
 Provides utility routines for Vectors, Quaternions, rotation matrices, and conversion to OpenGL transformation matrices
-
+ 
  *
  *  Oolite
  *
@@ -108,6 +108,8 @@ typedef struct quaternion Quaternion;
 
 void	mult_matrix (struct vector *first, struct vector *second);
 void	mult_vector (struct vector *vec, struct vector *mat);
+
+float FastInvSqrt(float x);
 
 //
 // Multiply vector by scalar
@@ -226,7 +228,7 @@ static inline GLfloat distance2 (Vector v1, Vector v2)
 static inline GLfloat dot_product (Vector first, Vector second) GCC_ATTR((always_inline, pure));
 static inline GLfloat dot_product (Vector first, Vector second)
 {
-	return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);
+	return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);	
 }
 
 // make a vector

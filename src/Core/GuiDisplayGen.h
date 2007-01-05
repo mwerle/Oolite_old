@@ -81,6 +81,7 @@ extern int debug;
 #else
 	NSImage			*backgroundImage;
 #endif
+
 	OOColor			*backgroundColor;
 	OOColor			*textColor;
 	
@@ -116,7 +117,16 @@ extern int debug;
 
 - (id) init;
 - (id) initWithPixelSize:(NSSize) gui_size Columns:(int) gui_cols Rows:(int) gui_rows RowHeight:(int) gui_row_height RowStart:(int) gui_row_start Title:(NSString*) gui_title;
+
 - (void) resizeWithPixelSize:(NSSize) gui_size Columns:(int) gui_cols Rows:(int) gui_rows RowHeight:(int) gui_row_height RowStart:(int) gui_row_start Title:(NSString*) gui_title;
+- (void) resizeTo:(NSSize) gui_size characterHeight:(int) csize Title:(NSString*) gui_title;
+- (NSSize)	size;
+- (int)	columns;
+- (int)	rows;
+- (int)	rowHeight;
+- (int)	rowStart;
+- (NSString*)	title;
+
 
 - (void) dealloc;
 

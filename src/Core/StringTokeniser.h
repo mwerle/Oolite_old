@@ -29,17 +29,17 @@
 }
 
 // Initialise an instance of the string tokeniser to parse the given string
-- (id)initWithString:(NSString*)string;
+- (id) initWithString:(NSString*)string;
 - (void) dealloc;
 
 // Parse the next token and set the tokenType property appropriately
-- (void)nextToken;
+- (void) nextToken;
 
 // Push back the current token so the next call to nextToken returns
 // the same one
-- (void)pushBack;
+- (void) pushBack;
 
 // Returns true once the entire string has been parsed
-- (BOOL)reachedEOS;
+- (BOOL) reachedEOS;
 
 @end

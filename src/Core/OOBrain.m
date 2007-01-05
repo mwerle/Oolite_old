@@ -11,6 +11,7 @@
 #import "entities.h"
 #import "Universe.h"
 #import "OOInstinct.h"
+#import "legacy_random.h"
 
 @implementation OOBrain
 

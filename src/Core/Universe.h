@@ -131,9 +131,10 @@ Your fair use and other rights are in no way affected by the above.
 
 #define OOLITE_EXCEPTION_LOOPING		@"OoliteLoopingException"
 #define OOLITE_EXCEPTION_SHIP_NOT_FOUND	@"OoliteShipNotFoundException"
+#define OOLITE_EXCEPTION_DATA_NOT_FOUND	@"OoliteDataNotFoundException"
 #define OOLITE_EXCEPTION_FATAL			@"OoliteFatalException"
 
-@class TextureStore, OpenGLSprite, GameController, ShipEntity, CollisionRegion;
+@class TextureStore, GameController, ShipEntity, CollisionRegion;
 
 extern int debug;
 
@@ -163,7 +164,6 @@ extern int debug;
 		
 		@protected
 		MyOpenGLView			*gameView;
-		TextureStore			*textureStore;
 		
 		#ifndef GNUSTEP
 		NSSpeechSynthesizer*	speechSynthesizer;		// use this from OS X 10.3 onwards
@@ -197,7 +197,6 @@ extern int debug;
 		GuiDisplayGen*			message_gui;
 		GuiDisplayGen*			comm_log_gui;
 		
-		OpenGLSprite			*textDisplaySprite;
 		BOOL					displayGUI;
 		BOOL					displayCursor;
 		
@@ -265,11 +264,17 @@ extern int debug;
 		
 		// check and maintain linked lists occasionally
 		BOOL					doLinkedListMaintenanceThisUpdate;
+		
+		// experimental proc-genned textures
+		BOOL					doProcedurallyTexturedPlanets;
 
 }
 
 - (id) init;
 - (void) dealloc;
+
+- (BOOL) doProcedurallyTexturedPlanets;
+- (void) setDoProcedurallyTexturedPlanets:(BOOL) value;
 
 - (BOOL) strict;
 - (void) setStrict:(BOOL) value;
@@ -294,6 +299,7 @@ extern int debug;
 - (void) addShipWithRole:(NSString *) desc nearRouteOneAt:(double) route_fraction;
 - (Vector) coordinatesForPosition:(Vector) pos withCoordinateSystem:(NSString *) system returningScalar:(GLfloat*) my_scalar;
 - (NSString *) expressPosition:(Vector) pos inCoordinateSystem:(NSString *) system;
+- (Vector) coordinatesFromCoordinateSystemString:(NSString *) system_x_y_z;
 - (BOOL) addShipWithRole:(NSString *) desc nearPosition:(Vector) pos withCoordinateSystem:(NSString *) system;
 - (BOOL) addShips:(int) howMany withRole:(NSString *) desc atPosition:(Vector) pos withCoordinateSystem:(NSString *) system;
 - (BOOL) addShips:(int) howMany withRole:(NSString *) desc nearPosition:(Vector) pos withCoordinateSystem:(NSString *) system;
@@ -357,8 +363,6 @@ extern int debug;
 - (void) setGameView:(MyOpenGLView *)view;
 - (MyOpenGLView *) gameView;
 - (GameController *) gameController;
-
-- (TextureStore *) textureStore;
 
 - (void) drawFromEntity:(int) n;
 - (void) drawCrosshairs;

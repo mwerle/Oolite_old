@@ -38,7 +38,7 @@
 
 - (void) replaceString:(NSString*)aString withString:(NSString*)otherString
 {
-	[self replaceOccurrencesOfString:aString withString:otherString options:nil range:NSMakeRange(0,[self length])];
+	[self replaceOccurrencesOfString:aString withString:otherString options:NSCaseInsensitiveSearch range:NSMakeRange(0,[self length])];
 }
 
 - (void) trimSpaces

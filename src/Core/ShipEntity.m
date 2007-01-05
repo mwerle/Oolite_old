@@ -239,6 +239,8 @@ Your fair use and other rights are in no way affected by the above.
 	if (lastRadioMessage)	[lastRadioMessage autorelease];
 
 	if (octree)				[octree autorelease];
+	
+	if (shader_info)		[shader_info release];
 
 	[super dealloc];
 }
@@ -384,7 +386,15 @@ NSString* describeStatus(int some_status)
 static NSMutableDictionary* smallOctreeDict = nil;
 - (void) setModel:(NSString*) modelName
 {
-	[super setModel:modelName];
+	NS_DURING
+		[super setModel:modelName];
+	NS_HANDLER
+		if ([[localException name] isEqual: OOLITE_EXCEPTION_DATA_NOT_FOUND])
+		{
+			NSLog(@"***** Oolite Data Not Found Exception : '%@' in [ShipEntity setModel:] *****", [localException reason]);
+		}
+		[localException raise];
+	NS_ENDHANDLER
 	// TESTING
 	NSMutableDictionary* octreeCache = [(NSMutableDictionary *)[NSMutableDictionary alloc] initWithCapacity:30];
 	if ([Entity dataStore])
@@ -836,6 +846,12 @@ static NSMutableDictionary* smallOctreeDict = nil;
 	[self setOctree: nil];
 	//
 	[self setBrain: nil];
+	//
+	if (shader_info)
+	{
+		[shader_info release];
+		shader_info = nil;
+	}
 }
 
 
@@ -2358,6 +2374,12 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 		qf.z *= delta_t;
 		q_rotation = quaternion_multiply( qf, q_rotation);
 	}
+	
+	//
+	//	reset totalBoundingBox
+	//
+	totalBoundingBox = boundingBox;
+	
 
 	//
 	// update subentities
@@ -2366,7 +2388,17 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 	{
 		int i;
 		for (i = 0; i < [sub_entities count]; i++)
-			[(Entity *)[sub_entities objectAtIndex:i] update:delta_t];
+//			[(Entity *)[sub_entities objectAtIndex:i] update:delta_t];
+		{
+			ShipEntity* se = (ShipEntity *)[sub_entities objectAtIndex:i];
+			[se update:delta_t];
+			if (se->isShip)
+			{
+				BoundingBox sebb = [se findSubentityBoundingBox];
+				bounding_box_add_vector(&totalBoundingBox, sebb.max);
+				bounding_box_add_vector(&totalBoundingBox, sebb.min);
+			}
+		}
 	}
 	
 }
@@ -2433,34 +2465,42 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 - (void) behaviour_tractored:(double) delta_t
 {
 	double  distance = [self rangeToDestination];
+	desired_range = collision_radius * 2.0;
 	ShipEntity* hauler = (ShipEntity*)[self owner];
 	if ((hauler)&&(hauler->isShip))
 	{
+		if (distance < desired_range)
+		{
+			behaviour = BEHAVIOUR_TUMBLE;
+			status = STATUS_IN_FLIGHT;
+			[hauler scoopUp:self];
+			return;
+		}
 		GLfloat tf = TRACTOR_FORCE / mass;
-		desired_speed = 0.0;
-		desired_range = collision_radius * 2.0;
 		destination = [hauler absoluteTractorPosition];
 		// adjust for difference in velocity (spring rule)
 		Vector dv = vector_between( [self getVelocity], [hauler getVelocity]);
-		velocity.x += delta_t * dv.x * 0.25 * tf;
-		velocity.y += delta_t * dv.y * 0.25 * tf;
-		velocity.z += delta_t * dv.z * 0.25 * tf;
+		GLfloat moment = delta_t * 0.25 * tf;
+		velocity.x += moment * dv.x;
+		velocity.y += moment * dv.y;
+		velocity.z += moment * dv.z;
 		// acceleration = force / mass
 		// force proportional to distance (spring rule)
 		Vector dp = vector_between( position, destination);
-		velocity.x += delta_t * dp.x * tf * 0.5;
-		velocity.y += delta_t * dp.y * tf * 0.5;
-		velocity.z += delta_t * dp.z * tf * 0.5;
+		moment = delta_t * 0.5 * tf;
+		velocity.x += moment * dp.x;
+		velocity.y += moment * dp.y;
+		velocity.z += moment * dp.z;
 		// force inversely proportional to distance
-		GLfloat d2 = 2.0 * magnitude2(dp);
+		GLfloat d2 = magnitude2(dp);
+		moment = (d2 > 0.0)? delta_t * 5.0 * tf / d2 : 0.0;
 		if (d2 > 0.0)
 		{
-			velocity.x += delta_t * dp.x * tf / d2;
-			velocity.y += delta_t * dp.y * tf / d2;
-			velocity.z += delta_t * dp.z * tf / d2;
+			velocity.x += moment * dp.x;
+			velocity.y += moment * dp.y;
+			velocity.z += moment * dp.z;
 		}
-
-		thrust = 20.0;	// used to damp velocity
+		//
 		if (status == STATUS_BEING_SCOOPED)
 		{
 			BOOL lost_contact = (distance > hauler->collision_radius + collision_radius + 250.0f);	// 250m range for tractor beam
@@ -2474,6 +2514,7 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 						break;
 				}
 			}
+			//
 			if (lost_contact)	// 250m range for tractor beam
 			{
 				// escaped tractor beam
@@ -2486,15 +2527,13 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 			{
 				[(PlayerEntity*)hauler setScoopsActive];
 			}
-			
-			if (distance < desired_range)
-			{
-				[hauler scoopUp:self];
-			}
 		}
 	}
 	[self applyRoll:delta_t*flight_roll andClimb:delta_t*flight_pitch];
+	desired_speed = 0.0;
+	thrust = 25.0;	// used to damp velocity (must be less than hauler thrust)
 	[self applyThrust:delta_t];
+	thrust = 0.0;	// must reset thrust now
 }
 //            //
 - (void) behaviour_track_target:(double) delta_t
@@ -3233,15 +3272,109 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 	return viewpoint;
 }
 
+#ifndef NO_SHADERS
+BOOL shaders_supported = YES;
+BOOL testForShaderSupport = YES;
+#else
+BOOL shaders_supported = NO;
+BOOL testForShaderSupport = NO;
+#endif
+
+void testForShaders()
+{
+#ifndef NO_SHADERS
+	testForShaderSupport = NO;
+	NSString* version_info = [NSString stringWithCString: (const char *)glGetString(GL_VERSION)];
+	NSScanner* vscan = [NSScanner scannerWithString:version_info];
+	int major = 0;
+	int minor = 0;
+	NSString* temp;
+	if ([vscan scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@". "] intoString:&temp])
+		major = [temp intValue];
+	[vscan scanCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@". "] intoString:(NSString**)nil];
+	if ([vscan scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@". "] intoString:&temp])
+		minor = [temp intValue];
+
+	NSLog(@"\n\nOPENGL VERSION %d.%d ('%@')", major, minor, version_info);
+
+	if ((major < 2)&&(minor < 5))
+	{
+		shaders_supported = NO;
+		NSLog(@"INFORMATION: Oolite does not use shaders for OpenGL drivers before OpenGL 1.5");
+		return;
+	}
+	
+	// check for the necessary extensions
+	NSString* extension_info = [NSString stringWithCString: (const char *)glGetString(GL_EXTENSIONS)];
+
+	NSLog(@"\n\nOPENGL EXTENSIONS:\n%@", extension_info);
+	
+	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_multitexture"].location != NSNotFound);
+	if (!shaders_supported)
+	{
+		NSLog(@"INFORMATION: shaders require the GL_ARB_multitexture OpenGL extension, which is not present.");
+		return;
+	}
+	
+	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_shader_objects"].location != NSNotFound);
+	if (!shaders_supported)
+	{
+		NSLog(@"INFORMATION: shaders require the GL_ARB_multitexture OpenGL extension, which is not present.");
+		return;
+	}
+		
+	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_shading_language_100"].location != NSNotFound);
+	if (!shaders_supported)
+	{
+		NSLog(@"INFORMATION: shaders require the GL_ARB_shading_language_100 OpenGL extension, which is not present.");
+		return;
+	}
+	
+	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_fragment_program"].location != NSNotFound);
+	if (!shaders_supported)
+	{
+		NSLog(@"INFORMATION: shaders require the GL_ARB_fragment_program OpenGL extension, which is not present.");
+		return;
+	}
+	
+	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_fragment_shader"].location != NSNotFound);
+	if (!shaders_supported)
+	{
+		NSLog(@"INFORMATION: shaders require the GL_ARB_fragment_shader OpenGL extension, which is not present.");
+		return;
+	}
+	
+	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_vertex_program"].location != NSNotFound);
+	if (!shaders_supported)
+	{
+		NSLog(@"INFORMATION: shaders require the GL_ARB_vertex_program OpenGL extension, which is not present.");
+		return;
+	}
+	
+	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_vertex_shader"].location != NSNotFound);
+	if (!shaders_supported)
+	{
+		NSLog(@"INFORMATION: shaders require the GL_ARB_vertex_shader OpenGL extension, which is not present.");
+		return;
+	}
+#endif
+}
+
 - (void) initialiseTextures
 {
     [super initialiseTextures];
-				
-	if ([shipinfoDictionary objectForKey:@"shaders"])
+	
+	if (testForShaderSupport)
+		testForShaders();
+	if ([shipinfoDictionary objectForKey:@"shaders"] && shaders_supported)
 	{
+#ifndef NO_SHADERS
 		// initialise textures in shaders
 		
-		NSLog(@"TESTING: initialising textures for shaders for %@", self);
+		if (!shader_info)
+			shader_info = [[NSMutableDictionary dictionary] retain];
+					
+		NSLog(@"TESTING: initialising shaders for %@", self);
 		
 		NSDictionary* shaders = (NSDictionary*)[shipinfoDictionary objectForKey:@"shaders"];
 		NSArray* shader_keys = [shaders allKeys];
@@ -3251,22 +3384,43 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 			NSString* shader_key = [shader_keys objectAtIndex:i];	// == the name of the texture to be replaced
 			NSDictionary* shader = (NSDictionary*)[shaders objectForKey:shader_key];
 			NSArray* shader_textures = (NSArray*)[shader objectForKey:@"textures"];
-		
+			NSMutableArray* textureNames = [NSMutableArray array];
+			
 			NSLog(@"TESTING: initialising shader for %@ : %@", shader_key, shader);
-		
 			for (ti = 0; ti < [shader_textures count]; ti ++)
 			{
-				[[universe textureStore] getTextureNameFor: (NSString*)[shader_textures objectAtIndex:ti]];
-		
+				GLuint tn = [TextureStore getTextureNameFor: (NSString*)[shader_textures objectAtIndex:ti]];
+				[textureNames addObject:[NSNumber numberWithUnsignedInt:tn]];
 				NSLog(@"TESTING: initialised texture: %@", [shader_textures objectAtIndex:ti]);
-		
 			}
+			
+//			GLuint shader_program = [TextureStore shaderProgramFromDictionary: shader];
+			GLhandleARB shader_program = [TextureStore shaderProgramFromDictionary: shader];
+			if (shader_program)
+				NSLog(@"TESTING: successfully compiled shader program is %d", shader_program);
+			else
+				NSLog(@"TESTING: failed to initialise shader program!");
+			[shader_info setObject:[NSDictionary dictionaryWithObjectsAndKeys:
+				textureNames, @"textureNames", [NSNumber numberWithUnsignedInt: (unsigned int) shader_program], @"shader_program", nil]
+				forKey: shader_key];
 		}
+		
+		NSLog(@"TESTING: shader_info = %@", shader_info);
+#endif
+	}
+	else
+	{
+		if (shader_info)
+			[shader_info release];
+		shader_info = nil;
 	}
 }
 
 - (void) drawEntity:(BOOL) immediate :(BOOL) translucent
 {
+	if (testForShaderSupport)
+		testForShaders();
+	
 	if (zero_distance > no_draw_distance)	return;	// TOO FAR AWAY
 
 	if ([universe breakPatternHide])	return;	// DON'T DRAW
@@ -3274,115 +3428,180 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 	if (cloaking_device_active && (randf() > 0.10))			return;	// DON'T DRAW
 
 	if (!translucent)
-//	{
-//		[super drawEntity:immediate:translucent];
-
 	{
-		// draw the thing - code take from Entity drawEntity::
-		//
-		int ti;
-		GLfloat mat_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat mat_no[] =		{ 0.0, 0.0, 0.0, 1.0 };
+		if (!shaders_supported)
+		{
+			[super drawEntity:immediate:translucent];
+		}
+		else
+		{
+			// draw the thing - code take from Entity drawEntity::
+			//
+			int ti;
+			GLfloat mat_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
+			GLfloat mat_no[] =		{ 0.0, 0.0, 0.0, 1.0 };
 
-		NS_DURING
+			NS_DURING
 
-			if (is_smooth_shaded)
-				glShadeModel(GL_SMOOTH);
-			else
-				glShadeModel(GL_FLAT);
+				if (is_smooth_shaded)
+					glShadeModel(GL_SMOOTH);
+				else
+					glShadeModel(GL_FLAT);
 
-			if (!translucent)
-			{
-				if (basefile)
+				if (!translucent)
 				{
-					// calls moved here because they are unsupported in display lists
-					//
-					glDisableClientState(GL_COLOR_ARRAY);
-					glDisableClientState(GL_INDEX_ARRAY);
-					glDisableClientState(GL_EDGE_FLAG_ARRAY);
-					//
-					glEnableClientState(GL_VERTEX_ARRAY);
-					glEnableClientState(GL_NORMAL_ARRAY);
-					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-					glVertexPointer( 3, GL_FLOAT, 0, entityData.vertex_array);
-					glNormalPointer( GL_FLOAT, 0, entityData.normal_array);
-					glTexCoordPointer( 2, GL_FLOAT, 0, entityData.texture_uv_array);
-
-					if (immediate)
+					if (basefile)
 					{
-
-	#ifdef GNUSTEP
-						// TODO: Find out what these APPLE functions can be replaced with
-	#else
-						if (usingVAR)
-							glBindVertexArrayAPPLE(gVertexArrayRangeObjects[0]);
-	#endif
-
+						// calls moved here because they are unsupported in display lists
 						//
-						// gap removal (draws flat polys)
+						glDisableClientState(GL_COLOR_ARRAY);
+						glDisableClientState(GL_INDEX_ARRAY);
+						glDisableClientState(GL_EDGE_FLAG_ARRAY);
 						//
-						glDisable(GL_TEXTURE_2D);
-						GLfloat amb_diff0[] = { 0.5, 0.5, 0.5, 1.0};
-						glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, amb_diff0);
-						glMaterialfv( GL_FRONT_AND_BACK, GL_EMISSION, mat_no);
-						glColor4f( 0.25, 0.25, 0.25, 1.0);	// gray
-						glDepthMask(GL_FALSE); // don't write to depth buffer
-						glDrawArrays( GL_TRIANGLES, 0, entityData.n_triangles);	// draw in gray to mask the edges
-						glDepthMask(GL_TRUE);
+						glEnableClientState(GL_VERTEX_ARRAY);
+						glEnableClientState(GL_NORMAL_ARRAY);
+						glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-						//
-						// now the textures ...
-						//
-						glEnable(GL_TEXTURE_2D);
-						glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-						glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
-						glMaterialfv( GL_FRONT_AND_BACK, GL_EMISSION, mat_no);
+						glVertexPointer( 3, GL_FLOAT, 0, entityData.vertex_array);
+						glNormalPointer( GL_FLOAT, 0, entityData.normal_array);
+						glTexCoordPointer( 2, GL_FLOAT, 0, entityData.texture_uv_array);
 
-						for (ti = 1; ti <= n_textures; ti++)
+
+						GLfloat utime = (GLfloat)[universe getTime];
+						GLfloat engine_level = (max_flight_speed > 0.0f)? flight_speed / max_flight_speed : 0.0f;
+						GLfloat laser_heat_level = (isPlayer)? [(PlayerEntity*)self dial_weapon_temp]: (weapon_recharge_rate - shot_time) / weapon_recharge_rate;
+						
+
+						if (immediate)
 						{
-							glBindTexture(GL_TEXTURE_2D, texture_name[ti]);
-							glDrawArrays( GL_TRIANGLES, triangle_range[ti].location, triangle_range[ti].length);
+							//
+							// gap removal (draws flat polys)
+							//
+							glDisable(GL_TEXTURE_2D);
+							GLfloat amb_diff0[] = { 0.5, 0.5, 0.5, 1.0};
+							glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, amb_diff0);
+							glMaterialfv( GL_FRONT_AND_BACK, GL_EMISSION, mat_no);
+							glColor4f( 0.25, 0.25, 0.25, 1.0);	// gray
+							glDepthMask(GL_FALSE); // don't write to depth buffer
+							glDrawArrays( GL_TRIANGLES, 0, entityData.n_triangles);	// draw in gray to mask the edges
+							glDepthMask(GL_TRUE);
+
+							//
+							// now the textures ...
+							//
+							glEnable(GL_TEXTURE_2D);
+							glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+							glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambient);
+							glMaterialfv( GL_FRONT_AND_BACK, GL_EMISSION, mat_no);
+
+							for (ti = 1; ti <= n_textures; ti++)
+							{
+								NSString* textureKey = [TextureStore getNameOfTextureWithGLuint: texture_name[ti]];
+#ifndef NO_SHADERS
+								if ((shader_info) && [shader_info objectForKey: textureKey])
+								{
+									NSDictionary* shader = (NSDictionary*)[shader_info objectForKey:textureKey];
+									
+									GLhandleARB shader_program = (GLhandleARB)[(NSNumber*)[shader objectForKey:@"shader_program"] unsignedIntValue];
+									//
+									// set up texture units
+									//
+									glUseProgramObjectARB( shader_program);
+									//
+									NSArray* texture_units = (NSArray*)[shader objectForKey:@"textureNames"];
+									int n_tu = [texture_units count];
+									int i;
+									for (i = 0; i < n_tu; i++)
+									{
+										// set up each texture unit in turn
+										// associating texN with each texture
+										GLuint textureN = [[texture_units objectAtIndex:i] intValue];
+										
+										glActiveTextureARB( GL_TEXTURE0_ARB + i);
+										glBindTexture( GL_TEXTURE_2D, textureN);
+										
+										NSString* texdname = [NSString stringWithFormat:@"tex%d", i];
+										const char* cname = [texdname UTF8String];
+										GLint locator = glGetUniformLocationARB( shader_program, cname);
+										if (locator == -1)
+											NSLog(@"GLSL ERROR couldn't find location of %@ in shader_program %d", texdname, shader_program);
+										else
+											glUniform1iARB( locator, i);	// associate texture unit number i with tex%d
+									}
+									//
+									// other variables 'time' 'engine_level'
+									//
+									GLint time_location = glGetUniformLocationARB( shader_program, "time");
+									if (time_location != -1)
+										glUniform1fARB( time_location, utime);
+									//
+									GLint engine_level_location = glGetUniformLocationARB( shader_program, "engine_level");
+									if (engine_level_location != -1)
+										glUniform1fARB( engine_level_location, engine_level);
+									//
+									GLint laser_heat_level_location = glGetUniformLocationARB( shader_program, "laser_heat_level");
+									if (laser_heat_level_location != -1)
+										glUniform1fARB( laser_heat_level_location, laser_heat_level);
+									//
+								}
+								else
+#endif
+									glBindTexture(GL_TEXTURE_2D, texture_name[ti]);
+
+								glDrawArrays( GL_TRIANGLES, triangle_range[ti].location, triangle_range[ti].length);
+
+#ifndef NO_SHADERS
+								// switch off shader
+								if ((shader_info) && [shader_info objectForKey: textureKey])
+								{
+									glUseProgramObjectARB(0);
+									glActiveTextureARB( GL_TEXTURE0_ARB);
+								}
+#endif
+							}
+						}
+						else
+						{
+							if (displayListName != 0)
+							{
+								[self drawEntity: YES : translucent];
+							}
+							else
+							{
+								[self initialiseTextures];
+
+#ifdef GNUSTEP
+								// TODO: Find out what these APPLE functions can be replaced with
+#else
+								if (usingVAR)
+									glBindVertexArrayAPPLE(gVertexArrayRangeObjects[0]);
+#endif
+
+								[self generateDisplayList];
+							}
 						}
 					}
 					else
 					{
-						if (displayListName != 0)
-						{
-							glCallList(displayListName);
-						}
-						else
-						{
-							[self initialiseTextures];
-							[self generateDisplayList];
-						}
+						NSLog(@"ERROR no basefile for entity %@");
 					}
 				}
+				glShadeModel(GL_SMOOTH);
+				checkGLErrors([NSString stringWithFormat:@"Entity after drawing %@", self]);
+
+			NS_HANDLER
+
+				NSLog(@"***** [Entity drawEntity::] encountered exception: %@ : %@ *****",[localException name], [localException reason]);
+				NSLog(@"***** Removing entity %@ from universe *****", self);
+				[universe removeEntity:self];
+				if ([[localException name] hasPrefix:@"Oolite"])
+					[universe handleOoliteException:localException];	// handle these ourself
 				else
-				{
-					NSLog(@"ERROR no basefile for entity %@");
-				//	NSBeep();	// appkit dependency
-				}
-			}
-			glShadeModel(GL_SMOOTH);
-			checkGLErrors([NSString stringWithFormat:@"Entity after drawing %@", self]);
+					[localException raise];	// pass these on
 
-		NS_HANDLER
-
-			NSLog(@"***** [Entity drawEntity::] encountered exception: %@ : %@ *****",[localException name], [localException reason]);
-			NSLog(@"***** Removing entity %@ from universe *****", self);
-			[universe removeEntity:self];
-			if ([[localException name] hasPrefix:@"Oolite"])
-				[universe handleOoliteException:localException];	// handle these ourself
-			else
-				[localException raise];	// pass these on
-
-		NS_ENDHANDLER
+			NS_ENDHANDLER
+		}
 	}
-
-
-
-//	}
 	else
 	{
 		if ((status == STATUS_COCKPIT_DISPLAY)&&((debug | debug_flag) & (DEBUG_COLLISIONS | DEBUG_OCTREE)))
@@ -3581,7 +3800,8 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 
 - (void) applyThrust:(double) delta_t
 {
-	double max_available_speed = (has_fuel_injection && (fuel > 1))? max_flight_speed * AFTERBURNER_FACTOR : max_flight_speed;
+	GLfloat dt_thrust = thrust * delta_t;
+	GLfloat max_available_speed = (has_fuel_injection && (fuel > 1))? max_flight_speed * AFTERBURNER_FACTOR : max_flight_speed;
 
 	position.x += delta_t*velocity.x;
 	position.y += delta_t*velocity.y;
@@ -3590,20 +3810,17 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 	//
 	if (thrust)
 	{
-		GLfloat velmag = sqrt(magnitude2(velocity));
+		GLfloat velmag = sqrtf(magnitude2(velocity));
 		if (velmag)
 		{
-			GLfloat velmag2 = velmag - delta_t * thrust;
-			if (velmag2 < 0.0)
-				velmag2 = 0.0;
-			velocity.x *= velmag2 / velmag;
-			velocity.y *= velmag2 / velmag;
-			velocity.z *= velmag2 / velmag;
+			GLfloat vscale = (velmag - dt_thrust) / velmag;
+			if (vscale < 0.0)
+				vscale = 0.0;
+			scale_vector(&velocity, vscale);
 		}
 	}
 
-	if (behaviour == BEHAVIOUR_TUMBLE)  return; //testing
-
+	if (behaviour == BEHAVIOUR_TUMBLE)  return;
 
 	// check for speed
 	if (desired_speed > max_available_speed)
@@ -3611,15 +3828,15 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 
 	if (flight_speed > desired_speed)
 	{
-		[self decrease_flight_speed:delta_t*thrust];
+		[self decrease_flight_speed: dt_thrust];
 		if (flight_speed < desired_speed)   flight_speed = desired_speed;
 	}
 	if (flight_speed < desired_speed)
 	{
-		[self increase_flight_speed:delta_t*thrust];
+		[self increase_flight_speed: dt_thrust];
 		if (flight_speed > desired_speed)   flight_speed = desired_speed;
 	}
-	[self moveForward:delta_t*flight_speed];
+	[self moveForward: delta_t*flight_speed];
 
 	// burn fuel at the appropriate rate
 	if ((flight_speed > max_flight_speed) && has_fuel_injection && (fuel > 0))
@@ -4506,6 +4723,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 		return;
 	}
 	status = STATUS_DEAD;
+	
 	//scripting
 	if ([death_actions count])
 	{
@@ -4817,7 +5035,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 	[self dealMomentumWithinDesiredRange: 0.125 * mass];
 
 	//
-	if (!isPlayer)
+	if (self != [universe entityZero])	// was if !isPlayer - but I think this may cause ghosts
 		[universe removeEntity:self];
 }
 
@@ -7170,7 +7388,8 @@ BOOL	class_masslocks(int some_class)
 			}
 		}
 		[cargo insertObject: other atIndex: 0];	// places most recently scooped object at eject position
-		[other setStatus:STATUS_IN_HOLD];					// prevents entity from being recycled!
+		[other setStatus:STATUS_IN_HOLD];		// prevents entity from being recycled!
+		[other setBehaviour:BEHAVIOUR_TUMBLE];
 		[shipAI message:@"CARGO_SCOOPED"];
 		if ([cargo count] == max_cargo)
 			[shipAI message:@"HOLD_FULL"];
@@ -7966,10 +8185,10 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 	// since we want to place the space station at least 10km away
 	// the formula we'll use is K x m / d2 < 1.0
 	// (m = mass, d2 = distance squared)
-	// coriolis station is mass 1,000,000,000
+	// coriolis station is mass 455,223,200
 	// 10km is 10,000m,
 	// 10km squared is 100,000,000
-	// therefore K is 0.10
+	// therefore K is 0.22 (approx)
 
 	int result = NO_TARGET;
 
@@ -7988,9 +8207,9 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 	for (i = 0; (i < ship_count)&&(result == NO_TARGET) ; i++)
 	{
 		ShipEntity* ship = my_entities[i];
-		Vector delta = ship->position;
-		delta.x -= position.x;	delta.y -= position.y;	delta.z -= position.z;
-		if ((delta.x < 10000.0)&&(delta.y < 10000.0)&&(delta.z < 10000.0)&&( k * [ship mass] / magnitude2(delta) > 1.0))
+		Vector delta = vector_between( position, ship->position);
+		GLfloat d2 = magnitude2(delta);
+		if ((k * [ship mass] > d2)&&(d2 < SCANNER_MAX_RANGE2))	// if you go off scanner from a blocker - it ceases to block
 			result = [ship universal_id];
 	}
 	for (i = 0; i < ship_count; i++)

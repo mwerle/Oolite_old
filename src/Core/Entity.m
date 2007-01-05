@@ -676,7 +676,20 @@ static  Universe	*data_store_universe;
 	//
 	[self regenerateDisplayList];
     //
-    [self loadData:basefile];
+		
+	NS_DURING
+		[self loadData:basefile];
+	NS_HANDLER
+		if ([[localException name] isEqual: OOLITE_EXCEPTION_DATA_NOT_FOUND])
+		{
+			NSLog(@"***** Oolite Data Not Found Exception : '%@' in [Entity setModel:] *****", [localException reason]);
+		}
+		[localException retain];
+		[mypool release];
+		[localException autorelease];
+		[localException raise];
+	NS_ENDHANDLER
+
     //
     [self checkNormalsAndAdjustWinding];
     //
@@ -1083,17 +1096,15 @@ static  Universe	*data_store_universe;
     //
     int fi,ti ;
 
+	if (!universe)
+		return;
+
     for (fi = 0; fi < n_faces; fi++)
     {
 		NSString* texture = [NSString stringWithUTF8String:(char*)faces[fi].textureFileStr255];
         if ((faces[fi].texName == 0)&&(texture))
         {
-            // load texture into Universe texturestore
-            //NSLog(@"Off to load %@", texture);
-            if (universe)
-            {
-                faces[fi].texName = [[universe textureStore] getTextureNameFor: texture];
-            }
+			 faces[fi].texName = [TextureStore getTextureNameFor: texture];
         }
     }
 
@@ -1101,7 +1112,7 @@ static  Universe	*data_store_universe;
 	{
 		if (!texture_name[ti])
 		{
-			texture_name[ti] = [[universe textureStore] getTextureNameFor: [NSString stringWithUTF8String: (char*)texture_file[ti]]];
+			texture_name[ti] = [TextureStore getTextureNameFor: [NSString stringWithUTF8String: (char*)texture_file[ti]]];
 //			NSLog(@"DEBUG (initialiseTextures) Processed textureFile : %@ to texName : %d", entityData[ti].textureFile, entityData[ti].texName);
 		}
 	}
@@ -1115,16 +1126,16 @@ static  Universe	*data_store_universe;
 
 - (void) generateDisplayList
 {
-    displayListName = glGenLists(1);
-    if (displayListName != 0)
-    {
-        glNewList(displayListName, GL_COMPILE);
-        [self drawEntity:YES:NO];	//	immediate YES	translucent NO
-        glEndList();
+	displayListName = glGenLists(1);
+	if (displayListName != 0)
+	{
+		glNewList(displayListName, GL_COMPILE);
+		[self drawEntity:YES:NO];	//	immediate YES	translucent NO
+		glEndList();
 		//
 		checkGLErrors([NSString stringWithFormat:@"Entity after generateDisplayList for %@", self]);
 		//
-    }
+	}
 }
 
 - (void) update:(double) delta_t
@@ -1402,7 +1413,7 @@ static  Universe	*data_store_universe;
 	{
 		if ([[data_store_universe preloadedDataFiles] objectForKey:filename])
 		{
-//			NSLog(@"Reusing data for %@ from [data_store_universe preloadedDataFiles]", filename);
+			//	Reusing data from [data_store_universe preloadedDataFiles]
 			data = (NSString *)[[data_store_universe preloadedDataFiles] objectForKey:filename];
 			using_preloaded = YES;
 		}
@@ -1416,7 +1427,7 @@ static  Universe	*data_store_universe;
 
 	if ([[data_store_universe preloadedDataFiles] objectForKey:data_key])
 	{
-//		NSLog(@"DEBUG setting model %@ from saved vertex data", filename);
+		//	setting model data from saved vertex data
 		[self setModelFromModelData:(NSDictionary *)[[data_store_universe preloadedDataFiles] objectForKey:data_key]];
 	}
 	else
@@ -1435,8 +1446,8 @@ static  Universe	*data_store_universe;
 			failFlag = YES;
 			// ERROR model file not found
 			NSException* myException = [NSException
-				exceptionWithName:@"OoliteException"
-				reason:[NSString stringWithFormat:@"No model called '%@' could be found in %@.", filename, [ResourceManager paths]]
+				exceptionWithName: OOLITE_EXCEPTION_DATA_NOT_FOUND
+				reason:[NSString stringWithFormat:@"No data for model called '%@' could be found in %@.", filename, [ResourceManager paths]]
 				userInfo:nil];
 			[myException raise];
 		}
@@ -2106,10 +2117,10 @@ static  Universe	*data_store_universe;
         result = [NSString stringWithFormat:@"%@\nTEXTURES\n", result];
         for (j = 0; j < n_faces; j++)
         {
-//            NSSize	texSize = [[universe textureStore] getSizeOfTexture:faces[j].textureFile];
+//            NSSize	texSize = [TextureStore getSizeOfTexture:faces[j].textureFile];
 //            result = [NSString stringWithFormat:@"%@%@\t%d %d", result, faces[j].textureFile, (int)texSize.width, (int)texSize.height];
 			NSString* texture = [NSString stringWithUTF8String: (char*)faces[j].textureFileStr255];
-            NSSize	texSize = [[universe textureStore] getSizeOfTexture: texture];
+            NSSize	texSize = [TextureStore getSizeOfTexture: texture];
             result = [NSString stringWithFormat:@"%@%@\t%d %d", result, texture, (int)texSize.width, (int)texSize.height];
             for (i = 0; i < faces[j].n_verts; i++)
             {

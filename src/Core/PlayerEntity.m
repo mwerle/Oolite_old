@@ -504,6 +504,11 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 
 	// trumble information
 	[result setObject:[self trumbleValue] forKey:@"trumbles"];
+	
+	// texture experiments
+	if ([universe doProcedurallyTexturedPlanets])
+		[result setObject:[NSNumber numberWithBool:YES] forKey:@"procedural_planet_textures"];
+
 
 	// create checksum
 	clear_checksum();
@@ -552,6 +557,11 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 			NSLog(@"DEBUG loading a UNRESTRICTED player dictionary ..2");
 		}
 	}
+	
+	// texture experiments
+	if ([dict objectForKey:@"procedural_planet_textures"])
+		[universe setDoProcedurallyTexturedPlanets: [[dict objectForKey:@"procedural_planet_textures"] boolValue]];
+	
 	//base ship description
 	if ([dict objectForKey:@"ship_desc"])
 	{
@@ -959,6 +969,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	hud = [[HeadUpDisplay alloc] initWithDictionary:huddict];
 	[hud setPlayer:self];
 	[hud setScannerZoom:1.0];
+	[hud resizeGuis:huddict];
 	scanner_zoom_rate = 0.0;
 	//
 	//script = [[ResourceManager dictionaryFromFilesNamed:@"script.plist" inFolder:@"Config" andMerge:YES] retain];
@@ -1279,12 +1290,11 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 		name = [[NSString stringWithString:(NSString *)[dict objectForKey:KEY_NAME]] retain];
 	}
 	//
-	if ([dict objectForKey:@"roles"])
-	{
-		if (roles)
-			[roles release];
-		roles = [[NSString stringWithString:(NSString *)[dict objectForKey:@"roles"]] retain];
-	}
+//	if ([dict objectForKey:@"roles"])
+//	{
+//		[self setRoles:(NSString *)[dict objectForKey:@"roles"]];
+//	}
+	[self setRoles:@"player"];	// overrides previous
 	//
 	if ([dict objectForKey:@"laser_color"])
 	{
@@ -1323,6 +1333,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 			hud = [[HeadUpDisplay alloc] initWithDictionary:huddict];
 			[hud setPlayer:self];
 			[hud setScannerZoom:1.0];
+			[hud resizeGuis: huddict];
 		}
 	}
 	//
@@ -3884,8 +3895,6 @@ double scoopSoundPlayTime = 0.0;
 
 - (void) leaveDock:(StationEntity *)station
 {
-//	[universe setMessageGuiBackgroundColor:[OOColor clearColor]];	// clear the message gui background
-
 	if (station == [universe station])
 		legal_status |= [universe legal_status_of_manifest:shipCommodityData];  // 'leaving with those guns were you sir?'
 	[self loadCargoPods];
@@ -4193,7 +4202,8 @@ double scoopSoundPlayTime = 0.0;
 		// try saving the cache now...
 		NSString*	cache_path = OOLITE_CACHE;
 		NSLog(@"DEBUG ** saving cache ...**");
-		[[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES];
+		if (![[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES])
+			NSLog(@"ERROR ***** Could not write cache to path: %@ *****", cache_path);
 		//
 		[universe clearPreviousMessage];	// allow this to be given time and again
 		[universe addMessage:[universe expandDescription:@"[game-saved]" forSystem:system_seed] forCount:2];
@@ -5338,6 +5348,22 @@ static int last_outfitting_index;
 		if ([eq_extra_info_dict objectForKey:@"requires_not_clean"])
 			option_okay[i] &= ([self legal_status] != 0);
 
+		if ([eq_extra_info_dict objectForKey:@"conditions"])
+		{
+			[self scriptAction:@"debugOn" onEntity:self];
+			id conds = [eq_extra_info_dict objectForKey:@"conditions"];
+			if ([conds isKindOfClass:[NSString class]])
+				option_okay[i] &= [self scriptTestCondition:(NSString *) conds];
+			else if ([conds isKindOfClass:[NSArray class]])
+			{
+				NSArray* conditions = (NSArray*)conds;
+				int i;
+				for (i = 0; i < [conditions count]; i++)
+					option_okay[i] &= [self scriptTestCondition:(NSString *)[conditions objectAtIndex:i]];
+			}
+			[self scriptAction:@"debugOff" onEntity:self];
+		}
+
 		if ([eq_key isEqual:@"EQ_RENOVATION"])
 		{
 //			NSLog(@"DEBUG : ship trade in factor is %d%", ship_trade_in_factor);
@@ -5585,7 +5611,7 @@ static int last_outfitting_index;
 
 	if (themeMusic)
 	{
-		[themeMusic play];
+		[themeMusic playLooped];
 	}
 
 

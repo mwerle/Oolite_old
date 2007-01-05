@@ -52,6 +52,8 @@ Your fair use and other rights are in no way affected by the above.
 
 /* Some convenience methods to create colors in the calibrated color spaces...
 */
++ (OOColor *)colorFromString:(NSString*) colorFloatString;
+
 + (OOColor *)blackColor;	/* 0.0 white */
 + (OOColor *)darkGrayColor;	/* 0.333 white */
 + (OOColor *)lightGrayColor;	/* 0.667 white */
@@ -72,6 +74,9 @@ Your fair use and other rights are in no way affected by the above.
 */
 - (OOColor *)blendedColorWithFraction:(float)fraction ofColor:(OOColor *)color;
 
++ (OOColor *) planetTextureColor:(float) q:(OOColor *) seaColor:(OOColor *) paleSeaColor:(OOColor *) landColor:(OOColor *) paleLandColor;
++ (OOColor *) planetTextureColor:(float) q:(float) impress:(float) bias :(OOColor *) seaColor:(OOColor *) paleSeaColor:(OOColor *) landColor:(OOColor *) paleLandColor;
+
 /* Get the red, green, or blue components of NSCalibratedRGB or NSDeviceRGB colors.
 */
 - (float)redComponent;
@@ -90,5 +95,7 @@ Your fair use and other rights are in no way affected by the above.
 /* Get the alpha component. For colors which do not have alpha components, this will return 1.0 (opaque).
 */
 - (float)alphaComponent;
+
+- (GLfloat *) RGBA;
 
 @end

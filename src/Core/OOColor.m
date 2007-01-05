@@ -102,6 +102,19 @@ Your fair use and other rights are in no way affected by the above.
 
 /* Some convenience methods to create colors in the calibrated color spaces...
 */
++ (OOColor *)colorFromString:(NSString*) colorFloatString;
+{
+	float set_rgba[4] = { 0.0, 0.0, 0.0, 1.0};
+	OOColor* result = [[OOColor alloc] init];
+	NSScanner* scanner = [NSScanner scannerWithString:colorFloatString];
+	float value;
+	int i = 0;
+	while ((i < 4)&&[scanner scanFloat:&value])
+		set_rgba[i++] = value;
+	[result setRGBA: set_rgba[0] : set_rgba[1] : set_rgba[2] : set_rgba[3]];
+		
+	return [result autorelease];
+}
 + (OOColor *)blackColor;	/* 0.0 white */
 {
 	OOColor* result = [[OOColor alloc] init];
@@ -206,6 +219,44 @@ Your fair use and other rights are in no way affected by the above.
 	return [result autorelease];
 }
 
+// find a point on the sea->land scale
++ (OOColor *) planetTextureColor:(float) q:(OOColor *) seaColor:(OOColor *) paleSeaColor:(OOColor *) landColor:(OOColor *) paleLandColor
+{
+	float hi = 0.33;
+	float oh = 1.0 / hi;
+	float ih = 1.0 / (1.0 - hi);
+	if (q <= 0.0)
+		return seaColor;
+	if (q > 1.0)
+		return [OOColor whiteColor];
+	if (q < 0.01)
+		return [paleSeaColor blendedColorWithFraction: q * 100.0 ofColor: landColor];
+	if (q > hi)
+		return [paleLandColor blendedColorWithFraction: (q - hi) * ih ofColor: [OOColor whiteColor]];	// snow capped peaks
+	return [paleLandColor blendedColorWithFraction: (hi - q) * oh ofColor: landColor];
+}
+
+// find a point on the sea->land scale given impress and bias
++ (OOColor *) planetTextureColor:(float) q:(float) impress:(float) bias :(OOColor *) seaColor:(OOColor *) paleSeaColor:(OOColor *) landColor:(OOColor *) paleLandColor
+{
+	float maxq = impress + bias;
+	
+	float hi = 0.66667 * maxq;
+	float oh = 1.0 / hi;
+	float ih = 1.0 / (1.0 - hi);
+	
+	if (q <= 0.0)
+		return seaColor;
+	if (q > 1.0)
+		return [OOColor whiteColor];
+	if (q < 0.01)
+		return [paleSeaColor blendedColorWithFraction: q * 100.0 ofColor: landColor];
+	if (q > hi)
+		return [paleLandColor blendedColorWithFraction: (q - hi) * ih ofColor: [OOColor whiteColor]];	// snow capped peaks
+	return [paleLandColor blendedColorWithFraction: (hi - q) * oh ofColor: landColor];
+}
+
+
 /* Get the red, green, or blue components of NSCalibratedRGB or NSDeviceRGB colors.
 */
 - (GLfloat)redComponent
@@ -300,6 +351,11 @@ Your fair use and other rights are in no way affected by the above.
 - (float)alphaComponent
 {
 	return rgba[3];
+}
+
+- (GLfloat *) RGBA;
+{
+	return rgba;
 }
 
 

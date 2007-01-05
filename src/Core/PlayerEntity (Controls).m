@@ -218,11 +218,12 @@ static NSTimeInterval	time_last_frame;
             // ** tgape ** - decrease obviously means no hyperspeed
             if (([gameView isDown:key_decrease_speed] || joyButtonState[BUTTON_DECTHRUST])&&(!afterburner_engaged))
             {
-               if (flight_speed > 0.0)
+				if (flight_speed > 0.0)
                   flight_speed -= speed_delta * delta_t;
                if (flight_speed < 0.0)
                   flight_speed = 0.0;
                // ** tgape ** - decrease obviously means no hyperspeed
+
                hyperspeed_engaged = NO;
             }
          } // DJS: STICK_NOFUNCTION else...a joystick axis is assigned to thrust.
@@ -973,6 +974,13 @@ static NSTimeInterval	time_last_frame;
 		{
 			debug |= DEBUG_OCTREE;
 			[universe addMessage:@"Octree debug ON" forCount:3];
+		}
+
+		// look for debugging keys
+		if ([gameView isDown:'t'])// look for the 't' key
+		{
+			[universe setDoProcedurallyTexturedPlanets: YES];
+			[universe addMessage:@"Procedural Textures On" forCount:3];
 		}
 
 	}
@@ -2562,7 +2570,6 @@ static BOOL toggling_music;
 			//NSLog(@"Leaving dock (%@)...%@",docked_station,[docked_station name]);
 			[self leaveDock:docked_station];
 			[universe setDisplayCursor:NO];
-			[self playBreakPattern];
 		}    
 	}
 	//
