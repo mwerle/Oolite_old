@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	// dajt: allocate and set the NSApplication delegate manually because not
 	// using NIB to do this
 	controller = [[GameController alloc] init];
-
+	
 	// Release anything allocated during the controller initialisation that
 	// is no longer required.
 	[pool release];
@@ -58,11 +58,14 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-/*
- * This is called from a couple of places, and having it here saves one more
- * AppKit dependency.
- */
-//void NSBeep()
-//{
-//}
 
+#if OOLITE_SDL_MAC
+
+@implementation NSWindow (SDLBugWorkaround)
+
+- (void)release
+{}
+
+@end
+
+#endif
