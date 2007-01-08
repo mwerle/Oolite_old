@@ -43,6 +43,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "TextureStore.h"
 #import "OOSound.h"
 #import "OOOpenGL.h"
+#import "ScriptEngine.h"
 
 @implementation GameController
 
@@ -85,7 +86,9 @@ Your fair use and other rights are in no way affected by the above.
     if (playerFileToLoad)	[playerFileToLoad release];
 	if (playerFileDirectory)	[playerFileDirectory release];
 	if (expansionPathsToInclude)	[expansionPathsToInclude release];
-	//
+
+	shutdownJavaScript();
+
     [super dealloc];
 }
 
@@ -356,6 +359,7 @@ static int _compareModes(id arg1, id arg2, void *context)
     // moved here to try to avoid initialising this before having an Open GL context
 	[self logProgress:@"initialising universe..."];
     universe = [[Universe alloc] init];
+	scriptedUniverse = universe;
 	
 	[universe setGameView:gameView];
 		
@@ -373,6 +377,12 @@ static int _compareModes(id arg1, id arg2, void *context)
 
 	// Release anything allocated above that is not required.
 	[pool release];
+
+	if (initialiseJavaScript(self))
+		NSLog(@"JavaScript initialisation error");
+	else
+		NSLog(@"JavaScript initialisation OK");
+
    [[NSRunLoop currentRunLoop] run];
 }
 #else
