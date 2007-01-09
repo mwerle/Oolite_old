@@ -1,9 +1,26 @@
 #ifndef SCRIPTENGINE_H_SEEN
 #define SCRIPTENGINE_H_SEEN
 
-extern int initialiseJavaScript();
-extern void shutdownJavaScript();
+#import <Foundation/Foundation.h>
+#import "Universe.h"
+#import "PlayerEntity.h"
+#import <jsapi.h>
 
-extern Universe *scriptedUniverse;
+@interface ScriptEngine : NSObject
+{
+	JSRuntime *rt;
+	JSContext *cx;
+	JSObject *glob;
+	JSBool builtins;
+	Universe *scriptedUniverse;
+	NSMutableArray *oxps;
+}
+
+- (id) initWithUniverse: (Universe *) universe;
+- (void) dealloc;
+
+- (void) doEvent: (NSString *) event;
+
+@end
 
 #endif

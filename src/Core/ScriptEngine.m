@@ -38,14 +38,13 @@ Your fair use and other rights are in no way affected by the above.
 /*
  * This file contains the core JavaSCript interfacing code.
  */
-#include <jsapi.h>
+
+#import "ScriptEngine.h"
+#import "OXPScript.h"
+
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-
-#include "Universe.h"
-#include "GameController.h"
-#include "PlayerEntity.h"
+//#include <stdlib.h>
 
 JSClass global_class = {
 	"Oolite",0,
@@ -53,13 +52,16 @@ JSClass global_class = {
 	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
 };
 
-JSVersion version;
-JSRuntime *rt;
-JSContext *cx;
-JSObject *glob;
-JSBool builtins;
-
 Universe *scriptedUniverse;
+JSObject *universeObj, *oxpObj;
+
+
+
+void runScripts(NSString* event);
+
+//===========================================================================
+// Universe proxy
+//===========================================================================
 
 JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
@@ -89,6 +91,10 @@ JSFunctionSpec Universe_funcs[] = {
 	{ 0 }
 };
 
+//===========================================================================
+// PlayerEntity proxy
+//===========================================================================
+
 JSBool PlayerEntityGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
 JSClass PlayerEntity_class = {
@@ -109,8 +115,12 @@ JSPropertySpec playerEntity_props[] = {
 	{ 0 }
 };
 
-JSObject *universeObj, *playerEntityObj;
-
+extern JSClass OXP_class; /* = {
+	"OXPClass", 0,
+	JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
+	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
+};
+*/
 NSString *JSValToNSString(JSContext *cx, jsval val) {
 	JSString *str = JS_ValueToString(cx, val);
 	char *chars = JS_GetStringBytes(str);
@@ -219,46 +229,37 @@ JSBool PlayerEntityGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp
 	return JS_TRUE;
 }
 
-//===========================================================================
-// PlayerEntity proxy
-//
-// This should not be created as an instance - just the class defined and an instance
-// returned from Universe.PlayerEntity property.
-//===========================================================================
 
-//===========================================================================
-// Universe proxy
-//===========================================================================
-
+@implementation ScriptEngine
 
 //===========================================================================
 // JavaScript engine initialisation and shutdown
 //===========================================================================
 
-JSBool xlog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
-	JSString *str;
-	str = JS_ValueToString(cx, argv[0]);
-	fprintf(stdout, "LOG: %s\r\n", JS_GetStringBytes(str));
-	return JS_TRUE;
-}
+- (id) initWithUniverse: (Universe *)universe
+{
+	self = [super init];
+	scriptedUniverse = universe;
 
-int initialiseJavaScript() {
-	int c, i;
 	/*set up global JS variables, including global and custom objects */
 
 	/* initialize the JS run time, and return result in rt */
 	rt = JS_NewRuntime(8L * 1024L * 1024L);
 
 	/* if rt does not have a value, end the program here */
-	if (!rt)
-		exit(1); //return 1;
+	if (!rt) {
+		[super dealloc];
+		exit(1); //return nil;
+	}
 
 	/* create a context and associate it with the JS run time */
 	cx = JS_NewContext(rt, 8192);
 
 	/* if cx does not have a value, end the program here */
-	if (cx == NULL)
-		exit(1); //return 1;
+	if (cx == NULL) {
+		[super dealloc];
+		exit(1); //return nil;
+	}
 
 	/* create the global object here */
 	glob = JS_NewObject(cx, &global_class, NULL, NULL);
@@ -266,57 +267,44 @@ int initialiseJavaScript() {
 	/* initialize the built-in JS objects and the global object */
 	builtins = JS_InitStandardClasses(cx, glob);
 
-	//JS_DefineFunction(cx, glob, "Log", xlog, 1, 0);
-
 	universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
 	JS_DefineProperties(cx, universeObj, Universe_props);
 	JS_DefineFunctions(cx, universeObj, Universe_funcs);
 
-	/* These should indicate source location for diagnostics. */
-    char filename[] = "TestScript";
-    uintN lineno = 142;
+	oxps = [[NSMutableArray arrayWithCapacity:10] retain];
 
-    /*
-     * The return value comes back here -- if it could be a GC thing, you must
-     * add it to the GC's "root set" with JS_AddRoot(cx, &thing) where thing
-     * is a JSString *, JSObject *, or jsdouble *, and remove the root before
-     * rval goes out of scope, or when rval is no longer needed.
-     */
-    jsval rval;
-    JSBool ok;
-	jsdouble d;
+	OXPScript *scr = [[[OXPScript alloc] initWithContext:cx andFilename:@"testoxp.js"] retain];
+	[oxps addObject: scr];
+	//scr = [[OXPScript alloc] initWithContext:cx andFilename:@"otheroxp.js"];
+	//[oxps addObject: scr];
 
- /*
-     * Some example source in a C string.  Larger, non-null-terminated buffers
-     * can be used, if you pass the buffer length to JS_EvaluateScript.
-     */
-    char *source = "Universe.Log(\"Commander \" + Universe.PlayerEntity.CommanderName + \" is flying a \" + Universe.PlayerEntity.ShipDescription);";
-    ok = JS_EvaluateScript(cx, glob, source, strlen(source), filename, lineno, &rval);
-    if (ok) {
-		fprintf(stdout, "JS_EvaluateScript worked\r\n");
-		/*
-        //Should get a number back from the example source.
-		
-        jsdouble d;
-        ok = JS_ValueToNumber(cx, rval, &d);
-        if (ok) {
-			//NSLog(@"script returned %f", d);
-			fprintf(stdout, "script returned %f\r\n", d);
-		} else {
-			//NSLog(@"JS_ValueToNumber failed");
-			fprintf(stdout, "JS_ValueToNumber failed\r\n");
-		}
-		*/
-    } else {
-		//NSLog(@"JS_EvaluateScript failed");
-		fprintf(stdout, "JS_EvaluateScript failed\r\n");
-	}
-	return 0;
+	//[self doEvent:@"OnExitingWitchspace"];
+	//[self doEvent:@"OnLaunch"];
+
+	return self;
 }
 
-void shutdownJavaScript()
+- (void) dealloc
 {
+	// free up the OXPScripts too!
+
 	JS_DestroyContext(cx);
 	/* Before exiting the application, free the JS run time */
 	JS_DestroyRuntime(rt);
+	[super dealloc];
 }
+
+/*
+ * This function runs all functions associated with the named event (eg exitingWitchspace).
+ */
+- (void) doEvent: (NSString *) event
+{
+	int i;
+	int c = [oxps count];
+	for (i = 0; i < c; i++) {
+		OXPScript *scr = (OXPScript *)[oxps objectAtIndex: i];
+		[scr doEvent: event];
+	}
+}
+
+@end

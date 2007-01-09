@@ -43,7 +43,6 @@ Your fair use and other rights are in no way affected by the above.
 #import "TextureStore.h"
 #import "OOSound.h"
 #import "OOOpenGL.h"
-#import "ScriptEngine.h"
 
 @implementation GameController
 
@@ -65,7 +64,7 @@ Your fair use and other rights are in no way affected by the above.
 	pauseTarget = nil;
 	//
 	game_is_paused = NO;
-	
+
 	//
 	debug = 0;
 //	debug = DEBUG_COLLISIONS;
@@ -86,8 +85,6 @@ Your fair use and other rights are in no way affected by the above.
     if (playerFileToLoad)	[playerFileToLoad release];
 	if (playerFileDirectory)	[playerFileDirectory release];
 	if (expansionPathsToInclude)	[expansionPathsToInclude release];
-
-	shutdownJavaScript();
 
     [super dealloc];
 }
@@ -124,7 +121,7 @@ Your fair use and other rights are in no way affected by the above.
 		//
 #ifdef GNUSTEP
       // The SDL game is not strictly a GNUstep app so synchronize
-      // never actually gets called automatically. 
+      // never actually gets called automatically.
       // Therefore we need to explicitly call it.
       [[NSUserDefaults standardUserDefaults] synchronize];
 #endif
@@ -136,16 +133,16 @@ Your fair use and other rights are in no way affected by the above.
 - (int) indexOfCurrentDisplayMode
 {
     NSDictionary *mode;
-	
+
 	//NSLog(@"looking for a display mode that's %d x %d %dHz",width, height, refresh);
-	
+
 	mode = [self findDisplayModeForWidth: width Height: height Refresh: refresh];
 	if (mode == nil)
 		return NSNotFound;
 	else
 		return [displayModes indexOfObject:mode];
 
-   return NSNotFound; 
+   return NSNotFound;
 }
 
 - (NSDictionary *) findDisplayModeForWidth:(unsigned int) d_width Height:(unsigned int) d_height Refresh:(unsigned int) d_refresh
@@ -154,7 +151,7 @@ Your fair use and other rights are in no way affected by the above.
     int i, modeCount;
     NSDictionary *mode;
     unsigned int modeWidth, modeHeight, modeRefresh;
-	
+
     modeCount = [displayModes count];
 
 	for (i = 0; i < modeCount; i++)
@@ -174,7 +171,7 @@ Your fair use and other rights are in no way affected by the above.
 	int modenum=[gameView findDisplayModeForWidth: d_width Height: d_height Refresh: d_refresh];
 	return [displayModes objectAtIndex: modenum];
 #endif
-   
+
 }
 
 - (NSArray *) displayModes
@@ -191,7 +188,7 @@ static int _compareModes(id arg1, id arg2, void *context)
     NSDictionary *mode1 = (NSDictionary *)arg1;
     NSDictionary *mode2 = (NSDictionary *)arg2;
     int size1, size2;
-    
+
     // Sort first on pixel count
     size1 = [[mode1 objectForKey: (NSString *)kCGDisplayWidth] intValue] *
             [[mode1 objectForKey: (NSString *)kCGDisplayHeight] intValue];
@@ -199,7 +196,7 @@ static int _compareModes(id arg1, id arg2, void *context)
             [[mode2 objectForKey: (NSString *)kCGDisplayHeight] intValue];
     if (size1 != size2)
         return size1 - size2;
-        
+
     // Then on refresh rate
     return (int)[[mode1 objectForKey: (NSString *)kCGDisplayRefreshRate] intValue] -
            (int)[[mode2 objectForKey: (NSString *)kCGDisplayRefreshRate] intValue];
@@ -213,10 +210,10 @@ static int _compareModes(id arg1, id arg2, void *context)
     NSArray *modes;
     NSDictionary *mode;
     unsigned int modeWidth, modeHeight, color, modeRefresh, flags;
-	
+
     // Get the list of all available modes
     modes = [(NSArray *)CGDisplayAvailableModes(kCGDirectMainDisplay) retain];
-    
+
     // Filter out modes that we don't want
     displayModes = [[NSMutableArray alloc] init];
     modeCount = [modes count];
@@ -228,7 +225,7 @@ static int _compareModes(id arg1, id arg2, void *context)
         color = [[mode objectForKey: (NSString *)kCGDisplayBitsPerPixel] intValue];
         modeRefresh = [[mode objectForKey: (NSString *)kCGDisplayRefreshRate] intValue];
         flags = [[mode objectForKey: (NSString *)kCGDisplayIOFlags] intValue];
-        
+
         if ((color < DISPLAY_MIN_COLOURS)||(modeWidth < DISPLAY_MIN_WIDTH)||(modeWidth > DISPLAY_MAX_WIDTH)||(modeHeight < DISPLAY_MIN_HEIGHT)||(modeHeight > DISPLAY_MAX_HEIGHT))
             continue;
         [displayModes addObject: mode];
@@ -241,7 +238,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 	// Powerbooks return several "identical modes" CGDisplayAvailableModes doesn't appear
 	// to pick up refresh rates. Logged as Radar 3759831.
 	// In order to deal with this, we'll just edit out the duplicates.
-	
+
 	unsigned int j;
 	for(j = 0, mode = [displayModes objectAtIndex: j]; j + 1 < [displayModes count];)
 	{
@@ -286,7 +283,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 #else  // ifndef GNUSTEP
    // SDL code all lives in the gameview.
    displayModes = [gameView getScreenSizeArray];
-   
+
 #endif // ifndef GNUSTEP #else
 }
 /* end GDC */
@@ -332,7 +329,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 	// ensure the gameView is drawn to, so OpenGL is initialised and so textures can initialse.
 	//
 	[gameView drawRect:[gameView bounds]];
-	
+
 	[self beginSplashScreen];
 	[self logProgress:@"initialising..."];
 	/* GDC example code */
@@ -344,9 +341,9 @@ static int _compareModes(id arg1, id arg2, void *context)
    NSSize fsmSize=[gameView currentScreenSize];
    width=fsmSize.width;
    height=fsmSize.height;
-	
+
 	/* end GDC */
-   
+
 	// moved to before the Universe is created
 	[self logProgress:@"loading selected expansion packs..."];
 	if (expansionPathsToInclude)
@@ -355,17 +352,16 @@ static int _compareModes(id arg1, id arg2, void *context)
 		for (i = 0; i < [expansionPathsToInclude count]; i++)
 			[ResourceManager addExternalPath: (NSString*)[expansionPathsToInclude objectAtIndex: i]];
 	}
-	
+
     // moved here to try to avoid initialising this before having an Open GL context
 	[self logProgress:@"initialising universe..."];
     universe = [[Universe alloc] init];
-	scriptedUniverse = universe;
-	
+
 	[universe setGameView:gameView];
-		
+
 	[self logProgress:@"loading player..."];
 	[self loadPlayerIfRequired];
-	
+
 	//
 	// get the run loop and add the call to doStuff
 	//
@@ -377,12 +373,6 @@ static int _compareModes(id arg1, id arg2, void *context)
 
 	// Release anything allocated above that is not required.
 	[pool release];
-
-	if (initialiseJavaScript(self))
-		NSLog(@"JavaScript initialisation error");
-	else
-		NSLog(@"JavaScript initialisation OK");
-
    [[NSRunLoop currentRunLoop] run];
 }
 #else
@@ -392,7 +382,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 	// ensure the gameView is drawn to, so OpenGL is initialised and so textures can initialse.
 	//
 	[gameView drawRect:[gameView bounds]];
-	
+
 	[self beginSplashScreen];
 	[self logProgress:@"initialising..."];
 	//
@@ -412,14 +402,14 @@ static int _compareModes(id arg1, id arg2, void *context)
 		height = [userDefaults integerForKey:@"display_height"];
 	if ([userDefaults objectForKey:@"display_refresh"])
 		refresh = [userDefaults integerForKey:@"display_refresh"];
-	
+
 	/* GDC example code */
-	
+
 	[self logProgress:@"getting display modes..."];
 	[self getDisplayModes];
-	
+
 	/* end GDC */
-	
+
 	fullscreenDisplayMode = [self findDisplayModeForWidth:width Height:height Refresh:refresh];
 	if (fullscreenDisplayMode == nil)
 	{
@@ -429,7 +419,7 @@ static int _compareModes(id arg1, id arg2, void *context)
         height = [[fullscreenDisplayMode objectForKey: (NSString *)kCGDisplayHeight] intValue];
         refresh = [[fullscreenDisplayMode objectForKey: (NSString *)kCGDisplayRefreshRate] intValue];
 	}
-	
+
 	// moved to before the Universe is created
 	[self logProgress:@"loading selected expansion packs..."];
 	if (expansionPathsToInclude)
@@ -438,29 +428,29 @@ static int _compareModes(id arg1, id arg2, void *context)
 		for (i = 0; i < [expansionPathsToInclude count]; i++)
 			[ResourceManager addExternalPath: (NSString*)[expansionPathsToInclude objectAtIndex: i]];
 	}
-	
+
     // moved here to try to avoid initialising this before having an Open GL context
 	[self logProgress:@"initialising universe..."];
     universe = [[Universe alloc] init];
-	
+
 	[universe setGameView:gameView];
-	
+
 	[self logProgress:@"loading player..."];
 	[self loadPlayerIfRequired];
-	
+
 	//
 	// get the run loop and add the call to doStuff
 	//
     NSTimeInterval ti = 0.01;
-    
+
     timer = [[NSTimer timerWithTimeInterval:ti target:self selector:@selector(doStuff:) userInfo:self repeats:YES] retain];
-    
+
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-	
-	
+
+
 	// set up the window to accept mouseMoved events
 	[gameWindow setAcceptsMouseMovedEvents:YES];
-	
+
 	//
 	[self endSplashScreen];
 }
@@ -514,7 +504,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 		delta_t = [NSDate timeIntervalSinceReferenceDate] - last_timeInterval;
 		last_timeInterval += delta_t;
 		if (delta_t > MINIMUM_GAME_TICK)
-			delta_t = MINIMUM_GAME_TICK;		// peg the maximum pause (at 0.5->1.0 seconds) to protect against when the machine sleeps	
+			delta_t = MINIMUM_GAME_TICK;		// peg the maximum pause (at 0.5->1.0 seconds) to protect against when the machine sleeps
 	}
 	//
 	if (universe)
@@ -527,7 +517,7 @@ static int _compareModes(id arg1, id arg2, void *context)
       [gameView display];
    else
 		NSLog(@"***** gameView not set : delta_t %f",(float)delta_t);
-     
+
 #else
 	if (fullscreen)
 	{
@@ -541,7 +531,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 		else
 			NSLog(@"***** gameView not set : delta_t %f",(float)delta_t);
 	}
-#endif   
+#endif
 	//
 	[OOSound update];
 }
@@ -549,7 +539,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 - (void) startAnimationTimer
 {
 	if (timer == nil)
-	{   
+	{
 		NSTimeInterval ti = 0.01;
 		timer = [[NSTimer timerWithTimeInterval:ti target:self selector:@selector(doStuff:) userInfo:self repeats:YES] retain];
 		[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
@@ -579,7 +569,7 @@ static int _compareModes(id arg1, id arg2, void *context)
     long oldSwapInterval;
     long newSwapInterval;
 	CGMouseDelta mouse_dx, mouse_dy;
-	
+
 	// empty the event queue and strip all keys - stop problems with hangover keys
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -588,29 +578,29 @@ static int _compareModes(id arg1, id arg2, void *context)
 		[pool release];
 		[gameView clearKeys];
 	}
-		
+
 	pauseTarget = sender;
-	
+
 	my_mouse_x = my_mouse_y = 0;
-	
+
 	while (pauseTarget)
 	{
 		CGPoint centerOfScreen = CGPointMake(width/2.0,height/2.0);
 
 		pauseTarget = nil;
-		
+
 		//get the appropriate display mode for the selected values
-		
+
 		fullscreenDisplayMode = [self findDisplayModeForWidth:width Height:height Refresh:refresh];
 		if (fullscreenDisplayMode == nil)
 		{
 			NSLog(@"***** unable to find suitable full screen mode");
 			return;
 		}
-		
+
 		originalDisplayMode = (NSDictionary *)CGDisplayCurrentMode(kCGDirectMainDisplay);
 		//NSLog(@"originalDisplayMode = %@", originalDisplayMode);
-		
+
 		// Pixel Format Attributes for the FullScreen NSOpenGLContext
 		NSOpenGLPixelFormatAttribute attrs[] = {
 
@@ -627,10 +617,10 @@ static int _compareModes(id arg1, id arg2, void *context)
 			//This makes the View-based context a compatible with the fullscreen context, enabling us to use the "shareContext"
 			// feature to share textures, display lists, and other OpenGL objects between the two.
 			NSOpenGLPFANoRecovery,
-			
+
 			// Attributes Common to FullScreen and non-FullScreen
 			NSOpenGLPFACompliant,
-			
+
 			NSOpenGLPFAColorSize, 32,
 			NSOpenGLPFADepthSize, 32,
 			NSOpenGLPFADoubleBuffer,
@@ -641,7 +631,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 
 		// Create the FullScreen NSOpenGLContext with the attributes listed above.
 		NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
-		
+
 		// Just as a diagnostic, report the renderer ID that this pixel format binds to.  CGLRenderers.h contains a list of known renderers and their corresponding RendererID codes.
 		[pixelFormat getValues:&rendererID forAttribute:NSOpenGLPFARendererID forVirtualScreen:0];
 		//NSLog(@"FullScreen pixelFormat RendererID = %08x", (unsigned)rendererID);
@@ -656,7 +646,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 			NSLog(@"***** Failed to create fullScreenContext");
 			return;
 		}
-		
+
 
 		// Pause animation in the OpenGL view.  While we're in full-screen mode, we'll drive the animation actively
 		// instead of using a timer callback.
@@ -680,15 +670,15 @@ static int _compareModes(id arg1, id arg2, void *context)
             NSLog(@"***** Unable to change display mode.");
             return;
         }
-		
+
 		// Hide the cursor
 		CGDisplayMoveCursorToPoint(kCGDirectMainDisplay,centerOfScreen);
         CGDisplayHideCursor(kCGDirectMainDisplay);
-		
+
 		// Enter FullScreen mode and make our FullScreen context the active context for OpenGL commands.
 		[fullScreenContext setFullScreen];
 		[fullScreenContext makeCurrentContext];
-		
+
 		// Save the current swap interval so we can restore it later, and then set the new swap interval to lock us to the display's refresh rate.
 		cglContext = CGLGetCurrentContext();
 		CGLGetParameter(cglContext, kCGLCPSwapInterval, &oldSwapInterval);
@@ -697,15 +687,15 @@ static int _compareModes(id arg1, id arg2, void *context)
 
 		// Tell the scene the dimensions of the area it's going to render to, so it can set up an appropriate viewport and viewing transformation.
 		[gameView initialiseGLWithSize:NSMakeSize(width,height)];
-		
+
 		// Now that we've got the screen, we enter a loop in which we alternately process input events and computer and render the next frame of our animation.
 		// The shift here is from a model in which we passively receive events handed to us by the AppKit to one in which we are actively driving event processing.
 		stayInFullScreenMode = YES;
-		
+
 		fullscreen = YES;
-						
+
 		BOOL past_first_mouse_delta = NO;
-		
+
 		while (stayInFullScreenMode)
 		{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -729,7 +719,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 					case NSLeftMouseUp:
 						[gameView mouseUp:event];
 						break;
-					
+
 					case NSMouseMoved:
 					case NSLeftMouseDragged:
 //					case NSRightMouseDragged:	// avoid conflict with NSRightMouseDown
@@ -746,7 +736,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 						[gameView setVirtualJoystick:(double)my_mouse_x/width :(double)my_mouse_y/height];
 						CGDisplayMoveCursorToPoint(kCGDirectMainDisplay,centerOfScreen);
 						break;
-					
+
 					case NSKeyDown:
 						[gameView keyDown:event];
 						break;
@@ -764,7 +754,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 				}
 			}
 
-			// Update our stuff.        
+			// Update our stuff.
 			[self doStuff:self];
 
 			[fullScreenContext flushBuffer];
@@ -772,7 +762,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 			// Clean up any autoreleased objects that were created this time through the loop.
 			[pool release];
 		}
-		
+
 		// Clear the front and back framebuffers before switching out of FullScreen mode.
 		// (This is not strictly necessary, but avoids an untidy flash of garbage.)
 		glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -797,26 +787,26 @@ static int _compareModes(id arg1, id arg2, void *context)
             NSLog(@"***** Unable to change display mode.");
             return;
         }
-		
+
 		// show the cursor
         CGDisplayShowCursor(kCGDirectMainDisplay);
-		
+
 		// Release control of the displays.
 		CGReleaseAllDisplays();
-		
+
 		fullscreen = NO;
-				
+
 		// Resume animation timer firings.
 		[self startAnimationTimer];
 
 		// Mark our view as needing drawing.  (The animation has advanced while we were in FullScreen mode, so its current contents are stale.)
 		[gameView setNeedsDisplay:YES];
-		
+
 		if (pauseTarget)
 		{
 			[pauseTarget performSelector:pauseSelector];
 		}
-		
+
 	}
 #endif // ...if GNUSTEP else
 
@@ -915,7 +905,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 }
 
 - (void) setPlayerFileDirectory:(NSString *)filename
-{	
+{
 	if (playerFileDirectory)
 		[playerFileDirectory autorelease];
 	playerFileDirectory = nil;
@@ -944,7 +934,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 	[ootunesScript executeAndReturnError:&errDict];
 	if (errDict)
 		NSLog(@"DEBUG ootunes returned :%@", [errDict description]);
-	[ootunesScript release]; 
+	[ootunesScript release];
 }
 
 - (void) pauseiTunes
@@ -955,7 +945,7 @@ static int _compareModes(id arg1, id arg2, void *context)
 	[ootunesScript executeAndReturnError:&errDict];
 	if (errDict)
 		NSLog(@"DEBUG ootunes returned :%@", [errDict description]);
-	[ootunesScript release]; 
+	[ootunesScript release];
 }
 #endif
 

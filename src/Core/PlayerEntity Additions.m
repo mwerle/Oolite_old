@@ -72,6 +72,9 @@ static NSString * mission_key;
 		mission_key = missionTitle;
 		[self scriptActions: mission forTarget: self];
 	}
+	
+	NSLog(@"checking JavaScripts");
+	[universe checkScripts: [self status_string]];
 }
 
 - (void) scriptActions:(NSArray*) some_actions forTarget:(ShipEntity*) a_target
