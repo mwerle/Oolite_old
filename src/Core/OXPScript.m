@@ -82,6 +82,33 @@ extern NSString *JSValToNSString(JSContext *cx, jsval val);
 				version= @"";
 			}
 			NSLog(@"Loaded JavaScript OXP: %@ %@ %@", name, description, version);
+			
+			/*
+			 * Example code to read the mission variables.
+			 *
+			 * So far, this just gets their names. Need to add code to get their values
+			 * and convert the whole thing to Obj-C friendly NSArray and types.
+			 *
+			ok = JS_GetProperty(context, obj, "MissionVars", &rval);
+			if (ok && JSVAL_IS_OBJECT(rval)) {
+				JSObject *ar = JSVAL_TO_OBJECT(rval);
+				JSIdArray *ids = JS_Enumerate(context, ar);
+				int i;
+				for (i = 0; i < ids->length; i++) {
+					if (JS_IdToValue(cx, ids->vector[i], &rval) == JS_TRUE) {
+						if (JSVAL_IS_BOOLEAN(rval))	fprintf(stdout, "a boolean\r\n");
+						if (JSVAL_IS_DOUBLE(rval))	fprintf(stdout, "a double\r\n");
+						if (JSVAL_IS_INT(rval))	fprintf(stdout, "an integer\r\n");
+						if (JSVAL_IS_NUMBER(rval))	fprintf(stdout, "a number\r\n");
+						if (JSVAL_IS_OBJECT(rval))	fprintf(stdout, "an object\r\n");
+						if (JSVAL_IS_STRING(rval)) {
+							fprintf(stdout, "%s\r\n", JS_GetStringBytes(JSVAL_TO_STRING(rval)));
+						}
+					}
+				}
+				JS_DestroyIdArray(context, ids);
+			}
+			*/
 		}
 		JS_DestroyScript(context, script);
 	}

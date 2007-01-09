@@ -12,7 +12,6 @@
 	JSContext *cx;
 	JSObject *glob;
 	JSBool builtins;
-	Universe *scriptedUniverse;
 	NSMutableArray *oxps;
 }
 
