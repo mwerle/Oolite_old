@@ -80,6 +80,7 @@ Your fair use and other rights are in no way affected by the above.
 - (NSNumber *) clock_days_number;		// returns the game time in days
 
 - (NSNumber *) fuel_level_number;		// returns the fuel level in LY
+- (NSNumber *) fuel_leak_rate_number;
 
 - (NSString *) dockedAtMainStation_bool;
 - (NSString *) foundEquipment_bool;

@@ -47,7 +47,13 @@ Your fair use and other rights are in no way affected by the above.
 //#include <stdlib.h>
 
 Universe *scriptedUniverse;
-JSObject *xglob, *universeObj;
+JSObject *xglob, *universeObj, *systemObj, *playerObj;
+
+NSString *JSValToNSString(JSContext *cx, jsval val) {
+	JSString *str = JS_ValueToString(cx, val);
+	char *chars = JS_GetStringBytes(str);
+	return [NSString stringWithCString:chars];
+}
 
 JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
@@ -58,7 +64,8 @@ JSClass global_class = {
 };
 
 enum global_propertyIds {
-	GLOBAL_GALAXY_NUMBER, GLOBAL_PLANET_NUMBER, GLOBAL_DOCKED_AT_MAIN_STATION, GLOBAL_DOCKED_STATION_NAME, GLOBAL_MISSION_VARS
+	GLOBAL_GALAXY_NUMBER, GLOBAL_PLANET_NUMBER, GLOBAL_DOCKED_AT_MAIN_STATION, GLOBAL_DOCKED_STATION_NAME, GLOBAL_MISSION_VARS,
+	GLOBAL_GUI_SCREEN, GLOBAL_STATUS_STRING
 };
 
 JSPropertySpec Global_props[] = {
@@ -67,74 +74,10 @@ JSPropertySpec Global_props[] = {
 	{ "DockedAtMainStation", GLOBAL_DOCKED_AT_MAIN_STATION, JSPROP_ENUMERATE, GlobalGetProperty },
 	{ "StationName", GLOBAL_DOCKED_STATION_NAME, JSPROP_ENUMERATE, GlobalGetProperty },
 	{ "MissionVars", GLOBAL_MISSION_VARS, JSPROP_ENUMERATE, GlobalGetProperty },
+	{ "GUIScreen", GLOBAL_GUI_SCREEN, JSPROP_ENUMERATE, GlobalGetProperty },
+	{ "StatusString", GLOBAL_STATUS_STRING, JSPROP_ENUMERATE, GlobalGetProperty },
 	{ 0 }
 };
-
-
-void runScripts(NSString* event);
-
-//===========================================================================
-// Universe proxy
-//===========================================================================
-
-JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
-
-JSClass Universe_class = {
-	"Universe", JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub,JS_PropertyStub,UniverseGetProperty,JS_PropertyStub,
-	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
-};
-
-enum universe_propertyIds {
-	UNI_PLAYER_ENTITY
-};
-
-JSPropertySpec Universe_props[] = {
-	{ "PlayerEntity", UNI_PLAYER_ENTITY, JSPROP_ENUMERATE },
-	{ 0 }
-};
-
-JSBool UniverseLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
-JSBool UniverseAddMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
-JSBool UniverseAddCommsMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
-
-JSFunctionSpec Universe_funcs[] = {
-	{ "AddMessage", UniverseAddMessage, 2, 0 },
-	{ "AddCommsMessage", UniverseAddMessage, 2, 0 },
-	{ "Log", UniverseLog, 1, 0 },
-	{ 0 }
-};
-
-//===========================================================================
-// PlayerEntity proxy
-//===========================================================================
-
-JSBool PlayerEntityGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
-
-JSClass PlayerEntity_class = {
-	"PlayerEntity", JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub,JS_PropertyStub,PlayerEntityGetProperty,JS_PropertyStub,
-	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
-};
-
-enum playerEntity_propertyIds {
-	PE_SHIP_DESCRIPTION, PE_COMMANDER_NAME, PE_SCORE, PE_CREDITS, PE_LEGAL_STATUS
-};
-
-JSPropertySpec playerEntity_props[] = {
-	{ "ShipDescription", PE_SHIP_DESCRIPTION, JSPROP_ENUMERATE },
-	{ "CommanderName", PE_COMMANDER_NAME, JSPROP_ENUMERATE },
-	{ "Score", PE_SCORE, JSPROP_ENUMERATE },
-	{ "Credits", PE_CREDITS, JSPROP_ENUMERATE },
-	{ "LegalStatus", PE_LEGAL_STATUS, JSPROP_ENUMERATE },
-	{ 0 }
-};
-
-NSString *JSValToNSString(JSContext *cx, jsval val) {
-	JSString *str = JS_ValueToString(cx, val);
-	char *chars = JS_GetStringBytes(str);
-	return [NSString stringWithCString:chars];
-}
 
 JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	if (JSVAL_IS_INT(id)) {
@@ -169,6 +112,22 @@ JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 				break;
 			}
 
+			case GLOBAL_GUI_SCREEN: {
+				NSString *name = [playerEntity gui_screen_string];
+				const char *name_str = [name cString];
+				JSString *js_name = JS_NewStringCopyZ(cx, name_str);
+				*vp = STRING_TO_JSVAL(js_name);
+				break;
+			}
+
+			case GLOBAL_STATUS_STRING: {
+				NSString *name = [playerEntity status_string];
+				const char *name_str = [name cString];
+				JSString *js_name = JS_NewStringCopyZ(cx, name_str);
+				*vp = STRING_TO_JSVAL(js_name);
+				break;
+			}
+
 			case GLOBAL_MISSION_VARS: {
 				fprintf(stdout, "Creating MissionVars array\r\n");
 				JSObject *mv = JS_DefineObject(cx, xglob, "MissionVars", &global_class, 0x00, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT);
@@ -180,6 +139,40 @@ JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 
 	return JS_TRUE;
 }
+
+//===========================================================================
+// Universe proxy
+//===========================================================================
+
+JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+
+JSClass Universe_class = {
+	"Universe", JSCLASS_HAS_PRIVATE,
+	JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
+	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
+};
+
+/*
+enum Universe_propertyIds {
+	UNI_PLAYER_ENTITY
+};
+
+JSPropertySpec Universe_props[] = {
+	{ "PlayerEntity", UNI_PLAYER_ENTITY, JSPROP_ENUMERATE },
+	{ 0 }
+};
+*/
+
+JSBool UniverseLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool UniverseAddMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool UniverseAddCommsMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+
+JSFunctionSpec Universe_funcs[] = {
+	{ "AddMessage", UniverseAddMessage, 2, 0 },
+	{ "AddCommsMessage", UniverseAddMessage, 2, 0 },
+	{ "Log", UniverseLog, 1, 0 },
+	{ 0 }
+};
 
 JSBool UniverseLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
 	JSString *str;
@@ -197,7 +190,7 @@ JSBool UniverseAddMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
 	ok = JS_ValueToInt32(cx, argv[1], &count);
 	NSString *str = JSValToNSString(cx, argv[0]);
 	[scriptedUniverse addMessage: str forCount:(int)count];
-	[str dealloc];
+	//[str dealloc];
 	return JS_TRUE;
 }
 
@@ -210,10 +203,10 @@ JSBool UniverseAddCommsMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *
 	ok = JS_ValueToInt32(cx, argv[1], &count);
 	NSString *str = JSValToNSString(cx, argv[0]);
 	[scriptedUniverse addCommsMessage: str forCount:(int)count];
-	[str dealloc];
+	//[str dealloc];
 	return JS_TRUE;
 }
-
+/*
 JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	if (JSVAL_IS_INT(id)) {
 		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
@@ -234,8 +227,38 @@ JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 
 	return JS_TRUE;
 }
+*/
 
-JSBool PlayerEntityGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+//===========================================================================
+// Player proxy
+//===========================================================================
+
+JSBool PlayerGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+JSBool PlayerSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+
+JSClass Player_class = {
+	"Player", JSCLASS_HAS_PRIVATE,
+	JS_PropertyStub,JS_PropertyStub,PlayerGetProperty,PlayerSetProperty,
+	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
+};
+
+enum Player_propertyIds {
+	PE_SHIP_DESCRIPTION, PE_COMMANDER_NAME, PE_SCORE, PE_CREDITS, PE_LEGAL_STATUS,
+	PE_FUEL_LEVEL, PE_FUEL_LEAK_RATE
+};
+
+JSPropertySpec Player_props[] = {
+	{ "ShipDescription", PE_SHIP_DESCRIPTION, JSPROP_ENUMERATE },
+	{ "CommanderName", PE_COMMANDER_NAME, JSPROP_ENUMERATE },
+	{ "Score", PE_SCORE, JSPROP_ENUMERATE },
+	{ "Credits", PE_CREDITS, JSPROP_ENUMERATE },
+	{ "LegalStatus", PE_LEGAL_STATUS, JSPROP_ENUMERATE },
+	{ "Fuel", PE_FUEL_LEVEL, JSPROP_ENUMERATE },
+	{ "FuelLeakRate", PE_FUEL_LEAK_RATE, JSPROP_ENUMERATE },
+	{ 0 }
+};
+
+JSBool PlayerGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	JSBool ok;
 	jsdouble *dp;
 
@@ -243,42 +266,254 @@ JSBool PlayerEntityGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp
 
 	if (JSVAL_IS_INT(id)) {
 		switch (JSVAL_TO_INT(id)) {
-			case PE_SHIP_DESCRIPTION:
-				{
-					NSString *ship_desc = [playerEntity commanderShip_string];
-					const char *ship_desc_str = [ship_desc cString];
-					JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-					*vp = STRING_TO_JSVAL(js_ship_desc);
-					break;
+			case PE_SHIP_DESCRIPTION: {
+				NSString *ship_desc = [playerEntity commanderShip_string];
+				const char *ship_desc_str = [ship_desc cString];
+				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
+				*vp = STRING_TO_JSVAL(js_ship_desc);
+				break;
+			}
+
+			case PE_COMMANDER_NAME: {
+				NSString *ship_desc = [playerEntity commanderName_string];
+				const char *ship_desc_str = [ship_desc cString];
+				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
+				*vp = STRING_TO_JSVAL(js_ship_desc);
+				break;
+			}
+
+			case PE_SCORE: {
+				jsdouble ds = [[playerEntity score_number] doubleValue];
+				dp = JS_NewDouble(cx, ds);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+
+			case PE_LEGAL_STATUS: {
+				jsdouble ds = [[playerEntity legalStatus_number] doubleValue];
+				dp = JS_NewDouble(cx, ds);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+
+			case PE_CREDITS: {
+				jsdouble ds = [[playerEntity credits_number] doubleValue];
+				dp = JS_NewDouble(cx, ds);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+
+			case PE_FUEL_LEVEL: {
+				jsdouble ds = [[playerEntity fuel_level_number] doubleValue];
+				dp = JS_NewDouble(cx, ds);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+			case PE_FUEL_LEAK_RATE: {
+				jsdouble ds = [[playerEntity fuel_leak_rate_number] doubleValue];
+				dp = JS_NewDouble(cx, ds);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+		}
+	}
+	return JS_TRUE;
+}
+
+JSBool PlayerSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+	JSBool ok;
+	jsdouble *dp;
+
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+
+	if (JSVAL_IS_INT(id)) {
+		switch (JSVAL_TO_INT(id)) {
+			case PE_CREDITS: {
+				jsdouble d;
+				ok = JS_ValueToNumber(cx, *vp, &d);
+				fprintf(stdout, "set credits (double) = %f\r\n", d);
+				float fs = [[playerEntity credits_number] floatValue];
+				double ds = (double)fs;
+				double diff = d - ds;
+				fprintf(stdout, "diff is (double) = %f\r\n", diff);
+				[playerEntity awardCredits: [[NSNumber numberWithDouble:diff] stringValue]];
+				break;
+			}
+		}
+	}
+	return JS_TRUE;
+}
+
+//===========================================================================
+// System (solar system) proxy
+//===========================================================================
+
+JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+
+JSClass System_class = {
+	"System", JSCLASS_HAS_PRIVATE,
+	JS_PropertyStub,JS_PropertyStub,SystemGetProperty,JS_PropertyStub,
+	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
+};
+
+enum System_propertyIds {
+	SYS_ID, SYS_NAME, SYS_DESCRIPTION, SYS_GOING_NOVA, SYS_GONE_NOVA, SYS_GOVT_STR, SYS_GOVT_ID, SYS_ECONOMY_ID,
+	SYS_TECH_LVL, SYS_POPULATION, SYS_PRODUCTIVITY, SYS_INHABITANTS
+};
+
+JSPropertySpec System_props[] = {
+	{ "Id", SYS_ID, JSPROP_ENUMERATE },
+	{ "Name", SYS_NAME, JSPROP_ENUMERATE },
+	{ "Description", SYS_DESCRIPTION, JSPROP_ENUMERATE },
+	{ "InhabitantsDescription", SYS_INHABITANTS, JSPROP_ENUMERATE },
+	{ "GoingNova", SYS_GOING_NOVA, JSPROP_ENUMERATE },
+	{ "GoneNova", SYS_GONE_NOVA, JSPROP_ENUMERATE },
+	{ "GovernmentDescription", SYS_GOVT_STR, JSPROP_ENUMERATE },
+	{ "GovernmentId", SYS_GOVT_ID, JSPROP_ENUMERATE },
+	{ "EconomyId", SYS_ECONOMY_ID, JSPROP_ENUMERATE },
+	{ "TechLevel", SYS_TECH_LVL, JSPROP_ENUMERATE },
+	{ "Population", SYS_POPULATION, JSPROP_ENUMERATE },
+	{ "Productivity", SYS_PRODUCTIVITY, JSPROP_ENUMERATE },
+	{ 0 }
+};
+
+static Random_Seed currentSystem;
+static NSDictionary *planetinfo = nil;
+
+JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+	JSBool ok;
+	jsdouble *dp;
+
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if ( !equal_seeds(currentSystem, playerEntity->system_seed)) {
+		fprintf(stdout, "Current system has changed, regenerating local copy of planetinfo\r\n");
+		currentSystem = playerEntity->system_seed;
+		if (planetinfo)
+			[planetinfo release];
+
+		planetinfo = [[scriptedUniverse generateSystemData:currentSystem] retain];
+	}
+
+	if (JSVAL_IS_INT(id)) {
+		switch (JSVAL_TO_INT(id)) {
+			case SYS_ID: {
+				*vp = INT_TO_JSVAL([[playerEntity planet_number] intValue]);
+				break;
+			}
+
+			case SYS_NAME: {
+				NSString *ship_desc = (NSString *)[planetinfo objectForKey:KEY_NAME];
+				if (!ship_desc) {
+					ship_desc = @"None";
 				}
-			case PE_COMMANDER_NAME:
-				{
-					NSString *ship_desc = [playerEntity commanderName_string];
-					const char *ship_desc_str = [ship_desc cString];
-					JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-					*vp = STRING_TO_JSVAL(js_ship_desc);
-					break;
+				const char *ship_desc_str = [ship_desc cString];
+				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
+				*vp = STRING_TO_JSVAL(js_ship_desc);
+				break;
+			}
+
+			case SYS_DESCRIPTION: {
+				NSString *ship_desc = (NSString *)[planetinfo objectForKey:KEY_DESCRIPTION];
+				if (!ship_desc) {
+					ship_desc = @"None";
 				}
-/*
-			case PE_FORWARD_SHIELD:
-				{
-					double fs = (double)[playerEntity dial_forward_shield];
-					dp = JS_NewDouble(cx, fs);
-					ok = (dp != 0x00);
-					if (ok)
-						*vp = DOUBLE_TO_JSVAL(dp);
-					break;
+				const char *ship_desc_str = [ship_desc cString];
+				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
+				*vp = STRING_TO_JSVAL(js_ship_desc);
+				break;
+			}
+
+			case SYS_INHABITANTS: {
+				NSString *ship_desc = (NSString *)[planetinfo objectForKey:KEY_INHABITANTS];
+				if (!ship_desc) {
+					ship_desc = @"None";
 				}
-			case PE_AFT_SHIELD:
-				{
-					double fs = (double)[playerEntity dial_aft_shield];
-					dp = JS_NewDouble(cx, fs);
-					ok = (dp != 0x00);
-					if (ok)
-						*vp = DOUBLE_TO_JSVAL(dp);
-					break;
-				}
-*/
+				const char *ship_desc_str = [ship_desc cString];
+				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
+				*vp = STRING_TO_JSVAL(js_ship_desc);
+				break;
+			}
+
+			case SYS_GOING_NOVA: {
+				BOOL b = [[playerEntity sunWillGoNova_bool] isEqualToString:@"YES"];
+				if (b == YES)
+					*vp = BOOLEAN_TO_JSVAL(1);
+				else
+					*vp = BOOLEAN_TO_JSVAL(0);
+				break;
+			}
+
+			case SYS_GONE_NOVA: {
+				BOOL b = [[playerEntity sunGoneNova_bool] isEqualToString:@"YES"];
+				if (b == YES)
+					*vp = BOOLEAN_TO_JSVAL(1);
+				else
+					*vp = BOOLEAN_TO_JSVAL(0);
+				break;
+			}
+
+			case SYS_GOVT_STR: {
+				NSString *ship_desc = [playerEntity systemGovernment_string];
+				const char *ship_desc_str = [ship_desc cString];
+				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
+				*vp = STRING_TO_JSVAL(js_ship_desc);
+				break;
+			}
+
+			case SYS_GOVT_ID: {
+				double fs = (double)[[playerEntity systemGovernment_number] doubleValue];
+				dp = JS_NewDouble(cx, fs);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+
+			case SYS_ECONOMY_ID: {
+				double fs = (double)[[playerEntity systemEconomy_number] doubleValue];
+				dp = JS_NewDouble(cx, fs);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+
+			case SYS_TECH_LVL: {
+				double fs = (double)[[playerEntity systemTechLevel_number] doubleValue];
+				dp = JS_NewDouble(cx, fs);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+
+			case SYS_POPULATION: {
+				double fs = (double)[[playerEntity systemPopulation_number] doubleValue];
+				dp = JS_NewDouble(cx, fs);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
+
+			case SYS_PRODUCTIVITY: {
+				double fs = (double)[[playerEntity systemProductivity_number] doubleValue];
+				dp = JS_NewDouble(cx, fs);
+				ok = (dp != 0x00);
+				if (ok)
+					*vp = DOUBLE_TO_JSVAL(dp);
+				break;
+			}
 		}
 	}
 	return JS_TRUE;
@@ -326,8 +561,14 @@ JSBool PlayerEntityGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp
 	JS_DefineProperties(cx, glob, Global_props);
 	
 	universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
-	JS_DefineProperties(cx, universeObj, Universe_props);
+	//JS_DefineProperties(cx, universeObj, Universe_props);
 	JS_DefineFunctions(cx, universeObj, Universe_funcs);
+
+	systemObj = JS_DefineObject(cx, glob, "System", &System_class, NULL, JSPROP_ENUMERATE);
+	JS_DefineProperties(cx, systemObj, System_props);
+
+	playerObj = JS_DefineObject(cx, glob, "Player", &Player_class, NULL, JSPROP_ENUMERATE);
+	JS_DefineProperties(cx, playerObj, Player_props);
 
 	oxps = [[NSMutableArray arrayWithCapacity:10] retain];
 

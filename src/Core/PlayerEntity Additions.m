@@ -1682,6 +1682,11 @@ int d100_seed = -1;	// ensure proper random function
 	}
 }
 
+- (NSNumber *) fuel_leak_rate_number
+{
+	return [NSNumber numberWithFloat:fuel_leak_rate];
+}
+
 - (void) setSunNovaIn: (NSString *)time_value
 {
 	double time_until_nova = [time_value doubleValue];
