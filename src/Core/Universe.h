@@ -526,7 +526,7 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context);
 
 - (void) handleOoliteException:(NSException*) ooliteException;
 
-- (void) checkScripts: (NSString *) statusString;
+- (ScriptEngine *) scriptEngine;
 
 // speech routines
 //

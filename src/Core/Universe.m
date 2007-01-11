@@ -202,6 +202,9 @@ Your fair use and other rights are in no way affected by the above.
 	planet = NO_TARGET;
 	sun = NO_TARGET;
 	//
+	// NOTE! scriptEngine MUST be initialised before the PlayerEntity
+	scriptEngine = [[[ScriptEngine alloc] initWithUniverse: self] retain];
+
 	player = [[PlayerEntity alloc] init];	// alloc retains!
 	[self addEntity:player];
 
@@ -244,8 +247,6 @@ Your fair use and other rights are in no way affected by the above.
 	universeRegion = [[CollisionRegion alloc] initAsUniverse];	// retained
 
 	doProcedurallyTexturedPlanets = NO;
-
-	scriptEngine = [[[ScriptEngine alloc] initWithUniverse: self] retain];
 
     return self;
 }
@@ -8033,9 +8034,9 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	}
 }
 
-- (void) checkScripts: (NSString *) statusString
+- (ScriptEngine *) scriptEngine
 {
-	[scriptEngine doEvent: statusString];
+	return scriptEngine;
 }
 
 // speech routines

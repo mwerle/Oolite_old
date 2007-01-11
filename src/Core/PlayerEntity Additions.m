@@ -46,6 +46,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "AI.h"
 #import "OOSound.h"
 #import "OOColor.h"
+#import "OXPScript.h"
 
 #ifdef GNUSTEP
 #import "Comparison.h"
@@ -68,13 +69,20 @@ static NSString * mission_key;
 	for (i = 0; i < [[script allKeys] count]; i++)
 	{
 		NSString *missionTitle = (NSString *)[[script allKeys] objectAtIndex:i];
-		NSArray *mission = (NSArray *)[script objectForKey:missionTitle];
-		mission_key = missionTitle;
-		[self scriptActions: mission forTarget: self];
+
+		id obj = [script objectForKey:missionTitle];
+		if ([obj isKindOfClass:[NSArray class]])
+		{
+			NSArray *mission = (NSArray *)obj;
+			mission_key = missionTitle;
+			[self scriptActions: mission forTarget: self];
+		}
+		else if ([obj isKindOfClass:[OXPScript class]])
+		{
+			OXPScript *jscript = (OXPScript *)obj;
+			[jscript doEvent: [self status_string]];
+		}
 	}
-	
-	NSLog(@"checking JavaScripts");
-	[universe checkScripts: [self status_string]];
 }
 
 - (void) scriptActions:(NSArray*) some_actions forTarget:(ShipEntity*) a_target
@@ -447,6 +455,14 @@ static NSString * mission_key;
 	return result;
 }
 
+- (void) setMissionDescription:(NSString *)textKey forMission:(NSString *)key
+{
+	NSString *old_mission_key = mission_key;
+	mission_key = key;
+	[self setMissionDescription:textKey];
+	mission_key = old_mission_key;
+}
+
 - (void) setMissionDescription:(NSString *)textKey
 {
 	NSString		*text = (NSString *)[[universe missiontext] objectForKey:textKey];
@@ -464,6 +480,14 @@ static NSString * mission_key;
 	text = [self replaceVariablesInString: text];
 
 	[mission_variables setObject:text forKey:mission_key];
+}
+
+- (void) clearMissionDescriptionForMission:(NSString *)key
+{
+	NSString *old_mission_key = mission_key;
+	mission_key = key;
+	[self clearMissionDescription];
+	mission_key = old_mission_key;
 }
 
 - (void) clearMissionDescription

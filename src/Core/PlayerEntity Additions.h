@@ -109,7 +109,9 @@ Your fair use and other rights are in no way affected by the above.
 
 - (NSArray*) missionsList;
 
+- (void) setMissionDescription:(NSString *)textKey forMission:(NSString *)key;
 - (void) setMissionDescription:(NSString *)textKey;
+- (void) clearMissionDescriptionForMission:(NSString *)key;
 - (void) clearMissionDescription;
 
 - (void) commsMessage:(NSString *)valueString;

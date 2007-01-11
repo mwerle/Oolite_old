@@ -43,6 +43,8 @@ Your fair use and other rights are in no way affected by the above.
 #import "ScannerExtension.h"
 #import "MutableDictionaryExtension.h"
 #import "OOSound.h"
+#import "Universe.h"
+#import "OXPScript.h"
 
 extern NSDictionary* parseScripts(NSString* script);
 
@@ -1141,13 +1143,17 @@ NSMutableDictionary*	surface_cache;
 
 	for (i = 0; i < [fpaths count]; i++)
 	{
-		NSString *xfilepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
-		NSString *filepath = [NSMutableString stringWithString:xfilepath];
+		//NSString *xfilepath = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:filename];
+		//NSString *filepath = [NSMutableString stringWithString:xfilepath];
 
-		filepath = [[filepath stringByDeletingPathExtension] stringByAppendingPathExtension:@"oos"];
-		
-		//NSLog(@"looking for oos file: %@", filepath);
-		if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
+		NSString* oosFilepath; // = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:@"script.oos"];
+		NSString* jsFilepath; // = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:@"script.js"];
+		NSString* plistFilepath; // = [(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:@"script.plist"];
+/*
+		if ([[NSFileManager defaultManager] fileExistsAtPath:jsFilepath])
+		{
+		}
+		else if ([[NSFileManager defaultManager] fileExistsAtPath:oosFilepath])
 		{
 			// load and compile oos script
 			NSLog(@"trying to load and parse %@", filepath);
@@ -1158,10 +1164,8 @@ NSMutableDictionary*	surface_cache;
 				[results addObject:scriptDict];
 			}
 		}
-		else
+		else if ([[NSFileManager defaultManager] fileExistsAtPath:plistFilepath])
 		{
-			filepath = [[filepath stringByDeletingPathExtension] stringByAppendingPathExtension:@"plist"];
-			//NSLog(@"oos not found, looking for plist file: %@", filepath);
 			// All this code replicated from dictionaryFromFileNamed because that method
 			// will traverse all possible locations and any oos files that co-exist with
 			// plist files will probably get their entries overwritten.
@@ -1169,14 +1173,60 @@ NSMutableDictionary*	surface_cache;
 			// This can be simplified if we make a rule that it is a configuration error
 			// that isn't handled if there is a script.oos and script.plist file in
 			// the same place. But that probably isn't realistic.
-			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
+			NSDictionary* found_dic = [NSDictionary dictionaryWithContentsOfFile:filepath];
+
+			// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
+			NS_DURING
+				if (!found_dic)	// try parsing it using our home-grown XML parser
+					found_dic = (NSDictionary*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:filepath]];
+			NS_HANDLER
+				if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
+				{
+					NSLog(@"***** [ResourceManager dictionaryFromFilesNamed:::] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
+				}
+				else
+					[localException raise];
+			NS_ENDHANDLER
+
+			if (found_dic)
+				[results addObject:found_dic];
+			else
+				NSLog(@"ERROR ***** could not parse %@ as a NSDictionary.", filepath);
+		}
+*/
+		if (foldername)
+		{
+			oosFilepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:@"script.oos"];
+			jsFilepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:@"script.js"];
+			plistFilepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:@"script.plist"];
+
+			if ([[NSFileManager defaultManager] fileExistsAtPath:jsFilepath])
 			{
-				NSDictionary* found_dic = [NSDictionary dictionaryWithContentsOfFile:filepath];
+				Universe *universe = [Entity dataStore];
+				JSContext *cx = [[universe scriptEngine] context];
+				OXPScript *scr = [[[OXPScript alloc] initWithContext:cx andFilename:jsFilepath] retain];
+				if (scr)
+					[results addObject:scr];
+			}
+			else if ([[NSFileManager defaultManager] fileExistsAtPath:oosFilepath])
+			{
+				// load and compile oos script
+				NSLog(@"trying to load and compile %@", oosFilepath);
+				NSString *script = [NSString stringWithContentsOfFile:oosFilepath];
+				NSDictionary *scriptDict = parseScripts(script);
+				if (scriptDict) {
+					//NSLog(@"parsed ok, adding to results");
+					[results addObject:scriptDict];
+				}
+			}
+			else if ([[NSFileManager defaultManager] fileExistsAtPath:plistFilepath])
+			{
+				NSDictionary* found_dic = [NSDictionary dictionaryWithContentsOfFile:plistFilepath];
 
 				// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
 				NS_DURING
 					if (!found_dic)	// try parsing it using our home-grown XML parser
-						found_dic = (NSDictionary*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:filepath]];
+						found_dic = (NSDictionary*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:plistFilepath]];
 				NS_HANDLER
 					if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
 					{
@@ -1186,55 +1236,11 @@ NSMutableDictionary*	surface_cache;
 						[localException raise];
 				NS_ENDHANDLER
 
+
 				if (found_dic)
 					[results addObject:found_dic];
 				else
-					NSLog(@"ERROR ***** could not parse %@ as a NSDictionary.", filepath);
-			}
-		}
-		if (foldername)
-		{
-			xfilepath = [[(NSString *)[fpaths objectAtIndex:i] stringByAppendingPathComponent:foldername] stringByAppendingPathComponent:filename];
-			filepath = [[xfilepath stringByDeletingPathExtension] stringByAppendingPathExtension:@"oos"];
-			//NSLog(@"looking for oos file: %@", filepath);
-			if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
-			{
-				// load and compile oos script
-				NSLog(@"trying to load and compile %@", filepath);
-				NSString *script = [NSString stringWithContentsOfFile:filepath];
-				NSDictionary *scriptDict = parseScripts(script);
-				if (scriptDict) {
-					//NSLog(@"parsed ok, adding to results");
-					[results addObject:scriptDict];
-				}
-			}
-			else
-			{
-				filepath = [[filepath stringByDeletingPathExtension] stringByAppendingPathExtension:@"plist"];
-				//NSLog(@"oos not found, looking for plist file: %@", filepath);
-				if ([[NSFileManager defaultManager] fileExistsAtPath:filepath])
-				{
-					NSDictionary* found_dic = [NSDictionary dictionaryWithContentsOfFile:filepath];
-
-					// FIX FOR WINDOWS GNUSTEP NOT PARSING XML PLISTS
-					NS_DURING
-						if (!found_dic)	// try parsing it using our home-grown XML parser
-							found_dic = (NSDictionary*)[ResourceManager parseXMLPropertyList:[NSString stringWithContentsOfFile:filepath]];
-					NS_HANDLER
-						if ([[localException name] isEqual: OOLITE_EXCEPTION_XML_PARSING_FAILURE])	// note it happened here
-						{
-							NSLog(@"***** [ResourceManager dictionaryFromFilesNamed:::] encountered exception : %@ : %@ *****",[localException name], [localException reason]);
-						}
-						else
-							[localException raise];
-					NS_ENDHANDLER
-
-
-					if (found_dic)
-						[results addObject:found_dic];
-					else
-						NSLog(@"ERROR ***** could not parse %@ as a NSDictionary.", filepath);
-				}
+					NSLog(@"ERROR ***** could not parse %@ as a NSDictionary.", plistFilepath);
 			}
 		}
 	}
@@ -1246,7 +1252,14 @@ NSMutableDictionary*	surface_cache;
 	NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:128];
 	for (i = 0; i < [results count]; i++)
 	{
-		[result addEntriesFromDictionary:(NSDictionary *)[results objectAtIndex:i]];
+		id obj = [results objectAtIndex:i];
+		if ([obj isKindOfClass:[NSDictionary class]])
+			[result addEntriesFromDictionary:(NSDictionary *)obj];
+		else if ([obj isKindOfClass:[OXPScript class]])
+		{
+			OXPScript *jscript = (OXPScript *)obj;
+			[result setObject:obj forKey:[jscript name]];
+		}
 	}
 	//
 	if (result) {

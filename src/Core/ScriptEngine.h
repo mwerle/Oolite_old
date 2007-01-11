@@ -12,13 +12,12 @@
 	JSContext *cx;
 	JSObject *glob;
 	JSBool builtins;
-	NSMutableArray *oxps;
 }
 
 - (id) initWithUniverse: (Universe *) universe;
 - (void) dealloc;
 
-- (void) doEvent: (NSString *) event;
+- (JSContext *) context;
 
 @end
 

@@ -971,8 +971,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	[hud setScannerZoom:1.0];
 	[hud resizeGuis:huddict];
 	scanner_zoom_rate = 0.0;
-	//
-	//script = [[ResourceManager dictionaryFromFilesNamed:@"script.plist" inFolder:@"Config" andMerge:YES] retain];
+
 	script = [[ResourceManager loadScripts] retain];
 	mission_variables =[[NSMutableDictionary dictionaryWithCapacity:16] retain];
 	local_variables =[[NSMutableDictionary dictionaryWithCapacity:[script count]] retain];

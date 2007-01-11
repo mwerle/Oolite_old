@@ -34,6 +34,8 @@ Your fair use and other rights are in no way affected by the above.
 
 #import "OXPScript.h"
 
+OXPScript *currentOXPScript;
+
 JSClass OXP_class = {
 	"OXPScript", JSCLASS_HAS_PRIVATE,
 	JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
@@ -143,6 +145,7 @@ extern NSString *JSValToNSString(JSContext *cx, jsval val);
 	if (ok && !JSVAL_IS_VOID(rval)) {
 		JSFunction *func = JS_ValueToFunction(cx, rval);
 		if (func != 0x00) {
+			currentOXPScript = self;
 			ok = JS_CallFunction(cx, obj, func, 0, 0x00, &rval);
 			if (ok)
 				return YES;

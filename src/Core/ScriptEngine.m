@@ -44,10 +44,11 @@ Your fair use and other rights are in no way affected by the above.
 
 #include <stdio.h>
 #include <string.h>
-//#include <stdlib.h>
 
 Universe *scriptedUniverse;
-JSObject *xglob, *universeObj, *systemObj, *playerObj;
+JSObject *xglob, *universeObj, *systemObj, *playerObj, *missionObj;
+
+extern OXPScript *currentOXPScript;
 
 NSString *JSValToNSString(JSContext *cx, jsval val) {
 	JSString *str = JS_ValueToString(cx, val);
@@ -78,6 +79,18 @@ JSPropertySpec Global_props[] = {
 	{ "StatusString", GLOBAL_STATUS_STRING, JSPROP_ENUMERATE, GlobalGetProperty },
 	{ 0 }
 };
+
+JSBool GlobalShowStatusScreen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+
+JSFunctionSpec Global_funcs[] = {
+	{ "ShowStatusScreen", GlobalShowStatusScreen, 0, 0 },
+	{ 0 }
+};
+
+JSBool GlobalShowStatusScreen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	[playerEntity setGuiToStatusScreen];
+}
 
 JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	if (JSVAL_IS_INT(id)) {
@@ -257,6 +270,78 @@ JSPropertySpec Player_props[] = {
 	{ "FuelLeakRate", PE_FUEL_LEAK_RATE, JSPROP_ENUMERATE },
 	{ 0 }
 };
+
+JSBool PlayerAwardEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool PlayerRemoveEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool PlayerHasEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool PlayerLaunch(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool PlayerCall(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+
+JSFunctionSpec Player_funcs[] = {
+	{ "AwardEquipment", PlayerAwardEquipment, 1, 0 },
+	{ "RemoveEquipment", PlayerRemoveEquipment, 1, 0 },
+	{ "HasEquipment", PlayerHasEquipment, 1, 0 },
+	{ "Launch", PlayerLaunch, 0, 0 },
+	{ "Call", PlayerCall, 2, 0 },
+	{ 0 }
+};
+
+JSBool PlayerAwardEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0 && JSVAL_IS_STRING(argv[0])) {
+		JSString *jskey = JS_ValueToString(cx, argv[0]);
+		[playerEntity awardEquipment: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+	}
+	return JS_TRUE;
+}
+
+JSBool PlayerRemoveEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0 && JSVAL_IS_STRING(argv[0])) {
+		JSString *jskey = JS_ValueToString(cx, argv[0]);
+		[playerEntity removeEquipment: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+	}
+	return JS_TRUE;
+}
+
+JSBool PlayerHasEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0 && JSVAL_IS_STRING(argv[0])) {
+		JSString *jskey = JS_ValueToString(cx, argv[0]);
+		BOOL b = [playerEntity has_extra_equipment: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+		if (b == YES)
+			*rval = BOOLEAN_TO_JSVAL(1);
+		else
+			*rval = BOOLEAN_TO_JSVAL(0);
+	}
+	return JS_TRUE;
+}
+
+JSBool PlayerLaunch(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	[playerEntity launchFromStation];
+	return JS_TRUE;
+}
+
+JSBool PlayerCall(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0) {
+		JSString *jskey = JS_ValueToString(cx, argv[0]);
+		NSString *selectorString = [NSString stringWithCString:JS_GetStringBytes(jskey)];
+		SEL _selector = NSSelectorFromString(selectorString);
+		if ([playerEntity respondsToSelector:_selector]) {
+			if (argc == 1)
+				[playerEntity performSelector:_selector];
+			else {
+				JSString *jsparam = JS_ValueToString(cx, argv[1]);
+				NSString *valueString = [NSString stringWithCString:JS_GetStringBytes(jsparam)];
+				[playerEntity performSelector:_selector withObject:valueString];
+			}
+		}
+	}
+
+	return JS_TRUE;
+}
 
 JSBool PlayerGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	JSBool ok;
@@ -519,6 +604,151 @@ JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	return JS_TRUE;
 }
 
+//===========================================================================
+// Mission class
+//===========================================================================
+
+JSBool MissionGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+JSBool MissionSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+
+JSClass Mission_class = {
+	"Mission", JSCLASS_HAS_PRIVATE,
+	JS_PropertyStub,JS_PropertyStub,MissionGetProperty,MissionSetProperty,
+	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
+};
+
+enum Mission_propertyIds {
+	MISSION_TEXT, MISSION_MUSIC, MISSION_IMAGE, MISSION_CHOICES, MISSION_CHOICE, MISSION_INSTRUCTIONS
+};
+
+JSPropertySpec Mission_props[] = {
+	{ "MissionScreenTextKey", MISSION_TEXT, JSPROP_ENUMERATE },
+	{ "MusicFilename", MISSION_MUSIC, JSPROP_ENUMERATE },
+	{ "ImageFilename", MISSION_IMAGE, JSPROP_ENUMERATE },
+	{ "ChoicesKey", MISSION_CHOICES, JSPROP_ENUMERATE },
+	{ "Choice", MISSION_CHOICE, JSPROP_ENUMERATE },
+	{ "Instructions", MISSION_INSTRUCTIONS, JSPROP_ENUMERATE },
+	{ 0 }
+};
+
+JSBool MissionShowMissionScreen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool MissionShowShipModel(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool MissionResetMissionChoice(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool MissionMarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+
+JSFunctionSpec Mission_funcs[] = {
+	{ "ShowMissionScreen", MissionShowMissionScreen, 0, 0 },
+	{ "ShowShipModel", MissionShowShipModel, 1, 0 },
+	{ "ResetMissionChoice", MissionResetMissionChoice, 0, 0 },
+	{ "MarkSystem", MissionMarkSystem, 1, 0 },
+	{ "UnmarkSystem", MissionUnmarkSystem, 1, 0 },
+	{ 0 }
+};
+
+JSBool MissionGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+	JSBool ok;
+	jsdouble *dp;
+
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+
+	if (JSVAL_IS_INT(id)) {
+		switch (JSVAL_TO_INT(id)) {
+			case MISSION_CHOICE: {
+				NSString *ship_desc = [playerEntity missionChoice_string];
+				if (!ship_desc)
+					ship_desc = @"";
+				const char *ship_desc_str = [ship_desc cString];
+				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
+				*vp = STRING_TO_JSVAL(js_ship_desc);
+				break;
+			}
+		}
+	}
+	return JS_TRUE;
+}
+
+JSBool MissionSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+	JSBool ok;
+	jsdouble *dp;
+
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+
+	if (JSVAL_IS_INT(id)) {
+		switch (JSVAL_TO_INT(id)) {
+			case MISSION_TEXT: {
+				if (JSVAL_IS_STRING(*vp)) {
+					JSString *jskey = JS_ValueToString(cx, *vp);
+					[playerEntity addMissionText: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+				}
+				break;
+			}
+			case MISSION_MUSIC: {
+				if (JSVAL_IS_STRING(*vp)) {
+					JSString *jskey = JS_ValueToString(cx, *vp);
+					[playerEntity setMissionMusic: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+				}
+				break;
+			}
+			case MISSION_IMAGE: {
+				if (JSVAL_IS_STRING(*vp)) {
+					JSString *jskey = JS_ValueToString(cx, *vp);
+					[playerEntity setMissionImage: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+				}
+				break;
+			}
+			case MISSION_CHOICES: {
+				if (JSVAL_IS_STRING(*vp)) {
+					JSString *jskey = JS_ValueToString(cx, *vp);
+					[playerEntity setMissionChoices: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+				}
+				break;
+			}
+			case MISSION_INSTRUCTIONS: {
+				if (JSVAL_IS_STRING(*vp)) {
+					JSString *jskey = JS_ValueToString(cx, *vp);
+					NSString *ins = [NSString stringWithCString:JS_GetStringBytes(jskey)];
+					if ([ins length])
+						[playerEntity setMissionDescription:ins forMission:[currentOXPScript name]];
+					else
+						[playerEntity clearMissionDescriptionForMission:[currentOXPScript name]];
+				}
+				break;
+			}
+		}
+	}
+	return JS_TRUE;
+}
+
+JSBool MissionShowMissionScreen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	[playerEntity setGuiToMissionScreen];
+	return JS_TRUE;
+}
+
+JSBool MissionShowShipModel(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0 && JSVAL_IS_STRING(argv[0])) {
+		JSString *jskey = JS_ValueToString(cx, argv[0]);
+		[playerEntity showShipModel: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+	}
+	return JS_TRUE;
+}
+
+JSBool MissionResetMissionChoice(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	[playerEntity resetMissionChoice];
+	return JS_TRUE;
+}
+
+JSBool MissionMarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	return JS_TRUE;
+}
+
+JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	return JS_TRUE;
+}
+
 
 @implementation ScriptEngine
 
@@ -544,7 +774,8 @@ JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 
 	/* create a context and associate it with the JS run time */
 	cx = JS_NewContext(rt, 8192);
-
+	NSLog(@"created context");
+	
 	/* if cx does not have a value, end the program here */
 	if (cx == NULL) {
 		[super dealloc];
@@ -557,9 +788,9 @@ JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 
 	/* initialize the built-in JS objects and the global object */
 	builtins = JS_InitStandardClasses(cx, glob);
-
 	JS_DefineProperties(cx, glob, Global_props);
-	
+	JS_DefineFunctions(cx, glob, Global_funcs);
+
 	universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
 	//JS_DefineProperties(cx, universeObj, Universe_props);
 	JS_DefineFunctions(cx, universeObj, Universe_funcs);
@@ -569,14 +800,12 @@ JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 
 	playerObj = JS_DefineObject(cx, glob, "Player", &Player_class, NULL, JSPROP_ENUMERATE);
 	JS_DefineProperties(cx, playerObj, Player_props);
+	JS_DefineFunctions(cx, playerObj, Player_funcs);
 
-	oxps = [[NSMutableArray arrayWithCapacity:10] retain];
-
-	OXPScript *scr = [[[OXPScript alloc] initWithContext:cx andFilename:@"testoxp.js"] retain];
-	[oxps addObject: scr];
-	//scr = [[OXPScript alloc] initWithContext:cx andFilename:@"otheroxp.js"];
-	//[oxps addObject: scr];
-
+	missionObj = JS_DefineObject(cx, glob, "Mission", &Mission_class, NULL, JSPROP_ENUMERATE);
+	JS_DefineProperties(cx, missionObj, Mission_props);
+	JS_DefineFunctions(cx, missionObj, Mission_funcs);
+	
 	return self;
 }
 
@@ -590,17 +819,9 @@ JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	[super dealloc];
 }
 
-/*
- * This function runs all functions associated with the named event (eg exitingWitchspace).
- */
-- (void) doEvent: (NSString *) event
+- (JSContext *) context
 {
-	int i;
-	int c = [oxps count];
-	for (i = 0; i < c; i++) {
-		OXPScript *scr = (OXPScript *)[oxps objectAtIndex: i];
-		[scr doEvent: event];
-	}
+	return cx;
 }
 
 @end
