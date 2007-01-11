@@ -56,6 +56,73 @@ NSString *JSValToNSString(JSContext *cx, jsval val) {
 	return [NSString stringWithCString:chars];
 }
 
+//===========================================================================
+// MissionVars class
+//===========================================================================
+
+JSBool MissionVarsGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+JSBool MissionVarsSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+
+JSClass MissionVars_class = {
+	"MissionVars", JSCLASS_HAS_PRIVATE,
+	JS_PropertyStub,JS_PropertyStub,MissionVarsGetProperty,MissionVarsSetProperty,
+	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
+};
+
+JSBool MissionVarsGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	NSDictionary *mission_variables = [playerEntity mission_variables];
+
+	if (JSVAL_IS_STRING(id)) {
+		NSString *key = JSValToNSString(cx, id);
+		NSString *value = (NSString *)[mission_variables objectForKey:key];
+		if (!value)
+			*vp = JSVAL_VOID;
+		else
+		{
+			int i;
+			int c = [value length];
+			BOOL isNumber = YES;
+			// The point of this code is to try and tell the JS interpreter to treat numeric strings
+			// as numbers where possible so that standard arithmetic works as you'd expect rather than
+			// 1+1 == "11". So a JSVAL_DOUBLE is returned if possible, otherwise a JSVAL_STRING is returned.
+			NSCharacterSet *numberCharSet = [NSCharacterSet characterSetWithCharactersInString:@"1234567890-."];
+			for (i = 0; i < c; i++) {
+				if ([numberCharSet characterIsMember:[value characterAtIndex:i]] == NO) {
+					isNumber = NO;
+					break;
+				}
+			}
+			if (isNumber) {
+				jsdouble ds = [value doubleValue];
+				JSBool ok = JS_NewDoubleValue(cx, ds, vp);
+				if (ok)
+					return JS_TRUE;
+			}
+			const char *name_str = [value cString];
+			JSString *js_name = JS_NewStringCopyZ(cx, name_str);
+			*vp = STRING_TO_JSVAL(js_name);
+		}
+	}
+	return JS_TRUE;
+}
+
+JSBool MissionVarsSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	NSDictionary *mission_variables = [playerEntity mission_variables];
+
+	if (JSVAL_IS_STRING(id)) {
+		NSString *key = JSValToNSString(cx, id);
+		NSString *value = JSValToNSString(cx, *vp);
+		[mission_variables setValue:value forKey:key];
+	}
+	return JS_TRUE;
+}
+
+//===========================================================================
+// Global object class
+//===========================================================================
+
 JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
 JSClass global_class = {
@@ -142,8 +209,7 @@ JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 			}
 
 			case GLOBAL_MISSION_VARS: {
-				fprintf(stdout, "Creating MissionVars array\r\n");
-				JSObject *mv = JS_DefineObject(cx, xglob, "MissionVars", &global_class, 0x00, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT);
+				JSObject *mv = JS_DefineObject(cx, xglob, "MissionVars", &MissionVars_class, 0x00, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT);
 				*vp = OBJECT_TO_JSVAL(mv);
 				break;
 			}
@@ -749,12 +815,11 @@ JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv
 	return JS_TRUE;
 }
 
-
-@implementation ScriptEngine
-
 //===========================================================================
 // JavaScript engine initialisation and shutdown
 //===========================================================================
+
+@implementation ScriptEngine
 
 - (id) initWithUniverse: (Universe *)universe
 {
