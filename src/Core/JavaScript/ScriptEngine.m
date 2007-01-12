@@ -56,6 +56,19 @@ NSString *JSValToNSString(JSContext *cx, jsval val) {
 	return [NSString stringWithCString:chars];
 }
 
+void NSStringToJSVal(JSContext *cx, NSString *string, jsval *vp) {
+	const char *strptr = [string cString];
+	JSString *js_strptr = JS_NewStringCopyZ(cx, strptr);
+	*vp = STRING_TO_JSVAL(js_strptr);
+}
+
+void BOOLToJSVal(JSContext *cx, BOOL b, jsval *vp) {
+	if (b == YES)
+		*vp = BOOLEAN_TO_JSVAL(1);
+	else
+		*vp = BOOLEAN_TO_JSVAL(0);
+}
+
 //===========================================================================
 // MissionVars class
 //===========================================================================
@@ -162,144 +175,44 @@ JSBool GLobalLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *r
 }
 
 JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
-	if (JSVAL_IS_INT(id)) {
-		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 
-		switch (JSVAL_TO_INT(id)) {
-			case GLOBAL_GALAXY_NUMBER: {
-				NSNumber *gn = [playerEntity galaxy_number];
-				*vp = INT_TO_JSVAL([gn intValue]);
-				break;
-			}
+	if (!JSVAL_IS_INT(id)) return JS_TRUE;
 
-			case GLOBAL_PLANET_NUMBER: {
-				*vp = INT_TO_JSVAL([[playerEntity planet_number] intValue]);
-				break;
-			}
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 
-			case GLOBAL_DOCKED_AT_MAIN_STATION: {
-				BOOL b = [[playerEntity dockedAtMainStation_bool] isEqualToString:@"YES"];
-				if (b == YES)
-					*vp = BOOLEAN_TO_JSVAL(1);
-				else
-					*vp = BOOLEAN_TO_JSVAL(0);
-				break;
-			}
+	switch (JSVAL_TO_INT(id)) {
+		case GLOBAL_GALAXY_NUMBER:
+			*vp = INT_TO_JSVAL([[playerEntity galaxy_number] intValue]);
+			break;
 
-			case GLOBAL_DOCKED_STATION_NAME: {
-				NSString *name = [playerEntity dockedStationName_string];
-				const char *name_str = [name cString];
-				JSString *js_name = JS_NewStringCopyZ(cx, name_str);
-				*vp = STRING_TO_JSVAL(js_name);
-				break;
-			}
+		case GLOBAL_PLANET_NUMBER:
+			*vp = INT_TO_JSVAL([[playerEntity planet_number] intValue]);
+			break;
 
-			case GLOBAL_GUI_SCREEN: {
-				NSString *name = [playerEntity gui_screen_string];
-				const char *name_str = [name cString];
-				JSString *js_name = JS_NewStringCopyZ(cx, name_str);
-				*vp = STRING_TO_JSVAL(js_name);
-				break;
-			}
+		case GLOBAL_DOCKED_AT_MAIN_STATION:
+			BOOLToJSVal(cx, [[playerEntity dockedAtMainStation_bool] isEqualToString:@"YES"], vp);
+			break;
 
-			case GLOBAL_STATUS_STRING: {
-				NSString *name = [playerEntity status_string];
-				const char *name_str = [name cString];
-				JSString *js_name = JS_NewStringCopyZ(cx, name_str);
-				*vp = STRING_TO_JSVAL(js_name);
-				break;
-			}
+		case GLOBAL_DOCKED_STATION_NAME:
+			NSStringToJSVal(cx, [playerEntity dockedStationName_string], vp);
+			break;
 
-			case GLOBAL_MISSION_VARS: {
-				JSObject *mv = JS_DefineObject(cx, xglob, "MissionVars", &MissionVars_class, 0x00, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT);
-				*vp = OBJECT_TO_JSVAL(mv);
-				break;
-			}
+		case GLOBAL_GUI_SCREEN:
+			NSStringToJSVal(cx, [playerEntity gui_screen_string], vp);
+			break;
+
+		case GLOBAL_STATUS_STRING:
+		NSStringToJSVal(cx, [playerEntity status_string], vp);
+			break;
+
+		case GLOBAL_MISSION_VARS: {
+			JSObject *mv = JS_DefineObject(cx, xglob, "MissionVars", &MissionVars_class, 0x00, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT);
+			*vp = OBJECT_TO_JSVAL(mv);
+			break;
 		}
 	}
-
 	return JS_TRUE;
 }
-
-//===========================================================================
-// Universe proxy
-//===========================================================================
-/*
-JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
-
-JSClass Universe_class = {
-	"Universe", JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
-};
-
-
-enum Universe_propertyIds {
-	UNI_PLAYER_ENTITY
-};
-
-JSPropertySpec Universe_props[] = {
-	{ "PlayerEntity", UNI_PLAYER_ENTITY, JSPROP_ENUMERATE },
-	{ 0 }
-};
-
-
-JSBool UniverseAddMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
-JSBool UniverseAddCommsMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
-
-JSFunctionSpec Universe_funcs[] = {
-	{ "AddMessage", UniverseAddMessage, 2, 0 },
-	{ "AddCommsMessage", UniverseAddMessage, 2, 0 },
-	{ 0 }
-};
-
-JSBool UniverseAddMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
-	JSBool ok;
-	int32 count;
-	if (argc != 2)
-		return JS_FALSE;
-
-	ok = JS_ValueToInt32(cx, argv[1], &count);
-	NSString *str = JSValToNSString(cx, argv[0]);
-	[scriptedUniverse addMessage: str forCount:(int)count];
-	//[str dealloc];
-	return JS_TRUE;
-}
-
-JSBool UniverseAddCommsMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
-	JSBool ok;
-	int32 count;
-	if (argc != 2)
-		return JS_FALSE;
-
-	ok = JS_ValueToInt32(cx, argv[1], &count);
-	NSString *str = JSValToNSString(cx, argv[0]);
-	[scriptedUniverse addCommsMessage: str forCount:(int)count];
-	//[str dealloc];
-	return JS_TRUE;
-}
-
-JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
-	if (JSVAL_IS_INT(id)) {
-		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
-
-		switch (JSVAL_TO_INT(id)) {
-			case UNI_PLAYER_ENTITY: {
-				JSObject *pe = JS_DefineObject(cx, universeObj, "PlayerEntity", &PlayerEntity_class, 0x00, JSPROP_ENUMERATE | JSPROP_READONLY | JSPROP_PERMANENT);
-				if (pe == 0x00) {
-					return JS_FALSE;
-				}
-				JS_DefineProperties(cx, pe, playerEntity_props);
-
-				*vp = OBJECT_TO_JSVAL(pe);
-				break;
-			}
-		}
-	}
-
-	return JS_TRUE;
-}
-*/
 
 //===========================================================================
 // Player proxy
@@ -367,11 +280,7 @@ JSBool PlayerHasEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 	if (argc > 0 && JSVAL_IS_STRING(argv[0])) {
 		JSString *jskey = JS_ValueToString(cx, argv[0]);
-		BOOL b = [playerEntity has_extra_equipment: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
-		if (b == YES)
-			*rval = BOOLEAN_TO_JSVAL(1);
-		else
-			*rval = BOOLEAN_TO_JSVAL(0);
+		BOOLToJSVal(cx, [playerEntity has_extra_equipment: [NSString stringWithCString:JS_GetStringBytes(jskey)]], rval);
 	}
 	return JS_TRUE;
 }
@@ -403,97 +312,69 @@ JSBool PlayerCall(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *
 }
 
 JSBool PlayerGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
-	JSBool ok;
-	jsdouble *dp;
+
+	if (!JSVAL_IS_INT(id)) return JS_TRUE;
 
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 
-	if (JSVAL_IS_INT(id)) {
-		switch (JSVAL_TO_INT(id)) {
-			case PE_SHIP_DESCRIPTION: {
-				NSString *ship_desc = [playerEntity commanderShip_string];
-				const char *ship_desc_str = [ship_desc cString];
-				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-				*vp = STRING_TO_JSVAL(js_ship_desc);
-				break;
-			}
+	switch (JSVAL_TO_INT(id)) {
+		case PE_SHIP_DESCRIPTION:
+			NSStringToJSVal(cx, [playerEntity commanderShip_string], vp);
+			break;
 
-			case PE_COMMANDER_NAME: {
-				NSString *ship_desc = [playerEntity commanderName_string];
-				const char *ship_desc_str = [ship_desc cString];
-				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-				*vp = STRING_TO_JSVAL(js_ship_desc);
-				break;
-			}
+		case PE_COMMANDER_NAME:
+			NSStringToJSVal(cx, [playerEntity commanderName_string], vp);
+			break;
 
-			case PE_SCORE: {
-				jsdouble ds = [[playerEntity score_number] doubleValue];
-				dp = JS_NewDouble(cx, ds);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
+		case PE_SCORE:
+			JS_NewDoubleValue(cx, [[playerEntity score_number] doubleValue], vp);
+			break;
 
-			case PE_LEGAL_STATUS: {
-				jsdouble ds = [[playerEntity legalStatus_number] doubleValue];
-				dp = JS_NewDouble(cx, ds);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
+		case PE_LEGAL_STATUS:
+			JS_NewDoubleValue(cx, [[playerEntity legalStatus_number] doubleValue], vp);
+			break;
 
-			case PE_CREDITS: {
-				jsdouble ds = [[playerEntity credits_number] doubleValue];
-				dp = JS_NewDouble(cx, ds);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
+		case PE_CREDITS:
+			JS_NewDoubleValue(cx, [[playerEntity credits_number] doubleValue], vp);
+			break;
 
-			case PE_FUEL_LEVEL: {
-				jsdouble ds = [[playerEntity fuel_level_number] doubleValue];
-				dp = JS_NewDouble(cx, ds);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
-			case PE_FUEL_LEAK_RATE: {
-				jsdouble ds = [[playerEntity fuel_leak_rate_number] doubleValue];
-				dp = JS_NewDouble(cx, ds);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
-		}
+		case PE_FUEL_LEVEL:
+			JS_NewDoubleValue(cx, [[playerEntity fuel_level_number] doubleValue], vp);
+			break;
+
+		case PE_FUEL_LEAK_RATE:
+			JS_NewDoubleValue(cx, [[playerEntity fuel_leak_rate_number] doubleValue], vp);
+			break;
 	}
 	return JS_TRUE;
 }
 
 JSBool PlayerSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
-	JSBool ok;
-	jsdouble *dp;
+
+	if (!JSVAL_IS_INT(id)) return JS_TRUE;
 
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 
-	if (JSVAL_IS_INT(id)) {
-		switch (JSVAL_TO_INT(id)) {
-			case PE_CREDITS: {
-				jsdouble d;
-				ok = JS_ValueToNumber(cx, *vp, &d);
-				fprintf(stdout, "set credits (double) = %f\r\n", d);
-				float fs = [[playerEntity credits_number] floatValue];
-				double ds = (double)fs;
-				double diff = d - ds;
-				fprintf(stdout, "diff is (double) = %f\r\n", diff);
-				[playerEntity awardCredits: [[NSNumber numberWithDouble:diff] stringValue]];
-				break;
-			}
-		}
+	switch (JSVAL_TO_INT(id)) {
+		case PE_SCORE:
+			[playerEntity setKills:[JSValToNSString(cx, *vp) intValue]];
+			break;
+
+		case PE_LEGAL_STATUS:
+			[playerEntity setLegalStatus:JSValToNSString(cx, *vp)];
+			break;
+		
+		case PE_CREDITS:
+			[playerEntity setCredits:[JSValToNSString(cx, *vp) intValue]];
+			break;
+
+		case PE_FUEL_LEVEL:
+			[playerEntity setCredits:(int)([JSValToNSString(cx, *vp) doubleValue] * 10)];
+			break;
+
+		case PE_FUEL_LEAK_RATE:
+			[playerEntity setLegalStatus:JSValToNSString(cx, *vp)];
+			break;
 	}
 	return JS_TRUE;
 }
@@ -503,10 +384,11 @@ JSBool PlayerSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 //===========================================================================
 
 JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
+JSBool SystemSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
 JSClass System_class = {
 	"System", JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub,JS_PropertyStub,SystemGetProperty,JS_PropertyStub,
+	JS_PropertyStub,JS_PropertyStub,SystemGetProperty,SystemSetProperty,
 	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
 };
 
@@ -535,12 +417,13 @@ static Random_Seed currentSystem;
 static NSDictionary *planetinfo = nil;
 
 JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
-	JSBool ok;
-	jsdouble *dp;
 
+	if (!JSVAL_IS_INT(id)) return JS_TRUE;
+
+	NSString *str;
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
-	if ( !equal_seeds(currentSystem, playerEntity->system_seed)) {
-		fprintf(stdout, "Current system has changed, regenerating local copy of planetinfo\r\n");
+	if (!equal_seeds(currentSystem, playerEntity->system_seed)) {
+		//fprintf(stdout, "Current system has changed, regenerating local copy of planetinfo\r\n");
 		currentSystem = playerEntity->system_seed;
 		if (planetinfo)
 			[planetinfo release];
@@ -548,117 +431,124 @@ JSBool SystemGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 		planetinfo = [[scriptedUniverse generateSystemData:currentSystem] retain];
 	}
 
-	if (JSVAL_IS_INT(id)) {
-		switch (JSVAL_TO_INT(id)) {
-			case SYS_ID: {
-				*vp = INT_TO_JSVAL([[playerEntity planet_number] intValue]);
-				break;
-			}
+	switch (JSVAL_TO_INT(id)) {
+		case SYS_ID:
+			*vp = INT_TO_JSVAL([[playerEntity planet_number] intValue]);
+			break;
 
-			case SYS_NAME: {
-				NSString *ship_desc = (NSString *)[planetinfo objectForKey:KEY_NAME];
-				if (!ship_desc) {
-					ship_desc = @"None";
-				}
-				const char *ship_desc_str = [ship_desc cString];
-				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-				*vp = STRING_TO_JSVAL(js_ship_desc);
-				break;
-			}
+		case SYS_NAME:
+			str = (NSString *)[planetinfo objectForKey:KEY_NAME];
+			if (!str)
+				str = @"None";
+			NSStringToJSVal(cx, str, vp);
+			break;
 
-			case SYS_DESCRIPTION: {
-				NSString *ship_desc = (NSString *)[planetinfo objectForKey:KEY_DESCRIPTION];
-				if (!ship_desc) {
-					ship_desc = @"None";
-				}
-				const char *ship_desc_str = [ship_desc cString];
-				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-				*vp = STRING_TO_JSVAL(js_ship_desc);
-				break;
-			}
+		case SYS_DESCRIPTION:
+			str = (NSString *)[planetinfo objectForKey:KEY_DESCRIPTION];
+			if (!str)
+				str = @"None";
+			NSStringToJSVal(cx, str, vp);
+			break;
 
-			case SYS_INHABITANTS: {
-				NSString *ship_desc = (NSString *)[planetinfo objectForKey:KEY_INHABITANTS];
-				if (!ship_desc) {
-					ship_desc = @"None";
-				}
-				const char *ship_desc_str = [ship_desc cString];
-				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-				*vp = STRING_TO_JSVAL(js_ship_desc);
-				break;
-			}
+		case SYS_INHABITANTS:
+			str = (NSString *)[planetinfo objectForKey:KEY_INHABITANTS];
+			if (!str)
+				str = @"None";
+			NSStringToJSVal(cx, str, vp);
+			break;
 
-			case SYS_GOING_NOVA: {
-				BOOL b = [[playerEntity sunWillGoNova_bool] isEqualToString:@"YES"];
-				if (b == YES)
-					*vp = BOOLEAN_TO_JSVAL(1);
-				else
-					*vp = BOOLEAN_TO_JSVAL(0);
-				break;
-			}
+		case SYS_GOING_NOVA:
+			BOOLToJSVal(cx, [[playerEntity sunWillGoNova_bool] isEqualToString:@"YES"], vp);
+			break;
 
-			case SYS_GONE_NOVA: {
-				BOOL b = [[playerEntity sunGoneNova_bool] isEqualToString:@"YES"];
-				if (b == YES)
-					*vp = BOOLEAN_TO_JSVAL(1);
-				else
-					*vp = BOOLEAN_TO_JSVAL(0);
-				break;
-			}
+		case SYS_GONE_NOVA:
+			BOOLToJSVal(cx, [[playerEntity sunGoneNova_bool] isEqualToString:@"YES"], vp);
+			break;
 
-			case SYS_GOVT_STR: {
-				NSString *ship_desc = [playerEntity systemGovernment_string];
-				const char *ship_desc_str = [ship_desc cString];
-				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-				*vp = STRING_TO_JSVAL(js_ship_desc);
-				break;
-			}
+		case SYS_GOVT_STR:
+			NSStringToJSVal(cx, [playerEntity systemGovernment_string], vp);
+			break;
 
-			case SYS_GOVT_ID: {
-				double fs = (double)[[playerEntity systemGovernment_number] doubleValue];
-				dp = JS_NewDouble(cx, fs);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
+		case SYS_GOVT_ID:
+			JS_NewDoubleValue(cx, [[playerEntity systemGovernment_number] doubleValue], vp);
+			break;
 
-			case SYS_ECONOMY_ID: {
-				double fs = (double)[[playerEntity systemEconomy_number] doubleValue];
-				dp = JS_NewDouble(cx, fs);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
+		case SYS_ECONOMY_ID:
+			JS_NewDoubleValue(cx, [[playerEntity systemEconomy_number] doubleValue], vp);
+			break;
 
-			case SYS_TECH_LVL: {
-				double fs = (double)[[playerEntity systemTechLevel_number] doubleValue];
-				dp = JS_NewDouble(cx, fs);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
+		case SYS_TECH_LVL:
+			JS_NewDoubleValue(cx, [[playerEntity systemTechLevel_number] doubleValue], vp);
+			break;
 
-			case SYS_POPULATION: {
-				double fs = (double)[[playerEntity systemPopulation_number] doubleValue];
-				dp = JS_NewDouble(cx, fs);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
+		case SYS_POPULATION:
+			JS_NewDoubleValue(cx, [[playerEntity systemPopulation_number] doubleValue], vp);
+			break;
 
-			case SYS_PRODUCTIVITY: {
-				double fs = (double)[[playerEntity systemProductivity_number] doubleValue];
-				dp = JS_NewDouble(cx, fs);
-				ok = (dp != 0x00);
-				if (ok)
-					*vp = DOUBLE_TO_JSVAL(dp);
-				break;
-			}
-		}
+		case SYS_PRODUCTIVITY:
+			JS_NewDoubleValue(cx, [[playerEntity systemProductivity_number] doubleValue], vp);
+			break;
+	}
+	return JS_TRUE;
+}
+
+JSBool SystemSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
+
+	if (!JSVAL_IS_INT(id)) return JS_TRUE;
+
+	NSString *str;
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (!equal_seeds(currentSystem, playerEntity->system_seed)) {
+		//fprintf(stdout, "Current system has changed, regenerating local copy of planetinfo\r\n");
+		currentSystem = playerEntity->system_seed;
+		if (planetinfo)
+			[planetinfo release];
+
+		planetinfo = [[scriptedUniverse generateSystemData:currentSystem] retain];
+	}
+	int gn = [[playerEntity galaxy_number] intValue];
+	int pn = [[playerEntity planet_number] intValue];
+
+	switch (JSVAL_TO_INT(id)) {
+		case SYS_NAME:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_NAME value:JSValToNSString(cx, *vp)];
+			break;
+
+			case SYS_DESCRIPTION:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_DESCRIPTION value:JSValToNSString(cx, *vp)];
+			break;
+
+		case SYS_INHABITANTS:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_INHABITANTS value:JSValToNSString(cx, *vp)];
+			break;
+
+		case SYS_GOING_NOVA:
+			//BOOLToJSVal(cx, [[playerEntity sunWillGoNova_bool] isEqualToString:@"YES"], vp);
+			break;
+
+		case SYS_GONE_NOVA:
+			//BOOLToJSVal(cx, [[playerEntity sunGoneNova_bool] isEqualToString:@"YES"], vp);
+			break;
+
+		case SYS_GOVT_ID:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_GOVERNMENT value:[NSNumber numberWithInt:[JSValToNSString(cx, *vp) intValue]]];
+			break;
+
+		case SYS_ECONOMY_ID:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_ECONOMY value:[NSNumber numberWithInt:[JSValToNSString(cx, *vp) intValue]]];
+			break;
+
+		case SYS_TECH_LVL:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_TECHLEVEL value:[NSNumber numberWithInt:[JSValToNSString(cx, *vp) intValue]]];
+			break;
+
+		case SYS_POPULATION:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_POPULATION value:[NSNumber numberWithInt:[JSValToNSString(cx, *vp) intValue]]];
+			break;
+
+		case SYS_PRODUCTIVITY:
+			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_PRODUCTIVITY value:[NSNumber numberWithInt:[JSValToNSString(cx, *vp) intValue]]];
+			break;
 	}
 	return JS_TRUE;
 }
@@ -706,74 +596,68 @@ JSFunctionSpec Mission_funcs[] = {
 };
 
 JSBool MissionGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
-	JSBool ok;
-	jsdouble *dp;
 
+	if (!JSVAL_IS_INT(id)) return JS_TRUE;
+
+	NSString *str;
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 
-	if (JSVAL_IS_INT(id)) {
-		switch (JSVAL_TO_INT(id)) {
-			case MISSION_CHOICE: {
-				NSString *ship_desc = [playerEntity missionChoice_string];
-				if (!ship_desc)
-					ship_desc = @"";
-				const char *ship_desc_str = [ship_desc cString];
-				JSString *js_ship_desc = JS_NewStringCopyZ(cx, ship_desc_str);
-				*vp = STRING_TO_JSVAL(js_ship_desc);
-				break;
-			}
-		}
+	switch (JSVAL_TO_INT(id)) {
+		case MISSION_CHOICE:
+			str = (NSString *)[playerEntity missionChoice_string];
+			if (!str)
+				str = @"None";
+			NSStringToJSVal(cx, str, vp);
+			break;
 	}
 	return JS_TRUE;
 }
 
 JSBool MissionSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
-	JSBool ok;
-	jsdouble *dp;
+
+	if (!JSVAL_IS_INT(id)) return JS_TRUE;
 
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 
-	if (JSVAL_IS_INT(id)) {
-		switch (JSVAL_TO_INT(id)) {
-			case MISSION_TEXT: {
-				if (JSVAL_IS_STRING(*vp)) {
-					JSString *jskey = JS_ValueToString(cx, *vp);
-					[playerEntity addMissionText: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
-				}
-				break;
+	switch (JSVAL_TO_INT(id)) {
+		case MISSION_TEXT: {
+			if (JSVAL_IS_STRING(*vp)) {
+				JSString *jskey = JS_ValueToString(cx, *vp);
+				[playerEntity addMissionText: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
 			}
-			case MISSION_MUSIC: {
-				if (JSVAL_IS_STRING(*vp)) {
-					JSString *jskey = JS_ValueToString(cx, *vp);
-					[playerEntity setMissionMusic: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
-				}
-				break;
+			break;
+		}
+		case MISSION_MUSIC: {
+			if (JSVAL_IS_STRING(*vp)) {
+				JSString *jskey = JS_ValueToString(cx, *vp);
+				[playerEntity setMissionMusic: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
 			}
-			case MISSION_IMAGE: {
-				if (JSVAL_IS_STRING(*vp)) {
-					JSString *jskey = JS_ValueToString(cx, *vp);
-					[playerEntity setMissionImage: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
-				}
-				break;
+			break;
+		}
+		case MISSION_IMAGE: {
+			if (JSVAL_IS_STRING(*vp)) {
+				JSString *jskey = JS_ValueToString(cx, *vp);
+				[playerEntity setMissionImage: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
 			}
-			case MISSION_CHOICES: {
-				if (JSVAL_IS_STRING(*vp)) {
-					JSString *jskey = JS_ValueToString(cx, *vp);
-					[playerEntity setMissionChoices: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
-				}
-				break;
+			break;
+		}
+		case MISSION_CHOICES: {
+			if (JSVAL_IS_STRING(*vp)) {
+				JSString *jskey = JS_ValueToString(cx, *vp);
+				[playerEntity setMissionChoices: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
 			}
-			case MISSION_INSTRUCTIONS: {
-				if (JSVAL_IS_STRING(*vp)) {
-					JSString *jskey = JS_ValueToString(cx, *vp);
-					NSString *ins = [NSString stringWithCString:JS_GetStringBytes(jskey)];
-					if ([ins length])
-						[playerEntity setMissionDescription:ins forMission:[currentOXPScript name]];
-					else
-						[playerEntity clearMissionDescriptionForMission:[currentOXPScript name]];
-				}
-				break;
+			break;
+		}
+		case MISSION_INSTRUCTIONS: {
+			if (JSVAL_IS_STRING(*vp)) {
+				JSString *jskey = JS_ValueToString(cx, *vp);
+				NSString *ins = [NSString stringWithCString:JS_GetStringBytes(jskey)];
+				if ([ins length])
+					[playerEntity setMissionDescription:ins forMission:[currentOXPScript name]];
+				else
+					[playerEntity clearMissionDescriptionForMission:[currentOXPScript name]];
 			}
+			break;
 		}
 	}
 	return JS_TRUE;

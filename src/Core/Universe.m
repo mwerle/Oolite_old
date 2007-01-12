@@ -5980,6 +5980,7 @@ BOOL maintainLinkedLists(Universe* uni)
 
 	NSMutableDictionary*	local_overrides = (NSMutableDictionary*)[local_planetinfo_overrides objectForKey:override_key];
 	[local_overrides setObject:object forKey:key];
+	NSLog(@"setSystemDataForGalaxy:\r\n%@", [local_planetinfo_overrides description]);
 }
 
 - (NSString *) getSystemName:(Random_Seed) s_seed

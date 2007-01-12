@@ -697,6 +697,9 @@ enum
 - (BOOL) selectNextTargetFromMemory;
 - (BOOL) selectPreviousTargetFromMemory;
 
+- (void) setCredits: (int)newCredits;
+- (void) setKills: (int)newKills;
+
 /* GILES custom viewpoints */
 
 // custom view points

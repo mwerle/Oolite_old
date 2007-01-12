@@ -6768,6 +6768,18 @@ OOSound* burnersound;
 	return NO;
 }
 
+// Start of JavaScript object model helpers
+- (void) setCredits: (int)newCredits
+{
+	credits = 10 * newCredits;
+}
+
+- (void) setKills: (int)newKills
+{
+	ship_kills = newKills;
+}
+// End of JavaScript object model helpers
+
 - (Quaternion)	customViewQuaternion
 {
 	return customViewQuaternion;
