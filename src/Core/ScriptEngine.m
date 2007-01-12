@@ -146,17 +146,19 @@ JSPropertySpec Global_props[] = {
 	{ "StatusString", GLOBAL_STATUS_STRING, JSPROP_ENUMERATE, GlobalGetProperty },
 	{ 0 }
 };
-
-JSBool GlobalShowStatusScreen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+/*
+JSBool GlobalLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 
 JSFunctionSpec Global_funcs[] = {
-	{ "ShowStatusScreen", GlobalShowStatusScreen, 0, 0 },
+	{ "Log", GlobalLog, 1, 0 },
 	{ 0 }
 };
-
-JSBool GlobalShowStatusScreen(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
-	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
-	[playerEntity setGuiToStatusScreen];
+*/
+JSBool GLobalLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	JSString *str;
+	str = JS_ValueToString(cx, argv[0]);
+	NSLog(@"%s", JS_GetStringBytes(str));
+	return JS_TRUE;
 }
 
 JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
@@ -222,7 +224,7 @@ JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 //===========================================================================
 // Universe proxy
 //===========================================================================
-
+/*
 JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
 JSClass Universe_class = {
@@ -231,7 +233,7 @@ JSClass Universe_class = {
 	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
 };
 
-/*
+
 enum Universe_propertyIds {
 	UNI_PLAYER_ENTITY
 };
@@ -240,25 +242,16 @@ JSPropertySpec Universe_props[] = {
 	{ "PlayerEntity", UNI_PLAYER_ENTITY, JSPROP_ENUMERATE },
 	{ 0 }
 };
-*/
 
-JSBool UniverseLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+
 JSBool UniverseAddMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 JSBool UniverseAddCommsMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 
 JSFunctionSpec Universe_funcs[] = {
 	{ "AddMessage", UniverseAddMessage, 2, 0 },
 	{ "AddCommsMessage", UniverseAddMessage, 2, 0 },
-	{ "Log", UniverseLog, 1, 0 },
 	{ 0 }
 };
-
-JSBool UniverseLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
-	JSString *str;
-	str = JS_ValueToString(cx, argv[0]);
-	fprintf(stdout, "LOG: %s\r\n", JS_GetStringBytes(str));
-	return JS_TRUE;
-}
 
 JSBool UniverseAddMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
 	JSBool ok;
@@ -285,7 +278,7 @@ JSBool UniverseAddCommsMessage(JSContext *cx, JSObject *obj, uintN argc, jsval *
 	//[str dealloc];
 	return JS_TRUE;
 }
-/*
+
 JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	if (JSVAL_IS_INT(id)) {
 		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
@@ -328,7 +321,7 @@ enum Player_propertyIds {
 
 JSPropertySpec Player_props[] = {
 	{ "ShipDescription", PE_SHIP_DESCRIPTION, JSPROP_ENUMERATE },
-	{ "CommanderName", PE_COMMANDER_NAME, JSPROP_ENUMERATE },
+	{ "Name", PE_COMMANDER_NAME, JSPROP_ENUMERATE },
 	{ "Score", PE_SCORE, JSPROP_ENUMERATE },
 	{ "Credits", PE_CREDITS, JSPROP_ENUMERATE },
 	{ "LegalStatus", PE_LEGAL_STATUS, JSPROP_ENUMERATE },
@@ -693,7 +686,7 @@ JSPropertySpec Mission_props[] = {
 	{ "ImageFilename", MISSION_IMAGE, JSPROP_ENUMERATE },
 	{ "ChoicesKey", MISSION_CHOICES, JSPROP_ENUMERATE },
 	{ "Choice", MISSION_CHOICE, JSPROP_ENUMERATE },
-	{ "Instructions", MISSION_INSTRUCTIONS, JSPROP_ENUMERATE },
+	{ "InstructionsKey", MISSION_INSTRUCTIONS, JSPROP_ENUMERATE },
 	{ 0 }
 };
 
@@ -854,11 +847,11 @@ JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv
 	/* initialize the built-in JS objects and the global object */
 	builtins = JS_InitStandardClasses(cx, glob);
 	JS_DefineProperties(cx, glob, Global_props);
-	JS_DefineFunctions(cx, glob, Global_funcs);
+	//JS_DefineFunctions(cx, glob, Global_funcs);
 
-	universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
+	//universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
 	//JS_DefineProperties(cx, universeObj, Universe_props);
-	JS_DefineFunctions(cx, universeObj, Universe_funcs);
+	//JS_DefineFunctions(cx, universeObj, Universe_funcs);
 
 	systemObj = JS_DefineObject(cx, glob, "System", &System_class, NULL, JSPROP_ENUMERATE);
 	JS_DefineProperties(cx, systemObj, System_props);
