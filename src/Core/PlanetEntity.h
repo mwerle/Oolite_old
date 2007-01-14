@@ -64,13 +64,13 @@ typedef struct
 }	VertexData;
 
 @interface PlanetEntity : Entity {
-	
+
 	@public
 		GLfloat		sun_diffuse[4];
 		GLfloat		sun_specular[4];
-		
+
 		int			lastSubdivideLevel;
-		
+
 	@protected
 		int planet_type;
 		int r_seed[MAX_VERTICES_PER_ENTITY];
@@ -80,46 +80,36 @@ typedef struct
 														// 3 -> 1280 verts
 														// 4 -> 5120 verts
 														// 5 -> 20480 verts !!
-		
+
 		Random_Seed random_seed;
 		BOOL		isProcedurallyTextured;
 
 		BOOL		isTextured;
 		GLuint		textureName;
-		unsigned char*	textureData;
 
-		BOOL			isShadered;
-
-#ifndef NO_SHADERS
-		GLhandleARB		shader_program;
-#endif
-
-		GLuint			normalMapTextureName;
-		unsigned char*	normalMapTextureData;
-		
 		int			planet_seed;
 		double		polar_color_factor;
-		
+
 		double		rotational_velocity;
-		
+
 		GLfloat		amb_land[4];
 		GLfloat		amb_polar_land[4];
 		GLfloat		amb_sea[4];
 		GLfloat		amb_polar_sea[4];
-		
+
 		PlanetEntity*   atmosphere;				// secondary sphere used to show atmospheric details
 		PlanetEntity*   root_planet;			// link back to owning planet
-		
+
 		int			shuttles_on_ground;			// starting number of shuttles
 		double		last_launch_time;			// space launches out by about 15 minutes
 		double		shuttle_launch_interval;	// space launches out by about 15 minutes
-		
+
 		double		sqrt_zero_distance;
-		
+
 		// the normal array can be the base_vertex_array
 		// the index array can come from the vertex_index_array
 		VertexData				vertexdata;
-		
+
 		double	cor4k, lim4k;
 		double	cor8k, lim8k;
 		double	cor16k, lim16k;
@@ -131,14 +121,14 @@ double		*cos_value;
 double		corona_speed_factor;	// multiply delta_t by this before adding it to corona_stage
 double		corona_stage;			// 0.0 -> 1.0
 GLfloat		rvalue[729];			// stores random values for adjusting colors in the corona
-	
+
 void setUpSinTable();
 
 - (id) initAsSunWithColor:(OOColor *) sun_color;
-- (id) initAsAtmosphereForPlanet:(PlanetEntity *) planet inUniverse:(Universe*) uni;
+- (id) initAsAtmosphereForPlanet:(PlanetEntity *) planet;
 - (id) initAsCoronaForPlanet:(PlanetEntity *) planet;
 - (id) initWithSeed:(Random_Seed) p_seed fromUniverse:(Universe *) uni;
-- (id) initMiniatureFromPlanet:(PlanetEntity*) planet inUniverse:(Universe*) uni;
+- (id) initMiniatureFromPlanet:(PlanetEntity*) planet inUniverse:(Universe *)unix;
 
 - (id) initPlanetFromDictionary:(NSDictionary*) dict inUniverse:(Universe *) uni;
 - (id) initMoonFromDictionary:(NSDictionary*) dict inUniverse:(Universe *) uni;
