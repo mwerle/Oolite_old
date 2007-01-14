@@ -86,9 +86,8 @@ void setUpSinTable()
 	int		i;
 	int		percent_land;
 	double  aleph =  1.0 / sqrt(2.0);
-	//
+
 	self = [super init];
-	//
 	isTextured = NO;
 	//
     collision_radius = 25000.0; //  25km across
@@ -260,9 +259,8 @@ void setUpSinTable()
     int		i;
 	int		percent_land;
 	double  aleph =  1.0 / sqrt(2.0);
-	//
+
 	self = [super init];
-    //
 	isTextured = NO;
 	//
     if (!planet)
@@ -440,7 +438,6 @@ void setUpSinTable()
 	double  aleph =  1.0 / sqrt(2.0);
 	//
 	self = [super init];
-    //
 	isTextured = NO;
 	textureName = [TextureStore getTextureNameFor:@"metal.png"];	//debug texture
 	//
@@ -647,12 +644,10 @@ void setUpSinTable()
 
 - (id) initMiniatureFromPlanet:(PlanetEntity*) planet inUniverse:(Universe *) unix
 {
-	NSLog(@"a");
     int		i;
 	double  aleph =  1.0 / sqrt(2.0);
-	//
+
 	self = [super init];
-    //
 	isTextured = [planet isTextured];
 	textureName = [planet textureName];	//debug texture
 	isProcedurallyTextured = planet->isProcedurallyTextured;
@@ -2167,7 +2162,13 @@ int baseVertexIndexForEdge(int va, int vb, BOOL textured)
 	for (i = 0; i < 4; i++)
 	{
 #ifdef LIBNOISE_PLANETS
-		vertexdata.color_array[vi*4 + i] = 1.0;
+		if (isProcedurallyTextured)
+			vertexdata.color_array[vi*4 + i] = 1.0;
+		else
+		{
+			paint_color[i] = (r * paint_sea[i])*0.01 + ((100 - r) * paint_land[i])*0.01;
+			vertexdata.color_array[vi*4 + i] = paint_color[i];
+		}
 #else
 		paint_color[i] = (r * paint_sea[i])*0.01 + ((100 - r) * paint_land[i])*0.01;
 
