@@ -59,8 +59,9 @@ Your fair use and other rights are in no way affected by the above.
 #define CUBE_FACE_FRONT		0x10
 #define CUBE_FACE_BACK		0x20
 
-extern "C"
-{
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct vector
 {
@@ -250,6 +251,8 @@ static inline Vector vector_between (Vector a, Vector b)
 	return make_vector( b.x - a.x, b.y - a.y, b.z - a.z);
 }
 
+#ifdef __cplusplus
+}
 #endif
 
-}
+#endif

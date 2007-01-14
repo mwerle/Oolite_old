@@ -49,8 +49,9 @@ Your fair use and other rights are in no way affected by the above.
 
 //static Vector	zero_vector = { 0.0f, 0.0f, 0.0f };
 
-extern "C"
-{
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 static Matrix start_matrix =
 {
@@ -834,4 +835,7 @@ int lineCubeIntersection(Vector v0, Vector v1, GLfloat rd)
 	return checkLine( v0, v1, v0_test | v1_test, rd);
 }
 
+#ifdef __cplusplus
 }
+#endif
+

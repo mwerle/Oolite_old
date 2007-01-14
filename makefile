@@ -3,7 +3,7 @@
 # To run this makefile, create a directory for the object files, cd into it, and issue the command "make -f ../Makefile
 #
 VPATH = ../src/SDL ../src/Core ../src/libnoise ../src/BSDCompat
-COMMON_C_FLAGS = -c -DLINUX -DWIN32 -DXP_WIN -DNO_SHADERS -DNEED_STRLCPY -DLIBNOISE_PLANETS `sdl-config --cflags` -DGNUSTEP -g -I../src/SDL -I../src/Core -I../src/BSDCompat -I../src/libnoise
+COMMON_C_FLAGS = -c -DLOADSAVEGUI -DLINUX -DWIN32 -DHAVE_SOUND -DNO_SHADERS -DNEED_STRLCPY -DLIBNOISE_PLANETS `sdl-config --cflags` -DGNUSTEP -O3 -I../src/SDL -I../src/Core -I../src/BSDCompat -I../src/libnoise
 
 %.o: %.m
 	g++ $(COMMON_C_FLAGS) -DGNUSTEP_BASE_LIBRARY=1 -DGNU_RUNTIME=1 -DGNUSTEP_WITH_DLL -DGSWARN -DGSDIAGNOSE -I/c/GNUstep/System/Library/Headers -fconstant-string-class=NSConstantString $<
