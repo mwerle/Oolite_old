@@ -45,13 +45,12 @@ Your fair use and other rights are in no way affected by the above.
 #include "vector.h"
 #include "legacy_random.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define PI	3.1415926535897932384626433832795
 
 //static Vector	zero_vector = { 0.0f, 0.0f, 0.0f };
+
+extern "C"
+{
 
 static Matrix start_matrix =
 {
@@ -173,7 +172,11 @@ Vector cross_product (Vector first, Vector second)
 	mag2 = result.x * result.x + result.y * result.y + result.z * result.z;
 	if (mag2 > 0.0)
 	{
+#ifndef WIN32
 		det = FastInvSqrt(mag2);
+#else
+		det = 1.0 / sqrt (mag2);
+#endif
 		result.x *= det;	result.y *= det;	result.z *= det;
 		return result;
 	}
@@ -217,7 +220,11 @@ Vector unit_vector (struct vector *vec)
 	lz = vec->z;
 
 	if (lx || ly || lz)
+#ifndef WIN32
 		det = FastInvSqrt(lx * lx + ly * ly + lz * lz);
+#else
+		det = 1.0 / sqrt (lx * lx + ly * ly + lz * lz);
+#endif
 	else
 	{
 		det = 1.0;
@@ -635,8 +642,11 @@ void	quaternion_normalise(struct quaternion *quat)
     GLfloat	x = quat->x;
     GLfloat	y = quat->y;
     GLfloat	z = quat->z;
+#ifndef WIN32
     GLfloat	lv = FastInvSqrt(w*w + x*x + y*y + z*z);
-    
+#else
+    GLfloat	lv = 1.0 / sqrt(w*w + x*x + y*y + z*z);
+#endif
     quat->w = lv * w;
     quat->x = lv * x;
     quat->y = lv * y;
@@ -824,6 +834,4 @@ int lineCubeIntersection(Vector v0, Vector v1, GLfloat rd)
 	return checkLine( v0, v1, v0_test | v1_test, rd);
 }
 
-#ifdef __cplusplus
 }
-#endif
