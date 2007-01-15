@@ -159,15 +159,31 @@ JSPropertySpec Global_props[] = {
 	{ "StatusString", GLOBAL_STATUS_STRING, JSPROP_ENUMERATE, GlobalGetProperty },
 	{ 0 }
 };
-/*
+
+//JSBool GlobalEnableLogging(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 JSBool GlobalLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool GlobalListenForKey(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 
 JSFunctionSpec Global_funcs[] = {
+//	{ "EnableLogging", GlobalEnableLogging, 1, 0 },
 	{ "Log", GlobalLog, 1, 0 },
+	{ "ListenForKey", GlobalListenForKey, 1, 0 },
 	{ 0 }
 };
+
+JSBool GlobalListenForKey(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	NSString *key = JSValToNSString(cx, argv[0]);
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	[playerEntity mapKey:key toOXP:currentOXPScript];
+	return JS_TRUE;
+}
+
+/*
+JSBool GlobalEnableLogging(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+}
 */
-JSBool GLobalLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+
+JSBool GlobalLog(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
 	JSString *str;
 	str = JS_ValueToString(cx, argv[0]);
 	NSLog(@"%s", JS_GetStringBytes(str));
@@ -213,6 +229,8 @@ JSBool GlobalGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 	}
 	return JS_TRUE;
 }
+
+#import "JSUniverse.h"
 
 //===========================================================================
 // Player proxy
@@ -731,7 +749,7 @@ JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv
 	/* initialize the built-in JS objects and the global object */
 	builtins = JS_InitStandardClasses(cx, glob);
 	JS_DefineProperties(cx, glob, Global_props);
-	//JS_DefineFunctions(cx, glob, Global_funcs);
+	JS_DefineFunctions(cx, glob, Global_funcs);
 
 	//universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
 	//JS_DefineProperties(cx, universeObj, Universe_props);

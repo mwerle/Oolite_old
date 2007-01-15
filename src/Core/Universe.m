@@ -213,6 +213,7 @@ Your fair use and other rights are in no way affected by the above.
 	player->z_next = nil;	player->z_previous = nil;	z_list_start = player;
 
 	[player set_up];
+	[player initialiseScripts];
 
 	[player setUpShipFromDictionary:[self getDictionaryForShip:[player ship_desc]]];	// ship desc is the standard cobra at this point
 

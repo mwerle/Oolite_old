@@ -133,10 +133,47 @@ extern NSString *JSValToNSString(JSContext *cx, jsval val);
 	return version;
 }
 
-//
-// Valid event names are "STATUS_DOCKED", "STATUS_EXITING_WITCHSPACE", "STATUS_IN_FLIGHT", and "STATUS_LAUNCHING".
-//
 - (BOOL) doEvent: (NSString *) eventName
+{
+	jsval rval;
+	JSBool ok;
+
+	ok = JS_GetProperty(cx, obj, [eventName cString], &rval);
+	if (ok && !JSVAL_IS_VOID(rval)) {
+		JSFunction *func = JS_ValueToFunction(cx, rval);
+		if (func != 0x00) {
+			currentOXPScript = self;
+			ok = JS_CallFunction(cx, obj, func, 0, 0x00, &rval);
+			if (ok)
+				return YES;
+		}
+	}
+
+	return NO;
+}
+
+- (BOOL) doEvent: (NSString *) eventName withIntegerArgument:(int)argument
+{
+	jsval rval;
+	JSBool ok;
+
+	ok = JS_GetProperty(cx, obj, [eventName cString], &rval);
+	if (ok && !JSVAL_IS_VOID(rval)) {
+		JSFunction *func = JS_ValueToFunction(cx, rval);
+		if (func != 0x00) {
+			currentOXPScript = self;
+			jsval args[1];
+			args[0] = INT_TO_JSVAL(argument);
+			ok = JS_CallFunction(cx, obj, func, 1, args, &rval);
+			if (ok)
+				return YES;
+		}
+	}
+
+	return NO;
+}
+
+- (BOOL) doEvent: (NSString *) eventName withStringArgument:(NSString *)argument
 {
 	jsval rval;
 	JSBool ok;

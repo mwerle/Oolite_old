@@ -55,6 +55,8 @@ Your fair use and other rights are in no way affected by the above.
 - (NSString *) version;
 
 - (BOOL) doEvent: (NSString *) eventName;
+- (BOOL) doEvent: (NSString *) eventName withIntegerArgument:(int)argument;
+- (BOOL) doEvent: (NSString *) eventName withStringArgument:(NSString *)argument;
 
 @end
 

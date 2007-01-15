@@ -37,6 +37,7 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 #import <Foundation/Foundation.h>
+#import "OXPScript.h"
 
 #define COMPARISON_NO			000
 #define COMPARISON_EQUAL		001
@@ -199,6 +200,8 @@ Your fair use and other rights are in no way affected by the above.
 - (NSString*) replaceVariablesInString:(NSString*) args;
 
 - (void) playSound:(NSString *) soundName;
+
+- (BOOL) mapKey:(NSString *) keycode toOXP:(OXPScript *)oxp;
 
 /*-----------------------------------------------------*/
 

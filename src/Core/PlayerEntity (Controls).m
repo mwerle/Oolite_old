@@ -57,6 +57,10 @@ Your fair use and other rights are in no way affected by the above.
 #import "Groolite.h"
 #endif
 
+// Nasty hack, this brought in from MyOpenGLView.
+#define NUM_KEYS			320
+int oxpDebounce[NUM_KEYS];
+
 @implementation PlayerEntity (Controls)
 
 - (void) pollControls:(double) delta_t
@@ -894,7 +898,30 @@ static NSTimeInterval	time_last_frame;
 				cloak_pressed = NO;
 			
 		}
+		
+		// Check for any keys registered by OXPs
+		// Need to "debounce" and only trigger the keypress when it is first down.
+		NSArray *ka = [oxpKeys allKeys];
+		int i, k, c = [ka count];
+		for (i = 0; i < c; i++)
+		{
+			NSString *ks = (NSString *)[ka objectAtIndex:i];
+			k = [ks intValue];
+			if ([gameView isDown:k])
+			{
+				if (oxpDebounce[k] == 0)
+				{
+					oxpDebounce[k] = 1;
+					NSLog(@"Found OXP mapped key #%d", k);
+					OXPScript *scr = [oxpKeys objectForKey:ks];
+					[scr doEvent:@"KeyPressed" withIntegerArgument:k];
+				}
+			}
+			else
+				oxpDebounce[k] = 0;
+		}
 
+		
 		//
 		//  text displays
 		//

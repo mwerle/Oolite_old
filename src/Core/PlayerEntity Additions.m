@@ -2267,4 +2267,16 @@ int d100_seed = -1;	// ensure proper random function
 	return NO;
 }
 
+- (BOOL) mapKey:(NSString *) keycode toOXP:(OXPScript *)oxp
+{
+	OXPScript *s = [oxpKeys objectForKey:keycode];
+	if (s == nil)
+	{
+		[oxpKeys setObject:oxp forKey:keycode];
+		return YES;
+	}
+
+	return NO;
+}
+
 @end

@@ -245,6 +245,8 @@ enum
 	
 	NSMutableArray*			comm_log;
 
+	NSMutableDictionary		*oxpKeys;
+
 #ifdef GNUSTEP
  	SDLImage				*missionBackgroundImage;
 #else
@@ -714,5 +716,6 @@ enum
 
 /* -- */
 
+- (void) initialiseScripts;
 
 @end

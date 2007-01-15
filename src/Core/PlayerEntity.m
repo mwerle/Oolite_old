@@ -56,6 +56,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "LoadSave.h"
 #import "OOSound.h"
 #import "OOColor.h"
+#import "OXPScript.h"
 
 #ifndef GNUSTEP
 #import "Groolite.h"
@@ -6859,6 +6860,22 @@ OOSound* burnersound;
 	
 }
 
+- (void) initialiseScripts
+{
+	int i;
+	if (oxpKeys == nil)
+		oxpKeys = [[NSMutableDictionary alloc] init];
 
+	for (i = 0; i < [[script allKeys] count]; i++)
+	{
+		NSString *missionTitle = (NSString *)[[script allKeys] objectAtIndex:i];
+		id obj = [script objectForKey:missionTitle];
+		if ([obj isKindOfClass:[OXPScript class]])
+		{
+			OXPScript *jscript = (OXPScript *)obj;
+			[jscript doEvent:@"Initialise"];
+		}
+	}
+}
 
 @end
