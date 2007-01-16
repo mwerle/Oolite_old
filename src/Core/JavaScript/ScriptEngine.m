@@ -268,6 +268,9 @@ JSBool PlayerRemoveEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *ar
 JSBool PlayerHasEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 JSBool PlayerLaunch(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 JSBool PlayerCall(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool PlayerAwardCargo(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool PlayerRemoveAllCargo(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool PlayerUseSpecialCargo(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 
 JSFunctionSpec Player_funcs[] = {
 	{ "AwardEquipment", PlayerAwardEquipment, 1, 0 },
@@ -275,8 +278,34 @@ JSFunctionSpec Player_funcs[] = {
 	{ "HasEquipment", PlayerHasEquipment, 1, 0 },
 	{ "Launch", PlayerLaunch, 0, 0 },
 	{ "Call", PlayerCall, 2, 0 },
+	{ "AwardCargo", PlayerAwardCargo, 2, 0 },
+	{ "RemoveAllCargo", PlayerRemoveAllCargo, 0, 0 },
+	{ "UseSpecialCargo", PlayerUseSpecialCargo, 1, 0 },
 	{ 0 }
 };
+
+JSBool PlayerAwardCargo(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	if (argc == 2) {
+		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+		NSString *amount_type = [NSString stringWithFormat:@"%@ %@", JSValToNSString(cx, argv[0]), JSValToNSString(cx, argv[1])];
+		[playerEntity awardCargo:amount_type];
+	}
+	return JS_TRUE;
+}
+
+JSBool PlayerRemoveAllCargo(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	[playerEntity removeAllCargo];
+	return JS_TRUE;
+}
+
+JSBool PlayerUseSpecialCargo(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	if (argc == 1) {
+		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+		[playerEntity useSpecialCargo:JSValToNSString(cx, argv[0])];
+	}
+	return JS_TRUE;
+}
 
 JSBool PlayerAwardEquipment(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
@@ -314,15 +343,17 @@ JSBool PlayerLaunch(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval
 JSBool PlayerCall(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
 	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 	if (argc > 0) {
-		JSString *jskey = JS_ValueToString(cx, argv[0]);
-		NSString *selectorString = [NSString stringWithCString:JS_GetStringBytes(jskey)];
+		NSString *selectorString = JSValToNSString(cx, argv[0]);
+		// Check if the selector needs a trailing colon to flag an argument will be sent
+		if (argc > 1)
+			selectorString = [NSString stringWithFormat:@"%@:", selectorString];
+
 		SEL _selector = NSSelectorFromString(selectorString);
 		if ([playerEntity respondsToSelector:_selector]) {
 			if (argc == 1)
 				[playerEntity performSelector:_selector];
 			else {
-				JSString *jsparam = JS_ValueToString(cx, argv[1]);
-				NSString *valueString = [NSString stringWithCString:JS_GetStringBytes(jsparam)];
+				NSString *valueString = JSValToNSString(cx, argv[1]);
 				[playerEntity performSelector:_selector withObject:valueString];
 			}
 		}
@@ -709,8 +740,12 @@ JSBool MissionSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 		}
 		case MISSION_IMAGE: {
 			if (JSVAL_IS_STRING(*vp)) {
-				JSString *jskey = JS_ValueToString(cx, *vp);
-				[playerEntity setMissionImage: [NSString stringWithCString:JS_GetStringBytes(jskey)]];
+				NSString *str = JSValToNSString(cx, *vp);
+				NSLog(@"Mission.ImageFilename (1) = [%@]", str);
+				if ([str length] == 0)
+					str = @"none";
+				NSLog(@"Mission.ImageFilename (2) = [%@]", str);
+				[playerEntity setMissionImage:str];
 			}
 			break;
 		}
@@ -765,6 +800,11 @@ JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv
 	return JS_TRUE;
 }
 
+void reportJSError(JSContext *cx, const char *message, JSErrorReport *report) {
+	NSLog(@"JavaScript error: %s", message);
+	NSLog(@"%s:%d: %s", report->filename, report->lineno, report->linebuf);
+}
+
 //===========================================================================
 // JavaScript engine initialisation and shutdown
 //===========================================================================
@@ -796,6 +836,8 @@ JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv
 		[super dealloc];
 		exit(1); //return nil;
 	}
+
+	JS_SetErrorReporter(cx, reportJSError);
 
 	/* create the global object here */
 	glob = JS_NewObject(cx, &global_class, NULL, NULL);

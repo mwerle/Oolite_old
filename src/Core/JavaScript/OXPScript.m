@@ -53,6 +53,7 @@ extern NSString *JSValToNSString(JSContext *cx, jsval val);
 
 	self = [super init];
 
+	//NSLog(@"Attempting to load script: %@", filename);
 	obj = JS_NewObject(context, &OXP_class, 0x00, JS_GetGlobalObject(context));
 	JS_AddRoot(context, &obj); // note 2nd arg is a pointer-to-pointer
 
@@ -65,23 +66,29 @@ extern NSString *JSValToNSString(JSContext *cx, jsval val);
 		ok = JS_ExecuteScript(context, obj, script, &rval);
 		if (ok) {
 			ok = JS_GetProperty(context, obj, "Name", &rval);
-			if (ok && JSVAL_IS_STRING(rval)) {
+			if (ok) {
 				name = JSValToNSString(context, rval);
+				//NSLog(@"Found name property: %@", name);
 			} else {
 				// No name given in the script so use the filename
 				name = [NSString stringWithString:filename];
+				//NSLog(@"No name property, defaulting to : %@", name);
 			}
 			ok = JS_GetProperty(context, obj, "Description", &rval);
-			if (ok && JSVAL_IS_STRING(rval)) {
+			if (ok) {
 				description = JSValToNSString(context, rval);
+				//NSLog(@"Found description : %@", description);
 			} else {
 				description = @"";
+				//NSLog(@"No description");
 			}
 			ok = JS_GetProperty(context, obj, "Version", &rval);
-			if (ok && JSVAL_IS_STRING(rval)) {
+			if (ok) {
 				version = JSValToNSString(context, rval);
+				//NSLog(@"Found version: %@", version);
 			} else {
 				version= @"";
+				//NSLog(@"No version");
 			}
 			NSLog(@"Loaded JavaScript OXP: %@ %@ %@", name, description, version);
 
@@ -113,6 +120,10 @@ extern NSString *JSValToNSString(JSContext *cx, jsval val);
 			*/
 		}
 		JS_DestroyScript(context, script);
+	} else {
+		NSLog(@"Script compilation failed");
+		[super dealloc];
+		return nil;
 	}
 
 	return self;

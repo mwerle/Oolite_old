@@ -65,7 +65,7 @@ JSBool UniverseAddShips(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, j
 }
 
 JSBool UniverseAddSystemShips(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
-	if (argc == 2) {
+	if (argc == 3) {
 		jsdouble posn;
 		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 		NSString *role = JSValToNSString(cx, argv[0]);
