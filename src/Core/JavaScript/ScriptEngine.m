@@ -247,7 +247,7 @@ JSClass Player_class = {
 
 enum Player_propertyIds {
 	PE_SHIP_DESCRIPTION, PE_COMMANDER_NAME, PE_SCORE, PE_CREDITS, PE_LEGAL_STATUS,
-	PE_FUEL_LEVEL, PE_FUEL_LEAK_RATE
+	PE_FUEL_LEVEL, PE_FUEL_LEAK_RATE, PE_ALERT_CONDITION, PE_ALERT_FLAGS
 };
 
 JSPropertySpec Player_props[] = {
@@ -258,6 +258,8 @@ JSPropertySpec Player_props[] = {
 	{ "LegalStatus", PE_LEGAL_STATUS, JSPROP_ENUMERATE },
 	{ "Fuel", PE_FUEL_LEVEL, JSPROP_ENUMERATE },
 	{ "FuelLeakRate", PE_FUEL_LEAK_RATE, JSPROP_ENUMERATE },
+	{ "AlertCondition", PE_ALERT_CONDITION, JSPROP_ENUMERATE },
+	{ "AlertFlags", PE_ALERT_FLAGS, JSPROP_ENUMERATE },
 	{ 0 }
 };
 
@@ -363,6 +365,14 @@ JSBool PlayerGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 		case PE_FUEL_LEAK_RATE:
 			JS_NewDoubleValue(cx, [[playerEntity fuel_leak_rate_number] doubleValue], vp);
 			break;
+
+		case PE_ALERT_CONDITION:
+			*vp = INT_TO_JSVAL([playerEntity alert_condition]);
+			break;
+
+		case PE_ALERT_FLAGS:
+			*vp = INT_TO_JSVAL([playerEntity alert_flags]);
+			break;
 	}
 	return JS_TRUE;
 }
@@ -430,6 +440,51 @@ JSPropertySpec System_props[] = {
 	{ "Productivity", SYS_PRODUCTIVITY, JSPROP_ENUMERATE },
 	{ 0 }
 };
+
+JSBool SystemAddPlanet(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool SystemAddMoon(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool SystemSendAllShipsAway(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+JSBool SystemSetSunNova(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
+
+JSFunctionSpec System_funcs[] = {
+	{ "AddPlanet", SystemAddPlanet, 1, 0 },
+	{ "AddMoon", SystemAddMoon, 1, 0 },
+	{ "SendAllShipsAway", SystemSendAllShipsAway, 1, 0 },
+	{ "SetSunNova", SystemSetSunNova, 1, 0 },
+	{ 0 }
+};
+
+JSBool SystemAddPlanet(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0 && JSVAL_IS_STRING(argv[0])) {
+		NSString *key = JSValToNSString(cx, argv[0]);
+		[playerEntity addPlanet:key];
+	}
+	return JS_TRUE;
+}
+
+JSBool SystemAddMoon(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0 && JSVAL_IS_STRING(argv[0])) {
+		NSString *key = JSValToNSString(cx, argv[0]);
+		[playerEntity addMoon:key];
+	}
+	return JS_TRUE;
+}
+
+JSBool SystemSendAllShipsAway(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	[playerEntity sendAllShipsAway];
+}
+
+JSBool SystemSetSunNova(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
+	PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
+	if (argc > 0) {
+		NSString *key = JSValToNSString(cx, argv[0]);
+		[playerEntity setSunNovaIn:key];
+	}
+	return JS_TRUE;
+}
 
 static Random_Seed currentSystem;
 static NSDictionary *planetinfo = nil;
@@ -539,7 +594,7 @@ JSBool SystemSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 		case SYS_INHABITANTS:
 			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_INHABITANTS value:JSValToNSString(cx, *vp)];
 			break;
-
+/*
 		case SYS_GOING_NOVA:
 			//BOOLToJSVal(cx, [[playerEntity sunWillGoNova_bool] isEqualToString:@"YES"], vp);
 			break;
@@ -547,7 +602,7 @@ JSBool SystemSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 		case SYS_GONE_NOVA:
 			//BOOLToJSVal(cx, [[playerEntity sunGoneNova_bool] isEqualToString:@"YES"], vp);
 			break;
-
+*/
 		case SYS_GOVT_ID:
 			[scriptedUniverse setSystemDataForGalaxy:gn planet:pn key:KEY_GOVERNMENT value:[NSNumber numberWithInt:[JSValToNSString(cx, *vp) intValue]]];
 			break;
@@ -751,12 +806,13 @@ JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv
 	JS_DefineProperties(cx, glob, Global_props);
 	JS_DefineFunctions(cx, glob, Global_funcs);
 
-	//universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
+	universeObj = JS_DefineObject(cx, glob, "Universe", &Universe_class, NULL, JSPROP_ENUMERATE);
 	//JS_DefineProperties(cx, universeObj, Universe_props);
-	//JS_DefineFunctions(cx, universeObj, Universe_funcs);
+	JS_DefineFunctions(cx, universeObj, Universe_funcs);
 
 	systemObj = JS_DefineObject(cx, glob, "System", &System_class, NULL, JSPROP_ENUMERATE);
 	JS_DefineProperties(cx, systemObj, System_props);
+	JS_DefineFunctions(cx, systemObj, System_funcs);
 
 	playerObj = JS_DefineObject(cx, glob, "Player", &Player_class, NULL, JSPROP_ENUMERATE);
 	JS_DefineProperties(cx, playerObj, Player_props);
@@ -765,7 +821,7 @@ JSBool MissionUnmarkSystem(JSContext *cx, JSObject *obj, uintN argc, jsval *argv
 	missionObj = JS_DefineObject(cx, glob, "Mission", &Mission_class, NULL, JSPROP_ENUMERATE);
 	JS_DefineProperties(cx, missionObj, Mission_props);
 	JS_DefineFunctions(cx, missionObj, Mission_funcs);
-	
+
 	return self;
 }
 

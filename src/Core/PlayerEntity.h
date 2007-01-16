@@ -601,6 +601,7 @@ enum
 - (void) tidyMissilePylons;
 
 - (void) clearAlert_flags;
+- (int) alert_flags;
 - (void) setAlert_flag:(int) flag :(BOOL) value;
 - (int) alert_condition;
 
@@ -716,6 +717,6 @@ enum
 
 /* -- */
 
-- (void) initialiseScripts;
+- (void) sendMessageToScripts:(NSString *)message;
 
 @end

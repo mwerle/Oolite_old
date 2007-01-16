@@ -84,7 +84,7 @@ extern NSString *JSValToNSString(JSContext *cx, jsval val);
 				version= @"";
 			}
 			NSLog(@"Loaded JavaScript OXP: %@ %@ %@", name, description, version);
-			
+
 			/*
 			 * Example code to read the mission variables.
 			 *

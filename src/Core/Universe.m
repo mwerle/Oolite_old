@@ -213,7 +213,7 @@ Your fair use and other rights are in no way affected by the above.
 	player->z_next = nil;	player->z_previous = nil;	z_list_start = player;
 
 	[player set_up];
-	[player initialiseScripts];
+	[player sendMessageToScripts:@"Initialise"];
 
 	[player setUpShipFromDictionary:[self getDictionaryForShip:[player ship_desc]]];	// ship desc is the standard cobra at this point
 
@@ -5981,7 +5981,6 @@ BOOL maintainLinkedLists(Universe* uni)
 
 	NSMutableDictionary*	local_overrides = (NSMutableDictionary*)[local_planetinfo_overrides objectForKey:override_key];
 	[local_overrides setObject:object forKey:key];
-	NSLog(@"setSystemDataForGalaxy:\r\n%@", [local_planetinfo_overrides description]);
 }
 
 - (NSString *) getSystemName:(Random_Seed) s_seed

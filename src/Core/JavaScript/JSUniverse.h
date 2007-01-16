@@ -1,8 +1,6 @@
 //===========================================================================
 // Universe proxy
 //===========================================================================
-/*
-JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
 JSClass Universe_class = {
 	"Universe", JSCLASS_HAS_PRIVATE,
@@ -10,6 +8,8 @@ JSClass Universe_class = {
 	JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub
 };
 
+/*
+JSBool UniverseGetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp);
 
 enum Universe_propertyIds {
 	UNI_PLAYER_ENTITY
@@ -49,6 +49,7 @@ JSBool UniverseCheckForShips(JSContext *cx, JSObject *obj, uintN argc, jsval *ar
 		int num = [scriptedUniverse countShipsWithRole:role];
 		*rval = INT_TO_JSVAL(num);
 	}
+	return JS_TRUE;
 }
 
 JSBool UniverseAddShips(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
@@ -60,6 +61,7 @@ JSBool UniverseAddShips(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, j
 		while (num--)
 			[scriptedUniverse witchspaceShipWithRole:role];
 	}
+	return JS_TRUE;
 }
 
 JSBool UniverseAddSystemShips(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
@@ -72,6 +74,7 @@ JSBool UniverseAddSystemShips(JSContext *cx, JSObject *obj, uintN argc, jsval *a
 		while (num--)
 			[scriptedUniverse addShipWithRole:role nearRouteOneAt:posn];
 	}
+	return JS_TRUE;
 }
 
 JSBool UniverseAddShipsAt(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
@@ -87,6 +90,7 @@ JSBool UniverseAddShipsAt(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
 		NSString *arg = [NSString stringWithFormat:@"%@ %d %@ %f %f %f", role, num, coordScheme, x, y, z];
 		[playerEntity addShipsAt:arg];
 	}
+	return JS_TRUE;
 }
 
 JSBool UniverseAddShipsAtPrecisely(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
@@ -102,6 +106,7 @@ JSBool UniverseAddShipsAtPrecisely(JSContext *cx, JSObject *obj, uintN argc, jsv
 		NSString *arg = [NSString stringWithFormat:@"%@ %d %@ %f %f %f", role, num, coordScheme, x, y, z];
 		[playerEntity addShipsAtPrecisely:arg];
 	}
+	return JS_TRUE;
 }
 
 JSBool UniverseAddShipsWithinRadius(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
@@ -118,6 +123,7 @@ JSBool UniverseAddShipsWithinRadius(JSContext *cx, JSObject *obj, uintN argc, js
 		NSString *arg = [NSString stringWithFormat:@"%@ %d %@ %f %f %f %d", role, num, coordScheme, x, y, z, rad];
 		[playerEntity addShipsAt:arg];
 	}
+	return JS_TRUE;
 }
 
 JSBool UniverseSpawn(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
@@ -128,6 +134,7 @@ JSBool UniverseSpawn(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsva
 		NSString *arg = [NSString stringWithFormat:@"%@ %d", role, num];
 		[playerEntity spawn:arg];
 	}
+	return JS_TRUE;
 }
 
 JSBool UniverseSpawnShip(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval) {
@@ -135,6 +142,7 @@ JSBool UniverseSpawnShip(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, 
 		PlayerEntity *playerEntity = (PlayerEntity *)[scriptedUniverse entityZero];
 		[playerEntity spawnShip:JSValToNSString(cx, argv[0])];
 	}
+	return JS_TRUE;
 }
 
 

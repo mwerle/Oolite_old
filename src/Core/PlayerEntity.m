@@ -2816,6 +2816,11 @@ double scoopSoundPlayTime = 0.0;
 	alert_flags = 0;
 }
 
+- (int) alert_flags
+{
+	return alert_flags;
+}
+
 - (void) setAlert_flag:(int) flag :(BOOL) value
 {
 	if (value)
@@ -2855,6 +2860,9 @@ double scoopSoundPlayTime = 0.0;
 		[warningSound play];
 #endif
 	}
+
+	if (alert_condition != old_alert_condition)
+		[self sendMessageToScripts:@"AlertConditionChanged"];
 
 	return alert_condition;
 }
@@ -6860,7 +6868,7 @@ OOSound* burnersound;
 	
 }
 
-- (void) initialiseScripts
+- (void) sendMessageToScripts:(NSString *)message
 {
 	int i;
 	if (oxpKeys == nil)
@@ -6873,7 +6881,7 @@ OOSound* burnersound;
 		if ([obj isKindOfClass:[OXPScript class]])
 		{
 			OXPScript *jscript = (OXPScript *)obj;
-			[jscript doEvent:@"Initialise"];
+			[jscript doEvent:message];
 		}
 	}
 }
