@@ -202,6 +202,7 @@ Your fair use and other rights are in no way affected by the above.
 - (void) playSound:(NSString *) soundName;
 
 - (BOOL) mapKey:(NSString *) keycode toOXP:(OXPScript *)oxp;
+- (void) targetNearestHostile;
 
 /*-----------------------------------------------------*/
 
@@ -212,6 +213,3 @@ Your fair use and other rights are in no way affected by the above.
 - (BOOL) processSceneString:(NSString*) item atOffset:(Vector) off;
 
 @end
-
-
-

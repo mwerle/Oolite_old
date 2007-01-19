@@ -2279,4 +2279,18 @@ int d100_seed = -1;	// ensure proper random function
 	return NO;
 }
 
+- (void) targetNearestHostile
+{
+	[self scanForHostiles];
+	if (found_target != NO_TARGET)
+	{
+		Entity *ent = [universe entityForUniversalID:found_target];
+		if (ent != 0x00)
+		{
+			ident_engaged = YES;
+			missile_status = MISSILE_STATUS_TARGET_LOCKED;
+			[self addTarget:ent];
+		}
+	}
+}
 @end
