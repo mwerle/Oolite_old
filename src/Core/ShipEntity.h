@@ -232,6 +232,7 @@ Your fair use and other rights are in no way affected by the above.
 		GLfloat  max_flight_speed;		// top speed			(160.0 for player)  (200.0 for fast raider)
 		GLfloat  max_flight_roll;		// maximum roll rate	(2.0 for player)	(3.0 for fast raider)	
 		GLfloat  max_flight_pitch;		// maximum pitch rate   (1.0 for player)	(1.5 for fast raider) also radians/sec for (* turrets *)
+		GLfloat  max_flight_yaw;
 		
 		GLfloat  thrust;					// acceleration
 		
@@ -311,6 +312,7 @@ Your fair use and other rights are in no way affected by the above.
 		GLfloat flight_speed;				// current speed
 		GLfloat flight_roll;					// current roll rate
 		GLfloat flight_pitch;				// current pitch rate
+		GLfloat flight_yaw;					// current yaw rate
 		
 		GLfloat pitch_tolerance;
 		
@@ -375,6 +377,8 @@ Your fair use and other rights are in no way affected by the above.
 		
 		// shaders
 		NSMutableDictionary* shader_info;
+		
+		BOOL					is_hulk; // This is used to distinguish abandoned ships from cargo
 }
 
 // ship brains
@@ -554,9 +558,12 @@ Your fair use and other rights are in no way affected by the above.
 - (void) decrease_flight_roll:(double) delta;
 - (void) increase_flight_pitch:(double) delta;
 - (void) decrease_flight_pitch:(double) delta;
+- (void) increase_flight_yaw:(double) delta;
+- (void) decrease_flight_yaw:(double) delta;
 
 - (GLfloat) flight_roll;
 - (GLfloat) flight_pitch;
+- (GLfloat) flight_yaw;
 - (GLfloat) flight_speed;
 - (GLfloat) max_flight_speed;
 - (GLfloat) speed_factor;
@@ -718,6 +725,11 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role);
 - (int) checkShipsInVicinityForWitchJumpExit;
 
 - (void) setTrackCloseContacts:(BOOL) value;
+
+- (BOOL) isHulk;
+- (void) claimAsSalvage;
+- (void) sendCoordinatesToPilot;
+- (void) pilotArrived;
 
 /****************************************************************
 

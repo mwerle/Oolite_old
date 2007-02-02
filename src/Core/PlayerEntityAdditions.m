@@ -38,15 +38,15 @@ Your fair use and other rights are in no way affected by the above.
 */
 
 #import "PlayerEntity.h"
-#import "PlayerEntity Additions.h"
+#import "PlayerEntityAdditions.h"
 #import "GuiDisplayGen.h"
 #import "Universe.h"
 #import "ResourceManager.h"
 #import "TextureStore.h"
 #import "AI.h"
+#import "ShipEntityAI.h"
 #import "OOSound.h"
 #import "OOColor.h"
-#import "OXPScript.h"
 
 #ifdef GNUSTEP
 #import "Comparison.h"
@@ -69,19 +69,9 @@ static NSString * mission_key;
 	for (i = 0; i < [[script allKeys] count]; i++)
 	{
 		NSString *missionTitle = (NSString *)[[script allKeys] objectAtIndex:i];
-
-		id obj = [script objectForKey:missionTitle];
-		if ([obj isKindOfClass:[NSArray class]])
-		{
-			NSArray *mission = (NSArray *)obj;
-			mission_key = missionTitle;
-			[self scriptActions: mission forTarget: self];
-		}
-		else if ([obj isKindOfClass:[OXPScript class]])
-		{
-			OXPScript *jscript = (OXPScript *)obj;
-			[jscript doEvent: [self status_string]];
-		}
+		NSArray *mission = (NSArray *)[script objectForKey:missionTitle];
+		mission_key = missionTitle;
+		[self scriptActions: mission forTarget: self];
 	}
 }
 
@@ -457,10 +447,10 @@ static NSString * mission_key;
 
 - (void) setMissionDescription:(NSString *)textKey forMission:(NSString *)key
 {
-	NSString *old_mission_key = mission_key;
-	mission_key = key;
-	[self setMissionDescription:textKey];
-	mission_key = old_mission_key;
+        NSString *old_mission_key = mission_key;
+        mission_key = key;
+        [self setMissionDescription:textKey];
+        mission_key = old_mission_key;
 }
 
 - (void) setMissionDescription:(NSString *)textKey
@@ -484,10 +474,10 @@ static NSString * mission_key;
 
 - (void) clearMissionDescriptionForMission:(NSString *)key
 {
-	NSString *old_mission_key = mission_key;
-	mission_key = key;
-	[self clearMissionDescription];
-	mission_key = old_mission_key;
+        NSString *old_mission_key = mission_key;
+        mission_key = key;
+        [self clearMissionDescription];
+        mission_key = old_mission_key;
 }
 
 - (void) clearMissionDescription
@@ -1708,7 +1698,7 @@ int d100_seed = -1;	// ensure proper random function
 
 - (NSNumber *) fuel_leak_rate_number
 {
-	return [NSNumber numberWithFloat:fuel_leak_rate];
+    return [NSNumber numberWithFloat:fuel_leak_rate];
 }
 
 - (void) setSunNovaIn: (NSString *)time_value
@@ -2269,28 +2259,28 @@ int d100_seed = -1;	// ensure proper random function
 
 - (BOOL) mapKey:(NSString *) keycode toOXP:(OXPScript *)oxp
 {
-	OXPScript *s = [oxpKeys objectForKey:keycode];
-	if (s == nil)
-	{
-		[oxpKeys setObject:oxp forKey:keycode];
-		return YES;
-	}
+        OXPScript *s = [oxpKeys objectForKey:keycode];
+        if (s == nil)
+        {
+                [oxpKeys setObject:oxp forKey:keycode];
+                return YES;
+        }
 
-	return NO;
+        return NO;
 }
 
 - (void) targetNearestHostile
 {
-	[self scanForHostiles];
-	if (found_target != NO_TARGET)
-	{
-		Entity *ent = [universe entityForUniversalID:found_target];
-		if (ent != 0x00)
-		{
-			ident_engaged = YES;
-			missile_status = MISSILE_STATUS_TARGET_LOCKED;
-			[self addTarget:ent];
-		}
-	}
+        [self scanForHostiles];
+        if (found_target != NO_TARGET)
+        {
+                Entity *ent = [universe entityForUniversalID:found_target];
+                if (ent != 0x00)
+                {
+                        ident_engaged = YES;
+                        missile_status = MISSILE_STATUS_TARGET_LOCKED;
+                        [self addTarget:ent];
+                }
+        }
 }
 @end
