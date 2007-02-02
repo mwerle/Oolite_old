@@ -456,7 +456,13 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	if (extra_equipment)
 	{
 		[self set_extra_equipment_from_flags];
-		[result setObject:[NSDictionary dictionaryWithDictionary:extra_equipment] forKey:@"extra_equipment"];
+		NSArray *eqkeys = [extra_equipment->dict allKeys];
+		int i;
+		NSMutableDictionary *eqSave = [NSMutableDictionary dictionaryWithCapacity:[eqkeys count]];
+		for (i = 0; i < [eqkeys count]; i++)
+			[eqSave setObject:[NSNumber numberWithBool:YES] forKey:[eqkeys objectAtIndex:i]];
+
+		[result setObject:[NSDictionary dictionaryWithDictionary:eqSave] forKey:@"extra_equipment"];
 	}
 
 	// reputation
@@ -643,7 +649,18 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	[self set_extra_equipment_from_flags];
 	if ([dict objectForKey:@"extra_equipment"])
 	{
-		[extra_equipment addEntriesFromDictionary:(NSDictionary *)[dict objectForKey:@"extra_equipment"]];
+		NSLog(@"extra_equipment dictionary (1):\n%@", [[dict objectForKey:@"extra_equipment"] description]);
+		NSDictionary *savedEquip = (NSDictionary *)[dict objectForKey:@"extra_equipment"];
+		if (savedEquip != nil)
+		{
+			NSArray *savedEquipKeys = [savedEquip allKeys];
+			int i;
+			for (i = 0; i < [savedEquipKeys count]; i++)
+			{
+				NSLog(@"trying to add: %@", (NSString *)[savedEquipKeys objectAtIndex:i]);
+				[self add_extra_equipment:[savedEquipKeys objectAtIndex:i]];
+			}
+		}
 	}
 	// bools	(mostly deprecated by use of the extra_equipment dictionary, keep for compatibility)
 	//
@@ -1020,7 +1037,7 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	if (extra_equipment)
 		[extra_equipment release];
-	extra_equipment =[[NSMutableDictionary dictionaryWithCapacity:16] retain];
+	extra_equipment = [[[EquipmentDictionary alloc] init] retain];
 	//
 	missionBackgroundImage = nil;
 	//
@@ -1322,7 +1339,15 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	if ([dict objectForKey:@"extra_equipment"])
 	{
 		[extra_equipment removeAllObjects];
-		[extra_equipment addEntriesFromDictionary:(NSDictionary *)[dict objectForKey:@"extra_equipment"]];
+		NSLog(@"extra_equipment dictionary (2):\n%@", [[dict objectForKey:@"extra_equipment"] description]);
+		NSDictionary *savedEquip = (NSDictionary *)[dict objectForKey:@"extra_equipment"];
+		if (savedEquip != nil)
+		{
+			NSArray *savedEquipKeys = [savedEquip allKeys];
+			int i;
+			for (i = 0; i < [savedEquipKeys count]; i++)
+				[self add_extra_equipment:[savedEquipKeys objectAtIndex:i]];
+		}
 	}
 	//
 	if ([dict objectForKey:@"max_missiles"])
@@ -3105,6 +3130,22 @@ double scoopSoundPlayTime = 0.0;
 
 - (BOOL) fireECM
 {
+	Equipment *ecm = [extra_equipment equipmentForKey:@"EQ_ECM"];
+	if (ecm && [ecm isDamaged])
+	{
+		int pcent = [[self d100_number] intValue];
+		if (pcent < ecm->damage)
+		{
+			// failed due to damage
+			[universe playCustomSound:@"[equipment-failed]"];
+			NSString *ecmFailed = [NSString stringWithFormat:[universe expandDescription:@"[@-equipment-failed]" forSystem:system_seed], ecm->name];
+			[universe addMessage:ecmFailed forCount:3.0];
+			ecm_in_operation = YES;
+			ecm_start_time = [universe getTime];
+			return NO;
+		}
+	}
+
 	if ([super fireECM])
 	{
 		ecm_in_operation = YES;
@@ -3117,6 +3158,20 @@ double scoopSoundPlayTime = 0.0;
 
 - (BOOL) fireEnergyBomb
 {
+	Equipment *eb = [extra_equipment equipmentForKey:@"EQ_ENERGY_BOMB"];
+	if (eb && [eb isDamaged])
+	{
+		int pcent = [[self d100_number] intValue];
+		if (pcent < eb->damage)
+		{
+			// failed due to damage
+			[universe playCustomSound:@"[equipment-failed]"];
+			NSString *ebFailed = [NSString stringWithFormat:[universe expandDescription:@"[@-equipment-failed]" forSystem:system_seed], eb->name];
+			[universe addMessage:ebFailed forCount:3.0];
+			return NO;
+		}
+	}
+
 	NSArray* targets = [universe getEntitiesWithinRange:SCANNER_MAX_RANGE ofEntity:self];
 	if ([targets count] > 0)
 	{
@@ -3729,34 +3784,44 @@ double scoopSoundPlayTime = 0.0;
 		damage_to = n_considered - (damage_to + 1);	// reverse the die-roll
 	}
 	// equipment damage
-	if (damage_to < [extra_equipment count])
+	if (damage_to < [extra_equipment->dict count])
 	{
-		NSArray* systems = [extra_equipment allKeys];
+		NSArray* systems = [extra_equipment->dict allKeys];
 		NSString* system_key = [systems objectAtIndex:damage_to];
-		NSString* system_name = nil;
 		if (([system_key hasSuffix:@"MISSILE"])||([system_key hasSuffix:@"MINE"])||([system_key isEqual:@"EQ_CARGO_BAY"]))
 			return;
-		NSArray* eq = [universe equipmentdata];
-		int i;
-		for (i = 0; (i < [eq count])&&(!system_name); i++)
-		{
-			NSArray* eqd = (NSArray*)[eq objectAtIndex:i];
-			if ([system_key isEqual:[eqd objectAtIndex:EQUIPMENT_KEY_INDEX]])
-				system_name = (NSString*)[eqd objectAtIndex:EQUIPMENT_SHORT_DESC_INDEX];
-		}
-		if (!system_name)
+
+		Equipment* eq = [extra_equipment equipmentForKey:system_key];
+		if (!eq)
 			return;
 		// set the following so removeEquipment works on the right entity
 		[self setScript_target:self];
 		[universe clearPreviousMessage];
-		[self removeEquipment:system_key];
 		if (![universe strict])
 		{
-			[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-damaged]" forSystem:system_seed],system_name] forCount:4.5];
-			[self add_extra_equipment:[NSString stringWithFormat:@"%@_DAMAGED", system_key]];	// for possible future repair
+			// Add damage to the equipment
+			int damage = (ranrot_rand() % 100) + 1;
+			eq->damage += damage;
+			if (eq->damage >= 100)
+			{
+				// remove the equipment!
+		[self removeEquipment:system_key];
+				[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-destroyed]" forSystem:system_seed],eq->name] forCount:4.5];
+			}
+			else
+			{
+				[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-damaged]" forSystem:system_seed],eq->name] forCount:4.5];
+				if ([eq->key isEqual:@"EQ_HEAT_SHIELD"])
+		{
+					heat_insulation = 1.0 + (((float)(100 - eq->damage)) / 100.0);
+				}
+			}
 		}
 		else
-			[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-destroyed]" forSystem:system_seed],system_name] forCount:4.5];
+		{
+			[self removeEquipment:system_key];
+			[universe addMessage:[NSString stringWithFormat:[universe expandDescription:@"[@-destroyed]" forSystem:system_seed],eq->name] forCount:4.5];
+		}
 		return;
 	}
 	//cosmetic damage
@@ -4518,7 +4583,18 @@ double scoopSoundPlayTime = 0.0;
 		{
 			NSMutableArray*		row_info = [NSMutableArray arrayWithCapacity:3];
 			if (i < [gear count])
-				[row_info addObject:[gear objectAtIndex:i]];
+			{
+				NSString *str = (NSString *)[gear objectAtIndex:i];
+				Equipment *eq = [extra_equipment equipmentForName:str];
+				if (eq && [eq isDamaged])
+				{
+					if (eq->damage < 76)
+						str = [[NSString stringWithFormat:@"@C|1.0|0.5|0.0|%@",str] retain];
+					else
+						str = [[NSString stringWithFormat:@"@C|1.0|0.0|0.0|%@",str] retain];
+				}
+				[row_info addObject:str];
+			}
 			else
 				[row_info addObject:@""];
 
@@ -4526,7 +4602,19 @@ double scoopSoundPlayTime = 0.0;
 			[row_info addObject:@""];
 
 			if (i + n_equip_rows < [gear count])
-				[row_info addObject:[gear objectAtIndex:i + n_equip_rows]];
+			{
+				//[row_info addObject:[gear objectAtIndex:i + n_equip_rows]];
+				NSString *str = (NSString *)[gear objectAtIndex:i + n_equip_rows];
+				Equipment *eq = [extra_equipment equipmentForName:str];
+				if (eq && [eq isDamaged])
+				{
+					if (eq->damage < 76)
+						str = [[NSString stringWithFormat:@"@C|1.0|0.5|0.0|%@",str] retain];
+					else
+						str = [[NSString stringWithFormat:@"@C|1.0|0.0|0.0|%@",str] retain];
+				}
+				[row_info addObject:str];
+			}
 			else
 				[row_info addObject:@""];
 			[gui setArray:(NSArray *)row_info forRow:equip_row + i];
@@ -4584,14 +4672,13 @@ double scoopSoundPlayTime = 0.0;
 	NSDictionary*   descriptions = [universe descriptions];
 	//int				original_hold_size = [universe maxCargoForShip:ship_desc];
 	NSMutableArray* quip = [NSMutableArray arrayWithCapacity:32];
-	//
+
 	int i;
-	NSArray* equipmentinfo = [universe equipmentdata];
-	for (i =0; i < [equipmentinfo count]; i++)
+	NSArray *keys = [extra_equipment->dict allKeys];
+	for (i =0; i < [keys count]; i++)
 	{
-		NSString *w_key = (NSString *)[(NSArray *)[equipmentinfo objectAtIndex:i] objectAtIndex:EQUIPMENT_KEY_INDEX];
-		if ([self has_extra_equipment:w_key])
-			[quip addObject:(NSString *)[(NSArray *)[equipmentinfo objectAtIndex:i] objectAtIndex:EQUIPMENT_SHORT_DESC_INDEX]];
+		Equipment *eq = [extra_equipment equipmentAtIndex:i];
+		[quip addObject:eq->name];
 	}
 
 	if (forward_weapon > 0)
@@ -5285,8 +5372,6 @@ static int last_outfitting_index;
 	}
 	last_outfitting_index = skip;
 
-	NSArray*	equipdata = [universe equipmentdata];
-
 	int cargo_space = max_cargo - current_cargo;
 
 	double price_factor = 1.0;
@@ -5301,29 +5386,27 @@ static int last_outfitting_index;
 
 	// build an array of all equipment - and take away that which has been bought (or is not permitted)
 	NSMutableArray* equipment_allowed = [NSMutableArray arrayWithCapacity:120];
-	//
+
 	// find options that agree with this ship
-	BOOL		option_okay[[equipdata count]];
+	BOOL		option_okay[[EquipmentManager count]];
 	NSMutableArray*	options = [NSMutableArray arrayWithArray:(NSArray*)[[[universe shipyard] objectForKey:ship_desc] objectForKey:KEY_OPTIONAL_EQUIPMENT]];
 	// add standard items too!
 	[options addObjectsFromArray:(NSArray*)[[[[universe shipyard] objectForKey:ship_desc] objectForKey:KEY_STANDARD_EQUIPMENT] objectForKey:KEY_EQUIPMENT_EXTRAS]];
-	//
-	int i,j;
-	for (i = 0; i < [equipdata count]; i++)
-	{
-		NSString*	eq_key = (NSString*)[(NSArray*)[equipdata objectAtIndex:i] objectAtIndex:EQUIPMENT_KEY_INDEX];
-		NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
-		int			min_techlevel   = [(NSNumber *)[(NSArray *)[equipdata objectAtIndex:i] objectAtIndex:EQUIPMENT_TECH_LEVEL_INDEX] intValue];
 
-		NSMutableDictionary*	eq_extra_info_dict = [NSMutableDictionary dictionary];
-		if ([(NSArray *)[equipdata objectAtIndex:i] count] > 5)
-			[eq_extra_info_dict addEntriesFromDictionary:(NSDictionary *)[(NSArray *)[equipdata objectAtIndex:i] objectAtIndex:EQUIPMENT_EXTRA_INFO_INDEX]];
+	int i,j;
+	for (i = 0; i < [EquipmentManager count]; i++)
+	{
+		Equipment *eq = [EquipmentManager equipmentAtIndex:i];
+		NSString*	eq_key = eq->key;
+		//NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
+		int			min_techlevel   = eq->minTechLevel;
+		BOOL damaged = NO;
 
 		// set initial availability to NO
 		option_okay[i] = NO;
 
-		// check special availability
-		if ([eq_extra_info_dict objectForKey:@"available_to_all"])
+		// Add "available to all" equipment to the valid options for the current ship to ensure it can be bought/repaired
+		if ([eq isAvailableToAll])
 			[options addObject: eq_key];
 
 		// check if this is a mission special ..
@@ -5335,12 +5418,20 @@ static int last_outfitting_index;
 				min_techlevel = [[mission_variables objectForKey:mission_eq_tl_key] intValue];
 		}
 
-		// if you have a dmaged system you can get it repaired at a tech level one less than that required to buy it
-		if ([self has_extra_equipment:eq_key_damaged])
+		// if you have a damaged system you can get it repaired at a tech level one less than that required to buy it
+		Equipment *existingEq = [extra_equipment equipmentForKey:eq_key];
+		if (existingEq != nil)
+		{
+			NSLog(@"Found installed equipment: %@", [existingEq description]);
+			if ([existingEq isDamaged])
+			{
+				NSLog(@"is damaged");
 			min_techlevel--;
+				damaged = YES;
+			}
+		}
 		
 		// reduce the minimum techlevel occasionally as a bonus..
-		//
 		if ((![universe strict])&&(techlevel < min_techlevel)&&(techlevel > min_techlevel - 3))
 		{
 			int day = i * 13 + floor([universe getTime] / 86400.0);
@@ -5357,14 +5448,15 @@ static int last_outfitting_index;
 		// check initial availability against options AND standard extras
 		for (j = 0; j < [options count]; j++)
 		{
-			if ([eq_key isEqual:[options objectAtIndex:j]])
+			NSString *optionsKey = (NSString *)[options objectAtIndex:j];
+			if ([eq_key isEqual:optionsKey])
 			{
 				option_okay[i] = YES;
 				[options removeObjectAtIndex:j];
-				j = [options count];
+				break; //j = [options count];
 			}
 		}
-		//
+
 		// check usual requirements
 		if (([eq_key isEqual:@"EQ_FUEL"])&&(fuel >= PLAYER_MAX_FUEL))	// check if fuel space free
 			option_okay[i] &= NO;
@@ -5376,31 +5468,31 @@ static int last_outfitting_index;
 			option_okay[i] &= NO;
 		if (([eq_key isEqual:@"EQ_PASSENGER_BERTH_REMOVAL"])&&(max_passengers - [passengers count] < 1))
 			option_okay[i] &= NO;
-		if ([self has_extra_equipment:eq_key])
+		if (! damaged && [self has_extra_equipment:eq_key])
 			option_okay[i] &= NO;
 		if ([eq_key isEqual:@"EQ_ENERGY_UNIT"]&&[self has_extra_equipment:@"EQ_NAVAL_ENERGY_UNIT"])
 			option_okay[i] &= NO;
 		if (techlevel < min_techlevel)
 			option_okay[i] &= NO;
-		//
+
 		// check special requirements
-		if ([eq_extra_info_dict objectForKey:@"requires_empty_pylon"])
+		if (eq->flags & EQ_FLAGS_REQUIRES_EMPTY_PYLON)
 			option_okay[i] &= (missiles < max_missiles);
-		if ([eq_extra_info_dict objectForKey:@"requires_mounted_pylon"])
+		if (eq->flags & EQ_FLAGS_REQUIRES_MOUNTED_PYLON)
 			option_okay[i] &= (missiles > 0);
-		if ([eq_extra_info_dict objectForKey:@"requires_equipment"])
-			option_okay[i] &= [self has_extra_equipment:(NSString*)[eq_extra_info_dict objectForKey:@"requires_equipment"]];
-		if ([eq_extra_info_dict objectForKey:@"requires_cargo_space"])
-			option_okay[i] &= (cargo_space >= [[eq_extra_info_dict objectForKey:@"requires_cargo_space"] intValue]);
-		if ([eq_extra_info_dict objectForKey:@"requires_clean"])
+		if (eq->flags & EQ_FLAGS_REQUIRES_EQUIPMENT)
+			option_okay[i] &= [self has_extra_equipment:eq->requiredEquipmentKey];
+		if (eq->flags & EQ_FLAGS_REQUIRES_CARGO_SPACE)
+			option_okay[i] &= (cargo_space >= eq->cargoSpaceRequired);
+		if (eq->flags & EQ_FLAGS_REQUIRES_LEGAL_STATUS_CLEAN)
 			option_okay[i] &= ([self legal_status] == 0);
-		if ([eq_extra_info_dict objectForKey:@"requires_not_clean"])
+		if (eq->flags & EQ_FLAGS_REQUIRES_LEGAL_STATUS_NOT_CLEAN)
 			option_okay[i] &= ([self legal_status] != 0);
 
-		if ([eq_extra_info_dict objectForKey:@"conditions"])
+		if (eq->conditions != nil)
 		{
-			[self scriptAction:@"debugOn" onEntity:self];
-			id conds = [eq_extra_info_dict objectForKey:@"conditions"];
+			//[self scriptAction:@"debugOn" onEntity:self];
+			id conds = eq->conditions;
 			if ([conds isKindOfClass:[NSString class]])
 				option_okay[i] &= [self scriptTestCondition:(NSString *) conds];
 			else if ([conds isKindOfClass:[NSArray class]])
@@ -5410,7 +5502,7 @@ static int last_outfitting_index;
 				for (i = 0; i < [conditions count]; i++)
 					option_okay[i] &= [self scriptTestCondition:(NSString *)[conditions objectAtIndex:i]];
 			}
-			[self scriptAction:@"debugOff" onEntity:self];
+			//[self scriptAction:@"debugOff" onEntity:self];
 		}
 
 		if ([eq_key isEqual:@"EQ_RENOVATION"])
@@ -5420,7 +5512,11 @@ static int last_outfitting_index;
 		}
 
 		if (option_okay[i])
+		{
+			NSLog(@"enabling %@ on equipment screen", eq_key);
+			//[equipment_allowed addObject: eq_key];
 			[equipment_allowed addObject: [NSNumber numberWithInt:i]];
+		}
 
 		if (i == itemForSelectFacing)
 		{
@@ -5479,30 +5575,37 @@ static int last_outfitting_index;
 			for (i = skip; (i < [equipment_allowed count])&&(row - start_row < n_rows - 1); i++)
 			{
 				int			item   = [(NSNumber *)[equipment_allowed objectAtIndex:i] intValue];
+				Equipment *eq = [EquipmentManager equipmentAtIndex:item];
 
-				int			price_per_unit  = [(NSNumber *)[(NSArray *)[equipdata objectAtIndex:item] objectAtIndex:EQUIPMENT_PRICE_INDEX] intValue];
-				NSString*   desc			= [NSString stringWithFormat:@" %@ ",[(NSArray *)[equipdata objectAtIndex:item] objectAtIndex:EQUIPMENT_SHORT_DESC_INDEX]];
-				NSString*   eq_key			= (NSString *)[(NSArray *)[equipdata objectAtIndex:item] objectAtIndex:EQUIPMENT_KEY_INDEX];
+				int			price_per_unit  = eq->price;
+				NSString   *eq_key			= eq->key;
+				NSLog(@"adding %@ to equipment screen", eq_key);
+				NSString*   desc			= eq->name;
 				double		price			= ([eq_key isEqual:@"EQ_FUEL"]) ? ((PLAYER_MAX_FUEL - fuel) * price_per_unit) : (price_per_unit) ;
-				NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
+				//NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
 
 				if ([eq_key isEqual:@"EQ_RENOVATION"])
 				{
 					price = cunningFee(0.1 * [universe tradeInValueForCommanderDictionary:[self commanderDataDictionary]]);
+					// make the renovation item stand out
+					[gui setColor:[OOColor orangeColor] forRow:row];
 				}
 
 				price *= price_factor;  // increased prices at some stations
 
-				// color repairs and renovation items orange
-				//
-				if ([self has_extra_equipment:eq_key_damaged])
+				// color repairs orange
+				Equipment *existingEq = [extra_equipment equipmentForKey:eq_key];
+				if (existingEq && [existingEq isDamaged])
 				{
 					desc = [NSString stringWithFormat:@" Repair:%@", desc];
-					price /= 2.0;
+					//price /= 2.0;
+					// Repair price is proportional to the condition of the equipment
+					price = (float)existingEq->damage * price / 100.0;
+					if (existingEq->damage < 76)
 					[gui setColor:[OOColor orangeColor] forRow:row];
+					else
+						[gui setColor:[OOColor redColor] forRow:row];
 				}
-				if ([eq_key isEqual:@"EQ_RENOVATION"])
-					[gui setColor:[OOColor orangeColor] forRow:row];
 
 				NSString*	priceString		= [NSString stringWithFormat:@" %.1f ",0.1*price];
 
@@ -5585,11 +5688,13 @@ static int last_outfitting_index;
 		if (![key hasPrefix:@"More:"])
 		{
 			int item = [key intValue];
-			NSString*   desc = (NSString *)[(NSArray *)[[universe equipmentdata] objectAtIndex:item] objectAtIndex:EQUIPMENT_LONG_DESC_INDEX];
-			NSString*   eq_key			= (NSString *)[(NSArray *)[[universe equipmentdata] objectAtIndex:item] objectAtIndex:EQUIPMENT_KEY_INDEX];
-			NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
-			if ([self has_extra_equipment:eq_key_damaged])
+			Equipment *eq = [EquipmentManager equipmentAtIndex:item];
+			NSString *desc = eq->description;
+			if ([self has_extra_equipment:eq->key])
+			{
+				if ([[extra_equipment equipmentForKey:eq->key] isDamaged])
 				desc = [NSString stringWithFormat:@"%@ (Price is for repairing the existing system).", desc];
+			}
 			[gui addLongText:desc startingAtRow:GUI_ROW_EQUIPMENT_DETAIL align:GUI_ALIGN_LEFT];
 		}
 	}
@@ -5750,18 +5855,20 @@ static int last_outfitting_index;
 {
 	// note this doesn't check the availability by tech-level
 	//
-	NSArray*	equipdata = [universe equipmentdata];
-	int			price_per_unit  = [(NSNumber *)[(NSArray *)[equipdata objectAtIndex:index] objectAtIndex:EQUIPMENT_PRICE_INDEX] intValue];
-	NSString*   eq_key			= (NSString *)[(NSArray *)[equipdata objectAtIndex:index] objectAtIndex:EQUIPMENT_KEY_INDEX];
-	NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
+	Equipment *eq = [EquipmentManager equipmentAtIndex:index];
+	int			price_per_unit  = eq->price;
+	NSString*   eq_key			= eq->key;
+	//NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
 	double		price			= ([eq_key isEqual:@"EQ_FUEL"]) ? ((PLAYER_MAX_FUEL - fuel) * price_per_unit) : (price_per_unit) ;
 	double		price_factor	= 1.0;
 	int			cargo_space = max_cargo - current_cargo;
+	BOOL repairDamagedEquipment = NO;
 
 	// repairs cost 50%
-	if ([self has_extra_equipment:eq_key_damaged])
+	if ([self has_extra_equipment:eq_key] && [[extra_equipment equipmentForKey:eq_key] isDamaged])
 	{
 		price /= 2.0;
+		repairDamagedEquipment = YES;
 	}
 
 	if ([eq_key isEqual:@"EQ_RENOVATION"])
@@ -5779,6 +5886,17 @@ static int last_outfitting_index;
 	if (price > credits)
 	{
 		return NO;
+	}
+
+	if (repairDamagedEquipment == YES)
+	{
+		credits -= price;
+		eq = [extra_equipment equipmentForKey:eq_key];
+		eq->damage = 0;
+		if ([eq->key isEqual:@"EQ_HEAT_SHIELD"])
+			heat_insulation = 2.0;
+		[self setGuiToEquipShipScreen:-1:-1];
+		return YES;
 	}
 
 	if (([eq_key hasPrefix:@"EQ_WEAPON"])&&(chosen_weapon_facing == WEAPON_FACING_NONE))
@@ -5966,20 +6084,14 @@ static int last_outfitting_index;
 		return YES;
 	}
 
-	int i;
-	for (i =0; i < [equipdata count]; i++)
+	if (![self has_extra_equipment:eq_key])
 	{
-		NSString *w_key = (NSString *)[(NSArray *)[equipdata objectAtIndex:i] objectAtIndex:EQUIPMENT_KEY_INDEX];
-		if (([eq_key isEqual:w_key])&&(![self has_extra_equipment:eq_key]))
-		{
-			//NSLog(@"adding %@",eq_key);
 			credits -= price;
 			[self add_extra_equipment:eq_key];
 			[self setGuiToEquipShipScreen:-1:-1];
 
 			return YES;
 		}
-	}
 
 	return NO;
 }
@@ -6254,35 +6366,41 @@ static int last_outfitting_index;
 // new extra equipment routines
 - (BOOL) has_extra_equipment:(NSString *) eq_key
 {
-	if ([extra_equipment objectForKey:eq_key])
-		return YES;
-	else
-		return NO;
+	return [extra_equipment containsEquipment:eq_key];
 }
 
 - (void) add_extra_equipment:(NSString *) eq_key
 {
-	// if we've got a damaged one of these - remove it first
-	NSString* damaged_eq_key = [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
-	if ([extra_equipment objectForKey:damaged_eq_key])
-		[extra_equipment removeObjectForKey:damaged_eq_key];
-	//
+	// The original equipment code changed the key of damaged equipment and had code to
+	// remove damaged instances. The new code doesn't change the key of damaged equipment
+	// so this is not necessary any more.
+
 	// deal with trumbles..
 	if ([eq_key isEqual:@"EQ_TRUMBLE"] && (n_trumbles < 1))
 	{
 		[self addTrumble:trumble[ranrot_rand() % PLAYER_MAX_TRUMBLES]];	// first one!
 		return;
 	}
-	//
-	// add the equipment and set the necessary flags and data accordingly
-	[extra_equipment setObject:[NSNumber numberWithBool:YES] forKey:eq_key];
-	[self set_flags_from_extra_equipment];
+
+	if ([EquipmentManager containsEquipment:eq_key])
+	{
+		Equipment *equipment = [[Equipment equipmentWithEquipment:[EquipmentManager equipmentForKey:eq_key]] retain];
+		// add the equipment and set the necessary flags and data accordingly
+		[extra_equipment->dict setObject:equipment forKey:eq_key];
+		[self set_flags_from_extra_equipment];
+		
+		if ([equipment->key isEqual:@"EQ_ECM"])
+			equipment->damage = 80;
+		else if ([equipment->key isEqual:@"EQ_SCANNER_SHOW_MISSILE_TARGET"])
+			equipment->damage = 50;
+	}
+	else
+		NSLog(@"Could not find %@ in EquipmentManager", eq_key);
 }
 
 - (void) remove_extra_equipment:(NSString *) eq_key
 {
-	if ([extra_equipment objectForKey:eq_key])
-		[extra_equipment removeObjectForKey:eq_key];
+	[extra_equipment->dict removeObjectForKey:eq_key];
 	[self set_flags_from_extra_equipment];
 }
 
@@ -6364,6 +6482,10 @@ static int last_outfitting_index;
 	heat_insulation = ([self has_extra_equipment:@"EQ_HEAT_SHIELD"])? 2.0 : 1.0;	// new - provide extra heat_insulation
 }
 
+- (Equipment *) equipmentForKey:(NSString *) eq_key
+{
+	return [extra_equipment equipmentForKey:eq_key];
+}
 
 //	time delay method for playing afterburner sounds
 // this overlaps two sounds each 2 seconds long, but with a .5s

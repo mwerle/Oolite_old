@@ -255,7 +255,7 @@ enum
 	NSImage					*missionBackgroundImage;
 #endif
 	
-	NSMutableDictionary		*extra_equipment;
+	EquipmentDictionary		*extra_equipment;
 	BOOL					found_equipment;
 	
 	NSMutableDictionary		*reputation;
@@ -671,6 +671,7 @@ enum
 - (void) remove_extra_equipment:(NSString *) eq_key;
 - (void) set_extra_equipment_from_flags;
 - (void) set_flags_from_extra_equipment;
+- (Equipment *) equipmentForKey:(NSString *) eq_key;
 
 - (void) loopAfterburnerSound;
 - (void) stopAfterburnerSound;

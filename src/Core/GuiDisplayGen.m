@@ -1045,6 +1045,26 @@ Your fair use and other rights are in no way affected by the above.
 							glEnd();
 							glColor4f( 0.0, 0.0, 0.0, row_alpha);	// black
 						}
+
+						// Lousy hack to allow the text color to be set. I tried being more sophisticated and
+						// allowing either an NSString or a OOColoredString object to be put in the array but
+						// Obj-C memory handling beat me.
+						if ([text hasPrefix:@"@C|"])
+						{
+							// The string looks like @C|r|g|b|real text
+							NSArray *parts = [text componentsSeparatedByString:@"|"];
+							if (i != selectedRow)
+							{
+								NSString *rn = (NSString *)[parts objectAtIndex:1];
+								NSString *gn = (NSString *)[parts objectAtIndex:2];
+								NSString *bn = (NSString *)[parts objectAtIndex:3];
+								glColor4f([rn floatValue], [gn floatValue], [bn floatValue], row_alpha);
+							}
+							text = (NSString *)[parts objectAtIndex:4];
+						}
+						else if (i != selectedRow)
+							glColor4f( [row_color redComponent], [row_color greenComponent], [row_color blueComponent], row_alpha);
+
 						drawString( text, x + rowPosition[i].x, y + rowPosition[i].y, z, characterSize);
 					}
 				}

@@ -79,6 +79,8 @@
 	<string>buy.ogg</string>
 	<key>[escape-pod-scooped]</key>
 	<string>buy.ogg</string>
+	<key>[equipment-failed]</key>
+	<string>buy.ogg</string>
 	-->
 </dict>
 </plist>

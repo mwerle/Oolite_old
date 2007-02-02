@@ -519,6 +519,10 @@
 	<array>
 		<string>Weapon system inactive (no energy left).</string>
 	</array>
+	<key>@-equipment-failed</key>
+	<array>
+		<string>%@ failed.</string>
+	</array>
 	<key>escape-sequence</key>
 	<array>
 		<string>Escape sequence active.</string>

@@ -48,6 +48,7 @@ Your fair use and other rights are in no way affected by the above.
 #import "TextureStore.h"
 #import "OOTrumble.h"
 #import "OOColor.h"
+#import "Equipment.h"
 
 static const char *toAscii(unsigned inCodePoint);
 
@@ -1516,13 +1517,24 @@ static BOOL hostiles;
 {	
  	// the direction cue is an advanced option
 	// so we need to check for its extra equipment flag first
-	if (([info objectForKey:EQUIPMENT_REQUIRED_KEY])&&
-		(![player has_extra_equipment:(NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY]]))
+	NSString *eq_key = (NSString *)[info objectForKey:EQUIPMENT_REQUIRED_KEY];
+	if (eq_key != nil && ![player has_extra_equipment:eq_key])
 		return;
 	
 	if ([[player universe] displayGUI])
 		return;
-	
+
+	Equipment *eq = [player equipmentForKey:eq_key];
+	if (eq && [eq isDamaged])
+	{
+		int pcent = [[player d100_number] intValue];
+		int damage = eq->damage;
+		if (pcent < damage)
+		{
+			return; // damaged equipment failed
+		}
+	}
+
 	if ([player dial_missile_status] == MISSILE_STATUS_TARGET_LOCKED)
 	{
 		GLfloat clear_color[4] = {0.0, 1.0, 0.0, 0.0};

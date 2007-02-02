@@ -40,6 +40,7 @@ Your fair use and other rights are in no way affected by the above.
 #import <Foundation/Foundation.h>
 
 #import "Entity.h"
+#import "EquipmentDictionary.h"
 
 #define BEHAVIOUR_IDLE			0
 #define BEHAVIOUR_TRACK_TARGET	1

@@ -332,8 +332,6 @@ static int _compareModes(id arg1, id arg2, void *context)
 
 	[self beginSplashScreen];
 	[self logProgress:@"initialising..."];
-	/* GDC example code */
-
 	[self logProgress:@"getting display modes..."];
 	[self getDisplayModes];
 
@@ -341,8 +339,6 @@ static int _compareModes(id arg1, id arg2, void *context)
    NSSize fsmSize=[gameView currentScreenSize];
    width=fsmSize.width;
    height=fsmSize.height;
-
-	/* end GDC */
 
 	// moved to before the Universe is created
 	[self logProgress:@"loading selected expansion packs..."];
@@ -352,6 +348,9 @@ static int _compareModes(id arg1, id arg2, void *context)
 		for (i = 0; i < [expansionPathsToInclude count]; i++)
 			[ResourceManager addExternalPath: (NSString*)[expansionPathsToInclude objectAtIndex: i]];
 	}
+
+	[self logProgress:@"loading equipment definitions..."];
+	[EquipmentManager initWithAllEquipment];
 
     // moved here to try to avoid initialising this before having an Open GL context
 	[self logProgress:@"initialising universe..."];
@@ -428,6 +427,9 @@ static int _compareModes(id arg1, id arg2, void *context)
 		for (i = 0; i < [expansionPathsToInclude count]; i++)
 			[ResourceManager addExternalPath: (NSString*)[expansionPathsToInclude objectAtIndex: i]];
 	}
+
+	[self logProgress:@"loading equipment definitions..."];
+	[EquipmentManager initWithAllEquipment];
 
     // moved here to try to avoid initialising this before having an Open GL context
 	[self logProgress:@"initialising universe..."];

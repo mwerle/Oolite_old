@@ -74,13 +74,6 @@ Your fair use and other rights are in no way affected by the above.
 #define MARKET_MASK_QUANTITY		8
 #define MARKET_UNITS				9
 
-#define EQUIPMENT_TECH_LEVEL_INDEX	0
-#define EQUIPMENT_PRICE_INDEX		1
-#define EQUIPMENT_SHORT_DESC_INDEX	2
-#define EQUIPMENT_KEY_INDEX			3
-#define EQUIPMENT_LONG_DESC_INDEX	4
-#define EQUIPMENT_EXTRA_INFO_INDEX	5
-
 #define MAX_MESSAGES		5
 
 #define PROXIMITY_WARN_DISTANCE		10.0
@@ -125,8 +118,6 @@ Your fair use and other rights are in no way affected by the above.
 #define PLANETINFO_UNIVERSAL_KEY	@"universal"
 
 #define MAX_ENTITY_UID				1000
-
-#define	NUMBER_OF_STRICT_EQUIPMENT_ITEMS	16
 
 #define	UNIVERSE_MAX_ENTITIES		2048
 
@@ -230,7 +221,6 @@ extern int debug;
 		NSDictionary			*characters;		// holds descriptons of characters
 		NSDictionary			*planetinfo;		// holds overrides for individual planets, keyed by "g# p#" where g# is the galaxy number 0..7 and p# the planet number 0..255
 		NSDictionary			*missiontext;		// holds descriptive text for missions, loaded at initialisation
-		NSArray					*equipmentdata;		// holds data on available equipment, loaded at initialisation
 		
 		Random_Seed				galaxy_seed;
 		Random_Seed				system_seed;
@@ -465,7 +455,6 @@ BOOL maintainLinkedLists(Universe* uni);
 
 - (NSDictionary*) planetinfo;
 
-- (NSArray *) equipmentdata;
 - (NSDictionary *) commoditylists;
 - (NSArray *) commoditydata;
 

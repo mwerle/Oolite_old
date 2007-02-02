@@ -186,8 +186,6 @@ Your fair use and other rights are in no way affected by the above.
 	//
 	missiontext = [[ResourceManager dictionaryFromFilesNamed:@"missiontext.plist" inFolder:@"Config" andMerge:YES] retain];
 	//
-	equipmentdata = [[ResourceManager arrayFromFilesNamed:@"equipment.plist" inFolder:@"Config" andMerge:YES] retain];
-	//
 	demo_ships = [[ResourceManager arrayFromFilesNamed:@"demoships.plist" inFolder:@"Config" andMerge:YES] retain];
 	demo_ship_index = 0;
 	//
@@ -278,7 +276,6 @@ Your fair use and other rights are in no way affected by the above.
     if (customsounds)			[customsounds release];
     if (planetinfo)				[planetinfo release];
     if (missiontext)			[missiontext release];
-	if (equipmentdata)			[equipmentdata release];
     if (demo_ships)				[demo_ships release];
     if (gameView)				[gameView release];
 
@@ -468,16 +465,8 @@ Your fair use and other rights are in no way affected by the above.
 		[missiontext autorelease];
 	missiontext = [[ResourceManager dictionaryFromFilesNamed:@"missiontext.plist" inFolder:@"Config" andMerge:YES] retain];
 	//
-	if (equipmentdata)
-		[equipmentdata autorelease];
-	equipmentdata = [[ResourceManager arrayFromFilesNamed:@"equipment.plist" inFolder:@"Config" andMerge:YES] retain];
-	if (strict && ([equipmentdata count] > NUMBER_OF_STRICT_EQUIPMENT_ITEMS))
-	{
-		NSArray* strict_equipment = [equipmentdata subarrayWithRange:NSMakeRange(0, NUMBER_OF_STRICT_EQUIPMENT_ITEMS)];	// alloc retains
-		[equipmentdata autorelease];
-		equipmentdata = [strict_equipment retain];
-	}
-//	NSLog(@"DEBUG equipmentdata = %@", [equipmentdata description]);
+	if (strict)
+		[EquipmentManager removeEquipmentWithoutFlag:EQ_FLAGS_STRICT];
 	//
 	if (demo_ships)
 		[demo_ships autorelease];
@@ -3151,13 +3140,10 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 {
 	int i;
 	int price = 0;
-	for (i = 0; ((i < [equipmentdata count])&&(price == 0)) ; i++)
-	{
-		int			price_per_unit  = [(NSNumber *)[(NSArray *)[equipmentdata objectAtIndex:i] objectAtIndex:EQUIPMENT_PRICE_INDEX] intValue];
-		NSString*   eq_type			= (NSString *)[(NSArray *)[equipmentdata objectAtIndex:i] objectAtIndex:EQUIPMENT_KEY_INDEX];
-		if ([eq_type isEqual:weapon_key])
-			price = price_per_unit;
-	}
+	Equipment *equipment = [EquipmentManager equipmentForKey:weapon_key];
+	if (equipment != nil)
+		price = equipment->price;
+
 	return price;
 }
 
@@ -6517,11 +6503,6 @@ BOOL maintainLinkedLists(Universe* uni)
 	return planetinfo;
 }
 
-- (NSArray *) equipmentdata
-{
-	return equipmentdata;
-}
-
 - (NSDictionary *) commoditylists
 {
 	return commoditylists;
@@ -7160,21 +7141,14 @@ double estimatedTimeForJourney(double distance, int hops)
 			{
 				chance *= chance;	//decrease the chance of a further customisation
 				int option_index = ranrot_rand() % [options count];
-				NSString* equipment = (NSString*)[options objectAtIndex:option_index];
-				int eq_index = NSNotFound;
-				int q;
-				for (q = 0; (q < [equipmentdata count])&&(eq_index == NSNotFound) ; q++)
+				NSString* equipmentKey = (NSString*)[options objectAtIndex:option_index];
+				Equipment *equipment = [EquipmentManager equipmentForKey:equipmentKey];
+				if (equipment != nil)
 				{
-					if ([equipment isEqual:[(NSArray*)[equipmentdata objectAtIndex:q] objectAtIndex:EQUIPMENT_KEY_INDEX]])
-						eq_index = q;
-				}
-				if (eq_index != NSNotFound)
-				{
-					NSArray* equipment_info = (NSArray*)[equipmentdata objectAtIndex:eq_index];
-					int eq_price = [(NSNumber*)[equipment_info objectAtIndex:EQUIPMENT_PRICE_INDEX] intValue] / 10;
-					int eq_techlevel = [(NSNumber*)[equipment_info objectAtIndex:EQUIPMENT_TECH_LEVEL_INDEX] intValue];
-					NSString* eq_short_desc = (NSString*)[equipment_info objectAtIndex:EQUIPMENT_SHORT_DESC_INDEX];
-					NSString* eq_long_desc = (NSString*)[equipment_info objectAtIndex:EQUIPMENT_LONG_DESC_INDEX];
+					int eq_price = equipment->price / 10;
+					int eq_techlevel = equipment->minTechLevel;
+					NSString* eq_short_desc = equipment->name;
+					NSString* eq_long_desc = equipment->description;
 					//
 					if (eq_techlevel > techlevel)
 					{
@@ -7194,15 +7168,15 @@ double estimatedTimeForJourney(double distance, int hops)
 					//
 					if (eq_price > 0)
 					{
-						if (![equipment hasPrefix:@"EQ_WEAPON"])
+						if (![equipmentKey hasPrefix:@"EQ_WEAPON"])
 						{
-							if ([equipment isEqual:@"EQ_PASSENGER_BERTH"])
+							if ([equipmentKey isEqual:@"EQ_PASSENGER_BERTH"])
 							{
 								if ((max_cargo >= 5) && (randf() < chance))
 								{
 									max_cargo -= 5;
 									price += eq_price * 90 / 100;
-									[extras addObject:equipment];
+									[extras addObject:equipmentKey];
 									if (passenger_berths == 0)
 									{
 										[description appendFormat:@" Extra XX=NPB=XXPassenger BerthXX=PPB=XX (%@)", [eq_long_desc lowercaseString]];
@@ -7219,7 +7193,7 @@ double estimatedTimeForJourney(double distance, int hops)
 							else
 							{
 								price += eq_price * 90 / 100;
-								[extras addObject:equipment];
+								[extras addObject:equipmentKey];
 								[description appendFormat:@" Extra %@ (%@)", eq_short_desc, [eq_long_desc lowercaseString]];
 								[short_description appendFormat:short_extras_string, eq_short_desc];
 								short_extras_string = @" %@.";
@@ -7229,21 +7203,21 @@ double estimatedTimeForJourney(double distance, int hops)
 						else
 						{
 							int new_weapon = WEAPON_NONE;
-							if ([equipment  isEqual:@"EQ_WEAPON_PULSE_LASER"])
+							if ([equipmentKey isEqual:@"EQ_WEAPON_PULSE_LASER"])
 								new_weapon = WEAPON_PULSE_LASER;
-							if ([equipment  isEqual:@"EQ_WEAPON_BEAM_LASER"])
+							if ([equipmentKey isEqual:@"EQ_WEAPON_BEAM_LASER"])
 								new_weapon = WEAPON_BEAM_LASER;
-							if ([equipment  isEqual:@"EQ_WEAPON_MINING_LASER"])
+							if ([equipmentKey isEqual:@"EQ_WEAPON_MINING_LASER"])
 								new_weapon = WEAPON_MINING_LASER;
-							if ([equipment  isEqual:@"EQ_WEAPON_MILITARY_LASER"])
+							if ([equipmentKey isEqual:@"EQ_WEAPON_MILITARY_LASER"])
 								new_weapon = WEAPON_MILITARY_LASER;
-							if ([equipment  isEqual:@"EQ_WEAPON_THARGOID_LASER"])
+							if ([equipmentKey isEqual:@"EQ_WEAPON_THARGOID_LASER"])
 								new_weapon = WEAPON_THARGOID_LASER;
 							if (new_weapon > fwd_weapon)
 							{
 								price -= [self getPriceForWeaponSystemWithKey:fwd_weapon_string] * 90 / 1000;	// 90% credits
 								price += eq_price * 90 / 100;
-								fwd_weapon_string = equipment;
+								fwd_weapon_string = equipmentKey;
 								fwd_weapon = new_weapon;
 								[ship_dict setObject:fwd_weapon_string forKey:@"forward_weapon_type"];
 								weapon_customised = YES;
@@ -7252,7 +7226,7 @@ double estimatedTimeForJourney(double distance, int hops)
 						}
 					}
 				}
-				if ([equipment hasSuffix:@"ENERGY_UNIT"])	// remove ALL the energy unit add-ons
+				if ([equipmentKey hasSuffix:@"ENERGY_UNIT"])	// remove ALL the energy unit add-ons
 				{
 					int q;
 					for (q = 0; q < [options count]; q++)
@@ -7263,7 +7237,7 @@ double estimatedTimeForJourney(double distance, int hops)
 				}
 				else
 				{
-					if (![equipment isEqual:@"EQ_PASSENGER_BERTH"])	// let this get added multiple times
+					if (![equipmentKey isEqual:@"EQ_PASSENGER_BERTH"])	// let this get added multiple times
 						[options removeObject:equipment];
 				}
 			}
@@ -7536,30 +7510,24 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	if ([mut_extras count])
 	{
 		[desc appendString:@"\nComes with"];
-		int i, j;
+		int i;
 		for (i = 0; i < [mut_extras count]; i++)
 		{
 			NSString* item_key = (NSString*)[mut_extras objectAtIndex:i];
-			NSString* item_desc = nil;
-			for (j = 0; ((j < [equipmentdata count])&&(!item_desc)) ; j++)
-			{
-				NSString*   eq_type			= (NSString *)[(NSArray *)[equipmentdata objectAtIndex:j] objectAtIndex:EQUIPMENT_KEY_INDEX];
-				if ([eq_type isEqual: item_key])
-					item_desc = (NSString *)[(NSArray *)[equipmentdata objectAtIndex:j] objectAtIndex:EQUIPMENT_SHORT_DESC_INDEX];
-			}
-			if (item_desc)
+			Equipment *equipment = [EquipmentManager equipmentForKey:item_key];
+			if (equipment != nil)
 			{
 				int c = [mut_extras count] - i;
 				switch (c)
 				{
 					case 1:
-						[desc appendFormat:@" %@ fitted as standard.", item_desc];
+						[desc appendFormat:@" %@ fitted as standard.", equipment->name];
 						break;
 					case 2:
-						[desc appendFormat:@" %@ and", item_desc];
+						[desc appendFormat:@" %@ and", equipment->name];
 						break;
 					default:
-						[desc appendFormat:@" %@,", item_desc];
+						[desc appendFormat:@" %@,", equipment->name];
 						break;
 				}
 			}
@@ -7570,30 +7538,24 @@ NSComparisonResult comparePrice( id dict1, id dict2, void * context)
 	if ([options count])
 	{
 		[desc appendString:@"\nCan additionally be outfitted with"];
-		int i, j;
+		int i;
 		for (i = 0; i < [options count]; i++)
 		{
 			NSString* item_key = (NSString*)[options objectAtIndex:i];
-			NSString* item_desc = nil;
-			for (j = 0; ((j < [equipmentdata count])&&(!item_desc)) ; j++)
-			{
-				NSString*   eq_type			= (NSString *)[(NSArray *)[equipmentdata objectAtIndex:j] objectAtIndex:EQUIPMENT_KEY_INDEX];
-				if ([eq_type isEqual: item_key])
-					item_desc = (NSString *)[(NSArray *)[equipmentdata objectAtIndex:j] objectAtIndex:EQUIPMENT_SHORT_DESC_INDEX];
-			}
-			if (item_desc)
+			Equipment *equipment = [EquipmentManager equipmentForKey:item_key];
+			if (equipment != nil)
 			{
 				int c = [options count] - i;
 				switch (c)
 				{
 					case 1:
-						[desc appendFormat:@" %@ at suitably equipped starports.", item_desc];
+						[desc appendFormat:@" %@ at suitably equipped starports.", equipment->name];
 						break;
 					case 2:
-						[desc appendFormat:@" %@ and/or", item_desc];
+						[desc appendFormat:@" %@ and/or", equipment->name];
 						break;
 					default:
-						[desc appendFormat:@" %@,", item_desc];
+						[desc appendFormat:@" %@,", equipment->name];
 						break;
 				}
 			}
