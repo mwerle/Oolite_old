@@ -3,7 +3,6 @@
 
 svn up
 
-export SRC="/c/Program Files/Oolite"
 export DST=$GNUSTEP_LOCAL_ROOT/oolite/tmp
 export VER=`awk -- '/SoftwareVersion/ { print $2 }' autopackage/default.apspec`
 export SVNREV=`svn info . | awk -- '/Revision:/ { print $2 }'`
@@ -21,6 +20,7 @@ mkdir $DST/AddOns
 echo "making Oolite"
 make clean
 make
+strip oolite.app/oolite.exe
 
 echo "copying new build to setup folder"
 cp -r oolite.app/* $DST/oolite.app

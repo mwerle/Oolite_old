@@ -69,9 +69,18 @@ static NSString * mission_key;
 	for (i = 0; i < [[script allKeys] count]; i++)
 	{
 		NSString *missionTitle = (NSString *)[[script allKeys] objectAtIndex:i];
-		NSArray *mission = (NSArray *)[script objectForKey:missionTitle];
-		mission_key = missionTitle;
-		[self scriptActions: mission forTarget: self];
+		id obj = [script objectForKey:missionTitle];
+		if ([obj isKindOfClass:[NSArray class]])
+		{
+			NSArray *mission = (NSArray *)[script objectForKey:missionTitle];
+			mission_key = missionTitle;
+			[self scriptActions: mission forTarget: self];
+		}
+		else if ([obj isKindOfClass:[OXPScript class]])
+		{
+			OXPScript *jscript = (OXPScript *)obj;
+			[jscript doEvent:[self status_string]];
+		}
 	}
 }
 

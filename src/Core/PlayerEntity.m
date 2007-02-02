@@ -649,17 +649,13 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	[self set_extra_equipment_from_flags];
 	if ([dict objectForKey:@"extra_equipment"])
 	{
-		NSLog(@"extra_equipment dictionary (1):\n%@", [[dict objectForKey:@"extra_equipment"] description]);
 		NSDictionary *savedEquip = (NSDictionary *)[dict objectForKey:@"extra_equipment"];
 		if (savedEquip != nil)
 		{
 			NSArray *savedEquipKeys = [savedEquip allKeys];
 			int i;
 			for (i = 0; i < [savedEquipKeys count]; i++)
-			{
-				NSLog(@"trying to add: %@", (NSString *)[savedEquipKeys objectAtIndex:i]);
 				[self add_extra_equipment:[savedEquipKeys objectAtIndex:i]];
-			}
 		}
 	}
 	// bools	(mostly deprecated by use of the extra_equipment dictionary, keep for compatibility)
@@ -1339,7 +1335,6 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	if ([dict objectForKey:@"extra_equipment"])
 	{
 		[extra_equipment removeAllObjects];
-		NSLog(@"extra_equipment dictionary (2):\n%@", [[dict objectForKey:@"extra_equipment"] description]);
 		NSDictionary *savedEquip = (NSDictionary *)[dict objectForKey:@"extra_equipment"];
 		if (savedEquip != nil)
 		{
@@ -3095,7 +3090,7 @@ double scoopSoundPlayTime = 0.0;
 	[missile setOwner:self];
 	[missile setDistanceTravelled:0.0];
 	//debug
-	[missile setReportAImessages:YES];
+	//[missile setReportAImessages:YES];
 	//
 	[universe addEntity:missile];
 	//NSLog(@"Missile collision radius is %.1f",missile->collision_radius);
@@ -5422,11 +5417,9 @@ static int last_outfitting_index;
 		Equipment *existingEq = [extra_equipment equipmentForKey:eq_key];
 		if (existingEq != nil)
 		{
-			NSLog(@"Found installed equipment: %@", [existingEq description]);
 			if ([existingEq isDamaged])
 			{
-				NSLog(@"is damaged");
-			min_techlevel--;
+				min_techlevel--;
 				damaged = YES;
 			}
 		}
@@ -5513,7 +5506,6 @@ static int last_outfitting_index;
 
 		if (option_okay[i])
 		{
-			NSLog(@"enabling %@ on equipment screen", eq_key);
 			//[equipment_allowed addObject: eq_key];
 			[equipment_allowed addObject: [NSNumber numberWithInt:i]];
 		}
@@ -5579,7 +5571,6 @@ static int last_outfitting_index;
 
 				int			price_per_unit  = eq->price;
 				NSString   *eq_key			= eq->key;
-				NSLog(@"adding %@ to equipment screen", eq_key);
 				NSString*   desc			= eq->name;
 				double		price			= ([eq_key isEqual:@"EQ_FUEL"]) ? ((PLAYER_MAX_FUEL - fuel) * price_per_unit) : (price_per_unit) ;
 				//NSString*	eq_key_damaged	= [NSString stringWithFormat:@"%@_DAMAGED", eq_key];
@@ -5975,7 +5966,6 @@ static int last_outfitting_index;
 	}
 
 	if (([eq_key hasSuffix:@"MISSILE"]||[eq_key hasSuffix:@"MINE"])&&(missiles >= max_missiles)) {
-		NSLog(@"rejecting missile because already full");
 		return NO;
 	}
 
@@ -6388,14 +6378,14 @@ static int last_outfitting_index;
 		// add the equipment and set the necessary flags and data accordingly
 		[extra_equipment->dict setObject:equipment forKey:eq_key];
 		[self set_flags_from_extra_equipment];
-		
+/*
+ * Code for testing equipment damage.		
 		if ([equipment->key isEqual:@"EQ_ECM"])
 			equipment->damage = 80;
 		else if ([equipment->key isEqual:@"EQ_SCANNER_SHOW_MISSILE_TARGET"])
 			equipment->damage = 50;
+*/
 	}
-	else
-		NSLog(@"Could not find %@ in EquipmentManager", eq_key);
 }
 
 - (void) remove_extra_equipment:(NSString *) eq_key

@@ -8310,7 +8310,7 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 	StationEntity *station = (StationEntity *)[universe entityForUniversalID:primaryTarget];
 	NSLog(@"claimAsSalvage asking station to launch a pilot boat");
 	[station launchShipWithRole:@"pilot"];
-	[self setReportAImessages:YES];
+	//[self setReportAImessages:YES];
 	NSLog(@"claimAsSalvage setting own state machine to capturedShipAI.plist");
 	[self setStateMachine:@"capturedShipAI.plist"];
 }
@@ -8349,7 +8349,7 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 	if (pilot != nil)
 	{
 		NSLog(@"becoming pilot target and setting AI");
-		[pilot setReportAImessages:YES];
+		//[pilot setReportAImessages:YES];
 		[pilot addTarget:self];
 		[pilot setStateMachine:@"pilotAI.plist"];
 		[[self getAI] reactToMessage:@"FOUND_PILOT"];

@@ -10,6 +10,18 @@ and an uninstall program.
 To run the game, choose the Oolite icon in the Oolite folder.
 
 
+What is different in this version of Oolite?
+--------------------------------------------
+
+This is an experimental version of Oolite that allows OXPs to use
+JavaScript for their main script.
+
+It also makes equipment damage more complex than normal, with
+most equipment having a damage rating from 0 - 100% and some
+equipment having proportional failure rates. The cost of
+repairing equipment is also proportional to the damage taken.
+
+
 Switching between full screen and windowed mode, or changing resolution
 -----------------------------------------------------------------------
 

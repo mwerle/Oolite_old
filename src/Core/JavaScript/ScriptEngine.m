@@ -741,10 +741,8 @@ JSBool MissionSetProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp) {
 		case MISSION_IMAGE: {
 			if (JSVAL_IS_STRING(*vp)) {
 				NSString *str = JSValToNSString(cx, *vp);
-				NSLog(@"Mission.ImageFilename (1) = [%@]", str);
 				if ([str length] == 0)
 					str = @"none";
-				NSLog(@"Mission.ImageFilename (2) = [%@]", str);
 				[playerEntity setMissionImage:str];
 			}
 			break;
