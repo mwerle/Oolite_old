@@ -4,4 +4,4 @@
 # (Does GNUstep have a defaults tool, or equivalent?)
 
 echo Setting OOLogging flag $1 to $2
-defaults write org.aegidian.oolite logging-enable -dict-add $1 -bool $2
+defaults write org.aegidian.oolite logging-enable -dict-add $1 $2
