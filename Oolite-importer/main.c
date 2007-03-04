@@ -3,7 +3,6 @@
 //  Oolite-importer
 //
 //  Created by Jens Ayton on 2005-10-22.
-//  Copyright (c) 2005 __MyCompanyName__. All rights reserved.
 //
 
 

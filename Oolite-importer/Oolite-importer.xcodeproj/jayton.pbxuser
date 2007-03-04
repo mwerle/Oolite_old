@@ -1,14 +1,14 @@
 // !$*UTF8*$!
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
-		activeBuildConfigurationName = Universal;
-		activeBuildStyle = 014CEA3F0018CDD111CA2923 /* Development */;
+		activeBuildConfigurationName = Deployment;
 		activeTarget = 8D57630D048677EA00EA77CD /* Oolite-importer */;
 		addToTargets = (
 			8D57630D048677EA00EA77CD /* Oolite-importer */,
 		);
 		breakpoints = (
 		);
+		breakpointsGroup = 1A8A3D000B9B033E00AB7625 /* XCBreakpointsBucket */;
 		codeSenseManager = 1A1AB0860909AE56001039FA /* Code sense */;
 		perUserDictionary = {
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -55,8 +55,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 158687791;
-			PBXWorkspaceStateSaveDate = 158687791;
+			PBXPerProjectTemplateStateSaveDate = 194708619;
+			PBXWorkspaceStateSaveDate = 194708619;
 		};
 		sourceControlManager = 1A1AB0850909AE56001039FA /* Source Control */;
 		userBuildSettings = {
@@ -71,9 +71,9 @@
 	};
 	08FB77B6FE84183AC02AAC07 /* main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {951, 3632}}";
-			sepNavSelRange = "{7768, 0}";
-			sepNavVisRect = "{{0, 2794}, {951, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3616}}";
+			sepNavSelRange = "{77, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	1A1AB0850909AE56001039FA /* Source Control */ = {
@@ -88,6 +88,12 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	1A8A3D000B9B033E00AB7625 /* XCBreakpointsBucket */ = {
+		isa = XCBreakpointsBucket;
+		name = "Oolite-importer";
+		objects = (
+		);
+	};
 	1AADEB2D09169CCB00B6D1FA /* Values.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1049, 822}}";
@@ -97,9 +103,9 @@
 	};
 	2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1049, 3168}}";
-			sepNavSelRange = "{3755, 0}";
-			sepNavVisRect = "{{0, 1840}, {1049, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3040}}";
+			sepNavSelRange = "{782, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	8D57630D048677EA00EA77CD /* Oolite-importer */ = {

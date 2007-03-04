@@ -230,6 +230,7 @@
 				PREBINDING = YES;
 				PRODUCT_NAME = Oolite;
 				SECTORDER_FLAGS = "";
+				SYMROOT = ../build;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -239,83 +240,6 @@
 				ZERO_LINK = NO;
 			};
 			name = Development;
-		};
-		1A1AB07F0909AE56001039FA /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_FAST_OBJC_DISPATCH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = /Library/Spotlight;
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = Oolite;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = mdimporter;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		1A1AB0800909AE56001039FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = /Library/Spotlight;
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
-				PRODUCT_NAME = Oolite;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = mdimporter;
-				ZERO_LINK = NO;
-			};
-			name = Default;
 		};
 		1A1AB0820909AE56001039FA /* Development */ = {
 			isa = XCBuildConfiguration;
@@ -325,23 +249,7 @@
 			};
 			name = Development;
 		};
-		1A1AB0830909AE56001039FA /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Deployment;
-		};
-		1A1AB0840909AE56001039FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Default;
-		};
-		1ADCD4380975615F0038B52E /* Universal */ = {
+		1ADCD4380975615F0038B52E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -379,6 +287,7 @@
 				PREBINDING = YES;
 				PRODUCT_NAME = Oolite;
 				SECTORDER_FLAGS = "";
+				SYMROOT = ../build;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -387,15 +296,15 @@
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
 			};
-			name = Universal;
+			name = Deployment;
 		};
-		1ADCD4390975615F0038B52E /* Universal */ = {
+		1ADCD4390975615F0038B52E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = Universal;
+			name = Deployment;
 		};
 /* End XCBuildConfiguration section */
 
@@ -404,23 +313,19 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A1AB07E0909AE56001039FA /* Development */,
-				1A1AB07F0909AE56001039FA /* Deployment */,
-				1ADCD4380975615F0038B52E /* Universal */,
-				1A1AB0800909AE56001039FA /* Default */,
+				1ADCD4380975615F0038B52E /* Deployment */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Deployment;
 		};
 		1A1AB0810909AE56001039FA /* Build configuration list for PBXProject "Oolite-importer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A1AB0820909AE56001039FA /* Development */,
-				1A1AB0830909AE56001039FA /* Deployment */,
-				1ADCD4390975615F0038B52E /* Universal */,
-				1A1AB0840909AE56001039FA /* Default */,
+				1ADCD4390975615F0038B52E /* Deployment */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Deployment;
 		};
 /* End XCConfigurationList section */
 	};
