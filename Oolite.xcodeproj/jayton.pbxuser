@@ -162,9 +162,9 @@
 	};
 	1A8A39E10B962823007D20B8 /* PlayerEntityScripting.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 31280}}";
-			sepNavSelRange = "{58772, 0}";
-			sepNavVisRect = "{{0, 29113}, {1399, 542}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 36032}}";
+			sepNavSelRange = "{21771, 22}";
+			sepNavVisRect = "{{0, 9590}, {1101, 836}}";
 		};
 	};
 	1A8A39E20B962823007D20B8 /* PlayerEntityScripting.h */ = {
@@ -616,8 +616,8 @@
 	251610FD099544380037C2E1 /* PlanetEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 36432}}";
-			sepNavSelRange = "{18, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavSelRange = "{17593, 14}";
+			sepNavVisRect = "{{0, 8965}, {1101, 836}}";
 		};
 	};
 	251610FE099544380037C2E1 /* PlanetEntity.h */ = {
@@ -882,8 +882,8 @@
 	25161145099544390037C2E1 /* TextureStore.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 15600}}";
-			sepNavSelRange = "{17975, 0}";
-			sepNavVisRect = "{{0, 8725}, {1101, 836}}";
+			sepNavSelRange = "{19775, 6}";
+			sepNavVisRect = "{{0, 9509}, {1101, 836}}";
 		};
 	};
 	2576E7B209B4F418007410F7 /* MyOpenGLView.h */ = {
