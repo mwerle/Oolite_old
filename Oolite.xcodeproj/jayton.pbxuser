@@ -91,6 +91,13 @@
 		};
 	};
 	1A38B5E50B989FD7001ED4A0 /* logcontrol.plist */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		languageSpecificationIdentifier = plist;
+		lastKnownFileType = text.plist;
+		name = logcontrol.plist;
+		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 3040}}";
 			sepNavSelRange = "{2696, 32}";
@@ -949,25 +956,11 @@
 			sepNavVisRect = "{{0, 81}, {1101, 815}}";
 		};
 	};
-	25F3E6F70994FA92002F25FD /* descriptions.plist */ = {
+	25F3E8B30994FE9B002F25FD /* InfoPlist.strings */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 16096}}";
-			sepNavSelRange = "{664, 10}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
-		};
-	};
-	25F3E6F80994FA92002F25FD /* equipment.plist */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 5328}}";
-			sepNavSelRange = "{7581, 0}";
-			sepNavVisRect = "{{0, 3327}, {1101, 836}}";
-		};
-	};
-	25F3E6FC0994FA92002F25FD /* keyconfig.plist */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 1296}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 42}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 837}}";
+			sepNavSelRange = "{298, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	25F3E8BC09950088002F25FD /* Info-Oolite.plist */ = {
