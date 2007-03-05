@@ -909,16 +909,16 @@
 	};
 	25F3E6340994F05C002F25FD /* vector.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 3840}}";
-			sepNavSelRange = "{6213, 0}";
-			sepNavVisRect = "{{0, 3298}, {1399, 542}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 4048}}";
+			sepNavSelRange = "{2243, 0}";
+			sepNavVisRect = "{{0, 1150}, {1101, 836}}";
 		};
 	};
 	25F3E6360994F066002F25FD /* vector.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 13072}}";
-			sepNavSelRange = "{12, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 12752}}";
+			sepNavSelRange = "{3919, 0}";
+			sepNavVisRect = "{{0, 2613}, {1101, 836}}";
 		};
 	};
 	25F3E6380994F07A002F25FD /* entities.h */ = {
