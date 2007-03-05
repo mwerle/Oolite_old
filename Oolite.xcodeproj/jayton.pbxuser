@@ -76,20 +76,6 @@
 			1AD9AF780B91E1BB00FB704E /* Oolite */,
 		);
 	};
-	1A2312BA0B9C53DA00EF0852 /* OOCacheManager.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 1008}}";
-			sepNavSelRange = "{1574, 16}";
-			sepNavVisRect = "{{0, 171}, {1101, 836}}";
-		};
-	};
-	1A2312BB0B9C53DA00EF0852 /* OOCacheManager.m */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 2240}}";
-			sepNavSelRange = "{1822, 0}";
-			sepNavVisRect = "{{0, 707}, {1101, 836}}";
-		};
-	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1712}}";
@@ -441,8 +427,8 @@
 	25160E2E0995362F0037C2E1 /* OOCocoa.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 2640}}";
-			sepNavSelRange = "{3763, 0}";
-			sepNavVisRect = "{{0, 1803}, {1101, 836}}";
+			sepNavSelRange = "{3858, 12}";
+			sepNavVisRect = "{{0, 1790}, {1101, 836}}";
 		};
 	};
 	251610CA099544090037C2E1 /* OOCABufferedSound.h */ = {
@@ -784,8 +770,8 @@
 	25161126099544390037C2E1 /* GuiDisplayGen.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 22416}}";
-			sepNavSelRange = "{33217, 0}";
-			sepNavVisRect = "{{0, 17941}, {1101, 836}}";
+			sepNavSelRange = "{39750, 0}";
+			sepNavVisRect = "{{0, 21444}, {1101, 836}}";
 		};
 	};
 	25161127099544390037C2E1 /* GuiDisplayGen.h */ = {
