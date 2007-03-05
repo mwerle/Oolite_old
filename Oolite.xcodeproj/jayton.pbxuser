@@ -76,6 +76,20 @@
 			1AD9AF780B91E1BB00FB704E /* Oolite */,
 		);
 	};
+	1A2312BA0B9C53DA00EF0852 /* OOCacheManager.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 1008}}";
+			sepNavSelRange = "{1574, 16}";
+			sepNavVisRect = "{{0, 171}, {1101, 836}}";
+		};
+	};
+	1A2312BB0B9C53DA00EF0852 /* OOCacheManager.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 2240}}";
+			sepNavSelRange = "{1822, 0}";
+			sepNavVisRect = "{{0, 707}, {1101, 836}}";
+		};
+	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1712}}";
@@ -92,9 +106,9 @@
 	};
 	1A38B5E50B989FD7001ED4A0 /* logcontrol.plist */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3024}}";
-			sepNavSelRange = "{2302, 0}";
-			sepNavVisRect = "{{0, 524}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3040}}";
+			sepNavSelRange = "{2696, 32}";
+			sepNavVisRect = "{{0, 720}, {1101, 836}}";
 		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
@@ -196,7 +210,7 @@
 		name = "Project Breakpoints";
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1A8A3FBD0B9B563600AB7625 /* Universe.m:2107 */,
+			1A8A3FBD0B9B563600AB7625 /* Universe.m:2109 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -212,7 +226,7 @@
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
-	1A8A3FBD0B9B563600AB7625 /* Universe.m:2107 */ = {
+	1A8A3FBD0B9B563600AB7625 /* Universe.m:2109 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -222,7 +236,7 @@
 		fileReference = 25161143099544390037C2E1 /* Universe.m */;
 		functionName = "-coordinatesFromCoordinateSystemString:";
 		hitCount = 6;
-		lineNumber = 2107;
+		lineNumber = 2109;
 		location = OoliteDev;
 		modificationTime = 194732681.925979;
 		state = 1;
@@ -384,16 +398,16 @@
 	};
 	2512833C09BA27C100F43D55 /* Octree.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 12592}}";
-			sepNavSelRange = "{13, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 12576}}";
+			sepNavSelRange = "{2182, 18}";
+			sepNavVisRect = "{{0, 1279}, {1101, 836}}";
 		};
 	};
 	2512833D09BA27C100F43D55 /* Octree.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1536}}";
 			sepNavSelRange = "{13, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavVisRect = "{{0, 510}, {1101, 836}}";
 		};
 	};
 	2512834009BA27EC00F43D55 /* Geometry.h */ = {
@@ -581,8 +595,8 @@
 	251610F5099544380037C2E1 /* PlayerEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 111040}}";
-			sepNavSelRange = "{20764, 0}";
-			sepNavVisRect = "{{0, 7729}, {1101, 836}}";
+			sepNavSelRange = "{1388, 148}";
+			sepNavVisRect = "{{0, 464}, {1101, 836}}";
 		};
 	};
 	251610F7099544380037C2E1 /* WormholeEntity.m */ = {
@@ -763,15 +777,15 @@
 	2516111D099544390037C2E1 /* Entity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 46848}}";
-			sepNavSelRange = "{1662, 32}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavSelRange = "{12402, 0}";
+			sepNavVisRect = "{{0, 7057}, {1101, 836}}";
 		};
 	};
 	25161126099544390037C2E1 /* GuiDisplayGen.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 22416}}";
-			sepNavSelRange = "{33195, 0}";
-			sepNavVisRect = "{{0, 17942}, {1101, 836}}";
+			sepNavSelRange = "{33217, 0}";
+			sepNavVisRect = "{{0, 17941}, {1101, 836}}";
 		};
 	};
 	25161127099544390037C2E1 /* GuiDisplayGen.h */ = {
@@ -840,15 +854,15 @@
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1616}}";
-			sepNavSelRange = "{2142, 0}";
-			sepNavVisRect = "{{0, 470}, {1101, 815}}";
+			sepNavSelRange = "{0, 836}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	2516113B099544390037C2E1 /* ShipEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 134368}}";
-			sepNavSelRange = "{1039, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavSelRange = "{11232, 6}";
+			sepNavVisRect = "{{0, 6203}, {1101, 836}}";
 		};
 	};
 	2516113C099544390037C2E1 /* ShipEntity.h */ = {
@@ -860,9 +874,9 @@
 	};
 	25161143099544390037C2E1 /* Universe.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 128992}}";
-			sepNavSelRange = "{1685, 0}";
-			sepNavVisRect = "{{0, 381}, {1399, 542}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 129456}}";
+			sepNavSelRange = "{1199, 220}";
+			sepNavVisRect = "{{0, 326}, {1101, 836}}";
 		};
 	};
 	25161144099544390037C2E1 /* Universe.h */ = {
@@ -1013,7 +1027,7 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Development;
+		activeBuildConfigurationName = Deployment;
 		activeExecutable = 1AD9AFE00B91E7FC00FB704E /* OoliteDev */;
 		activeTarget = 0865423506B8447D000CA0AB /* Oolite */;
 		addToTargets = (
@@ -1021,7 +1035,7 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1A8A3FBD0B9B563600AB7625 /* Universe.m:2107 */,
+			1A8A3FBD0B9B563600AB7625 /* Universe.m:2109 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
