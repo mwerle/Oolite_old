@@ -40,6 +40,14 @@ MA 02110-1301, USA.
 #import "OOColor.h"
 
 
+extern NSString * const kOOLogNoteAddShips;
+extern NSString * const kOOLogSyntaxAddShips;
+static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.changed";
+static NSString * const kOOLogOpenGLVersion				= @"rendering.opengl.version";
+static NSString * const kOOLogOpenGLShaderSupport		= @"rendering.opengl.shaders.support";
+static NSString * const kOOLogCreateOctTreeCache		= @"dataCache.rebuild.octree";
+
+
 @implementation ShipEntity
 
 - (id) init
@@ -391,7 +399,7 @@ static NSMutableDictionary* smallOctreeDict = nil;
 		octreeCache = (NSMutableDictionary*)[[[Entity dataStore] preloadedDataFiles] objectForKey:@"**octrees**"];
 		if (!octreeCache)
 		{
-			NSLog(@"DEBUG creating octree cache......");
+			OOLog(kOOLogCreateOctTreeCache, @"Creating octree cache......");
 			octreeCache = [(NSMutableDictionary *)[NSMutableDictionary alloc] initWithCapacity:30];
 			[[[Entity dataStore] preloadedDataFiles] setObject:octreeCache forKey:@"**octrees**"];
 		}
@@ -2036,7 +2044,7 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 	//
 	if (reportAImessages && (debug_condition != behaviour))
 	{
-		NSLog(@"DEBUG %@ behaviour is now %@", self, describeBehaviour(behaviour));
+		OOLog(kOOLogEntityBehaviourChanged, @"%@ behaviour is now %@", self, describeBehaviour(behaviour));
 		debug_condition = behaviour;
 	}
 
@@ -3293,7 +3301,7 @@ void testForShaders()
 	if ([vscan scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@". "] intoString:&temp])
 		minor = [temp intValue];
 
-	NSLog(@"\n\nOPENGL VERSION %d.%d ('%@')", major, minor, version_info);
+	OOLog(kOOLogOpenGLVersion, @"OpenGL renderer version: %d.%d ('%@')", major, minor, version_info);
 
 	if ((major < 2)&&(minor < 5))
 	{
@@ -3305,54 +3313,54 @@ void testForShaders()
 	// check for the necessary extensions
 	NSString* extension_info = [NSString stringWithCString: (const char *)glGetString(GL_EXTENSIONS)];
 
-	NSLog(@"\n\nOPENGL EXTENSIONS:\n%@", extension_info);
+	OOLog(kOOLogOpenGLExtensions, @"OPENGL EXTENSIONS:\n%@", extension_info);
 	
 	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_multitexture"].location != NSNotFound);
 	if (!shaders_supported)
 	{
-		NSLog(@"INFORMATION: shaders require the GL_ARB_multitexture OpenGL extension, which is not present.");
+		OOLog(kOOLogOpenGLShaderSupport, @"INFORMATION: shaders require the GL_ARB_multitexture OpenGL extension, which is not present.");
 		return;
 	}
 	
 	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_shader_objects"].location != NSNotFound);
 	if (!shaders_supported)
 	{
-		NSLog(@"INFORMATION: shaders require the GL_ARB_multitexture OpenGL extension, which is not present.");
+		OOLog(kOOLogOpenGLShaderSupport, @"INFORMATION: shaders require the GL_ARB_multitexture OpenGL extension, which is not present.");
 		return;
 	}
 		
 	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_shading_language_100"].location != NSNotFound);
 	if (!shaders_supported)
 	{
-		NSLog(@"INFORMATION: shaders require the GL_ARB_shading_language_100 OpenGL extension, which is not present.");
+		OOLog(kOOLogOpenGLShaderSupport, @"INFORMATION: shaders require the GL_ARB_shading_language_100 OpenGL extension, which is not present.");
 		return;
 	}
 	
 	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_fragment_program"].location != NSNotFound);
 	if (!shaders_supported)
 	{
-		NSLog(@"INFORMATION: shaders require the GL_ARB_fragment_program OpenGL extension, which is not present.");
+		OOLog(kOOLogOpenGLShaderSupport, @"INFORMATION: shaders require the GL_ARB_fragment_program OpenGL extension, which is not present.");
 		return;
 	}
 	
 	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_fragment_shader"].location != NSNotFound);
 	if (!shaders_supported)
 	{
-		NSLog(@"INFORMATION: shaders require the GL_ARB_fragment_shader OpenGL extension, which is not present.");
+		OOLog(kOOLogOpenGLShaderSupport, @"INFORMATION: shaders require the GL_ARB_fragment_shader OpenGL extension, which is not present.");
 		return;
 	}
 	
 	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_vertex_program"].location != NSNotFound);
 	if (!shaders_supported)
 	{
-		NSLog(@"INFORMATION: shaders require the GL_ARB_vertex_program OpenGL extension, which is not present.");
+		OOLog(kOOLogOpenGLShaderSupport, @"INFORMATION: shaders require the GL_ARB_vertex_program OpenGL extension, which is not present.");
 		return;
 	}
 	
 	shaders_supported &= ([extension_info rangeOfString:@"GL_ARB_vertex_shader"].location != NSNotFound);
 	if (!shaders_supported)
 	{
-		NSLog(@"INFORMATION: shaders require the GL_ARB_vertex_shader OpenGL extension, which is not present.");
+		OOLog(kOOLogOpenGLShaderSupport, @"INFORMATION: shaders require the GL_ARB_vertex_shader OpenGL extension, which is not present.");
 		return;
 	}
 #endif
@@ -8188,7 +8196,7 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 
 	if ([tokens count] != 2)
 	{
-		NSLog(@"***** CANNOT SPAWN: '%@'",roles_number);
+		OOLog(kOOLogSyntaxAddShips, @"***** Could not spawn: '%@' (must be two tokens, role and number)",roles_number);
 		return;
 	}
 
@@ -8197,8 +8205,7 @@ inline BOOL pairOK(NSString* my_role, NSString* their_role)
 
 	int number = [numberString intValue];
 
-	if (debug & DEBUG_SCRIPT)
-		NSLog(@"DEBUG ..... Going to spawn %d x '%@' near %@ %d", number, roleString, name, universal_id);
+	OOLog(kOOLogNoteAddShips, @"Spawning %d x '%@' near %@ %d", number, roleString, name, universal_id);
 
 	while (number--)
 		[universe spawnShipWithRole:roleString near:self];

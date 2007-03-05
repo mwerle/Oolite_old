@@ -53,6 +53,10 @@ MA 02110-1301, USA.
 #define	OG_ELITE_FORWARD_DRIFT			10.0f
 
 
+static NSString * const kOOLogDataCacheWrite		= @"dataCache.write";
+static NSString * const kOOLogDataCacheWriteFailed	= @"dataCache.write.failed";
+
+
 @implementation PlayerEntity
 
 static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
@@ -391,15 +395,16 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	//
 	[result setObject:shipCommodityData		forKey:@"shipCommodityData"];
 	//
-	[result setObject:[NSNumber numberWithBool:has_ecm]					forKey:@"has_ecm"];
-	[result setObject:[NSNumber numberWithBool:has_scoop]				forKey:@"has_scoop"];
-	[result setObject:[NSNumber numberWithBool:has_energy_bomb]			forKey:@"has_energy_bomb"];
-	[result setObject:[NSNumber numberWithBool:has_energy_unit]			forKey:@"has_energy_unit"];
-	[result setObject:[NSNumber numberWithInt:energy_unit]				forKey:@"energy_unit"];
-	[result setObject:[NSNumber numberWithBool:has_docking_computer]	forKey:@"has_docking_computer"];
-	[result setObject:[NSNumber numberWithBool:has_galactic_hyperdrive] forKey:@"has_galactic_hyperdrive"];
-	[result setObject:[NSNumber numberWithBool:has_escape_pod]			forKey:@"has_escape_pod"];
-	[result setObject:[NSNumber numberWithBool:has_fuel_injection]		forKey:@"has_fuel_injection"];
+	// Deprecated equipment flags. New equipment shouldn't be added here (it'll be handled by the extra_equipment dictionary).
+	[result setObject:[NSNumber numberWithBool:has_ecm]							forKey:@"has_ecm"];
+	[result setObject:[NSNumber numberWithBool:has_scoop]						forKey:@"has_scoop"];
+	[result setObject:[NSNumber numberWithBool:has_energy_bomb]					forKey:@"has_energy_bomb"];
+	[result setObject:[NSNumber numberWithBool:has_energy_unit]					forKey:@"has_energy_unit"];
+	[result setObject:[NSNumber numberWithInt:energy_unit]						forKey:@"energy_unit"];
+	[result setObject:[NSNumber numberWithBool:has_docking_computer]			forKey:@"has_docking_computer"];
+	[result setObject:[NSNumber numberWithBool:has_galactic_hyperdrive]			forKey:@"has_galactic_hyperdrive"];
+	[result setObject:[NSNumber numberWithBool:has_escape_pod]					forKey:@"has_escape_pod"];
+	[result setObject:[NSNumber numberWithBool:has_fuel_injection]				forKey:@"has_fuel_injection"];
 	NSMutableArray* missile_roles = [NSMutableArray arrayWithCapacity:max_missiles];
 	int i;
 	for (i = 0; i < max_missiles; i++)
@@ -494,10 +499,11 @@ static Quaternion quaternion_identity = { (GLfloat)1.0, (GLfloat)0.0, (GLfloat)0
 	// trumble information
 	[result setObject:[self trumbleValue] forKey:@"trumbles"];
 	
+	#if 0
 	// texture experiments
 	if ([universe doProcedurallyTexturedPlanets])
 		[result setObject:[NSNumber numberWithBool:YES] forKey:@"procedural_planet_textures"];
-
+	#endif
 
 	// create checksum
 	clear_checksum();
@@ -4225,9 +4231,9 @@ double scoopSoundPlayTime = 0.0;
 	{
 		// try saving the cache now...
 		NSString*	cache_path = OOLITE_CACHE;
-		NSLog(@"DEBUG ** saving cache ...**");
+		OOLog(kOOLogDataCacheWrite, @"Writing cache");
 		if (![[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES])
-			NSLog(@"ERROR ***** Could not write cache to path: %@ *****", cache_path);
+			OOLog(kOOLogDataCacheWriteFailed, @"***** Could not write cache to path: %@", cache_path);
 		//
 		[universe clearPreviousMessage];	// allow this to be given time and again
 		[universe addMessage:[universe expandDescription:@"[game-saved]" forSystem:system_seed] forCount:2];
@@ -4289,7 +4295,7 @@ double scoopSoundPlayTime = 0.0;
 		}
 		// try saving the cache ...
 		NSString*	cache_path = OOLITE_CACHE;
-		NSLog(@"DEBUG ** saving cache ...**");
+		OOLog(kOOLogDataCacheWrite, @"Writing cache");
 		[[[Entity dataStore] preloadedDataFiles] writeToFile: cache_path atomically: YES];
 	}
 	[self setGuiToStatusScreen];
@@ -6882,5 +6888,9 @@ OOSound* burnersound;
 }
 
 
+- (BOOL)showInfoFlag
+{
+	return show_info_flag;
+}
 
 @end

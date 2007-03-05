@@ -1,0 +1,189 @@
+/*	This file controls the visibility of various error messages and groups of
+	error messages, or “message classes”. It can be selectively overridden
+	using a dictionary called “logging-enable” in Oolite’s preferences which
+	allows you to reduce the flow of log messages to a more managable
+	quantity.
+	
+	classes which are related, but not hierarchically, can be controlled using
+	metaclasses, whose names start with a $. See $error etc. below for
+	examples.
+	
+	Log output can be modified using the following preference keys:
+		logging-show-app-name
+		logging-show-class
+		logging-show-function
+		logging-show-file-and-line
+	
+	“logging-show-app-name” defaults to 1 under Mac OS X (where log output
+	goes to a shared console) and 0 under GNUstep (where log output goes to an
+	application-specific log file). “logging-show-class” defaults to 1. The
+	others default to 0. 
+*/
+
+
+/*** Special message classes ***/
+_default								= yes;					// Fallback value for otherwise undefined classes. Must be yes or no.
+// _override							= yes;					// Use to force display of all messages (or suppress all messages). Must be yes or no.
+
+
+/*** Metaclasses ***/
+$scriptError							= yes;
+$error									= yes;
+$troubleShootingDump					= yes;
+$entityState							= yes;
+$scriptDebugOn							= no;					// This metaclass is set by the debugOn and debugOff script actions.
+
+
+/*** Common programming problems ***/
+general.error.subclassResponsibility	= inherit;
+general.error.parameterError			= inherit;
+general.error.deprecatedMethod			= inherit;
+
+
+exception = yes;
+
+
+files.notFound							= $error;				// Failure to load a file.
+files.notLoaded							= $error;				// A file should have been loaded at some earlier point, but wasn’t.
+
+
+/*** Old-style logging calls ***/
+unclassified							= inherit;
+
+
+/*** Module-specific message classes ***/
+ai										= $entityState;
+ai.message.receive						= inherit;
+ai.takeAction.takeAction				= $entityState;
+ai.takeAction.noAction					= $entityState;
+ai.takeAction.orphaned					= $error;
+ai.takeAction.debugMessage				= inherit;
+ai.takeAction.badSelector				= $scriptError;
+
+
+dataCache.found							= inherit;
+dataCache.notFound						= inherit;
+dataCache.rebuild						= inherit;
+dataCache.write							= inherit;
+dataCache.write.failed					= $error;
+dataCache.rebuild.octree				= no;
+
+
+$linkedListError						= $error;
+entity.linkedList						= inherit;				// Management/verification of the lists used to track the relative position of entities.
+entity.linkedList.add					= inherit;
+entity.linkedList.add.error				= $linkedListError;
+entity.linkedList.remove				= inherit;
+entity.linkedList.remove.error			= $linkedListError;
+entity.linkedList.verify.error			= $linkedListError;
+entity.linkedList.verify.rebuild		= inherit;
+entity.linkedList.update.error			= $linkedListError;
+entity.behaviour.changed				= $entityState;
+
+
+input.keyMapping.codeOutOfRange			= inherit;
+
+
+rendering.opengl.error					= $error;				// Test for and display OpenGL errors
+rendering.opengl.version				= $troubleShootingDump;	// Display renderer version information at startup
+rendering.opengl.extensions				= $troubleShootingDump;	// List OpenGL extensions at startup
+rendering.opengl.shaders				= inherit;				// Shader-related messages
+rendering.opengl.shaders.support		= $troubleShootingDump;	// Messages about factors influencing availability of OpenGL shaders
+rendering.opengl.stateDump				= $troubleShootingDump;	// Dump of OpenGL state (debug tool, currently unused)
+
+
+script									= $entityState;
+script.addShips.failed					= $scriptError;
+script.missionDescription.noMissionText	= inherit;
+script.missionDescription.noMissionKey	= inherit;
+
+script.debug							= $scriptDebugOn;
+script.debug.message					= inherit;				// debugMessage: script action
+script.debug.onOff						= inherit;				// debugOn/debugOff script actions
+script.debug.testCondition				= inherit;
+script.debug.testCondition.checkingVariable = inherit;
+script.debug.testCondition.testValues	= inherit;
+script.debug.testCondition.oneOf		= inherit;
+script.debug.processSceneString.addScene = inherit;
+script.debug.processSceneString.addModel = inherit;
+script.debug.processSceneString.addLocalPlanet = inherit;
+script.debug.processSceneString.addTargetPlanet = inherit;
+script.debug.processSceneString.addBillboard = inherit;
+script.debug.setSunNovaIn				= inherit;
+
+script.debug.note.checkScript			= inherit;				// Messages saying a scripting method was called, with no further info
+script.debug.note.scriptAction			= inherit;
+script.debug.note.awardCargo			= inherit;
+script.debug.note.removeAllCargo		= inherit;
+script.debug.note.useSpecialCargo		= inherit;
+script.debug.note.addShips				= inherit;
+script.debug.note.set					= inherit;
+script.debug.note.systemSeedForSystemName = inherit;
+script.debug.note.showShipyardModel		= inherit;
+script.debug.note.showShipModel			= inherit;
+script.debug.note.setFuelLeak			= inherit;
+script.debug.note.addPlanet				= inherit;
+script.debug.note.replaceVariablesInString = inherit;
+script.debug.note.processSceneString	= inherit;
+
+script.debug.syntax						= $scriptError;			// Messages relating to script formatting
+script.debug.syntax.badConditional		= inherit;
+script.debug.syntax.action				= inherit;
+script.debug.syntax.action.noneSpecified = inherit;
+script.debug.syntax.action.badSelector	= inherit;
+script.debug.syntax.scriptCondition.noneSpecified = inherit;
+script.debug.syntax.setPlanetInfo		= inherit;
+script.debug.syntax.awardCargo			= inherit;
+script.debug.syntax.messageShipAIs		= inherit;
+script.debug.syntax.addShips			= inherit;
+script.debug.syntax.set					= inherit;
+script.debug.syntax.reset				= inherit;
+
+
+searchPaths.dumpAll						= $troubleShootingDump;
+
+
+strings.conversion						= $scriptError;			// Conversion of text to values (vectors, quaternions etc)
+strings.conversion.vector				= inherit;
+strings.conversion.quaternion			= inherit;
+strings.conversion.vectorAndQuaternion	= inherit;
+strings.conversion.randomSeed			= inherit;
+strings.conversion.coordinates			= inherit;
+
+
+texture.planet.generate					= inherit;
+
+
+universe.populate						= $troubleShootingDump;	// “Populating a system with…” message when generating a star system
+
+
+/*** Mac OS X/Cocoa-specific ***/
+growl.error								= $error;
+growl.debug								= no;
+
+$soundError								= $error;
+$soundDebug								= no;
+$soundDebugVerbose						= $soundDebug;
+sound.channel.cleanup.success			= $soundDebugVerbose;
+sound.channel.cleanup.failed			= $soundError;
+sound.channel.cleanup.failed.broken		= inherit;
+sound.channel.cleanup.failed.badState	= inherit;
+sound.channel.machPortError				= $soundError;
+sound.initialization					= inherit;
+sound.initialization.error				= $soundError;
+sound.load.success						= $soundDebug;
+sound.load.failed						= $soundError;
+sound.mixer.outOfChannels				= $soundError;
+sound.mixer.inspector.loadFailed		= $soundError;
+sound.mixer.replacingBrokenChannel		= $soundDebug;
+sound.mixer.failedToConnectChannel		= $soundError;
+sound.play.success						= $soundDebugVerbose;
+sound.play.failed						= $soundError;
+sound.play.failed.badReuse				= inherit;
+sound.play.failed.setupFailed			= inherit;
+sound.play.failed.auError				= inherit;
+sound.render.undexpectedNull			= $soundError;
+sound.streaming.refill					= $soundDebugVerbose;
+sound.streaming.loop					= $soundDebug;
+sound.streaming.underflow				= $soundError;
+sound.virtualringbuffer					= $soundError;

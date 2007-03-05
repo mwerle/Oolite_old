@@ -35,6 +35,21 @@ MA 02110-1301, USA.
 
 #import "NSScannerOOExtensions.h"
 
+
+static NSString * const kOOLogEntityAddToList				= @"entity.linkedList.add";
+static NSString * const kOOLogEntityAddToListError			= @"entity.linkedList.add.error";
+static NSString * const kOOLogEntityRemoveFromList			= @"entity.linkedList.remove";
+static NSString * const kOOLogEntityRemoveFromListError		= @"entity.linkedList.remove.error";
+	   NSString * const kOOLogEntityVerificationError		= @"entity.linkedList.verify.error";
+static NSString * const kOOLogEntityUpdateError				= @"entity.linkedList.update.error";
+static NSString * const kOOLogStringVectorConversion		= @"strings.conversion.vector";
+static NSString * const kOOLogStringQuaternionConversion	= @"strings.conversion.quaternion";
+static NSString * const kOOLogStringVecAndQuatConversion	= @"strings.conversion.vectorAndQuaternion";
+static NSString * const kOOLogStringRandomSeedConversion	= @"strings.conversion.randomSeed";
+static NSString * const kOOLogOpenGLExtensionsVAR			= @"rendering.opengl.extensions.var";
+static NSString * const kOOLogOpenGLStateDump				= @"rendering.opengl.stateDump";
+
+
 // global flag for VAR
 BOOL global_usingVAR;
 BOOL global_testForVAR;
@@ -84,7 +99,7 @@ static  Universe	*data_store_universe;
 	}
 	if (failed)
 	{
-		NSLog(@"***** ERROR cannot make vector from '%@' because '%@'", xyzString, error);
+		OOLog(kOOLogStringVectorConversion, @"***** ERROR cannot make vector from '%@' because '%@'", xyzString, error);
 	}
 	return make_vector( xyz[0], xyz[1], xyz[2]);
 }
@@ -122,7 +137,7 @@ static  Universe	*data_store_universe;
 	
 	if (failed)
 	{
-		NSLog(@"***** ERROR cannot make quaternion from '%@' because '%@'", wxyzString, error);
+		OOLog(kOOLogStringQuaternionConversion, @"***** ERROR cannot make quaternion from '%@' because '%@'", wxyzString, error);
 	}
 	return result;
 }
@@ -159,7 +174,7 @@ static  Universe	*data_store_universe;
 	result.f = abcdef[5];
 	if (failed)
 	{
-		NSLog(@"***** ERROR cannot make Random_Seed from '%@' because '%@'", abcdefString, error);
+		OOLog(kOOLogStringRandomSeedConversion, @"***** ERROR cannot make Random_Seed from '%@' because '%@'", abcdefString, error);
 		result = nil_seed();
 	}
 	return result;
@@ -190,7 +205,7 @@ static  Universe	*data_store_universe;
 	}
 	if (failed)
 	{
-		NSLog(@"***** ERROR cannot make quaternion from '%@' because '%@'", xyzwxyzString, error);
+		OOLog(kOOLogStringVecAndQuatConversion, @"***** ERROR cannot make vector and quaternion from '%@' because '%@'", xyzwxyzString, error);
 		return NO;
 	}
 	vector_ptr->x = xyzwxyz[0];
@@ -300,7 +315,7 @@ static  Universe	*data_store_universe;
 - (void) addToLinkedLists
 {
 	if (debug & DEBUG_LINKED_LISTS)
-		NSLog(@"DEBUG adding entity %@ to linked lists", self);
+		OOLog(kOOLogEntityAddToList, @"DEBUG adding entity %@ to linked lists", self);
 	//
 	// insert at the start
 	if (universe)
@@ -343,7 +358,7 @@ static  Universe	*data_store_universe;
 	if (debug & DEBUG_LINKED_LISTS)
 		if (![self checkLinkedLists])
 		{
-			NSLog(@"DEBUG LINKED LISTS - problem encountered while adding %@ to linked lists", self);
+			OOLog(kOOLogEntityAddToListError, @"DEBUG LINKED LISTS - problem encountered while adding %@ to linked lists", self);
 			[universe obj_dump];
 		
 			exit(-1);
@@ -354,7 +369,7 @@ static  Universe	*data_store_universe;
 - (void) removeFromLinkedLists
 {
 	if (debug & DEBUG_LINKED_LISTS)
-		NSLog(@"DEBUG removing entity %@ from linked lists", self);
+		OOLog(kOOLogEntityRemoveFromList, @"DEBUG removing entity %@ from linked lists", self);
 
 	if ((x_next == nil)&&(x_previous == nil))	// removed already!
 		return;
@@ -386,7 +401,7 @@ static  Universe	*data_store_universe;
 	if (debug & DEBUG_LINKED_LISTS)
 		if (![self checkLinkedLists])
 		{
-			NSLog(@"DEBUG LINKED LISTS - problem encountered while removing %@ from linked lists", self);
+			OOLog(kOOLogEntityRemoveFromListError, @"DEBUG LINKED LISTS - problem encountered while removing %@ from linked lists", self);
 			[universe obj_dump];
 		
 			exit(-1);
@@ -412,7 +427,7 @@ static  Universe	*data_store_universe;
 		}
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken x_next %@ list (%d) ***", universe->x_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken x_next %@ list (%d) ***", universe->x_list_start, n);
 			return NO;
 		}
 		//
@@ -421,7 +436,7 @@ static  Universe	*data_store_universe;
 		while ((n--)&&(check))	check = check->x_previous;
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken x_previous %@ list (%d) ***", universe->x_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken x_previous %@ list (%d) ***", universe->x_list_start, n);
 			return NO;
 		}
 		//
@@ -434,7 +449,7 @@ static  Universe	*data_store_universe;
 		}
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken y_next %@ list (%d) ***", universe->y_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken y_next %@ list (%d) ***", universe->y_list_start, n);
 			return NO;
 		}
 		//
@@ -443,7 +458,7 @@ static  Universe	*data_store_universe;
 		while ((n--)&&(check))	check = check->y_previous;
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken y_previous %@ list (%d) ***", universe->y_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken y_previous %@ list (%d) ***", universe->y_list_start, n);
 			return NO;
 		}
 		//
@@ -456,7 +471,7 @@ static  Universe	*data_store_universe;
 		}
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken z_next %@ list (%d) ***", universe->z_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken z_next %@ list (%d) ***", universe->z_list_start, n);
 			return NO;
 		}
 		//
@@ -465,7 +480,7 @@ static  Universe	*data_store_universe;
 		while ((n--)&&(check))	check = check->z_previous;
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken z_previous %@ list (%d) ***", universe->z_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken z_previous %@ list (%d) ***", universe->z_list_start, n);
 			return NO;
 		}
 	}
@@ -482,7 +497,7 @@ static  Universe	*data_store_universe;
 	if (debug & DEBUG_LINKED_LISTS)
 		if (![self checkLinkedLists])
 		{
-			NSLog(@"DEBUG LINKED LISTS problem encountered before updating linked lists for %@", self);
+			OOLog(kOOLogEntityVerificationError, @"DEBUG LINKED LISTS problem encountered before updating linked lists for %@", self);
 			[universe obj_dump];
 		
 			exit(-1);
@@ -561,7 +576,7 @@ static  Universe	*data_store_universe;
 	if (debug & DEBUG_LINKED_LISTS)
 		if (![self checkLinkedLists])
 		{
-			NSLog(@"DEBUG LINKED LISTS problem encountered after updating linked lists for %@", self);
+			OOLog(kOOLogEntityUpdateError, @"DEBUG LINKED LISTS problem encountered after updating linked lists for %@", self);
 			[universe obj_dump];
 		
 			exit(-1);
@@ -571,7 +586,7 @@ static  Universe	*data_store_universe;
 - (void) warnAboutHostiles
 {
 	// do nothing for now, this can be expanded in sub classes
-	NSLog(@"***** Entity does nothing in warnAboutHostiles");
+	OOLog(@"general.error.subclassResponsibility.Entity-warnAboutHostiles", @"***** Entity does nothing in warnAboutHostiles");
 }
 
 - (Universe *) universe
@@ -668,7 +683,7 @@ static  Universe	*data_store_universe;
 	NS_HANDLER
 		if ([[localException name] isEqual: OOLITE_EXCEPTION_DATA_NOT_FOUND])
 		{
-			NSLog(@"***** Oolite Data Not Found Exception : '%@' in [Entity setModel:] *****", [localException reason]);
+			OOLog(kOOLogFileNotFound, @"***** Oolite Data Not Found Exception : '%@' in [Entity setModel:] *****", [localException reason]);
 		}
 		[localException retain];
 		[mypool release];
@@ -988,7 +1003,7 @@ static  Universe	*data_store_universe;
 			}
 			else
 			{
-				NSLog(@"ERROR no basefile for entity %@");
+				OOLog(kOOLogFileNotLoaded, @"ERROR no basefile for entity %@");
 			//	NSBeep();	// appkit dependency
 			}
 		}
@@ -997,8 +1012,8 @@ static  Universe	*data_store_universe;
 
 	NS_HANDLER
 
-		NSLog(@"***** [Entity drawEntity::] encountered exception: %@ : %@ *****",[localException name], [localException reason]);
-		NSLog(@"***** Removing entity %@ from universe *****", self);
+		OOLog(kOOLogException, @"***** [Entity drawEntity::] encountered exception: %@ : %@ *****",[localException name], [localException reason]);
+		OOLog(kOOLogException, @"***** Removing entity %@ from universe *****", self);
 		[universe removeEntity:self];
 		if ([[localException name] hasPrefix:@"Oolite"])
 			[universe handleOoliteException:localException];	// handle these ourself
@@ -1179,8 +1194,7 @@ static  Universe	*data_store_universe;
 //
 - (void) resetFramesFromFrame:(Frame) resetFrame withVelocity:(Vector) vel1
 {
-	if (isPlayer)
-		NSLog(@"DEBUG ** resetting track for %@ **", self);
+	// if (isPlayer)  NSLog(@"DEBUG ** resetting track for %@ **", self);
 
 	Vector		v1 = make_vector( 0.1 * vel1.x, 0.1 * vel1.y, 0.1 * vel1.z);
 	double		t_now = [universe getTime];
@@ -2453,12 +2467,12 @@ static  Universe	*data_store_universe;
 		if (strstr(s, "GL_APPLE_vertex_array_range") == 0)
 		{
 			global_usingVAR &= NO;
-			NSLog(@"Vertex Array Range optimisation - not supported");
+			OOLog(kOOLogOpenGLExtensionsVAR, @"Vertex Array Range optimisation - not supported");
 			return NO;
 		}
 		else
 		{
-			NSLog(@"Vertex Array Range optimisation - supported");
+			OOLog(kOOLogOpenGLExtensionsVAR, @"Vertex Array Range optimisation - supported");
 			global_usingVAR |= YES;
 		}
 	}
@@ -2580,6 +2594,8 @@ GLenum stored_errCode;
 //
 void logGLState()
 {
+	if (!OOLogWillDisplayMessagesInClass(kOOLogOpenGLStateDump)) return;
+	
 	// we need to report on the material properties
 	GLfloat mat_ambient[4];
 	GLfloat mat_diffuse[4];
@@ -2746,24 +2762,24 @@ void logGLState()
 	if ((errCode =glGetError()) != GL_NO_ERROR)
 	{
 		errString = gluErrorString(errCode);
-		NSLog(@"OPENGL_DEBUG GL_ERROR (%d) %s", errCode, errString);
+		OOLog(kOOLogOpenGLError, @"OpenGL error: '%s' (%u) in: %@", errString, errCode);
 	}
 
 	/*-- MATERIALS --*/
 	if ((stored_mat_ambient[0] != mat_ambient[0])||(stored_mat_ambient[1] != mat_ambient[1])||(stored_mat_ambient[2] != mat_ambient[2])||(stored_mat_ambient[3] != mat_ambient[2]))
-		NSLog(@"OPENGL_DEBUG GL_AMBIENT ( %.2ff, %.2ff, %.2ff, %.2ff)",
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_AMBIENT ( %.2ff, %.2ff, %.2ff, %.2ff)",
 			mat_ambient[0], mat_ambient[1], mat_ambient[2], mat_ambient[3]);
 	if ((stored_mat_diffuse[0] != mat_diffuse[0])||(stored_mat_diffuse[1] != mat_diffuse[1])||(stored_mat_diffuse[2] != mat_diffuse[2])||(stored_mat_diffuse[3] != mat_diffuse[2]))
-		NSLog(@"OPENGL_DEBUG GL_DIFFUSE ( %.2ff, %.2ff, %.2ff, %.2ff)",
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_DIFFUSE ( %.2ff, %.2ff, %.2ff, %.2ff)",
 			mat_diffuse[0], mat_diffuse[1], mat_diffuse[2], mat_diffuse[3]);
 	if ((stored_mat_emission[0] != mat_emission[0])||(stored_mat_emission[1] != mat_emission[1])||(stored_mat_emission[2] != mat_emission[2])||(stored_mat_emission[3] != mat_emission[2]))
-		NSLog(@"OPENGL_DEBUG GL_EMISSION ( %.2ff, %.2ff, %.2ff, %.2ff)",
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_EMISSION ( %.2ff, %.2ff, %.2ff, %.2ff)",
 			mat_emission[0], mat_emission[1], mat_emission[2], mat_emission[3]);
 	if ((stored_mat_specular[0] != mat_specular[0])||(stored_mat_specular[1] != mat_specular[1])||(stored_mat_specular[2] != mat_specular[2])||(stored_mat_specular[3] != mat_specular[2]))
-		NSLog(@"OPENGL_DEBUG GL_SPECULAR ( %.2ff, %.2ff, %.2ff, %.2ff)",
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_SPECULAR ( %.2ff, %.2ff, %.2ff, %.2ff)",
 			mat_specular[0], mat_specular[1], mat_specular[2], mat_specular[3]);
 	if (stored_mat_shininess[0] != mat_shininess[0])
-		NSLog(@"OPENGL_DEBUG GL_SHININESS ( %.2ff)", mat_shininess[0]);
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_SHININESS ( %.2ff)", mat_shininess[0]);
 	stored_mat_ambient[0] = mat_ambient[0];	stored_mat_ambient[1] = mat_ambient[1];	stored_mat_ambient[2] = mat_ambient[2];	stored_mat_ambient[3] = mat_ambient[3];
 	stored_mat_diffuse[0] = mat_diffuse[0];	stored_mat_diffuse[1] = mat_diffuse[1];	stored_mat_diffuse[2] = mat_diffuse[2];	stored_mat_diffuse[3] = mat_diffuse[3];
 	stored_mat_emission[0] = mat_emission[0];	stored_mat_emission[1] = mat_emission[1];	stored_mat_emission[2] = mat_emission[2];	stored_mat_emission[3] = mat_emission[3];
@@ -2775,82 +2791,90 @@ void logGLState()
 	/*-- LIGHTS --*/
 	if (glIsEnabled(GL_LIGHTING))
 	{
-		NSLog(@"OPENGL_DEBUG GL_LIGHTING :ENABLED:");
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHTING :ENABLED:");
 		if (glIsEnabled(GL_LIGHT0))
-			NSLog(@"OPENGL_DEBUG GL_LIGHT0 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT0 :ENABLED:");
 		if (glIsEnabled(GL_LIGHT1))
 		{
-			NSLog(@"OPENGL_DEBUG GL_LIGHT1 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT1 :ENABLED:");
 			GLfloat light_ambient[4];
 			GLfloat light_diffuse[4];
 			GLfloat light_specular[4];
 			glGetLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
 			glGetLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
 			glGetLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
-			NSLog(@"OPENGL_DEBUG GL_LIGHT1 GL_AMBIENT ( %.2ff, %.2ff, %.2ff, %.2ff)",
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT1 GL_AMBIENT ( %.2ff, %.2ff, %.2ff, %.2ff)",
 				light_ambient[0], light_ambient[1], light_ambient[2], light_ambient[3]);
-			NSLog(@"OPENGL_DEBUG GL_LIGHT1 GL_DIFFUSE ( %.2ff, %.2ff, %.2ff, %.2ff)",
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT1 GL_DIFFUSE ( %.2ff, %.2ff, %.2ff, %.2ff)",
 				light_diffuse[0], light_diffuse[1], light_diffuse[2], light_diffuse[3]);
-			NSLog(@"OPENGL_DEBUG GL_LIGHT1 GL_SPECULAR ( %.2ff, %.2ff, %.2ff, %.2ff)",
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT1 GL_SPECULAR ( %.2ff, %.2ff, %.2ff, %.2ff)",
 				light_specular[0], light_specular[1], light_specular[2], light_specular[3]);
 		}
 		if (glIsEnabled(GL_LIGHT2))
-			NSLog(@"OPENGL_DEBUG GL_LIGHT2 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT2 :ENABLED:");
 		if (glIsEnabled(GL_LIGHT3))
-			NSLog(@"OPENGL_DEBUG GL_LIGHT3 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT3 :ENABLED:");
 		if (glIsEnabled(GL_LIGHT4))
-			NSLog(@"OPENGL_DEBUG GL_LIGHT4 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT4 :ENABLED:");
 		if (glIsEnabled(GL_LIGHT5))
-			NSLog(@"OPENGL_DEBUG GL_LIGHT5 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT5 :ENABLED:");
 		if (glIsEnabled(GL_LIGHT6))
-			NSLog(@"OPENGL_DEBUG GL_LIGHT6 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT6 :ENABLED:");
 		if (glIsEnabled(GL_LIGHT7))
-			NSLog(@"OPENGL_DEBUG GL_LIGHT7 :ENABLED:");
+			OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_LIGHT7 :ENABLED:");
 	}
 	/*-- LIGHTS --*/
 
-	NSLog(@"OPENGL_DEBUG GL_CURRENT_COLOR ( %.2ff, %.2ff, %.2ff, %.2ff)",
+	OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_CURRENT_COLOR ( %.2ff, %.2ff, %.2ff, %.2ff)",
 		current_color[0], current_color[1], current_color[2], current_color[3]);
 	//
-	NSLog(@"OPENGL_DEBUG GL_TEXTURE_ENV_MODE :%@:", tex_env_mode_string);
+	OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_TEXTURE_ENV_MODE :%@:", tex_env_mode_string);
 	//
-	NSLog(@"OPENGL_DEBUG GL_SHADEMODEL :%@:",  (gl_shade_model[0] == GL_SMOOTH)? @"GL_SMOOTH": @"GL_FLAT");
+	OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_SHADEMODEL :%@:",  (gl_shade_model[0] == GL_SMOOTH)? @"GL_SMOOTH": @"GL_FLAT");
 	//
 	if (glIsEnabled(GL_FOG))
-		NSLog(@"OPENGL_DEBUG GL_FOG :ENABLED:");
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_FOG :ENABLED:");
 	//
 	if (glIsEnabled(GL_COLOR_MATERIAL))
-		NSLog(@"OPENGL_DEBUG GL_COLOR_MATERIAL :ENABLED:");
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_COLOR_MATERIAL :ENABLED:");
 	//
 	if (glIsEnabled(GL_BLEND))
 	{
-		NSLog(@"OPENGL_DEBUG GL_BLEND :ENABLED:");
-		NSLog(@"OPENGL_DEBUG GL_BLEND_FUNC (:%@:, :%@:)", blend_src_string, blend_dst_string);
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_BLEND :ENABLED:");
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_BLEND_FUNC (:%@:, :%@:)", blend_src_string, blend_dst_string);
 	}
 	//
 	if (glIsEnabled(GL_CULL_FACE))
-		NSLog(@"OPENGL_DEBUG GL_CULL_FACE :ENABLED:");
+		OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_CULL_FACE :ENABLED:");
 	//
-	NSLog(@"OPENGL_DEBUG GL_CULL_FACE_MODE :%@:", cull_face_mode_string);
+	OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_CULL_FACE_MODE :%@:", cull_face_mode_string);
 	//
-	NSLog(@"OPENGL_DEBUG GL_FRONT_FACE :%@:", front_face_string);
+	OOLog(kOOLogOpenGLStateDump, @"OPENGL_DEBUG GL_FRONT_FACE :%@:", front_face_string);
 }
 
 // check for OpenGL errors, reporting them if where is not nil
 //
 BOOL checkGLErrors(NSString* where)
 {
-	GLenum errCode;
-	const GLubyte *errString;
-
-	if ((errCode =glGetError()) != GL_NO_ERROR)
+	GLenum			errCode;
+	const GLubyte	*errString = NULL;
+	BOOL			errorOccurred = NO;
+	
+	// Short-circut here, because glGetError() is quite expensive.
+	if (OOLogWillDisplayMessagesInClass(kOOLogOpenGLError))
 	{
-		errString = gluErrorString(errCode);
-		if (where)
-			NSLog(@"OPENGL_DEBUG GL_ERROR (%d) '%s' in: %@", errCode, errString, where);
-		return YES;
+		errCode = glGetError();
+		
+		if (errCode != GL_NO_ERROR)
+		{
+			errorOccurred = YES;
+			errString = gluErrorString(errCode);
+			if (where == nil) where = @"<unknown>";
+			
+			OOLog(kOOLogOpenGLError, @"OpenGL error: '%s' (%u) in: %@", errString, errCode, where);
+		}
 	}
-	return NO;
+	return errorOccurred;
 }
 
 // keep track of various OpenGL states

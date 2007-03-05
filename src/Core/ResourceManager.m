@@ -27,6 +27,10 @@ MA 02110-1301, USA.
 #import "NSMutableDictionaryOOExtensions.h"
 #import "OOSound.h"
 
+
+static NSString * const kOOLogDumpSearchPaths = @"searchPaths.dumpAll";
+
+
 extern NSDictionary* parseScripts(NSString* script);
 
 @implementation ResourceManager
@@ -237,7 +241,7 @@ NSMutableDictionary*	surface_cache;
 	if (!saved_paths)
 		saved_paths =[file_paths retain];
 	//
-	NSLog(@"---> searching paths:\n%@", [file_paths description]);
+	OOLog(kOOLogDumpSearchPaths, @"---> searching paths:\n%@", [file_paths description]);
 	//
 	return file_paths;
 }

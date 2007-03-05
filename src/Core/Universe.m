@@ -44,6 +44,16 @@ MA 02110-1301, USA.
 #define MAX_NUMBER_OF_SOLAR_SYSTEM_ENTITIES 20
 
 
+static NSString * const kOOLogDataCacheFound				= @"dataCache.found";
+static NSString * const kOOLogDataCacheNotFound				= @"dataCache.notFound";
+static NSString * const kOOLogDataCacheRebuild				= @"dataCache.rebuild";
+static NSString * const kOOLogUniversePopulate				= @"universe.populate";
+static NSString * const kOOLogScriptNoSystemForName			= @"script.debug.note.systemSeedForSystemName";
+static NSString * const kOOLogStringCoordinateConversion	= @"strings.conversion.coordinates";
+extern NSString * const kOOLogEntityVerificationError;
+static NSString * const kOOLogEntityVerificationRebuild		= @"entity.linkedList.verify.rebuild";
+
+
 @implementation Universe
 
 - (id) init
@@ -96,21 +106,21 @@ MA 02110-1301, USA.
 	NSString*	cache_path = OOLITE_CACHE;
 	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
 	{
-		NSLog(@"DEBUG ** found cache - loading data ...**");
+		OOLog(kOOLogDataCacheFound, @"Found data cache - loading data.");
 		preloadedDataFiles = [[NSMutableDictionary dictionaryWithContentsOfFile:cache_path] retain];
 		// check cache version number
 		// if it doesn't match our version number then don't use the cache, overwrite it later
 		NSObject* cache_version = [preloadedDataFiles objectForKey:@"CFBundleVersion"];
 		if (![oolite_version isEqual:cache_version])
 		{
-			NSLog(@"DEBUG ** CACHE VERSION DOES NOT MATCH OOLITE VERSION - discarding cache ...**");
+			OOLog(kOOLogDataCacheRebuild, @"Found data cache, but its version does not match Oolite's version. Discarding and rebuilding.");
 			[preloadedDataFiles release];
 			preloadedDataFiles = [[NSMutableDictionary dictionaryWithCapacity:16] retain];
 		}
 	}
 	else
 	{
-		NSLog(@"DEBUG ** no cache exists - yet **");
+		OOLog(kOOLogDataCacheNotFound, @"No data cache found, building.");
 		preloadedDataFiles = [[NSMutableDictionary dictionaryWithCapacity:16] retain];
 	}
 	[preloadedDataFiles setObject:oolite_version forKey:@"CFBundleVersion"];	// set the correct version for this cache
@@ -360,12 +370,12 @@ MA 02110-1301, USA.
 								stringByAppendingPathComponent:@"cache"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: cache_path])
 	{
-		NSLog(@"DEBUG ** found cache - loading data ...**");
+		OOLog(kOOLogDataCacheFound, @"Found data cache - loading data.");
 		preloadedDataFiles = [[NSMutableDictionary dictionaryWithContentsOfFile:cache_path] retain];
 	}
 	else
 	{
-		NSLog(@"DEBUG ** no cache exists - yet **");
+		OOLog(kOOLogDataCacheNotFound, @"No data cache found, building.");
 		preloadedDataFiles = [[NSMutableDictionary dictionaryWithCapacity:16] retain];
 	}
 
@@ -1243,8 +1253,9 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	
 	ranrot_srand([[NSDate date] timeIntervalSince1970]);   // reset randomiser with current time
 	
-	NSLog(@"Populating a system with economy %d, and government %d", economy, government);
-
+	OOLog(kOOLogUniversePopulate, @"Populating a system with economy %d, and government %d", economy, government);
+	OOLogIndentIf(kOOLogUniversePopulate);
+	
 	// traders
 	int trading_parties = (9 - economy);			// 2 .. 9
 	if (government == 0) trading_parties *= 1.25;	// 25% more trade where there are no laws!
@@ -1253,11 +1264,11 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	while (trading_parties > 15)
 		trading_parties = 1 + (ranrot_rand() % trading_parties);   // reduce
 	
-	NSLog(@"... adding %d trading vessels", trading_parties);
+	OOLog(kOOLogUniversePopulate, @"... adding %d trading vessels", trading_parties);
 	
 	int skim_trading_parties = (ranrot_rand() & 3) + trading_parties * (ranrot_rand() & 31) / 120;	// about 12%
 	
-	NSLog(@"... adding %d sun skimming vessels", skim_trading_parties);
+	OOLog(kOOLogUniversePopulate, @"... adding %d sun skimming vessels", skim_trading_parties);
 	
 	// pirates
 	int anarchy = (8 - government);
@@ -1267,11 +1278,11 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	while (raiding_parties > 25)
 		raiding_parties = 12 + (ranrot_rand() % raiding_parties);   // reduce
 	
-	NSLog(@"... adding %d pirate vessels", raiding_parties);
+	OOLog(kOOLogUniversePopulate, @"... adding %d pirate vessels", raiding_parties);
 
 	int skim_raiding_parties = ((randf() < 0.14 * economy)? 1:0) + raiding_parties * (ranrot_rand() & 31) / 120;	// about 12%
 	
-	NSLog(@"... adding %d sun skim pirates", skim_raiding_parties);
+	OOLog(kOOLogUniversePopulate, @"... adding %d sun skim pirates", skim_raiding_parties);
 	
 	// bounty-hunters and the law
 	int hunting_parties = (1 + government) * trading_parties / 8;
@@ -1285,17 +1296,17 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	if (hunting_parties < 1)
 		hunting_parties = 1;
 	
-	NSLog(@"... adding %d law/bounty-hunter vessels", hunting_parties);
+	OOLog(kOOLogUniversePopulate, @"... adding %d law/bounty-hunter vessels", hunting_parties);
 
 	int skim_hunting_parties = ((randf() < 0.14 * government)? 1:0) + hunting_parties * (ranrot_rand() & 31) / 160;	// about 10%
 	
-	NSLog(@"... adding %d sun skim law/bounty hunter vessels", skim_hunting_parties);
+	OOLog(kOOLogUniversePopulate, @"... adding %d sun skim law/bounty hunter vessels", skim_hunting_parties);
 	
 	int thargoid_parties = 0;
 	while ((ranrot_rand() % 100) < thargoidChance)
 		thargoid_parties++;
 
-	NSLog(@"... adding %d Thargoid warships", thargoid_parties);
+	OOLog(kOOLogUniversePopulate, @"... adding %d Thargoid warships", thargoid_parties);
 	
 	int rock_clusters = ranrot_rand() % 3;
 	if (trading_parties + raiding_parties + hunting_parties < 10)
@@ -1303,11 +1314,12 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 
 	rock_clusters *= 2;
 
-	NSLog(@"... adding %d asteroid clusters", rock_clusters);
+	OOLog(kOOLogUniversePopulate, @"... adding %d asteroid clusters", rock_clusters);
 
 	int total_clicks = trading_parties + raiding_parties + hunting_parties + thargoid_parties + rock_clusters + skim_hunting_parties + skim_raiding_parties + skim_trading_parties;
 	
-	NSLog(@"... for a total of %d ships", total_clicks);
+	OOLog(kOOLogUniversePopulate, @"... for a total of %d ships", total_clicks);
+	OOLogOutdentIf(kOOLogUniversePopulate);
 	
 	Vector  v_route1 = p1_pos;
 	v_route1.x -= h1_pos.x;	v_route1.y -= h1_pos.y;	v_route1.z -= h1_pos.z;
@@ -2094,7 +2106,7 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	NSArray* tokens = [Entity scanTokensFromString: system_x_y_z];
 	if ([tokens count] != 4)
 	{
-		NSLog(@"ERROR: Could not construct system coordinates from \"%@\" - too few pieces of data", system_x_y_z);
+		OOLog(kOOLogStringCoordinateConversion, @"ERROR: Could not construct system coordinates from \"%@\" - too few pieces of data", system_x_y_z);
 		return make_vector(0,0,0);
 	}
 	GLfloat dummy;
@@ -4010,7 +4022,7 @@ BOOL maintainLinkedLists(Universe* uni)
 		}
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken x_next %@ list (%d) ***", uni->x_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken x_next %@ list (%d) ***", uni->x_list_start, n);
 			result = NO;
 		}
 		//
@@ -4019,10 +4031,10 @@ BOOL maintainLinkedLists(Universe* uni)
 		while ((n--)&&(check))	check = check->x_previous;
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken x_previous %@ list (%d) ***", uni->x_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken x_previous %@ list (%d) ***", uni->x_list_start, n);
 			if (result)
 			{
-				NSLog(@"REBUILDING x_previous list from x_next list");
+				OOLog(kOOLogEntityVerificationRebuild, @"REBUILDING x_previous list from x_next list");
 				check = uni->x_list_start;
 				check->x_previous = nil;
 				while (check->x_next)
@@ -4043,7 +4055,7 @@ BOOL maintainLinkedLists(Universe* uni)
 		}
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken y_next %@ list (%d) ***", uni->y_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken *** broken y_next %@ list (%d) ***", uni->y_list_start, n);
 			result = NO;
 		}
 		//
@@ -4052,10 +4064,10 @@ BOOL maintainLinkedLists(Universe* uni)
 		while ((n--)&&(check))	check = check->y_previous;
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken y_previous %@ list (%d) ***", uni->y_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken y_previous %@ list (%d) ***", uni->y_list_start, n);
 			if (result)
 			{
-				NSLog(@"REBUILDING y_previous list from y_next list");
+				OOLog(kOOLogEntityVerificationRebuild, @"REBUILDING y_previous list from y_next list");
 				check = uni->y_list_start;
 				check->y_previous = nil;
 				while (check->y_next)
@@ -4076,7 +4088,7 @@ BOOL maintainLinkedLists(Universe* uni)
 		}
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken z_next %@ list (%d) ***", uni->z_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken z_next %@ list (%d) ***", uni->z_list_start, n);
 			result = NO;
 		}
 		//
@@ -4085,10 +4097,10 @@ BOOL maintainLinkedLists(Universe* uni)
 		while ((n--)&&(check))	check = check->z_previous;
 		if ((check)||(n > 0))
 		{
-			NSLog(@"ERROR *** broken z_previous %@ list (%d) ***", uni->z_list_start, n);
+			OOLog(kOOLogEntityVerificationError, @"Broken z_previous %@ list (%d) ***", uni->z_list_start, n);
 			if (result)
 			{
-				NSLog(@"REBUILDING z_previous list from z_next list");
+				OOLog(kOOLogEntityVerificationRebuild, @"REBUILDING z_previous list from z_next list");
 				check = uni->z_list_start;
 				check->z_previous = nil;
 				while (check->z_next)
@@ -5821,8 +5833,7 @@ BOOL maintainLinkedLists(Universe* uni)
 		if ([pname isEqual:[self getSystemName: systems[i]]])
 			return systems[i];
 	}
-	if (debug & DEBUG_SCRIPT)
-		NSLog(@"SCRIPT ERROR could not find a system with the name '%@' in this galaxy", sysname);
+	OOLog(kOOLogScriptNoSystemForName, @"SCRIPT ERROR could not find a system with the name '%@' in this galaxy", sysname);
 	return nil_seed();
 }
 

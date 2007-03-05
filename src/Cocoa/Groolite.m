@@ -29,12 +29,10 @@ MA 02110-1301, USA.
 #import "Universe.h"
 #import "PlayerEntity.h"
 
-//	#define GROOLITE_DEBUG
-#ifdef GROOLITE_DEBUG
-	#define DEBUGMSG NSLog
-#else
-	#define DEBUGMSG (void)
-#endif
+static NSString * const kOOLogGrooliteError	= @"growl.error";
+static NSString * const kOOLogGrooliteDebug	= @"growl.debug";
+
+// #define GROOLITE_DEBUG
 
 
 @protocol GrowlNotificationObserver
@@ -158,7 +156,7 @@ MA 02110-1301, USA.
 			connection = [theConnection retain];
 		}
 	NS_HANDLER
-//		DEBUGMSG(@"DEBUG GROOLITE exception : %@ : %@", [localException name], [localException reason]);
+		OOLog(kOOLogGrooliteError, @"DEBUG GROOLITE exception : %@ : %@", [localException name], [localException reason]);
 	NS_ENDHANDLER
 }
 
@@ -179,7 +177,7 @@ MA 02110-1301, USA.
 			nc = [NSNotificationCenter defaultCenter];
 			[nc removeObserver:self];
 		NS_HANDLER
-//			DEBUGMSG(@"DEBUG GROOLITE exception : %@ : %@", [localException name], [localException reason]);
+			OOLog(kOOLogGrooliteError, @"DEBUG GROOLITE exception : %@ : %@", [localException name], [localException reason]);
 		NS_ENDHANDLER
 	}
 }
@@ -198,7 +196,7 @@ MA 02110-1301, USA.
 			nc = [NSNotificationCenter defaultCenter];
 			[nc removeObserver:self];
 		NS_HANDLER
-//			DEBUGMSG(@"DEBUG GROOLITE exception : %@ : %@", [localException name], [localException reason]);
+			OOLog(kOOLogGrooliteError, @"DEBUG GROOLITE exception : %@ : %@", [localException name], [localException reason]);
 		NS_ENDHANDLER
 	}
 }
@@ -236,8 +234,8 @@ MA 02110-1301, USA.
 	message = [inDict objectForKey:GROWL_NOTIFICATION_DESCRIPTION];
 	appname = [inDict objectForKey:GROWL_APP_NAME];
 	
-//	DEBUGMSG(@"DEBUG Groolite:  inDict\n%@\n\n", inDict);
-//	DEBUGMSG(@"Groolite: priority = %d appname = \"%@\" title = \"%@\", message = \"%@\"", priority, appname, title, message);
+	OOLog(kOOLogGrooliteDebug, @"Received Growl notification:  inDict\n%@\n\n", inDict);
+	OOLog(kOOLogGrooliteDebug, @"Groolite: priority = %d appname = \"%@\" title = \"%@\", message = \"%@\"", priority, appname, title, message);
 	
 	if (nil == title || [@"" isEqual:title])
 	{

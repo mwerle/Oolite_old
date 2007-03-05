@@ -31,6 +31,9 @@ MA 02110-1301, USA.
 #import "OOCharacter.h"
 
 
+static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showShipyardModel";
+
+
 @implementation PlayerEntity (Contracts)
 
 - (NSString*) processEscapePods // removes pods from cargo bay and treats categories of characters carried
@@ -1291,8 +1294,7 @@ static NSMutableDictionary* currentShipyard = nil;
 	[ship setUpShipFromDictionary:shipDict];
 	
 	GLfloat cr = ship->collision_radius;
-	if (debug & DEBUG_SCRIPT)
-		NSLog(@"::::: showShipModel:'%@'.", [ship name]);
+	OOLog(kOOLogNoteShowShipyardModel, @"::::: showShipyardModel:'%@'.", [ship name]);
 	[ship setQRotation: q2];
 	
 	[ship setPosition: 1.2 * cr : 0.8 * cr : 6.4 * cr];
@@ -1389,8 +1391,7 @@ static NSMutableDictionary* currentShipyard = nil;
 	// get basic max_cargo
 	max_cargo = [universe maxCargoForShip:ship_desc];
 	
-	// reset BOOLS (has_ecm, has_scoop, has_energy_unit, has_docking_computer, has_galactic_hyperdrive, has_energy_bomb, has_escape_pod, has_fuel_injection)
-	// and int (energy_unit)
+	// reset BOOLS (has_ecm, has_scoop, has_energy_unit, has_docking_computer, has_galactic_hyperdrive, has_energy_bomb, has_escape_pod, has_fuel_injection) and int (energy_unit)
 	has_docking_computer = NO;
 	has_ecm = NO;
 	has_energy_bomb = NO;
