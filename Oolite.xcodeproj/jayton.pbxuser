@@ -76,6 +76,58 @@
 			1AD9AF780B91E1BB00FB704E /* Oolite */,
 		);
 	};
+	1A2316E80B9CFAD700EF0852 /* logcontrol.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3152}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 75}, {1101, 836}}";
+		};
+	};
+	1A2317180B9CFBE600EF0852 /* ShipEntity.m:3402 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 2516113B099544390037C2E1 /* ShipEntity.m */;
+		functionName = "-initialiseTextures";
+		hitCount = 1;
+		lineNumber = 3402;
+		location = OoliteDev;
+		modificationTime = 194838155.191356;
+		state = 1;
+	};
+	1A23173A0B9CFDAF00EF0852 /* OOLogging.m:509 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 1A38B4AB0B988532001ED4A0 /* OOLogging.m */;
+		functionName = "ResolveDisplaySetting()";
+		hitCount = 1;
+		lineNumber = 509;
+		location = OoliteDev;
+		modificationTime = 194838155.196556;
+		state = 1;
+	};
+	1A2317570B9CFE8600EF0852 /* OOLogging.m:429 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 1A38B4AB0B988532001ED4A0 /* OOLogging.m */;
+		functionName = "LoadExplicitSettingsFromDictionary()";
+		hitCount = 1;
+		lineNumber = 429;
+		location = OoliteDev;
+		modificationTime = 194838171.847399;
+		state = 1;
+	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1712}}";
@@ -86,8 +138,8 @@
 	1A38B4AB0B988532001ED4A0 /* OOLogging.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 8896}}";
-			sepNavSelRange = "{5506, 0}";
-			sepNavVisRect = "{{0, 2774}, {1101, 836}}";
+			sepNavSelRange = "{1136, 0}";
+			sepNavVisRect = "{{0, 5489}, {1101, 836}}";
 		};
 	};
 	1A38B5E50B989FD7001ED4A0 /* logcontrol.plist */ = {
@@ -99,9 +151,9 @@
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3040}}";
-			sepNavSelRange = "{2696, 32}";
-			sepNavVisRect = "{{0, 720}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3152}}";
+			sepNavSelRange = "{3387, 0}";
+			sepNavVisRect = "{{0, 889}, {1101, 836}}";
 		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
@@ -203,7 +255,9 @@
 		name = "Project Breakpoints";
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1A8A3FBD0B9B563600AB7625 /* Universe.m:2109 */,
+			1A2317180B9CFBE600EF0852 /* ShipEntity.m:3402 */,
+			1A23173A0B9CFDAF00EF0852 /* OOLogging.m:509 */,
+			1A2317570B9CFE8600EF0852 /* OOLogging.m:429 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -215,24 +269,9 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 194732108.17248;
+		modificationTime = 194838167.634743;
 		state = 1;
 		symbolName = "-[NSException raise]";
-	};
-	1A8A3FBD0B9B563600AB7625 /* Universe.m:2109 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 25161143099544390037C2E1 /* Universe.m */;
-		functionName = "-coordinatesFromCoordinateSystemString:";
-		hitCount = 6;
-		lineNumber = 2109;
-		location = OoliteDev;
-		modificationTime = 194732681.925979;
-		state = 1;
 	};
 	1AC0E9460B974DC200C46994 /* GPL.TXT */ = {
 		uiCtxt = {
@@ -770,8 +809,8 @@
 	2516111D099544390037C2E1 /* Entity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 46848}}";
-			sepNavSelRange = "{12402, 0}";
-			sepNavVisRect = "{{0, 7057}, {1101, 836}}";
+			sepNavSelRange = "{1460, 88}";
+			sepNavVisRect = "{{0, 262}, {1101, 836}}";
 		};
 	};
 	25161126099544390037C2E1 /* GuiDisplayGen.m */ = {
@@ -853,23 +892,23 @@
 	};
 	2516113B099544390037C2E1 /* ShipEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 134368}}";
-			sepNavSelRange = "{11232, 6}";
-			sepNavVisRect = "{{0, 6203}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 134496}}";
+			sepNavSelRange = "{101438, 0}";
+			sepNavVisRect = "{{0, 53554}, {1101, 836}}";
 		};
 	};
 	2516113C099544390037C2E1 /* ShipEntity.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 11696}}";
 			sepNavSelRange = "{21754, 5}";
-			sepNavVisRect = "{{0, 10880}, {1101, 815}}";
+			sepNavVisRect = "{{0, 10859}, {1101, 836}}";
 		};
 	};
 	25161143099544390037C2E1 /* Universe.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 129456}}";
-			sepNavSelRange = "{1199, 220}";
-			sepNavVisRect = "{{0, 326}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 129504}}";
+			sepNavSelRange = "{72777, 0}";
+			sepNavVisRect = "{{0, 33430}, {1101, 836}}";
 		};
 	};
 	25161144099544390037C2E1 /* Universe.h */ = {
@@ -974,7 +1013,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1552}}";
 			sepNavSelRange = "{1417, 0}";
-			sepNavVisRect = "{{0, 22}, {1101, 836}}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	25F3E8BE09950088002F25FD /* Info-OoliteUB.plist */ = {
@@ -1006,7 +1045,7 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Deployment;
+		activeBuildConfigurationName = Development;
 		activeExecutable = 1AD9AFE00B91E7FC00FB704E /* OoliteDev */;
 		activeTarget = 0865423506B8447D000CA0AB /* Oolite */;
 		addToTargets = (
@@ -1014,7 +1053,9 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1A8A3FBD0B9B563600AB7625 /* Universe.m:2109 */,
+			1A2317180B9CFBE600EF0852 /* ShipEntity.m:3402 */,
+			1A23173A0B9CFDAF00EF0852 /* OOLogging.m:509 */,
+			1A2317570B9CFE8600EF0852 /* OOLogging.m:429 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -1171,8 +1212,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 194736570;
-			PBXWorkspaceStateSaveDate = 194736570;
+			PBXPerProjectTemplateStateSaveDate = 194834386;
+			PBXWorkspaceStateSaveDate = 194834386;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
