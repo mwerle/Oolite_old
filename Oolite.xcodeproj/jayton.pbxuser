@@ -76,6 +76,13 @@
 			1AD9AF780B91E1BB00FB704E /* Oolite */,
 		);
 	};
+	1A2316E30B9CFAD700EF0852 /* equipment.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 5392}}";
+			sepNavSelRange = "{717, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+		};
+	};
 	1A2316E80B9CFAD700EF0852 /* logcontrol.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 3152}}";
@@ -83,18 +90,39 @@
 			sepNavVisRect = "{{0, 2315}, {1101, 836}}";
 		};
 	};
+	1A2316EC0B9CFAD700EF0852 /* shipyard.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 7616}}";
+			sepNavSelRange = "{10799, 0}";
+			sepNavVisRect = "{{0, 5477}, {1101, 836}}";
+		};
+	};
+	1A231A160B9D8B1B00EF0852 /* OOCacheManager.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 1040}}";
+			sepNavSelRange = "{1011, 6}";
+			sepNavVisRect = "{{0, 176}, {1101, 836}}";
+		};
+	};
+	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3904}}";
+			sepNavSelRange = "{3507, 0}";
+			sepNavVisRect = "{{0, 1877}, {1101, 836}}";
+		};
+	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1712}}";
-			sepNavSelRange = "{2062, 31}";
-			sepNavVisRect = "{{0, 668}, {1101, 836}}";
+			sepNavSelRange = "{2784, 82}";
+			sepNavVisRect = "{{0, 705}, {1101, 836}}";
 		};
 	};
 	1A38B4AB0B988532001ED4A0 /* OOLogging.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 8912}}";
-			sepNavSelRange = "{3949, 0}";
-			sepNavVisRect = "{{0, 1783}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 9120}}";
+			sepNavSelRange = "{3096, 7}";
+			sepNavVisRect = "{{0, 1039}, {1101, 836}}";
 		};
 	};
 	1A38B5E50B989FD7001ED4A0 /* logcontrol.plist */ = {
@@ -391,7 +419,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1536}}";
 			sepNavSelRange = "{13, 0}";
-			sepNavVisRect = "{{0, 510}, {1101, 836}}";
+			sepNavVisRect = "{{0, 607}, {1101, 836}}";
 		};
 	};
 	2512834009BA27EC00F43D55 /* Geometry.h */ = {
@@ -579,8 +607,8 @@
 	251610F5099544380037C2E1 /* PlayerEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 111040}}";
-			sepNavSelRange = "{1388, 148}";
-			sepNavVisRect = "{{0, 464}, {1101, 836}}";
+			sepNavSelRange = "{163492, 16}";
+			sepNavVisRect = "{{0, 85125}, {1101, 836}}";
 		};
 	};
 	251610F7099544380037C2E1 /* WormholeEntity.m */ = {
@@ -635,8 +663,8 @@
 	25161101099544380037C2E1 /* AI.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 7504}}";
-			sepNavSelRange = "{1305, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavSelRange = "{2600, 116}";
+			sepNavVisRect = "{{0, 1013}, {1101, 836}}";
 		};
 	};
 	25161102099544380037C2E1 /* OOXMLExtensions.m */ = {
@@ -859,8 +887,8 @@
 	25161143099544390037C2E1 /* Universe.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 129504}}";
-			sepNavSelRange = "{72777, 0}";
-			sepNavVisRect = "{{0, 33430}, {1101, 836}}";
+			sepNavSelRange = "{3519, 32}";
+			sepNavVisRect = "{{0, 1728}, {1101, 836}}";
 		};
 	};
 	25161144099544390037C2E1 /* Universe.h */ = {
@@ -992,8 +1020,8 @@
 	25F4676309969672009483BF /* MyOpenGLView.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 10496}}";
-			sepNavSelRange = "{1023, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavSelRange = "{10441, 0}";
+			sepNavVisRect = "{{0, 5509}, {1101, 836}}";
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
