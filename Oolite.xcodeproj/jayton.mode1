@@ -278,7 +278,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>3</integer>
+									<integer>5</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -386,9 +386,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1AE7FC830B9E3B0B0075A7FF</string>
+				<string>1A29964E0B9EE9D4002D2149</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1AE7FC840B9E3B0B0075A7FF</string>
+				<string>1A29964F0B9EE9D4002D2149</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -507,7 +507,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>194920124.69178599</real>
+	<real>194963924.221993</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -522,12 +522,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1AE7FC920B9E3B8F0075A7FF</string>
-		<string>1AE7FC930B9E3B8F0075A7FF</string>
-		<string>1A38B5810B989622001ED4A0</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>1AE7FC900B9E3B8F0075A7FF</string>
+		<string>1A2996510B9EE9D4002D2149</string>
 		<string>/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Oolite.xcodeproj</string>
 		<string>1AD9AFBA0B91E26D00FB704E</string>
 	</array>
@@ -562,7 +557,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {721, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>671 -75 721 611 0 0 1440 878 </string>
+								<string>671 -71 721 611 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -575,7 +570,7 @@
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXBuildLogShowsTranscriptDefaultKey</key>
-								<string>{{0, 253}, {721, 312}}</string>
+								<string>{{0, 191}, {721, 374}}</string>
 								<key>PBXProjectModuleGUID</key>
 								<string>XCMainBuildResultsModuleGUID</string>
 								<key>PBXProjectModuleLabel</key>
@@ -590,7 +585,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {721, 565}}</string>
 								<key>RubberWindowFrame</key>
-								<string>671 -75 721 611 0 0 1440 878 </string>
+								<string>671 -71 721 611 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -613,14 +608,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1AD9AFBA0B91E26D00FB704E</string>
-				<string>1AE7FC870B9E3B5F0075A7FF</string>
+				<string>1A2996500B9EE9D4002D2149</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.build</string>
 			<key>WindowString</key>
-			<string>671 -75 721 611 0 0 1440 878 </string>
+			<string>671 -71 721 611 0 0 1440 878 </string>
 			<key>WindowToolGUID</key>
 			<string>1AD9AFBA0B91E26D00FB704E</string>
 			<key>WindowToolIsVisible</key>
