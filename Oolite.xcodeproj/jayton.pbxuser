@@ -147,11 +147,6 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3568}}";
-			sepNavSelRange = "{2974, 0}";
-			sepNavVisRect = "{{0, 693}, {1101, 836}}";
-		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -264,7 +259,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 194914762.242589;
+		modificationTime = 194919317.09817;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -368,15 +363,15 @@
 	};
 	1AD9AFAC0B91E24C00FB704E /* PlayerEntityControls.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 44912}}";
-			sepNavSelRange = "{39740, 0}";
-			sepNavVisRect = "{{0, 22383}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 42608}}";
+			sepNavSelRange = "{31756, 26}";
+			sepNavVisRect = "{{0, 17399}, {1101, 836}}";
 		};
 	};
 	1AD9AFAD0B91E24C00FB704E /* PlayerEntityControls.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 837}}";
-			sepNavSelRange = "{54, 0}";
+			sepNavSelRange = "{817, 12}";
 			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
@@ -471,10 +466,18 @@
 		delayBeforeContinue = 0;
 		fileReference = 1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */;
 		functionName = "-buildCachesFromDictionary:";
-		hitCount = 0;
+		hitCount = 1;
 		lineNumber = 357;
-		modificationTime = 194916152.357534;
+		location = OoliteDev;
+		modificationTime = 194918914.960164;
 		state = 1;
+	};
+	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 837}}";
+			sepNavSelRange = "{868, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+		};
 	};
 	2512833C09BA27C100F43D55 /* Octree.m */ = {
 		uiCtxt = {
@@ -695,9 +698,9 @@
 	};
 	251610FA099544380037C2E1 /* PlayerEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 11312}}";
-			sepNavSelRange = "{15802, 0}";
-			sepNavVisRect = "{{0, 9765}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 11248}}";
+			sepNavSelRange = "{12645, 37}";
+			sepNavVisRect = "{{0, 7509}, {1101, 836}}";
 		};
 	};
 	251610FD099544380037C2E1 /* PlanetEntity.m */ = {
@@ -836,8 +839,8 @@
 	25161116099544390037C2E1 /* OOSound.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 880}}";
-			sepNavSelRange = "{13, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavSelRange = "{0, 1884}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	2516111B099544390037C2E1 /* OOCharacter.m */ = {
@@ -976,8 +979,8 @@
 	2576E7B209B4F418007410F7 /* MyOpenGLView.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 3136}}";
-			sepNavSelRange = "{0, 772}";
-			sepNavVisRect = "{{0, 2318}, {1101, 815}}";
+			sepNavSelRange = "{4196, 18}";
+			sepNavVisRect = "{{0, 2299}, {1101, 836}}";
 		};
 	};
 	25F3E6300994F033002F25FD /* legacy_random.h */ = {
@@ -1087,9 +1090,9 @@
 	};
 	25F4676309969672009483BF /* MyOpenGLView.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 10560}}";
-			sepNavSelRange = "{11166, 0}";
-			sepNavVisRect = "{{0, 6045}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 10688}}";
+			sepNavSelRange = "{15085, 0}";
+			sepNavVisRect = "{{0, 8883}, {1101, 836}}";
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
@@ -1101,7 +1104,6 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:357 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -1258,8 +1260,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 194897558;
-			PBXWorkspaceStateSaveDate = 194897558;
+			PBXPerProjectTemplateStateSaveDate = 194919175;
+			PBXWorkspaceStateSaveDate = 194919175;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
