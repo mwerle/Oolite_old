@@ -113,16 +113,30 @@
 	};
 	1A231A160B9D8B1B00EF0852 /* OOCacheManager.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 848}}";
-			sepNavSelRange = "{1064, 0}";
-			sepNavVisRect = "{{0, 11}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 1056}}";
+			sepNavSelRange = "{1196, 0}";
+			sepNavVisRect = "{{0, 187}, {1101, 836}}";
 		};
 	};
 	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 8656}}";
-			sepNavSelRange = "{13441, 8}";
-			sepNavVisRect = "{{0, 7659}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 9376}}";
+			sepNavSelRange = "{10383, 0}";
+			sepNavVisRect = "{{0, 5975}, {1101, 836}}";
+		};
+	};
+	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 880}}";
+			sepNavSelRange = "{161, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+		};
+	};
+	1A29967D0B9F064C002D2149 /* OOCache.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 1808}}";
+			sepNavSelRange = "{1172, 0}";
+			sepNavVisRect = "{{0, 226}, {1101, 836}}";
 		};
 	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
@@ -147,6 +161,11 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3568}}";
+			sepNavSelRange = "{2336, 15}";
+			sepNavVisRect = "{{0, 931}, {1101, 836}}";
+		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -247,7 +266,7 @@
 		name = "Project Breakpoints";
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:357 */,
+			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:408 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -259,7 +278,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 194919317.09817;
+		modificationTime = 194975841.083764;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -363,9 +382,9 @@
 	};
 	1AD9AFAC0B91E24C00FB704E /* PlayerEntityControls.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 42608}}";
-			sepNavSelRange = "{31756, 26}";
-			sepNavVisRect = "{{0, 17399}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 42624}}";
+			sepNavSelRange = "{35075, 0}";
+			sepNavVisRect = "{{0, 19606}, {1101, 836}}";
 		};
 	};
 	1AD9AFAD0B91E24C00FB704E /* PlayerEntityControls.h */ = {
@@ -457,7 +476,7 @@
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/build/Development/OoliteDev.app";
 		sourceTree = "<absolute>";
 	};
-	1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:357 */ = {
+	1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:408 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -467,9 +486,9 @@
 		fileReference = 1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */;
 		functionName = "-buildCachesFromDictionary:";
 		hitCount = 1;
-		lineNumber = 357;
+		lineNumber = 408;
 		location = OoliteDev;
-		modificationTime = 194918914.960164;
+		modificationTime = 194972692.234234;
 		state = 1;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
@@ -999,9 +1018,9 @@
 	};
 	25F3E6340994F05C002F25FD /* vector.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 4048}}";
-			sepNavSelRange = "{2256, 0}";
-			sepNavVisRect = "{{0, 1231}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 4112}}";
+			sepNavSelRange = "{2068, 11}";
+			sepNavVisRect = "{{0, 1212}, {1101, 836}}";
 		};
 	};
 	25F3E6360994F066002F25FD /* vector.c */ = {
@@ -1104,7 +1123,6 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:357 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
