@@ -120,23 +120,23 @@
 	};
 	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 9376}}";
-			sepNavSelRange = "{10383, 0}";
-			sepNavVisRect = "{{0, 5975}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 9728}}";
+			sepNavSelRange = "{5516, 0}";
+			sepNavVisRect = "{{0, 2784}, {1101, 836}}";
 		};
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 880}}";
-			sepNavSelRange = "{161, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 896}}";
+			sepNavSelRange = "{1029, 0}";
+			sepNavVisRect = "{{0, 59}, {1101, 836}}";
 		};
 	};
 	1A29967D0B9F064C002D2149 /* OOCache.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 1808}}";
-			sepNavSelRange = "{1172, 0}";
-			sepNavVisRect = "{{0, 226}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 1856}}";
+			sepNavSelRange = "{1195, 0}";
+			sepNavVisRect = "{{0, 234}, {1101, 836}}";
 		};
 	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
@@ -161,11 +161,6 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3568}}";
-			sepNavSelRange = "{2336, 15}";
-			sepNavVisRect = "{{0, 931}, {1101, 836}}";
-		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -1123,6 +1118,7 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
+			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:408 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -1279,8 +1275,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 194960849;
-			PBXWorkspaceStateSaveDate = 194960849;
+			PBXPerProjectTemplateStateSaveDate = 195002494;
+			PBXWorkspaceStateSaveDate = 195002494;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
