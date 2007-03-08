@@ -127,9 +127,9 @@
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 896}}";
-			sepNavSelRange = "{1029, 0}";
-			sepNavVisRect = "{{0, 59}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 944}}";
+			sepNavSelRange = "{106, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	1A29967D0B9F064C002D2149 /* OOCache.m */ = {
