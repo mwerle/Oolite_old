@@ -508,7 +508,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>195152848.74527001</real>
+	<real>195158408.326951</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -560,7 +560,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {721, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-13 267 721 611 0 0 1440 878 </string>
+								<string>8 267 721 611 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -588,7 +588,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {721, 565}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-13 267 721 611 0 0 1440 878 </string>
+								<string>8 267 721 611 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -618,7 +618,7 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.build</string>
 			<key>WindowString</key>
-			<string>-13 267 721 611 0 0 1440 878 </string>
+			<string>8 267 721 611 0 0 1440 878 </string>
 			<key>WindowToolGUID</key>
 			<string>1AD9AFBA0B91E26D00FB704E</string>
 			<key>WindowToolIsVisible</key>

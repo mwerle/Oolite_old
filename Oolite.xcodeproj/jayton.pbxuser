@@ -113,30 +113,30 @@
 	};
 	1A231A160B9D8B1B00EF0852 /* OOCacheManager.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 1056}}";
-			sepNavSelRange = "{1196, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 1088}}";
+			sepNavSelRange = "{1201, 15}";
+			sepNavVisRect = "{{0, 27}, {1101, 836}}";
 		};
 	};
 	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 9824}}";
-			sepNavSelRange = "{11731, 0}";
-			sepNavVisRect = "{{0, 7221}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 9936}}";
+			sepNavSelRange = "{7412, 0}";
+			sepNavVisRect = "{{0, 4293}, {1101, 836}}";
 		};
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 864}}";
 			sepNavSelRange = "{1255, 0}";
-			sepNavVisRect = "{{0, 26}, {1101, 836}}";
+			sepNavVisRect = "{{0, 25}, {1101, 836}}";
 		};
 	};
 	1A29967D0B9F064C002D2149 /* OOCache.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 14048}}";
-			sepNavSelRange = "{9320, 0}";
-			sepNavVisRect = "{{0, 4677}, {1101, 836}}";
+			sepNavSelRange = "{9097, 0}";
+			sepNavVisRect = "{{0, 4629}, {1101, 836}}";
 		};
 	};
 	1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */ = {
@@ -207,9 +207,9 @@
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3600}}";
-			sepNavSelRange = "{2554, 0}";
-			sepNavVisRect = "{{0, 904}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3648}}";
+			sepNavSelRange = "{2641, 0}";
+			sepNavVisRect = "{{0, 919}, {1101, 836}}";
 		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
@@ -311,7 +311,7 @@
 		name = "Project Breakpoints";
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:412 */,
+			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:419 */,
 			1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */,
 			1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */,
 			1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */,
@@ -530,7 +530,7 @@
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/build/Development/OoliteDev.app";
 		sourceTree = "<absolute>";
 	};
-	1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:412 */ = {
+	1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:419 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -540,7 +540,7 @@
 		fileReference = 1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */;
 		functionName = "-buildCachesFromDictionary:";
 		hitCount = 1;
-		lineNumber = 412;
+		lineNumber = 419;
 		location = OoliteDev;
 		modificationTime = 195149563.641716;
 		state = 1;
@@ -933,8 +933,8 @@
 	2516111D099544390037C2E1 /* Entity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 46416}}";
-			sepNavSelRange = "{35213, 52}";
-			sepNavVisRect = "{{0, 21300}, {1101, 836}}";
+			sepNavSelRange = "{83943, 52}";
+			sepNavVisRect = "{{0, 45579}, {1101, 836}}";
 		};
 	};
 	25161126099544390037C2E1 /* GuiDisplayGen.m */ = {
@@ -1002,23 +1002,23 @@
 	};
 	25161139099544390037C2E1 /* ResourceManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 20176}}";
-			sepNavSelRange = "{960, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 21216}}";
+			sepNavSelRange = "{10460, 0}";
+			sepNavVisRect = "{{0, 4581}, {1101, 836}}";
 		};
 	};
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1616}}";
 			sepNavSelRange = "{0, 836}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavVisRect = "{{0, 418}, {1101, 836}}";
 		};
 	};
 	2516113B099544390037C2E1 /* ShipEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 134464}}";
-			sepNavSelRange = "{240497, 0}";
-			sepNavVisRect = "{{0, 131774}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 134448}}";
+			sepNavSelRange = "{1402, 0}";
+			sepNavVisRect = "{{0, 342}, {1101, 836}}";
 		};
 	};
 	2516113C099544390037C2E1 /* ShipEntity.h */ = {
