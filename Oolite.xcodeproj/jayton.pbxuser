@@ -120,9 +120,9 @@
 	};
 	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 9760}}";
-			sepNavSelRange = "{10525, 0}";
-			sepNavVisRect = "{{0, 6336}, {1399, 401}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 9824}}";
+			sepNavSelRange = "{11731, 0}";
+			sepNavVisRect = "{{0, 7221}, {1101, 836}}";
 		};
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
@@ -134,12 +134,12 @@
 	};
 	1A29967D0B9F064C002D2149 /* OOCache.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 11984}}";
-			sepNavSelRange = "{3875, 0}";
-			sepNavVisRect = "{{0, 2927}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 14048}}";
+			sepNavSelRange = "{9320, 0}";
+			sepNavVisRect = "{{0, 4677}, {1101, 836}}";
 		};
 	};
-	1A30FE3B0BA0E01A00F84F02 /* OOCache.m:693 */ = {
+	1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -149,12 +149,12 @@
 		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
 		functionName = "AgeListMakeYoungest()";
 		hitCount = 5;
-		lineNumber = 693;
+		lineNumber = 796;
 		location = OoliteDev;
-		modificationTime = 195094512.7215;
+		modificationTime = 195147546.313185;
 		state = 2;
 	};
-	1A30FE3D0BA0E01B00F84F02 /* OOCache.m:703 */ = {
+	1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -164,12 +164,12 @@
 		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
 		functionName = "AgeListRemove()";
 		hitCount = 1;
-		lineNumber = 703;
+		lineNumber = 806;
 		location = OoliteDev;
-		modificationTime = 195094513.839587;
+		modificationTime = 195147544.907581;
 		state = 2;
 	};
-	1A30FE5A0BA0E51900F84F02 /* OOCache.m:734 */ = {
+	1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -179,9 +179,9 @@
 		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
 		functionName = "AgeListCheckIntegrity()";
 		hitCount = 9;
-		lineNumber = 734;
+		lineNumber = 839;
 		location = OoliteDev;
-		modificationTime = 195094515.36482;
+		modificationTime = 195147548.379027;
 		state = 1;
 	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
@@ -206,6 +206,11 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3600}}";
+			sepNavSelRange = "{2554, 0}";
+			sepNavVisRect = "{{0, 904}, {1101, 836}}";
+		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -306,10 +311,10 @@
 		name = "Project Breakpoints";
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:408 */,
-			1A30FE3B0BA0E01A00F84F02 /* OOCache.m:693 */,
-			1A30FE3D0BA0E01B00F84F02 /* OOCache.m:703 */,
-			1A30FE5A0BA0E51900F84F02 /* OOCache.m:734 */,
+			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:412 */,
+			1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */,
+			1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */,
+			1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -525,7 +530,7 @@
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/build/Development/OoliteDev.app";
 		sourceTree = "<absolute>";
 	};
-	1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:408 */ = {
+	1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:412 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -535,9 +540,9 @@
 		fileReference = 1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */;
 		functionName = "-buildCachesFromDictionary:";
 		hitCount = 1;
-		lineNumber = 408;
+		lineNumber = 412;
 		location = OoliteDev;
-		modificationTime = 195094363.07467;
+		modificationTime = 195149563.641716;
 		state = 1;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
@@ -1328,8 +1333,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 195094306;
-			PBXWorkspaceStateSaveDate = 195094306;
+			PBXPerProjectTemplateStateSaveDate = 195147346;
+			PBXWorkspaceStateSaveDate = 195147346;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
