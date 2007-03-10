@@ -76,6 +76,13 @@
 			1AD9AF780B91E1BB00FB704E /* Oolite */,
 		);
 	};
+	1A2316DF0B9CFAD700EF0852 /* commodities.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 10048}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 9211}, {1101, 836}}";
+		};
+	};
 	1A2316E20B9CFAD700EF0852 /* descriptions.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 16096}}";
@@ -148,10 +155,10 @@
 		delayBeforeContinue = 0;
 		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
 		functionName = "AgeListMakeYoungest()";
-		hitCount = 5;
+		hitCount = 1;
 		lineNumber = 796;
 		location = OoliteDev;
-		modificationTime = 195147546.313185;
+		modificationTime = 195234341.387112;
 		state = 2;
 	};
 	1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */ = {
@@ -166,7 +173,7 @@
 		hitCount = 1;
 		lineNumber = 806;
 		location = OoliteDev;
-		modificationTime = 195147544.907581;
+		modificationTime = 195234341.387122;
 		state = 2;
 	};
 	1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */ = {
@@ -178,10 +185,10 @@
 		delayBeforeContinue = 0;
 		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
 		functionName = "AgeListCheckIntegrity()";
-		hitCount = 9;
+		hitCount = 1;
 		lineNumber = 839;
 		location = OoliteDev;
-		modificationTime = 195147548.379027;
+		modificationTime = 195234341.38713;
 		state = 1;
 	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
@@ -207,9 +214,9 @@
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3648}}";
-			sepNavSelRange = "{2641, 0}";
-			sepNavVisRect = "{{0, 919}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3664}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 2827}, {1101, 836}}";
 		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
@@ -326,7 +333,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 195094880.707927;
+		modificationTime = 195234354.1079;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -542,7 +549,7 @@
 		hitCount = 1;
 		lineNumber = 419;
 		location = OoliteDev;
-		modificationTime = 195149563.641716;
+		modificationTime = 195234341.387057;
 		state = 1;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
@@ -555,8 +562,8 @@
 	2512833C09BA27C100F43D55 /* Octree.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 12576}}";
-			sepNavSelRange = "{2182, 18}";
-			sepNavVisRect = "{{0, 1279}, {1101, 836}}";
+			sepNavSelRange = "{2171, 0}";
+			sepNavVisRect = "{{0, 1023}, {1101, 836}}";
 		};
 	};
 	2512833D09BA27C100F43D55 /* Octree.h */ = {
@@ -625,8 +632,8 @@
 	251610CD099544090037C2E1 /* OOCASoundChannel.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1424}}";
-			sepNavSelRange = "{1306, 0}";
-			sepNavVisRect = "{{0, 587}, {1101, 836}}";
+			sepNavSelRange = "{1535, 6}";
+			sepNavVisRect = "{{0, 266}, {1101, 836}}";
 		};
 	};
 	251610CE099544090037C2E1 /* OOCASoundSource.m */ = {
@@ -661,14 +668,14 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 3120}}";
 			sepNavSelRange = "{798, 0}";
-			sepNavVisRect = "{{0, 1421}, {1101, 836}}";
+			sepNavVisRect = "{{0, 200}, {1101, 836}}";
 		};
 	};
 	251610D3099544090037C2E1 /* OOCAStreamingSound.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 5344}}";
-			sepNavSelRange = "{5699, 0}";
-			sepNavVisRect = "{{0, 3569}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 6240}}";
+			sepNavSelRange = "{7730, 30}";
+			sepNavVisRect = "{{0, 4102}, {1101, 836}}";
 		};
 	};
 	251610D4099544090037C2E1 /* OOCASoundDecoder.h */ = {
@@ -681,15 +688,15 @@
 	251610D5099544090037C2E1 /* OOCASound.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 5152}}";
-			sepNavSelRange = "{1250, 0}";
-			sepNavVisRect = "{{0, 609}, {1101, 836}}";
+			sepNavSelRange = "{1927, 0}";
+			sepNavVisRect = "{{0, 208}, {1101, 836}}";
 		};
 	};
 	251610D6099544090037C2E1 /* OOCASoundChannel.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 11200}}";
-			sepNavSelRange = "{12273, 6}";
-			sepNavVisRect = "{{0, 8647}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 11296}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 287}, {1101, 836}}";
 		};
 	};
 	251610D7099544090037C2E1 /* OOCAStreamingSound.h */ = {
@@ -737,8 +744,8 @@
 	251610F0099544190037C2E1 /* VirtualRingBuffer.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 5248}}";
-			sepNavSelRange = "{1638, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavSelRange = "{4258, 13}";
+			sepNavVisRect = "{{0, 1589}, {1101, 836}}";
 		};
 	};
 	251610F1099544190037C2E1 /* VirtualRingBuffer.h */ = {
@@ -989,8 +996,8 @@
 	25161135099544390037C2E1 /* StationEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 30336}}";
-			sepNavSelRange = "{59435, 22}";
-			sepNavVisRect = "{{0, 29269}, {1101, 836}}";
+			sepNavSelRange = "{23774, 11}";
+			sepNavVisRect = "{{0, 10374}, {1101, 836}}";
 		};
 	};
 	25161136099544390037C2E1 /* StationEntity.h */ = {
@@ -1129,22 +1136,22 @@
 	25F3E8BC09950088002F25FD /* Info-Oolite.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1552}}";
-			sepNavSelRange = "{1411, 0}";
-			sepNavVisRect = "{{0, 541}, {1101, 836}}";
+			sepNavSelRange = "{891, 0}";
+			sepNavVisRect = "{{0, 715}, {1101, 836}}";
 		};
 	};
 	25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1552}}";
-			sepNavSelRange = "{1417, 0}";
+			sepNavSelRange = "{891, 0}";
 			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	25F3E8BE09950088002F25FD /* Info-OoliteUB.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1552}}";
-			sepNavSelRange = "{1415, 0}";
-			sepNavVisRect = "{{0, 200}, {1101, 836}}";
+			sepNavSelRange = "{891, 0}";
+			sepNavVisRect = "{{0, 139}, {1101, 836}}";
 		};
 	};
 	25F46750099695D5009483BF /* OoliteApp.h */ = {
@@ -1177,6 +1184,10 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
+			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:419 */,
+			1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */,
+			1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */,
+			1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -1333,8 +1344,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 195147346;
-			PBXWorkspaceStateSaveDate = 195147346;
+			PBXPerProjectTemplateStateSaveDate = 195225338;
+			PBXWorkspaceStateSaveDate = 195225338;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
