@@ -610,9 +610,9 @@
 	};
 	251610CA099544090037C2E1 /* OOCABufferedSound.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 816}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 837}}";
 			sepNavSelRange = "{157, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	251610CB099544090037C2E1 /* OOCASoundMixer.h */ = {
@@ -654,42 +654,42 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 912}}";
 			sepNavSelRange = "{997, 0}";
-			sepNavVisRect = "{{0, 16}, {1101, 815}}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	251610D1099544090037C2E1 /* OOCASoundMixer.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 6128}}";
-			sepNavSelRange = "{1024, 94}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1399, 6128}}";
+			sepNavSelRange = "{1992, 0}";
+			sepNavVisRect = "{{0, 970}, {1399, 381}}";
 		};
 	};
 	251610D2099544090037C2E1 /* OOCABufferedSound.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3120}}";
-			sepNavSelRange = "{798, 0}";
-			sepNavVisRect = "{{0, 200}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3136}}";
+			sepNavSelRange = "{1379, 0}";
+			sepNavVisRect = "{{0, 312}, {1101, 836}}";
 		};
 	};
 	251610D3099544090037C2E1 /* OOCAStreamingSound.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 6240}}";
-			sepNavSelRange = "{7730, 30}";
-			sepNavVisRect = "{{0, 4102}, {1101, 836}}";
+			sepNavSelRange = "{7534, 0}";
+			sepNavVisRect = "{{0, 4007}, {1101, 836}}";
 		};
 	};
 	251610D4099544090037C2E1 /* OOCASoundDecoder.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 944}}";
-			sepNavSelRange = "{185, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 730}}";
+			sepNavSelRange = "{965, 0}";
+			sepNavVisRect = "{{0, 107}, {1101, 836}}";
 		};
 	};
 	251610D5099544090037C2E1 /* OOCASound.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 5152}}";
-			sepNavSelRange = "{1927, 0}";
-			sepNavVisRect = "{{0, 208}, {1101, 836}}";
+			sepNavSelRange = "{3652, 9}";
+			sepNavVisRect = "{{0, 1766}, {1101, 836}}";
 		};
 	};
 	251610D6099544090037C2E1 /* OOCASoundChannel.m */ = {
@@ -730,8 +730,8 @@
 	251610DB099544090037C2E1 /* OOCASoundDecoder.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 8048}}";
-			sepNavSelRange = "{4590, 14}";
-			sepNavVisRect = "{{0, 3625}, {1101, 836}}";
+			sepNavSelRange = "{8460, 0}";
+			sepNavVisRect = "{{0, 329}, {1101, 836}}";
 		};
 	};
 	251610DC099544090037C2E1 /* OOErrorDescription.m */ = {
