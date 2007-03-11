@@ -175,6 +175,11 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {897, 3936}}";
+			sepNavSelRange = "{5354, 20}";
+			sepNavVisRect = "{{0, 2337}, {897, 836}}";
+		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -234,16 +239,16 @@
 	};
 	1A8A39E10B962823007D20B8 /* PlayerEntityScripting.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 36032}}";
-			sepNavSelRange = "{39045, 19}";
-			sepNavVisRect = "{{0, 19616}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {897, 37616}}";
+			sepNavSelRange = "{73187, 0}";
+			sepNavVisRect = "{{0, 36779}, {897, 836}}";
 		};
 	};
 	1A8A39E20B962823007D20B8 /* PlayerEntityScripting.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3232}}";
-			sepNavSelRange = "{1166, 0}";
-			sepNavVisRect = "{{0, 243}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {897, 3408}}";
+			sepNavSelRange = "{1116, 0}";
+			sepNavVisRect = "{{0, 0}, {897, 836}}";
 		};
 	};
 	1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */ = {
@@ -272,10 +277,9 @@
 	};
 	1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */ = {
 		isa = XCBreakpointsBucket;
-		name = "Project Breakpoints";
+		name = Oolite;
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1AA9642D0BA42AB000B1C947 /* PlayerEntityControls.m:1137 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -290,21 +294,6 @@
 		modificationTime = 195310866.038612;
 		state = 1;
 		symbolName = "-[NSException raise]";
-	};
-	1AA9642D0BA42AB000B1C947 /* PlayerEntityControls.m:1137 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1AD9AFAC0B91E24C00FB704E /* PlayerEntityControls.m */;
-		functionName = "-pollFlightArrowKeyControls:";
-		hitCount = 1;
-		lineNumber = 1137;
-		location = OoliteDev;
-		modificationTime = 195310854.582848;
-		state = 1;
 	};
 	1AC0E9460B974DC200C46994 /* GPL.TXT */ = {
 		uiCtxt = {
@@ -513,6 +502,48 @@
 			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
+	1AEAAC730BA457E6000705D0 /* jsbool.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {897, 1184}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 347}, {897, 836}}";
+		};
+	};
+	1AEAACD80BA45895000705D0 /* OXPScript.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {897, 864}}";
+			sepNavSelRange = "{17, 0}";
+			sepNavVisRect = "{{0, 0}, {897, 836}}";
+		};
+	};
+	1AEAACD90BA45895000705D0 /* ScriptEngine.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {897, 14000}}";
+			sepNavSelRange = "{13798, 0}";
+			sepNavVisRect = "{{0, 5701}, {897, 836}}";
+		};
+	};
+	1AEAACDA0BA45895000705D0 /* JSUniverse.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {897, 3168}}";
+			sepNavSelRange = "{2617, 0}";
+			sepNavVisRect = "{{0, 467}, {897, 836}}";
+		};
+	};
+	1AEAACDB0BA45895000705D0 /* OXPScript.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {897, 3152}}";
+			sepNavSelRange = "{2565, 3}";
+			sepNavVisRect = "{{0, 2140}, {897, 836}}";
+		};
+	};
+	1AEAACDC0BA45895000705D0 /* ScriptEngine.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {897, 837}}";
+			sepNavSelRange = "{945, 21}";
+			sepNavVisRect = "{{0, 0}, {897, 836}}";
+		};
+	};
 	2512833C09BA27C100F43D55 /* Octree.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 12576}}";
@@ -711,9 +742,9 @@
 	};
 	251610F5099544380037C2E1 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 110944}}";
-			sepNavSelRange = "{182831, 0}";
-			sepNavVisRect = "{{0, 94761}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {897, 113424}}";
+			sepNavSelRange = "{213788, 0}";
+			sepNavVisRect = "{{0, 112571}, {897, 836}}";
 		};
 	};
 	251610F7099544380037C2E1 /* WormholeEntity.m */ = {
@@ -732,9 +763,9 @@
 	};
 	251610FA099544380037C2E1 /* PlayerEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 11248}}";
-			sepNavSelRange = "{12645, 37}";
-			sepNavVisRect = "{{0, 7509}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {897, 11344}}";
+			sepNavSelRange = "{17372, 0}";
+			sepNavVisRect = "{{0, 10507}, {897, 836}}";
 		};
 	};
 	251610FD099544380037C2E1 /* PlanetEntity.m */ = {
@@ -858,9 +889,9 @@
 	};
 	25161110099544390037C2E1 /* OOTrumble.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 2688}}";
-			sepNavSelRange = "{49, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavIntBoundsRect = "{{0, 0}, {897, 2688}}";
+			sepNavSelRange = "{0, 803}";
+			sepNavVisRect = "{{0, 0}, {897, 836}}";
 		};
 	};
 	25161114099544390037C2E1 /* DustEntity.m */ = {
@@ -991,16 +1022,16 @@
 	};
 	25161143099544390037C2E1 /* Universe.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 128704}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 204}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {897, 130992}}";
+			sepNavSelRange = "{256048, 0}";
+			sepNavVisRect = "{{0, 129981}, {897, 836}}";
 		};
 	};
 	25161144099544390037C2E1 /* Universe.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 8384}}";
-			sepNavSelRange = "{9939, 0}";
-			sepNavVisRect = "{{0, 4779}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {897, 8560}}";
+			sepNavSelRange = "{6760, 70}";
+			sepNavVisRect = "{{0, 3082}, {897, 836}}";
 		};
 	};
 	25161145099544390037C2E1 /* TextureStore.m */ = {
@@ -1138,7 +1169,6 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1AA9642D0BA42AB000B1C947 /* PlayerEntityControls.m:1137 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -1307,8 +1337,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 195311807;
-			PBXWorkspaceStateSaveDate = 195311807;
+			PBXPerProjectTemplateStateSaveDate = 195321994;
+			PBXWorkspaceStateSaveDate = 195321994;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
