@@ -111,6 +111,13 @@
 			sepNavVisRect = "{{0, 2157}, {1101, 836}}";
 		};
 	};
+	1A2316EB0B9CFAD700EF0852 /* shipdata.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 58160}}";
+			sepNavSelRange = "{64220, 4}";
+			sepNavVisRect = "{{0, 37478}, {1101, 836}}";
+		};
+	};
 	1A2316EC0B9CFAD700EF0852 /* shipyard.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 7616}}";
@@ -168,11 +175,6 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3808}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 1048}, {1101, 836}}";
-		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -406,8 +408,8 @@
 	1AD9AFAC0B91E24C00FB704E /* PlayerEntityControls.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 42640}}";
-			sepNavSelRange = "{28317, 0}";
-			sepNavVisRect = "{{0, 15269}, {1101, 836}}";
+			sepNavSelRange = "{32114, 0}";
+			sepNavVisRect = "{{0, 18308}, {1101, 836}}";
 		};
 	};
 	1AD9AFAD0B91E24C00FB704E /* PlayerEntityControls.h */ = {
@@ -1081,29 +1083,29 @@
 	25F3E8B30994FE9B002F25FD /* InfoPlist.strings */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 837}}";
-			sepNavSelRange = "{298, 0}";
+			sepNavSelRange = "{170, 0}";
 			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	25F3E8BC09950088002F25FD /* Info-Oolite.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1552}}";
-			sepNavSelRange = "{891, 0}";
-			sepNavVisRect = "{{0, 715}, {1101, 836}}";
+			sepNavSelRange = "{1405, 4}";
+			sepNavVisRect = "{{0, 134}, {1101, 836}}";
 		};
 	};
 	25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1552}}";
-			sepNavSelRange = "{891, 0}";
+			sepNavSelRange = "{1417, 0}";
 			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	25F3E8BE09950088002F25FD /* Info-OoliteUB.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1552}}";
-			sepNavSelRange = "{891, 0}";
-			sepNavVisRect = "{{0, 139}, {1101, 836}}";
+			sepNavSelRange = "{1415, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	25F46750099695D5009483BF /* OoliteApp.h */ = {
@@ -1305,8 +1307,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 195299656;
-			PBXWorkspaceStateSaveDate = 195299656;
+			PBXPerProjectTemplateStateSaveDate = 195311807;
+			PBXWorkspaceStateSaveDate = 195311807;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
