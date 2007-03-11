@@ -26,6 +26,7 @@ MA 02110-1301, USA.
 #import "OOCASoundInternal.h"
 #import <mach/mach.h>
 #import <pthread.h>
+#import </usr/include/libkern/OSAtomic.h>
 
 
 static NSString * const kOOLogSoundNULLError			= @"sound.render.undexpectedNull";
@@ -50,7 +51,7 @@ static BOOL							sReaperRunning = NO;
 static OOCASoundChannel_RenderIMP	SoundChannelRender = NULL;
 
 #if COUNT_NULLS
-static SInt32						sDebugUnexpectedNullCount = 0;
+static int32_t						sDebugUnexpectedNullCount = 0;
 #endif
 
 /*
@@ -201,6 +202,7 @@ static BOOL PortWait(mach_port_t inPort, PortMessage *outMessage);
 {
 	PortMessage					message = { kMsgThreadUp, NULL };
 	OOCASoundChannel			*chan;
+	NSAutoreleasePool			*pool = nil;
 	
 	sReaperRunning = YES;
 	PortSend(sStatusPort, message);
@@ -211,6 +213,8 @@ static BOOL PortWait(mach_port_t inPort, PortMessage *outMessage);
 	{
 		if (PortWait(sReapPort, &message))
 		{
+			pool = [[NSAutoreleasePool alloc] init];
+			
 			if (kMsgWakeUp == message.tag)
 			{
 				assert (!pthread_mutex_lock(&sReapQueueMutex));
@@ -227,8 +231,11 @@ static BOOL PortWait(mach_port_t inPort, PortMessage *outMessage);
 			}
 			else if (kMsgDie == message.tag)
 			{
+				[pool release];
 				break;
 			}
+			
+			[pool release];
 		}
 	}
 	
@@ -352,7 +359,7 @@ static BOOL PortWait(mach_port_t inPort, PortMessage *outMessage);
 	unexpectedNulls = sDebugUnexpectedNullCount;
 	if (0 != unexpectedNulls)
 	{
-		OTAtomicAdd32(-unexpectedNulls, &sDebugUnexpectedNullCount);
+		OOSoundAtomicAdd(-unexpectedNulls, &sDebugUnexpectedNullCount);
 		if (1 == unexpectedNulls)
 		{
 			OOLog(kOOLogSoundNULLError, @"A NULL Render() or nil _sound error has occured.");
@@ -562,13 +569,9 @@ static BOOL PortWait(mach_port_t inPort, PortMessage *outMessage);
 			
 			#if COUNT_NULLS
 				// Logging in real-time thread _baaaaaad_.
-				if (NULL == Render)
+				if (NULL == Render || nil == _sound)
 				{
-					OTAtomicAdd32(1, &sDebugUnexpectedNullCount);
-				}
-				else if (nil == _sound)
-				{
-					OTAtomicAdd32(1, &sDebugUnexpectedNullCount);
+					OOSoundAtomicAdd(1, &sDebugUnexpectedNullCount);
 				}
 			#endif
 		}

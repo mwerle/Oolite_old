@@ -34,7 +34,8 @@ MA 02110-1301, USA.
 #import <CoreAudio/CoreAudio.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-#define KEY_VOLUME_CONTROL @"volume_control"
+#define KEY_VOLUME_CONTROL			@"volume_control"
+#define KEY_MAX_BUFFERED_SOUND		@"max_buffered_sound"
 
 
 NSString * const kOOLogDeprecatedMethodOOCASound	= @"general.error.deprecatedMethod.oocasound";
@@ -43,18 +44,13 @@ static NSString * const kOOLogSoundLoadingSuccess	= @"sound.load.success";
 static NSString * const kOOLogSoundLoadingError		= @"sound.load.error";
 
 
-enum
-{
-	kMaxDecodeSize			= 1 << 19		// 512 kB
-};
-
-
 static float				sNominalVolume = 1.0f;
 BOOL						gOOSoundSetUp = NO;
 BOOL						gOOSoundBroken = NO;
 NSLock						*gOOCASoundSyncLock = NULL;	// Used to ensure thread-safety of play and stop, specifically because stop may be called from the CoreAudio thread.
 
 static OOSound				*sSingletonOOSound = NULL;
+static size_t				sMaxBufferedSoundSize = 1 << 20;	// 1 MB
 
 
 @implementation OOSound
@@ -113,6 +109,8 @@ static OOSound				*sSingletonOOSound = NULL;
 
 + (void) setUp
 {
+	NSUserDefaults				*prefs = nil;
+	
 	if (!gOOSoundSetUp)
 	{
 		gOOCASoundSyncLock = [[NSRecursiveLock alloc] init];
@@ -127,13 +125,19 @@ static OOSound				*sSingletonOOSound = NULL;
 			gOOSoundBroken = YES;
 		}
 		
-		gOOSoundSetUp = YES;
+		gOOSoundSetUp = YES;	// Must be before [OOCASoundMixer mixer] below.
 		
-		if ([[NSUserDefaults standardUserDefaults] objectForKey:KEY_VOLUME_CONTROL])
-			sNominalVolume = [[NSUserDefaults standardUserDefaults] floatForKey:KEY_VOLUME_CONTROL];
-		else
-			sNominalVolume = 0.75;	// default setting at 75% system volume
+		prefs = [NSUserDefaults standardUserDefaults];
+		
+		if ([prefs objectForKey:KEY_VOLUME_CONTROL])  sNominalVolume = [prefs floatForKey:KEY_VOLUME_CONTROL];
+		else  sNominalVolume = 0.75;	// default setting at 75% system volume
 		[[OOCASoundMixer mixer] setMasterVolume:sNominalVolume];
+		
+		if ([prefs objectForKey:KEY_MAX_BUFFERED_SOUND])
+		{
+			int maxSize = [prefs integerForKey:KEY_MAX_BUFFERED_SOUND];
+			if (0 <= maxSize) sMaxBufferedSoundSize = maxSize;
+		}
 	}
 }
 
@@ -190,7 +194,7 @@ static OOSound				*sSingletonOOSound = NULL;
 	decoder = [[OOCASoundDecoder alloc] initWithPath:inPath];
 	if (nil == decoder) return nil;
 	
-	if ([decoder sizeAsBuffer] <= kMaxDecodeSize)
+	if ([decoder sizeAsBuffer] <= sMaxBufferedSoundSize)
 	{
 		self = [[OOCABufferedSound alloc] initWithDecoder:decoder];
 	}

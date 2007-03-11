@@ -49,7 +49,7 @@ MA 02110-1301, USA.
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"<%@ %p>{\"%@\", %s, %g Hz}", [self className], self, [self name], _stereo ? "stereo" : "mono", _sampleRate];
+	return [NSString stringWithFormat:@"<%@ %p>{\"%@\", %s, %g Hz, %u bytes}", [self className], self, [self name], _stereo ? "stereo" : "mono", _sampleRate, _size * sizeof (float) * (_stereo ? 2 : 1)];
 }
 
 
@@ -96,7 +96,7 @@ MA 02110-1301, USA.
 - (OSStatus)renderWithFlags:(AudioUnitRenderActionFlags *)ioFlags frames:(UInt32)inNumFrames context:(OOCASoundRenderContext *)ioContext data:(AudioBufferList *)ioData
 {
 	size_t					toCopy, remaining, underflow, offset;
-	BOOL					loop;
+	BOOL					loop, done = NO;
 	
 	loop = (*ioContext) & 1;
 	offset = (*ioContext) >> 1;
@@ -139,6 +139,7 @@ MA 02110-1301, USA.
 		toCopy = 0;
 		underflow = inNumFrames;
 		*ioFlags |= kAudioUnitRenderAction_OutputIsSilence;
+		done = YES;
 	}
 	
 	if (underflow)
@@ -147,7 +148,7 @@ MA 02110-1301, USA.
 		bzero(ioData->mBuffers[1].mData + toCopy, underflow * sizeof (float));
 	}
 	
-	return underflow ? endOfDataReached : noErr;
+	return done ? endOfDataReached : noErr;
 }
 
 

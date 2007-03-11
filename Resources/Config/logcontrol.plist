@@ -59,6 +59,11 @@ ai.takeAction.noAction					= $entityState;
 ai.takeAction.orphaned					= $error;
 ai.takeAction.debugMessage				= inherit;
 ai.takeAction.badSelector				= $scriptError;
+ai.pop									= $entityState;
+
+
+beacon.list								= $scriptDebugOn;
+beacon.list.flightTraining				= inherit;
 
 
 dataCache.found							= inherit;
@@ -68,12 +73,17 @@ dataCache.write.success					= inherit;
 dataCache.write.failed					= $error;
 dataCache.rebuild.octree				= no;
 
+$dataCacheStatus = yes;
 $dataCacheError = $error;
 $dataCacheDebug = no;
-dataCache.found							= inherit;
+dataCache.found							= $dataCacheStatus;
+dataCache.upToDate						= $dataCacheStatus;
 dataCache.notFound						= $dataCacheError;
-dataCache.rebuild						= inherit;
-dataCache.write.success					= inherit;
+dataCache.rebuild						= $dataCacheStatus;
+dataCache.rebuild.pathsChanged			= inherit;
+dataCache.rebuild.datesChanged			= inherit;
+dataCache.removedOld					= $dataCacheStatus;
+dataCache.write.success					= $dataCacheStatus;
 dataCache.write.buildPath.failed		= $dataCacheError;
 dataCache.write.failed					= $dataCacheError;
 dataCache.write.serialize.failed		= $dataCacheError;
@@ -83,7 +93,7 @@ dataCache.set.success					= $dataCacheDebug;
 dataCache.set.failed					= $dataCacheError;
 dataCache.remove.success				= $dataCacheDebug;
 dataCache.clear.success					= $dataCacheDebug;
-dataCache.removedOld					= inherit;
+dataCache.prune							= $dataCacheDebug;
 
 
 $linkedListError						= $error;
@@ -96,6 +106,10 @@ entity.linkedList.remove.error			= $linkedListError;
 entity.linkedList.verify.error			= $linkedListError;
 entity.linkedList.verify.rebuild		= inherit;
 entity.linkedList.update.error			= $linkedListError;
+
+
+equip.buy.mounted						= no;
+equip.buy.mounted.failed				= $scriptError;
 
 
 input.keyMapping.codeOutOfRange			= inherit;
@@ -220,3 +234,4 @@ sound.streaming.refill					= $soundDebugVerbose;
 sound.streaming.loop					= $soundDebug;
 sound.streaming.underflow				= $soundError;
 sound.virtualringbuffer					= $soundError;
+sound.streaming.releaseContext			= $soundDebug;
