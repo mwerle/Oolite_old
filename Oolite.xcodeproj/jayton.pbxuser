@@ -86,8 +86,8 @@
 	1A2316E20B9CFAD700EF0852 /* descriptions.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 16096}}";
-			sepNavSelRange = "{25212, 0}";
-			sepNavVisRect = "{{0, 14012}, {1101, 836}}";
+			sepNavSelRange = "{10983, 8}";
+			sepNavVisRect = "{{0, 6694}, {1101, 836}}";
 		};
 	};
 	1A2316E30B9CFAD700EF0852 /* equipment.plist */ = {
@@ -127,9 +127,9 @@
 	};
 	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 9936}}";
-			sepNavSelRange = "{7412, 0}";
-			sepNavVisRect = "{{0, 4293}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1399, 9936}}";
+			sepNavSelRange = "{10647, 0}";
+			sepNavVisRect = "{{0, 6455}, {1399, 371}}";
 		};
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
@@ -145,51 +145,6 @@
 			sepNavSelRange = "{9097, 0}";
 			sepNavVisRect = "{{0, 4629}, {1101, 836}}";
 		};
-	};
-	1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
-		functionName = "AgeListMakeYoungest()";
-		hitCount = 1;
-		lineNumber = 796;
-		location = OoliteDev;
-		modificationTime = 195234341.387112;
-		state = 2;
-	};
-	1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
-		functionName = "AgeListRemove()";
-		hitCount = 1;
-		lineNumber = 806;
-		location = OoliteDev;
-		modificationTime = 195234341.387122;
-		state = 2;
-	};
-	1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1A29967D0B9F064C002D2149 /* OOCache.m */;
-		functionName = "AgeListCheckIntegrity()";
-		hitCount = 1;
-		lineNumber = 839;
-		location = OoliteDev;
-		modificationTime = 195234341.38713;
-		state = 1;
 	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
@@ -213,6 +168,11 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3808}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 1048}, {1101, 836}}";
+		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -313,10 +273,7 @@
 		name = "Project Breakpoints";
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:419 */,
-			1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */,
-			1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */,
-			1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */,
+			1AA9642D0BA42AB000B1C947 /* PlayerEntityControls.m:1137 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -328,22 +285,23 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 195234354.1079;
+		modificationTime = 195310866.038612;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
-	1AA963D20BA41CAD00B1C947 /* ResourceManager.m:120 */ = {
+	1AA9642D0BA42AB000B1C947 /* PlayerEntityControls.m:1137 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
 		delayBeforeContinue = 0;
-		fileReference = 25161139099544390037C2E1 /* ResourceManager.m */;
-		functionName = "+checkCacheUpToDateForPaths:";
-		hitCount = 0;
-		lineNumber = 120;
-		modificationTime = 195304621.692973;
+		fileReference = 1AD9AFAC0B91E24C00FB704E /* PlayerEntityControls.m */;
+		functionName = "-pollFlightArrowKeyControls:";
+		hitCount = 1;
+		lineNumber = 1137;
+		location = OoliteDev;
+		modificationTime = 195310854.582848;
 		state = 1;
 	};
 	1AC0E9460B974DC200C46994 /* GPL.TXT */ = {
@@ -363,8 +321,8 @@
 	1AC0E9480B974DC200C46994 /* ReadMe.rtfd */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 5712}}";
-			sepNavSelRange = "{8049, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavSelRange = "{6670, 16}";
+			sepNavVisRect = "{{0, 2303}, {1101, 836}}";
 		};
 	};
 	1AC0E9490B974DC200C46994 /* LICENSE.TXT */ = {
@@ -413,8 +371,8 @@
 	1AD9AFA40B91E24100FB704E /* ShipEntityAI.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 29264}}";
-			sepNavSelRange = "{905, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 815}}";
+			sepNavSelRange = "{47161, 19}";
+			sepNavVisRect = "{{0, 27679}, {1101, 836}}";
 		};
 	};
 	1AD9AFA50B91E24100FB704E /* ShipEntityAI.h */ = {
@@ -447,9 +405,9 @@
 	};
 	1AD9AFAC0B91E24C00FB704E /* PlayerEntityControls.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 42624}}";
-			sepNavSelRange = "{31837, 0}";
-			sepNavVisRect = "{{0, 17616}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 42640}}";
+			sepNavSelRange = "{28317, 0}";
+			sepNavVisRect = "{{0, 15269}, {1101, 836}}";
 		};
 	};
 	1AD9AFAD0B91E24C00FB704E /* PlayerEntityControls.h */ = {
@@ -545,21 +503,6 @@
 		name = OoliteDev.app;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/build/Development/OoliteDev.app";
 		sourceTree = "<absolute>";
-	};
-	1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:419 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */;
-		functionName = "-buildCachesFromDictionary:";
-		hitCount = 1;
-		lineNumber = 419;
-		location = OoliteDev;
-		modificationTime = 195234341.387057;
-		state = 1;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
 		uiCtxt = {
@@ -675,9 +618,9 @@
 	};
 	251610D2099544090037C2E1 /* OOCABufferedSound.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3136}}";
-			sepNavSelRange = "{1379, 0}";
-			sepNavVisRect = "{{0, 312}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 3152}}";
+			sepNavSelRange = "{3701, 0}";
+			sepNavVisRect = "{{0, 1586}, {1101, 836}}";
 		};
 	};
 	251610D3099544090037C2E1 /* OOCAStreamingSound.m */ = {
@@ -766,9 +709,9 @@
 	};
 	251610F5099544380037C2E1 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 110912}}";
-			sepNavSelRange = "{213183, 0}";
-			sepNavVisRect = "{{0, 109919}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 110944}}";
+			sepNavSelRange = "{182831, 0}";
+			sepNavVisRect = "{{0, 94761}, {1101, 836}}";
 		};
 	};
 	251610F7099544380037C2E1 /* WormholeEntity.m */ = {
@@ -822,9 +765,9 @@
 	};
 	25161101099544380037C2E1 /* AI.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 7488}}";
-			sepNavSelRange = "{6527, 12}";
-			sepNavVisRect = "{{0, 2975}, {1399, 363}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 7520}}";
+			sepNavSelRange = "{1366, 0}";
+			sepNavVisRect = "{{0, 0}, {1101, 836}}";
 		};
 	};
 	25161102099544380037C2E1 /* OOXMLExtensions.m */ = {
@@ -1046,9 +989,9 @@
 	};
 	25161143099544390037C2E1 /* Universe.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 128688}}";
-			sepNavSelRange = "{257403, 0}";
-			sepNavVisRect = "{{0, 127169}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 128704}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 204}, {1101, 836}}";
 		};
 	};
 	25161144099544390037C2E1 /* Universe.h */ = {
@@ -1193,11 +1136,7 @@
 		);
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
-			1ADF5EC50B9E2F3800FDB2A3 /* OOCacheManager.m:419 */,
-			1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */,
-			1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */,
-			1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */,
-			1AA963D20BA41CAD00B1C947 /* ResourceManager.m:120 */,
+			1AA9642D0BA42AB000B1C947 /* PlayerEntityControls.m:1137 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -1290,6 +1229,18 @@
 					PBXFileDataSource_Errors_ColumnID,
 					PBXFileDataSource_Warnings_ColumnID,
 					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFindDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFindDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					200,
+					120,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFindDataSource_MessageID,
+					PBXFindDataSource_LocationID,
 				);
 			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXSymbolsDataSource = {
