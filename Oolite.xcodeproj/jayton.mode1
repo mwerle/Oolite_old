@@ -273,14 +273,12 @@
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>1A8A3BE90B963F02007D20B8</string>
-								<string>1A8A3BF20B963F3C007D20B8</string>
 								<string>1C37FBAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>15</integer>
-									<integer>9</integer>
+									<integer>8</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -388,9 +386,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1A3292620BA38A5B00058230</string>
+				<string>1AA963B40BA4094D00B1C947</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1A3292630BA38A5B00058230</string>
+				<string>1AA963B50BA4094D00B1C947</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -509,7 +507,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>195271772.07828501</real>
+	<real>195304652.856314</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -524,10 +522,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>1AD9AFBA0B91E26D00FB704E</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Oolite.xcodeproj</string>
-		<string>1A3297070BA39C5C00058230</string>
-		<string>1AD9AFBA0B91E26D00FB704E</string>
 	</array>
 	<key>WindowString</key>
 	<string>712 223 724 655 0 0 1440 878 </string>
@@ -573,7 +571,7 @@
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXBuildLogShowsTranscriptDefaultKey</key>
-								<string>{{0, 449}, {1355, 116}}</string>
+								<string>{{0, 415}, {1355, 150}}</string>
 								<key>PBXProjectModuleGUID</key>
 								<string>XCMainBuildResultsModuleGUID</string>
 								<key>PBXProjectModuleLabel</key>
@@ -611,7 +609,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1AD9AFBA0B91E26D00FB704E</string>
-				<string>1A3292640BA38A5B00058230</string>
+				<string>1AA963C90BA41C5E00B1C947</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -622,7 +620,7 @@
 			<key>WindowToolGUID</key>
 			<string>1AD9AFBA0B91E26D00FB704E</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -814,8 +812,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>1A3292880BA391E600058230</string>
-				<string>1A3292890BA391E600058230</string>
+				<string>1AA963BA0BA41AB900B1C947</string>
+				<string>1AA963BB0BA41AB900B1C947</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -824,7 +822,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
@@ -973,9 +971,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>1A79CD000BA2FE1700268F78</string>
+				<string>1AA963CB0BA41C5E00B1C947</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>1A79CD010BA2FE1700268F78</string>
+				<string>1AA963CC0BA41C5E00B1C947</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

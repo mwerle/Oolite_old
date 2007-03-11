@@ -201,8 +201,8 @@
 	1A38B4AB0B988532001ED4A0 /* OOLogging.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 9536}}";
-			sepNavSelRange = "{13412, 0}";
-			sepNavVisRect = "{{0, 6418}, {1101, 836}}";
+			sepNavSelRange = "{10537, 20}";
+			sepNavVisRect = "{{0, 5584}, {1101, 836}}";
 		};
 	};
 	1A38B5E50B989FD7001ED4A0 /* logcontrol.plist */ = {
@@ -331,6 +331,20 @@
 		modificationTime = 195234354.1079;
 		state = 1;
 		symbolName = "-[NSException raise]";
+	};
+	1AA963D20BA41CAD00B1C947 /* ResourceManager.m:120 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 25161139099544390037C2E1 /* ResourceManager.m */;
+		functionName = "+checkCacheUpToDateForPaths:";
+		hitCount = 0;
+		lineNumber = 120;
+		modificationTime = 195304621.692973;
+		state = 1;
 	};
 	1AC0E9460B974DC200C46994 /* GPL.TXT */ = {
 		uiCtxt = {
@@ -718,8 +732,8 @@
 	251610DA099544090037C2E1 /* OOCASoundInternal.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 1392}}";
-			sepNavSelRange = "{2314, 0}";
-			sepNavVisRect = "{{0, 210}, {1101, 836}}";
+			sepNavSelRange = "{2365, 0}";
+			sepNavVisRect = "{{0, 555}, {1101, 836}}";
 		};
 	};
 	251610DB099544090037C2E1 /* OOCASoundDecoder.m */ = {
@@ -1004,9 +1018,9 @@
 	};
 	25161139099544390037C2E1 /* ResourceManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 21216}}";
-			sepNavSelRange = "{10460, 0}";
-			sepNavVisRect = "{{0, 4581}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 21248}}";
+			sepNavSelRange = "{3494, 0}";
+			sepNavVisRect = "{{0, 1623}, {1101, 836}}";
 		};
 	};
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
@@ -1172,7 +1186,7 @@
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Deployment;
-		activeExecutable = 1AD9AFE00B91E7FC00FB704E /* OoliteDev */;
+		activeExecutable = 1AD9AF780B91E1BB00FB704E /* Oolite */;
 		activeTarget = 0865423506B8447D000CA0AB /* Oolite */;
 		addToTargets = (
 			0865423506B8447D000CA0AB /* Oolite */,
@@ -1183,6 +1197,7 @@
 			1A30FE3B0BA0E01A00F84F02 /* OOCache.m:796 */,
 			1A30FE3D0BA0E01B00F84F02 /* OOCache.m:806 */,
 			1A30FE5A0BA0E51900F84F02 /* OOCache.m:839 */,
+			1AA963D20BA41CAD00B1C947 /* ResourceManager.m:120 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -1339,8 +1354,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 195267152;
-			PBXWorkspaceStateSaveDate = 195267152;
+			PBXPerProjectTemplateStateSaveDate = 195299656;
+			PBXWorkspaceStateSaveDate = 195299656;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
