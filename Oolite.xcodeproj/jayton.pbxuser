@@ -213,11 +213,6 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3664}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 2827}, {1101, 836}}";
-		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -439,8 +434,8 @@
 	1AD9AFAC0B91E24C00FB704E /* PlayerEntityControls.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 42624}}";
-			sepNavSelRange = "{35075, 0}";
-			sepNavVisRect = "{{0, 19606}, {1101, 836}}";
+			sepNavSelRange = "{31837, 0}";
+			sepNavVisRect = "{{0, 17616}, {1101, 836}}";
 		};
 	};
 	1AD9AFAD0B91E24C00FB704E /* PlayerEntityControls.h */ = {
@@ -659,9 +654,9 @@
 	};
 	251610D1099544090037C2E1 /* OOCASoundMixer.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 6128}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 6128}}";
 			sepNavSelRange = "{1992, 0}";
-			sepNavVisRect = "{{0, 970}, {1399, 381}}";
+			sepNavVisRect = "{{0, 1973}, {1101, 836}}";
 		};
 	};
 	251610D2099544090037C2E1 /* OOCABufferedSound.m */ = {
@@ -673,9 +668,9 @@
 	};
 	251610D3099544090037C2E1 /* OOCAStreamingSound.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 6240}}";
-			sepNavSelRange = "{7534, 0}";
-			sepNavVisRect = "{{0, 4007}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 6256}}";
+			sepNavSelRange = "{7695, 0}";
+			sepNavVisRect = "{{0, 4342}, {1101, 836}}";
 		};
 	};
 	251610D4099544090037C2E1 /* OOCASoundDecoder.h */ = {
@@ -687,16 +682,16 @@
 	};
 	251610D5099544090037C2E1 /* OOCASound.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 5152}}";
-			sepNavSelRange = "{3652, 9}";
-			sepNavVisRect = "{{0, 1766}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 5216}}";
+			sepNavSelRange = "{1544, 0}";
+			sepNavVisRect = "{{0, 429}, {1101, 836}}";
 		};
 	};
 	251610D6099544090037C2E1 /* OOCASoundChannel.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 11296}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 287}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 11248}}";
+			sepNavSelRange = "{12979, 0}";
+			sepNavVisRect = "{{0, 8805}, {1101, 836}}";
 		};
 	};
 	251610D7099544090037C2E1 /* OOCAStreamingSound.h */ = {
@@ -722,9 +717,9 @@
 	};
 	251610DA099544090037C2E1 /* OOCASoundInternal.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 1152}}";
-			sepNavSelRange = "{2140, 0}";
-			sepNavVisRect = "{{0, 315}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1101, 1392}}";
+			sepNavSelRange = "{2314, 0}";
+			sepNavVisRect = "{{0, 210}, {1101, 836}}";
 		};
 	};
 	251610DB099544090037C2E1 /* OOCASoundDecoder.m */ = {
@@ -1176,7 +1171,7 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Development;
+		activeBuildConfigurationName = Deployment;
 		activeExecutable = 1AD9AFE00B91E7FC00FB704E /* OoliteDev */;
 		activeTarget = 0865423506B8447D000CA0AB /* Oolite */;
 		addToTargets = (
@@ -1344,8 +1339,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 195225338;
-			PBXWorkspaceStateSaveDate = 195225338;
+			PBXPerProjectTemplateStateSaveDate = 195267152;
+			PBXWorkspaceStateSaveDate = 195267152;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
