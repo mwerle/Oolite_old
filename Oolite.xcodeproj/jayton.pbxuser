@@ -155,16 +155,16 @@
 	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {963, 1760}}";
-			sepNavSelRange = "{3561, 18}";
-			sepNavVisRect = "{{0, 926}, {963, 833}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 1776}}";
+			sepNavSelRange = "{2515, 14}";
+			sepNavVisRect = "{{0, 739}, {1089, 836}}";
 		};
 	};
 	1A38B4AB0B988532001ED4A0 /* OOLogging.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 9520}}";
-			sepNavSelRange = "{6823, 0}";
-			sepNavVisRect = "{{0, 3667}, {1399, 363}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 10032}}";
+			sepNavSelRange = "{6570, 0}";
+			sepNavVisRect = "{{0, 3511}, {1089, 407}}";
 		};
 	};
 	1A38B5E50B989FD7001ED4A0 /* logcontrol.plist */ = {
@@ -175,11 +175,6 @@
 		name = logcontrol.plist;
 		path = "/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Resources/Config/logcontrol.plist";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {963, 3904}}";
-			sepNavSelRange = "{4340, 0}";
-			sepNavVisRect = "{{0, 1632}, {963, 833}}";
-		};
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -311,9 +306,9 @@
 	};
 	1A9403CF0BAF36C3005F6CF3 /* OOFunctionAttributes.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {963, 834}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 837}}";
 			sepNavSelRange = "{916, 10}";
-			sepNavVisRect = "{{0, 0}, {963, 833}}";
+			sepNavVisRect = "{{0, 0}, {1089, 836}}";
 		};
 	};
 	1A9404240BAF3DED005F6CF3 /* OOCollectionExtractors.m */ = {
@@ -332,16 +327,16 @@
 	};
 	1A9404640BAF42BE005F6CF3 /* OOPListParsing.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {963, 834}}";
-			sepNavSelRange = "{1371, 20}";
-			sepNavVisRect = "{{0, 0}, {963, 833}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 837}}";
+			sepNavSelRange = "{982, 0}";
+			sepNavVisRect = "{{0, 0}, {1089, 836}}";
 		};
 	};
 	1A9404650BAF42BF005F6CF3 /* OOPListParsing.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1399, 10032}}";
-			sepNavSelRange = "{1797, 0}";
-			sepNavVisRect = "{{0, 667}, {1399, 363}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 9952}}";
+			sepNavSelRange = "{20840, 0}";
+			sepNavVisRect = "{{0, 9115}, {1089, 836}}";
 		};
 	};
 	1A9404920BAF4582005F6CF3 /* OOMaths.h */ = {
@@ -1145,9 +1140,9 @@
 	};
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1008, 1296}}";
-			sepNavSelRange = "{2422, 0}";
-			sepNavVisRect = "{{0, 459}, {1008, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {963, 1184}}";
+			sepNavSelRange = "{922, 0}";
+			sepNavVisRect = "{{0, 0}, {963, 833}}";
 		};
 	};
 	2516113B099544390037C2E1 /* ShipEntity.m */ = {
@@ -1473,8 +1468,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 196048741;
-			PBXWorkspaceStateSaveDate = 196048741;
+			PBXPerProjectTemplateStateSaveDate = 196142125;
+			PBXWorkspaceStateSaveDate = 196142125;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
