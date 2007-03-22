@@ -401,7 +401,7 @@
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1089, 1792}}";
-			sepNavSelRange = "{3645, 23}";
+			sepNavSelRange = "{3796, 18}";
 			sepNavVisRect = "{{0, 939}, {1089, 836}}";
 		};
 	};
@@ -586,9 +586,9 @@
 	};
 	1A9404650BAF42BF005F6CF3 /* OOPListParsing.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1089, 9952}}";
-			sepNavSelRange = "{20840, 0}";
-			sepNavVisRect = "{{0, 9115}, {1089, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 10336}}";
+			sepNavSelRange = "{811, 9}";
+			sepNavVisRect = "{{0, 337}, {1089, 836}}";
 		};
 	};
 	1A9404920BAF4582005F6CF3 /* OOMaths.h */ = {
@@ -678,7 +678,7 @@
 	1A9407BF0BAF7032005F6CF3 /* GNUmakefile */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1089, 837}}";
-			sepNavSelRange = "{2317, 0}";
+			sepNavSelRange = "{2274, 0}";
 			sepNavVisRect = "{{0, 0}, {1089, 836}}";
 		};
 	};
@@ -1497,9 +1497,9 @@
 	};
 	25F3E63A0994F08A002F25FD /* OOOpenGL.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {841, 837}}";
-			sepNavSelRange = "{0, 820}";
-			sepNavVisRect = "{{0, 0}, {841, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 1040}}";
+			sepNavSelRange = "{1170, 0}";
+			sepNavVisRect = "{{0, 203}, {1089, 836}}";
 		};
 	};
 	25F3E6BC0994F30A002F25FD /* main.m */ = {

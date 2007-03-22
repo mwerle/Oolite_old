@@ -279,7 +279,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>5</integer>
+									<integer>9</integer>
 									<integer>2</integer>
 									<integer>0</integer>
 								</array>
@@ -508,7 +508,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>196198202.92076701</real>
+	<real>196256688.10610399</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -524,8 +524,9 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1AF580F40BB18C3A003885D6</string>
 		<string>/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Oolite.xcodeproj</string>
+		<string>1A451DF60BB2A3B0004CD72F</string>
+		<string>1AF580F40BB18C3A003885D6</string>
 	</array>
 	<key>WindowString</key>
 	<string>716 223 724 655 0 0 1440 878 </string>
