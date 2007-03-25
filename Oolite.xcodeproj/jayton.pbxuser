@@ -166,6 +166,36 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
+	1A010D750BB60E5000431074 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
+		name = "ResourceManager.h: 49";
+		rLen = 0;
+		rLoc = 1176;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	1A010D990BB6FCFC00431074 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
+		name = "ResourceManager.h: 49";
+		rLen = 0;
+		rLoc = 1176;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	1A010DA30BB6FD5100431074 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
+		name = "ResourceManager.h: 49";
+		rLen = 0;
+		rLoc = 1176;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	1A2316DF0B9CFAD700EF0852 /* commodities.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 10048}}";
@@ -469,9 +499,9 @@
 	};
 	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1089, 10000}}";
-			sepNavSelRange = "{6403, 3}";
-			sepNavVisRect = "{{0, 8135}, {1089, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1089, 10224}}";
+			sepNavSelRange = "{8454, 0}";
+			sepNavVisRect = "{{0, 4688}, {1089, 836}}";
 		};
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
@@ -1683,8 +1713,8 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Development;
-		activeExecutable = 1AD9AFE00B91E7FC00FB704E /* OoliteDev */;
+		activeBuildConfigurationName = Deployment;
+		activeExecutable = 1AD9AF780B91E1BB00FB704E /* Oolite */;
 		activeTarget = 0865423506B8447D000CA0AB /* Oolite */;
 		addToTargets = (
 			0865423506B8447D000CA0AB /* Oolite */,
@@ -1872,6 +1902,9 @@
 			1A010D590BB60D4800431074 /* PBXTextBookmark */ = 1A010D590BB60D4800431074 /* PBXTextBookmark */;
 			1A010D630BB60D7200431074 /* PBXTextBookmark */ = 1A010D630BB60D7200431074 /* PBXTextBookmark */;
 			1A010D730BB60E1A00431074 /* PBXTextBookmark */ = 1A010D730BB60E1A00431074 /* PBXTextBookmark */;
+			1A010D750BB60E5000431074 /* PBXTextBookmark */ = 1A010D750BB60E5000431074 /* PBXTextBookmark */;
+			1A010D990BB6FCFC00431074 /* PBXTextBookmark */ = 1A010D990BB6FCFC00431074 /* PBXTextBookmark */;
+			1A010DA30BB6FD5100431074 /* PBXTextBookmark */ = 1A010DA30BB6FD5100431074 /* PBXTextBookmark */;
 			1A4A70DA0BB4AE8500AE2428 = 1A4A70DA0BB4AE8500AE2428 /* PBXTextBookmark */;
 			1A9532DA0BB5A8DA000CC706 = 1A9532DA0BB5A8DA000CC706 /* PBXTextBookmark */;
 		};
