@@ -837,7 +837,7 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	1A3492AC0BC2B70500802DA7 /* Universe.m:5626 */ = {
+	1A3492AC0BC2B70500802DA7 /* Universe.m:5618 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -847,7 +847,7 @@
 		fileReference = 25161143099544390037C2E1 /* Universe.m */;
 		functionName = "-setGalaxy_seed:";
 		hitCount = 1;
-		lineNumber = 5626;
+		lineNumber = 5618;
 		location = OoliteDev;
 		modificationTime = 197310361.234341;
 		state = 1;
@@ -948,6 +948,16 @@
 		vrLoc = 0;
 	};
 	1A3492FE0BC2C78300802DA7 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
+		name = "ResourceManager.h: 44";
+		rLen = 0;
+		rLoc = 1095;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	1A34930D0BC2CA7400802DA7 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
 		name = "ResourceManager.h: 44";
@@ -1186,7 +1196,7 @@
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
 			1A3492A40BC2B64E00802DA7 /* ReleaseLockProxy.m:128 */,
-			1A3492AC0BC2B70500802DA7 /* Universe.m:5626 */,
+			1A3492AC0BC2B70500802DA7 /* Universe.m:5618 */,
 			1A3492BF0BC2B9D600802DA7 /* ReleaseLockProxy.m:103 */,
 		);
 	};
@@ -2241,7 +2251,7 @@
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
 			1A3492A40BC2B64E00802DA7 /* ReleaseLockProxy.m:128 */,
-			1A3492AC0BC2B70500802DA7 /* Universe.m:5626 */,
+			1A3492AC0BC2B70500802DA7 /* Universe.m:5618 */,
 			1A3492BF0BC2B9D600802DA7 /* ReleaseLockProxy.m:103 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
@@ -2465,6 +2475,7 @@
 			1A3492F40BC2C60200802DA7 /* PBXTextBookmark */ = 1A3492F40BC2C60200802DA7 /* PBXTextBookmark */;
 			1A3492F50BC2C6B600802DA7 /* PBXTextBookmark */ = 1A3492F50BC2C6B600802DA7 /* PBXTextBookmark */;
 			1A3492FE0BC2C78300802DA7 /* PBXTextBookmark */ = 1A3492FE0BC2C78300802DA7 /* PBXTextBookmark */;
+			1A34930D0BC2CA7400802DA7 /* PBXTextBookmark */ = 1A34930D0BC2CA7400802DA7 /* PBXTextBookmark */;
 			1A5DBFD90BC1BC3B00D57389 = 1A5DBFD90BC1BC3B00D57389 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
