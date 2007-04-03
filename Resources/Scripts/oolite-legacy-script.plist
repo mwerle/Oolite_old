@@ -1,11 +1,11 @@
 {
 	"!metadata!" = {
 		// NOTE: metadata tagging syntax is not backwards compatible with versions of Oolite prior to 1.68.
-		version = "Oolite 1.68";
+		version = "1.68";
 		description = "Oolite built-in world scripts.";
 	};
 	
-    "thargoid_plans" = (
+    "oolite-thargoid-plans" = (
         {
             conditions = (
                 "dockedAtMainStation_bool equal YES", 
@@ -85,7 +85,7 @@
             do = ("set: mission_TL_FOR_EQ_NAVAL_ENERGY_UNIT 13"); 
         }
     );
-	"constrictor_hunt" = (
+	"oolite-constrictor-hunt" = (
         {
             conditions = (
                 "dockedAtMainStation_bool equal YES", 
@@ -243,7 +243,7 @@
             ); 
         }
     ); 
-    nova = (
+    "oolite-nova" = (
 		{
             conditions = ("status_string equal STATUS_IN_FLIGHT", "sunGoneNova_bool equal YES"); 
             do = (sendAllShipsAway); 
@@ -342,7 +342,7 @@
             ); 
         }
     ); 
-    "cloaking-device" = (
+    "oolite-cloaking-device" = (
         {
             conditions = (
                 "galaxy_number equal 4", 
@@ -363,7 +363,7 @@
             ); 
         }
     ); 
-    trumbles = (
+    "oolite-trumbles" = (
         {
             conditions = (
                 "dockedAtMainStation_bool equal YES", 
