@@ -236,8 +236,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -275,19 +273,12 @@
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>1A8A3BE90B963F02007D20B8</string>
-								<string>1A8A3C180B964030007D20B8</string>
-								<string>1A5DBA980BC000DC00D57389</string>
-								<string>1A5DBAB50BC000E700D57389</string>
-								<string>1A5DBAB80BC000F300D57389</string>
 								<string>1C37FAAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>10</integer>
-									<integer>6</integer>
-									<integer>2</integer>
-									<integer>0</integer>
+									<integer>24</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -338,7 +329,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>1A140B820BC1C7D4002CE63C</string>
+										<string>1A140BE10BC1D244002CE63C</string>
 										<key>history</key>
 										<array>
 											<string>1A5DBFD90BC1BC3B00D57389</string>
@@ -363,6 +354,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -520,7 +513,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>197248980.76284999</real>
+	<real>197251652.74835101</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -539,13 +532,15 @@
 		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1A140AD70BC1BD15002CE63C</string>
 		<string>1A140AD80BC1BD15002CE63C</string>
+		<string>1A38B5810B989622001ED4A0</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A140AD50BC1BD15002CE63C</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Oolite.xcodeproj</string>
-		<string>1A140B830BC1C7D4002CE63C</string>
+		<string>1A140BE20BC1D244002CE63C</string>
+		<string>1A140BE30BC1D244002CE63C</string>
+		<string>1A140BE40BC1D244002CE63C</string>
 		<string>1AF580F40BB18C3A003885D6</string>
-		<string>1A38B5810B989622001ED4A0</string>
 	</array>
 	<key>WindowString</key>
 	<string>707 223 724 655 0 0 1440 878 </string>
@@ -671,8 +666,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {604, 419}}</string>
-											<string>{{604, 0}, {836, 419}}</string>
+											<string>{{0, 0}, {625, 319}}</string>
+											<string>{{625, 0}, {815, 319}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -687,8 +682,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {1440, 419}}</string>
-											<string>{{0, 419}, {1440, 382}}</string>
+											<string>{{0, 0}, {1440, 319}}</string>
+											<string>{{0, 319}, {1440, 482}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -906,7 +901,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A38B5810B989622001ED4A0</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -968,18 +963,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1024, 410}}</string>
+								<string>{{0, 0}, {1024, 314}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1440 380 1024 451 1440 63 1024 768 </string>
+								<string>1440 476 1024 355 1440 63 1024 768 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXRunSessionModule</string>
 							<key>Proportion</key>
-							<string>410pt</string>
+							<string>314pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
-					<string>410pt</string>
+					<string>314pt</string>
 				</dict>
 			</array>
 			<key>Name</key>
@@ -1000,7 +995,7 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
 			<key>WindowString</key>
-			<string>1440 380 1024 451 1440 63 1024 768 </string>
+			<string>1440 476 1024 355 1440 63 1024 768 </string>
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
