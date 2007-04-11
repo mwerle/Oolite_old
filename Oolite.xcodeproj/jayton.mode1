@@ -236,8 +236,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -278,7 +276,13 @@
 								<string>1C37FAAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
-							<array/>
+							<array>
+								<array>
+									<integer>4</integer>
+									<integer>2</integer>
+									<integer>0</integer>
+								</array>
+							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
 							<string>{{0, 0}, {219, 596}}</string>
 						</dict>
@@ -327,7 +331,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>1A71E5240BCD7C6600CD5C13</string>
+										<string>1A71E54E0BCD813C00CD5C13</string>
 										<key>history</key>
 										<array>
 											<string>1AFA3E2C0BC9A7D7007ABDA2</string>
@@ -352,6 +356,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -509,7 +515,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>198016102.56244799</real>
+	<real>198017340.030738</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -524,20 +530,18 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1A71E54F0BCD813C00CD5C13</string>
 		<string>1A71E24D0BCD00DB00CD5C13</string>
 		<string>1A71E13C0BCC604600CD5C13</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>1A71D6170BCA54F000CD5C13</string>
 		<string>1A71D6180BCA54F000CD5C13</string>
 		<string>1A38B5810B989622001ED4A0</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A71D6150BCA54F000CD5C13</string>
 		<string>1AF580F40BB18C3A003885D6</string>
-		<string>1A71E5120BCD7BAC00CD5C13</string>
-		<string>1A71E5130BCD7BAC00CD5C13</string>
-		<string>1A71E51D0BCD7C3D00CD5C13</string>
 		<string>/Users/jayton/Programming/Projects/Oolite/clean-repo/trunk/Oolite.xcodeproj</string>
+		<string>1C0AD2B3069F1EA900FABCE6</string>
 	</array>
 	<key>WindowString</key>
 	<string>694 223 724 655 0 0 1440 878 </string>
@@ -996,7 +1000,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
