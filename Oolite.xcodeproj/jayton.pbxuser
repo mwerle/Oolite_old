@@ -3151,6 +3151,36 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
+	1A71EB300BCF972100CD5C13 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
+		name = "ResourceManager.h: 44";
+		rLen = 0;
+		rLoc = 1095;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	1A71EB320BCF973B00CD5C13 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
+		name = "ResourceManager.h: 44";
+		rLen = 0;
+		rLoc = 1095;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	1A71EB370BCF977C00CD5C13 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2516113A099544390037C2E1 /* ResourceManager.h */;
+		name = "ResourceManager.h: 44";
+		rLen = 0;
+		rLoc = 1095;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1101, 2304}}";
@@ -3395,9 +3425,9 @@
 	};
 	1A9407BF0BAF7032005F6CF3 /* GNUmakefile */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {716, 688}}";
-			sepNavSelRange = "{2493, 0}";
-			sepNavVisRect = "{{0, 38}, {716, 649}}";
+			sepNavIntBoundsRect = "{{0, 0}, {797, 837}}";
+			sepNavSelRange = "{1210, 0}";
+			sepNavVisRect = "{{0, 0}, {797, 836}}";
 		};
 	};
 	1AB01ABC0BB15AED00F1B949 /* OOTextureScaling.h */ = {
@@ -4786,6 +4816,9 @@
 			1A71EAF30BCF938200CD5C13 /* PBXTextBookmark */ = 1A71EAF30BCF938200CD5C13 /* PBXTextBookmark */;
 			1A71EAFB0BCF939300CD5C13 /* PBXTextBookmark */ = 1A71EAFB0BCF939300CD5C13 /* PBXTextBookmark */;
 			1A71EB280BCF93D400CD5C13 /* PBXTextBookmark */ = 1A71EB280BCF93D400CD5C13 /* PBXTextBookmark */;
+			1A71EB300BCF972100CD5C13 /* PBXTextBookmark */ = 1A71EB300BCF972100CD5C13 /* PBXTextBookmark */;
+			1A71EB320BCF973B00CD5C13 /* PBXTextBookmark */ = 1A71EB320BCF973B00CD5C13 /* PBXTextBookmark */;
+			1A71EB370BCF977C00CD5C13 /* PBXTextBookmark */ = 1A71EB370BCF977C00CD5C13 /* PBXTextBookmark */;
 			1AF5338C0BC9878800246799 = 1AF5338C0BC9878800246799 /* PBXTextBookmark */;
 			1AFA3E2C0BC9A7D7007ABDA2 = 1AFA3E2C0BC9A7D7007ABDA2 /* PBXTextBookmark */;
 		};
