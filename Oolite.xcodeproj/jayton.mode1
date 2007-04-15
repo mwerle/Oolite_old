@@ -273,14 +273,15 @@
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>1A8A3BE90B963F02007D20B8</string>
+								<string>1A8A3C0C0B963FF8007D20B8</string>
+								<string>1A2A1B020BD2768300152975</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FAAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>4</integer>
-									<integer>2</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -512,7 +513,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>198341953.80764499</real>
+	<real>198345082.28730801</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -532,14 +533,16 @@
 		<string>1A38B5810B989622001ED4A0</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A2A1A210BD23A8D00152975</string>
-		<string>/Users/jayton/Programming/Projects/Oolite proj/clean-repo/trunk/Oolite.xcodeproj</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1A2A1AD80BD26B8200152975</string>
-		<string>1A2A1AD60BD26B8200152975</string>
-		<string>1A2A1AD90BD26B8200152975</string>
-		<string>1A2A1AF90BD2745100152975</string>
-		<string>1AF580F40BB18C3A003885D6</string>
+		<string>1A2A1B540BD278C200152975</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>1A2A1BA60BD27CE400152975</string>
+		<string>1A2A1AD90BD26B8200152975</string>
+		<string>1A2A1BA80BD27CE400152975</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>1A2A1C280BD2817A00152975</string>
+		<string>1A2A1BA70BD27CE400152975</string>
+		<string>1AF580F40BB18C3A003885D6</string>
+		<string>/Users/jayton/Programming/Projects/Oolite proj/clean-repo/trunk/Oolite.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>721 89 710 789 0 0 1440 878 </string>
@@ -964,7 +967,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1024, 403}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1439 387 1024 444 1440 63 1024 768 </string>
+								<string>1440 387 1024 444 1440 63 1024 768 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXRunSessionModule</string>
@@ -994,7 +997,7 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
 			<key>WindowString</key>
-			<string>1439 387 1024 444 1440 63 1024 768 </string>
+			<string>1440 387 1024 444 1440 63 1024 768 </string>
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
