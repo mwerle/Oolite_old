@@ -273,7 +273,6 @@
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>1A8A3BE90B963F02007D20B8</string>
-								<string>1A8A3C0C0B963FF8007D20B8</string>
 								<string>1A2A1B020BD2768300152975</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FAAC04509CD000000102</string>
@@ -281,7 +280,9 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>1</integer>
+									<integer>27</integer>
+									<integer>15</integer>
+									<integer>2</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -513,7 +514,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>198345082.28730801</real>
+	<real>198424389.21979001</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -528,21 +529,16 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1C0AD2AF069F1E9B00FABCE6</string>
+		<string>1A2A1E960BD3587E00152975</string>
 		<string>1A2A1A230BD23A8D00152975</string>
 		<string>1A2A1A240BD23A8D00152975</string>
-		<string>1A38B5810B989622001ED4A0</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A2A1A210BD23A8D00152975</string>
-		<string>1A2A1B540BD278C200152975</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1A2A1BA60BD27CE400152975</string>
-		<string>1A2A1AD90BD26B8200152975</string>
-		<string>1A2A1BA80BD27CE400152975</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1A2A1C280BD2817A00152975</string>
-		<string>1A2A1BA70BD27CE400152975</string>
-		<string>1AF580F40BB18C3A003885D6</string>
+		<string>1A38B5810B989622001ED4A0</string>
+		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jayton/Programming/Projects/Oolite proj/clean-repo/trunk/Oolite.xcodeproj</string>
+		<string>1AF580F40BB18C3A003885D6</string>
 	</array>
 	<key>WindowString</key>
 	<string>721 89 710 789 0 0 1440 878 </string>
@@ -748,7 +744,7 @@
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -839,7 +835,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
@@ -903,7 +899,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A38B5810B989622001ED4A0</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -1203,8 +1199,8 @@
 			<true/>
 			<key>TableOfContents</key>
 			<array>
-				<string>1A26D2020BCFB8280073F257</string>
-				<string>1A26D2030BCFB8280073F257</string>
+				<string>1A2A1E960BD3587E00152975</string>
+				<string>1A2A1E970BD3587E00152975</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
 				<string>1CA1AED706398EBD00589147</string>
 			</array>
@@ -1213,9 +1209,9 @@
 			<key>WindowString</key>
 			<string>437 449 744 409 0 0 1440 878 </string>
 			<key>WindowToolGUID</key>
-			<string>1A26D2020BCFB8280073F257</string>
+			<string>1A2A1E960BD3587E00152975</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
@@ -1308,16 +1304,18 @@
 			<false/>
 		</dict>
 		<dict>
+			<key>FirstTimeWindowDisplayed</key>
+			<false/>
 			<key>Identifier</key>
 			<string>windowTool.classBrowser</string>
+			<key>IsVertical</key>
+			<true/>
 			<key>Layout</key>
 			<array>
 				<dict>
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<integer>1</integer>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>OptionsSetName</key>
@@ -1330,7 +1328,7 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>ClassesFrame</key>
-								<string>{{0, 0}, {374, 96}}</string>
+								<string>{{0, 0}, {378, 96}}</string>
 								<key>ClassesTreeTableConfiguration</key>
 								<array>
 									<string>PBXClassNameColumnIdentifier</string>
@@ -1339,9 +1337,9 @@
 									<real>22</real>
 								</array>
 								<key>Frame</key>
-								<string>{{0, 0}, {630, 331}}</string>
+								<string>{{0, 0}, {630, 332}}</string>
 								<key>MembersFrame</key>
-								<string>{{0, 105}, {374, 395}}</string>
+								<string>{{0, 101}, {378, 231}}</string>
 								<key>MembersTreeTableConfiguration</key>
 								<array>
 									<string>PBXMemberTypeIconColumnIdentifier</string>
@@ -1349,14 +1347,12 @@
 									<string>PBXMemberNameColumnIdentifier</string>
 									<real>216</real>
 									<string>PBXMemberTypeColumnIdentifier</string>
-									<real>97</real>
+									<real>101</real>
 									<string>PBXMemberBookColumnIdentifier</string>
 									<real>22</real>
 								</array>
-								<key>PBXModuleWindowStatusBarHidden2</key>
-								<integer>1</integer>
 								<key>RubberWindowFrame</key>
-								<string>385 179 630 352 0 0 1440 878 </string>
+								<string>36 503 630 352 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXClassBrowserModule</string>
@@ -1375,21 +1371,21 @@
 				<string>PBXClassBrowserModule</string>
 			</array>
 			<key>StatusbarIsVisible</key>
-			<integer>0</integer>
+			<false/>
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2AF069F1E9B00FABCE6</string>
-				<string>1C0AD2B0069F1E9B00FABCE6</string>
+				<string>1A2A1FEA0BD382E600152975</string>
 				<string>1CA6456E063B45B4001379D8</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.classbrowser</string>
 			<key>WindowString</key>
-			<string>385 179 630 352 0 0 1440 878 </string>
+			<string>36 503 630 352 0 0 1440 878 </string>
 			<key>WindowToolGUID</key>
 			<string>1C0AD2AF069F1E9B00FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<integer>0</integer>
+			<false/>
 		</dict>
 	</array>
 </dict>
