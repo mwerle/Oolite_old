@@ -514,7 +514,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>198424389.21979001</real>
+	<real>198498437.62778699</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -533,12 +533,15 @@
 		<string>1A2A1E960BD3587E00152975</string>
 		<string>1A2A1A230BD23A8D00152975</string>
 		<string>1A2A1A240BD23A8D00152975</string>
+		<string>1A38B5810B989622001ED4A0</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A2A1A210BD23A8D00152975</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1A38B5810B989622001ED4A0</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jayton/Programming/Projects/Oolite proj/clean-repo/trunk/Oolite.xcodeproj</string>
+		<string>1A2A21B40BD4D85B00152975</string>
 		<string>1AF580F40BB18C3A003885D6</string>
+		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>1A2A21B50BD4D85B00152975</string>
 	</array>
 	<key>WindowString</key>
 	<string>721 89 710 789 0 0 1440 878 </string>
@@ -744,7 +747,7 @@
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -899,7 +902,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A38B5810B989622001ED4A0</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
