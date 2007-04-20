@@ -638,9 +638,9 @@
 	};
 	1A26D0E30BCF9D3B0073F257 /* OOTextureLoader.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1361, 1792}}";
-			sepNavSelRange = "{2563, 24}";
-			sepNavVisRect = "{{0, 948}, {1361, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1184, 1872}}";
+			sepNavSelRange = "{1232, 0}";
+			sepNavVisRect = "{{0, 0}, {1184, 836}}";
 		};
 	};
 	1A26D0E40BCF9D3B0073F257 /* OOPNGTextureLoader.h */ = {
@@ -652,9 +652,9 @@
 	};
 	1A26D0E50BCF9D3B0073F257 /* OOTextureLoader.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 6816}}";
-			sepNavSelRange = "{9956, 0}";
-			sepNavVisRect = "{{0, 5979}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1184, 7088}}";
+			sepNavSelRange = "{4206, 0}";
+			sepNavVisRect = "{{0, 3046}, {1184, 836}}";
 		};
 	};
 	1A26D0F40BCF9D8D0073F257 /* pngusr.h */ = {
@@ -1487,9 +1487,9 @@
 	};
 	1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 13360}}";
-			sepNavSelRange = "{23746, 0}";
-			sepNavVisRect = "{{0, 12523}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1184, 15488}}";
+			sepNavSelRange = "{3211, 0}";
+			sepNavVisRect = "{{0, 838}, {1184, 836}}";
 		};
 	};
 	1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */ = {
@@ -2044,9 +2044,9 @@
 	};
 	25161139099544390037C2E1 /* ResourceManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {958, 11536}}";
-			sepNavSelRange = "{15030, 25}";
-			sepNavVisRect = "{{0, 7550}, {958, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1184, 11392}}";
+			sepNavSelRange = "{14983, 0}";
+			sepNavVisRect = "{{0, 7455}, {1184, 836}}";
 		};
 	};
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
