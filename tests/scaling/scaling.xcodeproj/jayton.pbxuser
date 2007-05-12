@@ -42,16 +42,16 @@
 	};
 	1A45B0A30BD8E2FC0078EA87 /* OOTextureScaling.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 864}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 1168}}";
 			sepNavSelRange = "{418, 0}";
-			sepNavVisRect = "{{0, 0}, {1242, 836}}";
+			sepNavVisRect = "{{0, 331}, {1242, 836}}";
 		};
 	};
 	1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 17264}}";
-			sepNavSelRange = "{5763, 13}";
-			sepNavVisRect = "{{0, 2307}, {1242, 730}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 17280}}";
+			sepNavSelRange = "{26629, 0}";
+			sepNavVisRect = "{{0, 14603}, {1242, 836}}";
 		};
 	};
 	1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */ = {
@@ -178,8 +178,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 200657391;
-			PBXWorkspaceStateSaveDate = 200657391;
+			PBXPerProjectTemplateStateSaveDate = 200684845;
+			PBXWorkspaceStateSaveDate = 200684845;
 		};
 		sourceControlManager = 1A45B0840BD8E23F0078EA87 /* Source Control */;
 		userBuildSettings = {
@@ -188,8 +188,8 @@
 	29B97316FDCFA39411CA2CEA /* main.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1242, 2368}}";
-			sepNavSelRange = "{1209, 0}";
-			sepNavVisRect = "{{0, 27}, {1242, 836}}";
+			sepNavSelRange = "{340, 0}";
+			sepNavVisRect = "{{0, 399}, {1242, 836}}";
 		};
 	};
 	8D1107260486CEB800E47090 /* scaling */ = {

@@ -732,8 +732,8 @@
 		functionName = "PNGError()";
 		hitCount = 1;
 		lineNumber = 245;
-		location = OoliteDev;
-		modificationTime = 200669758.381603;
+		location = scaling;
+		modificationTime = 200694835.416902;
 		state = 1;
 	};
 	1A26D1FF0BCFB8240073F257 /* malloc_printf */ = {
@@ -745,7 +745,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = libSystem.B.dylib;
-		modificationTime = 200669757.403435;
+		modificationTime = 200685301.444414;
 		state = 1;
 		symbolName = malloc_printf;
 	};
@@ -1010,8 +1010,7 @@
 		functionName = "AgeListCheckIntegrity()";
 		hitCount = 1;
 		lineNumber = 929;
-		location = OoliteDev;
-		modificationTime = 200669757.402941;
+		modificationTime = 200694849.556646;
 		state = 1;
 	};
 	1A496E870BF0C06700177340 /* OOCacheManager.m:181 */ = {
@@ -1326,8 +1325,7 @@
 		functionName = "+textureWithConfiguration:";
 		hitCount = 1;
 		lineNumber = 306;
-		location = OoliteDev;
-		modificationTime = 200669757.402966;
+		modificationTime = 200694849.545092;
 		state = 1;
 	};
 	1A8700720BEB81B1006E3B60 /* OOSingleTextureMaterial.m:65 */ = {
@@ -1454,7 +1452,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 200669763.211596;
+		modificationTime = 200685306.504621;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -1692,13 +1690,6 @@
 		libgmallocEnabled = 0;
 		name = Oolite;
 		savedGlobals = {
-			"/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/build/Development/OoliteDev.app/Contents/MacOS/OoliteDev" = (
-				{
-					display = 1;
-					filename = "/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/src/Core/TextureStore.m";
-					name = textureUniversalDictionary;
-				},
-			);
 		};
 		sourceDirectories = (
 		);
@@ -1778,7 +1769,7 @@
 		hitCount = 1;
 		lineNumber = 491;
 		location = OoliteDev;
-		modificationTime = 200669757.402955;
+		modificationTime = 200694830.311037;
 		state = 2;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
@@ -1893,8 +1884,7 @@
 		functionName = "-prune";
 		hitCount = 1;
 		lineNumber = 314;
-		location = OoliteDev;
-		modificationTime = 200669757.402973;
+		modificationTime = 200694849.556614;
 		state = 1;
 	};
 	1AFAFC8E0BF5ED56008AE909 /* OOTexture.m:322 */ = {
@@ -1908,8 +1898,7 @@
 		functionName = "-dealloc";
 		hitCount = 1;
 		lineNumber = 322;
-		location = OoliteDev;
-		modificationTime = 200669757.402983;
+		modificationTime = 200694849.556498;
 		state = 1;
 	};
 	2512833C09BA27C100F43D55 /* Octree.m */ = {
