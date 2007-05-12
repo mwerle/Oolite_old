@@ -42,7 +42,11 @@ int main(int argc, char *argv[])
 	#define TEST_TEXTURE(name)		do { id loader = GetTexture(name); if (loader != nil) DumpTexture(loader, name); } while (0)
 	
 	TEST_TEXTURE(@"grey256x200");
+	TEST_TEXTURE(@"grey200x256");
+	TEST_TEXTURE(@"grey200x200");
 	TEST_TEXTURE(@"rgb256x200");
+	TEST_TEXTURE(@"rgb200x256");
+	TEST_TEXTURE(@"rgb200x200");
 	
 	return 0;
 }

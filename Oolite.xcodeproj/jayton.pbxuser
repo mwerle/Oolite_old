@@ -718,8 +718,8 @@
 		functionName = "PNGError()";
 		hitCount = 1;
 		lineNumber = 245;
-		location = OoliteDev;
-		modificationTime = 200572980.717558;
+		location = scaling;
+		modificationTime = 200656770.985174;
 		state = 1;
 	};
 	1A26D1FF0BCFB8240073F257 /* malloc_printf */ = {
@@ -821,16 +821,16 @@
 	};
 	1A2A1CA80BD2914F00152975 /* OOMesh.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 3248}}";
-			sepNavSelRange = "{3961, 0}";
-			sepNavVisRect = "{{0, 1868}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 3264}}";
+			sepNavSelRange = "{2905, 0}";
+			sepNavVisRect = "{{0, 1281}, {1242, 836}}";
 		};
 	};
 	1A2A1CA90BD2914F00152975 /* OOMesh.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 27456}}";
-			sepNavSelRange = "{7325, 0}";
-			sepNavVisRect = "{{0, 3958}, {1384, 468}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 27680}}";
+			sepNavSelRange = "{7280, 0}";
+			sepNavVisRect = "{{0, 3909}, {1242, 836}}";
 		};
 	};
 	1A2A1DEA0BD2A28E00152975 /* OOMacroOpenGL.h */ = {
@@ -981,8 +981,7 @@
 		functionName = "-dealloc";
 		hitCount = 1;
 		lineNumber = 319;
-		location = OoliteDev;
-		modificationTime = 200568576.215029;
+		modificationTime = 200656773.232349;
 		state = 1;
 	};
 	1A496E510BF0BD4B00177340 /* OOCache.m:923 */ = {
@@ -996,8 +995,7 @@
 		functionName = "AgeListCheckIntegrity()";
 		hitCount = 1;
 		lineNumber = 923;
-		location = OoliteDev;
-		modificationTime = 200572979.845652;
+		modificationTime = 200656773.232513;
 		state = 1;
 	};
 	1A496E870BF0C06700177340 /* OOCacheManager.m:181 */ = {
@@ -1011,8 +1009,7 @@
 		functionName = "-setObject:forKey:inCache:";
 		hitCount = 1;
 		lineNumber = 181;
-		location = OoliteDev;
-		modificationTime = 200563157.344159;
+		modificationTime = 200656773.232461;
 		state = 1;
 	};
 	1A496EA80BF0C32000177340 /* OOMesh.m:156 */ = {
@@ -1026,8 +1023,7 @@
 		functionName = "-dealloc";
 		hitCount = 1;
 		lineNumber = 156;
-		location = OoliteDev;
-		modificationTime = 200563275.883143;
+		modificationTime = 200656773.232665;
 		state = 1;
 	};
 	1A496EB10BF0C3E400177340 /* OOSingleTextureMaterial.m:85 */ = {
@@ -1041,8 +1037,7 @@
 		functionName = "-dealloc";
 		hitCount = 1;
 		lineNumber = 85;
-		location = OoliteDev;
-		modificationTime = 200563318.611634;
+		modificationTime = 200656773.232628;
 		state = 1;
 	};
 	1A496EB40BF0C3F300177340 /* OOShaderMaterial.m:185 */ = {
@@ -1056,8 +1051,7 @@
 		functionName = "-dealloc";
 		hitCount = 1;
 		lineNumber = 185;
-		location = OoliteDev;
-		modificationTime = 200568960.287241;
+		modificationTime = 200656773.232408;
 		state = 1;
 	};
 	1A5DB1E80BBD8F0000D57389 /* OOConstToString.h */ = {
@@ -1312,8 +1306,7 @@
 		functionName = "+textureWithConfiguration:";
 		hitCount = 1;
 		lineNumber = 303;
-		location = OoliteDev;
-		modificationTime = 200571097.60314;
+		modificationTime = 200656773.232319;
 		state = 1;
 	};
 	1A8700720BEB81B1006E3B60 /* OOSingleTextureMaterial.m:65 */ = {
@@ -1327,8 +1320,7 @@
 		functionName = "-initWithName:configuration:";
 		hitCount = 1;
 		lineNumber = 65;
-		location = OoliteDev;
-		modificationTime = 200569047.613237;
+		modificationTime = 200656773.232377;
 		state = 1;
 	};
 	1A8700A70BEB848A006E3B60 /* OOShaderUniform.m:208 */ = {
@@ -1342,8 +1334,7 @@
 		functionName = "-initWithName:shaderProgram:boundToObject:property:clamped:";
 		hitCount = 1;
 		lineNumber = 208;
-		location = OoliteDev;
-		modificationTime = 200561442.550244;
+		modificationTime = 200656773.232434;
 		state = 1;
 	};
 	1A8700B40BEB84CA006E3B60 /* OOShaderUniform.m:328 */ = {
@@ -1357,8 +1348,7 @@
 		functionName = "-setBindingTarget:";
 		hitCount = 1;
 		lineNumber = 328;
-		location = OoliteDev;
-		modificationTime = 200563243.403737;
+		modificationTime = 200656773.232487;
 		state = 1;
 	};
 	1A8A37540B960337007D20B8 /* NSMutableDictionaryOOExtensions.m */ = {
@@ -1427,6 +1417,8 @@
 			1A496EA80BF0C32000177340 /* OOMesh.m:156 */,
 			1A496EB10BF0C3E400177340 /* OOSingleTextureMaterial.m:85 */,
 			1A496EB40BF0C3F300177340 /* OOShaderMaterial.m:185 */,
+			1ADF07600BF47ADE00B21660 /* OOCache.m:490 */,
+			1ADF077A0BF47F4200B21660 /* OOShaderUniform.m:491 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -1591,9 +1583,9 @@
 	};
 	1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 15504}}";
-			sepNavSelRange = "{26298, 0}";
-			sepNavVisRect = "{{0, 14651}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 16448}}";
+			sepNavSelRange = "{27241, 0}";
+			sepNavVisRect = "{{0, 15101}, {1242, 836}}";
 		};
 	};
 	1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */ = {
@@ -1739,8 +1731,7 @@
 		functionName = "CacheRemoveOldest()";
 		hitCount = 1;
 		lineNumber = 490;
-		location = OoliteDev;
-		modificationTime = 200572979.845664;
+		modificationTime = 200656773.232242;
 		state = 1;
 	};
 	1ADF077A0BF47F4200B21660 /* OOShaderUniform.m:491 */ = {
@@ -1752,10 +1743,10 @@
 		delayBeforeContinue = 0;
 		fileReference = 1A26D0DB0BCF9D1E0073F257 /* OOShaderUniform.m */;
 		functionName = "-applyBinding";
-		hitCount = 2;
+		hitCount = 1;
 		lineNumber = 491;
 		location = OoliteDev;
-		modificationTime = 200573028.414442;
+		modificationTime = 200656765.037945;
 		state = 2;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
@@ -2336,6 +2327,15 @@
 			1A496E510BF0BD4B00177340 /* OOCache.m:923 */,
 			1ADF07600BF47ADE00B21660 /* OOCache.m:490 */,
 			1ADF077A0BF47F4200B21660 /* OOShaderUniform.m:491 */,
+			1A87006E0BEB8165006E3B60 /* OOTexture.m:303 */,
+			1A8700720BEB81B1006E3B60 /* OOSingleTextureMaterial.m:65 */,
+			1A8700A70BEB848A006E3B60 /* OOShaderUniform.m:208 */,
+			1A8700B40BEB84CA006E3B60 /* OOShaderUniform.m:328 */,
+			1A496E160BF0B21700177340 /* OOTexture.m:319 */,
+			1A496E870BF0C06700177340 /* OOCacheManager.m:181 */,
+			1A496EA80BF0C32000177340 /* OOMesh.m:156 */,
+			1A496EB10BF0C3E400177340 /* OOSingleTextureMaterial.m:85 */,
+			1A496EB40BF0C3F300177340 /* OOShaderMaterial.m:185 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -2508,11 +2508,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 200561205;
-			PBXWorkspaceStateSaveDate = 200561205;
+			PBXPerProjectTemplateStateSaveDate = 200656014;
+			PBXWorkspaceStateSaveDate = 200656014;
 		};
 		perUserProjectItems = {
-			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
+			1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */ = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;

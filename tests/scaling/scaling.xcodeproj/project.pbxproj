@@ -34,6 +34,10 @@
 		1A45B1B50BD8EB410078EA87 /* OOCollectionExtractors.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B1B30BD8EB410078EA87 /* OOCollectionExtractors.m */; };
 		1A45B2490BD8F6DA0078EA87 /* rgb256x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A45B2480BD8F6DA0078EA87 /* rgb256x200.png */; };
 		1A45B2AB0BD930550078EA87 /* logcontrol.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A45B2AA0BD930550078EA87 /* logcontrol.plist */; };
+		1AFAFA5E0BF5C606008AE909 /* grey200x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFA5D0BF5C606008AE909 /* grey200x256.png */; };
+		1AFAFA930BF5C8B0008AE909 /* rgb200x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFA920BF5C8B0008AE909 /* rgb200x256.png */; };
+		1AFAFA980BF5C913008AE909 /* grey200x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFA970BF5C913008AE909 /* grey200x200.png */; };
+		1AFAFAF60BF5CC20008AE909 /* rgb200x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFAF50BF5CC20008AE909 /* rgb200x200.png */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -79,6 +83,10 @@
 		1A45B1B40BD8EB410078EA87 /* OOCollectionExtractors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOCollectionExtractors.h; sourceTree = "<group>"; };
 		1A45B2480BD8F6DA0078EA87 /* rgb256x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rgb256x200.png; sourceTree = "<group>"; };
 		1A45B2AA0BD930550078EA87 /* logcontrol.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = logcontrol.plist; sourceTree = "<group>"; };
+		1AFAFA5D0BF5C606008AE909 /* grey200x256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey200x256.png; sourceTree = "<group>"; };
+		1AFAFA920BF5C8B0008AE909 /* rgb200x256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rgb200x256.png; sourceTree = "<group>"; };
+		1AFAFA970BF5C913008AE909 /* grey200x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey200x200.png; sourceTree = "<group>"; };
+		1AFAFAF50BF5CC20008AE909 /* rgb200x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rgb200x200.png; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -209,7 +217,11 @@
 			isa = PBXGroup;
 			children = (
 				1A45B1600BD8E71C0078EA87 /* grey256x200.png */,
+				1AFAFA5D0BF5C606008AE909 /* grey200x256.png */,
+				1AFAFA970BF5C913008AE909 /* grey200x200.png */,
 				1A45B2480BD8F6DA0078EA87 /* rgb256x200.png */,
+				1AFAFA920BF5C8B0008AE909 /* rgb200x256.png */,
+				1AFAFAF50BF5CC20008AE909 /* rgb200x200.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1A45B2AA0BD930550078EA87 /* logcontrol.plist */,
@@ -272,6 +284,10 @@
 				1A45B1610BD8E71C0078EA87 /* grey256x200.png in Resources */,
 				1A45B2490BD8F6DA0078EA87 /* rgb256x200.png in Resources */,
 				1A45B2AB0BD930550078EA87 /* logcontrol.plist in Resources */,
+				1AFAFA5E0BF5C606008AE909 /* grey200x256.png in Resources */,
+				1AFAFA930BF5C8B0008AE909 /* rgb200x256.png in Resources */,
+				1AFAFA980BF5C913008AE909 /* grey200x200.png in Resources */,
+				1AFAFAF60BF5CC20008AE909 /* rgb200x200.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,7 +348,11 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = Source/scaling_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = PNG_USER_CONFIG;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					PNG_USER_CONFIG,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1 = "APPNAME=\"@\\\"scaling-test\\\"\"";
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = scaling;
@@ -351,7 +371,11 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREFIX_HEADER = Source/scaling_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = PNG_USER_CONFIG;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					PNG_USER_CONFIG,
+					"$(GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1 = "APPNAME=\"@\\\"scaling-test\\\"\"";
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = scaling;

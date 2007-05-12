@@ -42,9 +42,9 @@
 	};
 	1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 15152}}";
-			sepNavSelRange = "{4178, 8}";
-			sepNavVisRect = "{{0, 1195}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 16528}}";
+			sepNavSelRange = "{27331, 0}";
+			sepNavVisRect = "{{0, 15291}, {1242, 836}}";
 		};
 	};
 	1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */ = {
@@ -84,9 +84,9 @@
 	};
 	1A45B0E70BD8E3EA0078EA87 /* OOLogging.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 12672}}";
-			sepNavSelRange = "{15121, 0}";
-			sepNavVisRect = "{{0, 8763}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 12704}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 122}, {1242, 836}}";
 		};
 	};
 	1A45B0E80BD8E3EA0078EA87 /* OOLogging.h */ = {
@@ -155,7 +155,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
 					200,
-					63,
+					68,
 					20,
 					48,
 					43,
@@ -171,8 +171,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 198763052;
-			PBXWorkspaceStateSaveDate = 198763052;
+			PBXPerProjectTemplateStateSaveDate = 200657391;
+			PBXWorkspaceStateSaveDate = 200657391;
 		};
 		sourceControlManager = 1A45B0840BD8E23F0078EA87 /* Source Control */;
 		userBuildSettings = {
@@ -180,9 +180,9 @@
 	};
 	29B97316FDCFA39411CA2CEA /* main.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 2304}}";
-			sepNavSelRange = "{1080, 0}";
-			sepNavVisRect = "{{0, 748}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 2352}}";
+			sepNavSelRange = "{368, 0}";
+			sepNavVisRect = "{{0, 1515}, {1242, 836}}";
 		};
 	};
 	8D1107260486CEB800E47090 /* scaling */ = {
