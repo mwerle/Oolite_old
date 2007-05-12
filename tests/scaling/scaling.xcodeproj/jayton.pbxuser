@@ -40,11 +40,18 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	1A45B0A30BD8E2FC0078EA87 /* OOTextureScaling.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 864}}";
+			sepNavSelRange = "{418, 0}";
+			sepNavVisRect = "{{0, 0}, {1242, 836}}";
+		};
+	};
 	1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 16528}}";
-			sepNavSelRange = "{27331, 0}";
-			sepNavVisRect = "{{0, 15291}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 17264}}";
+			sepNavSelRange = "{5763, 13}";
+			sepNavVisRect = "{{0, 2307}, {1242, 730}}";
 		};
 	};
 	1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */ = {
@@ -180,9 +187,9 @@
 	};
 	29B97316FDCFA39411CA2CEA /* main.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 2352}}";
-			sepNavSelRange = "{368, 0}";
-			sepNavVisRect = "{{0, 1515}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 2368}}";
+			sepNavSelRange = "{1209, 0}";
+			sepNavVisRect = "{{0, 27}, {1242, 836}}";
 		};
 	};
 	8D1107260486CEB800E47090 /* scaling */ = {

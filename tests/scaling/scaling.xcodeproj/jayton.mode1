@@ -236,8 +236,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -283,13 +281,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>6</integer>
-									<integer>4</integer>
+									<integer>3</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 24}, {186, 486}}</string>
+							<string>{{0, 0}, {186, 486}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -353,6 +351,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -510,7 +510,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>200657513.23701999</real>
+	<real>200665200.67963299</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -528,12 +528,11 @@
 		<string>1AFAFAEB0BF5CA69008AE909</string>
 		<string>1AFAFAEC0BF5CA69008AE909</string>
 		<string>1A45B19E0BD8EB2E0078EA87</string>
-		<string>1AFAFAE90BF5CA69008AE909</string>
-		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/tests/scaling/scaling.xcodeproj</string>
 		<string>1CD10A99069EF8BA00B06720</string>
-		<string>1AFAFAED0BF5CA69008AE909</string>
-		<string>1A45B0940BD8E2A20078EA87</string>
+		<string>1AFAFAE90BF5CA69008AE909</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>1A45B0940BD8E2A20078EA87</string>
+		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/tests/scaling/scaling.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>1679 286 695 545 1440 63 1024 768 </string>
@@ -626,7 +625,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A45B0940BD8E2A20078EA87</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -737,7 +736,7 @@
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -988,7 +987,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
