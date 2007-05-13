@@ -456,16 +456,16 @@
 	};
 	1A26D0920BCF9CF70073F257 /* SkyEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 9440}}";
-			sepNavSelRange = "{17296, 0}";
-			sepNavVisRect = "{{0, 8795}, {1384, 410}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 9600}}";
+			sepNavSelRange = "{14819, 0}";
+			sepNavVisRect = "{{0, 7472}, {1242, 836}}";
 		};
 	};
 	1A26D0930BCF9CF70073F257 /* SkyEntity.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1242, 1472}}";
-			sepNavSelRange = "{1095, 0}";
-			sepNavVisRect = "{{0, 624}, {1242, 836}}";
+			sepNavSelRange = "{881, 14}";
+			sepNavVisRect = "{{0, 2}, {1242, 836}}";
 		};
 	};
 	1A26D0940BCF9CF70073F257 /* RingEntity.m */ = {
@@ -708,9 +708,9 @@
 	};
 	1A26D0E50BCF9D3B0073F257 /* OOTextureLoader.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 8608}}";
-			sepNavSelRange = "{9656, 0}";
-			sepNavVisRect = "{{0, 5861}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 8576}}";
+			sepNavSelRange = "{9681, 0}";
+			sepNavVisRect = "{{0, 5804}, {1242, 836}}";
 		};
 	};
 	1A26D0F40BCF9D8D0073F257 /* pngusr.h */ = {
