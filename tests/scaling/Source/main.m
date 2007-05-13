@@ -44,9 +44,11 @@ int main(int argc, char *argv[])
 	TEST_TEXTURE(@"grey256x200");
 	TEST_TEXTURE(@"grey200x256");
 	TEST_TEXTURE(@"grey200x200");
+	TEST_TEXTURE(@"grey300x256");
 	TEST_TEXTURE(@"rgb256x200");
 	TEST_TEXTURE(@"rgb200x256");
 	TEST_TEXTURE(@"rgb200x200");
+	TEST_TEXTURE(@"rgb300x256");
 	
 	return 0;
 }
