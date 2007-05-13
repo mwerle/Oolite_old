@@ -49,9 +49,9 @@
 	};
 	1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 19328}}";
-			sepNavSelRange = "{2212, 0}";
-			sepNavVisRect = "{{0, 830}, {1217, 344}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 21344}}";
+			sepNavSelRange = "{1931, 47}";
+			sepNavVisRect = "{{0, 61}, {1242, 836}}";
 		};
 	};
 	1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */ = {
@@ -117,6 +117,8 @@
 		addToTargets = (
 			8D1107260486CEB800E47090 /* scaling */,
 		);
+		breakpoints = (
+		);
 		codeSenseManager = 1A45B0850BD8E23F0078EA87 /* Code sense */;
 		executables = (
 			1A45B0790BD8E22C0078EA87 /* scaling */,
@@ -178,8 +180,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 200684845;
-			PBXWorkspaceStateSaveDate = 200684845;
+			PBXPerProjectTemplateStateSaveDate = 200755153;
+			PBXWorkspaceStateSaveDate = 200755153;
 		};
 		sourceControlManager = 1A45B0840BD8E23F0078EA87 /* Source Control */;
 		userBuildSettings = {
@@ -187,8 +189,8 @@
 	};
 	29B97316FDCFA39411CA2CEA /* main.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 2768}}";
-			sepNavSelRange = "{379, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 2864}}";
+			sepNavSelRange = "{399, 0}";
 			sepNavVisRect = "{{0, 0}, {1242, 836}}";
 		};
 	};

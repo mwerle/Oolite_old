@@ -15,9 +15,9 @@
 
 
 // Set to greater than 1 for stability testing or profiling.
-#define ITERATIONS		100
+#define ITERATIONS		1
 
-#define DUMP_DATA		0
+#define DUMP_DATA		1
 #define USE_POOL		1
 
 
@@ -54,16 +54,22 @@ int main(int argc, char *argv[])
 #if USE_POOL
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 #endif
+#if ITERATIONS > 1
+		OOLog(@"scaleTest.iteration", @"Iteration %d", ITERATIONS - iter);
+#endif
 		
-		TEST_TEXTURE(@"grey256x200");
-		TEST_TEXTURE(@"grey200x256");
 		TEST_TEXTURE(@"grey200x200");
-		TEST_TEXTURE(@"grey300x256");
+		TEST_TEXTURE(@"grey200x256");
+		TEST_TEXTURE(@"grey256x200");
+		TEST_TEXTURE(@"grey256x300");
 		TEST_TEXTURE(@"grey300x200");
-		TEST_TEXTURE(@"rgb256x200");
-		TEST_TEXTURE(@"rgb200x256");
+		TEST_TEXTURE(@"grey300x256");
 		TEST_TEXTURE(@"rgb200x200");
+		TEST_TEXTURE(@"rgb200x256");
+		TEST_TEXTURE(@"rgb256x200");
+		TEST_TEXTURE(@"rgb256x300");
 		TEST_TEXTURE(@"rgb300x256");
+		TEST_TEXTURE(@"rgb300x300");
 		
 #if USE_POOL
 		[pool release];

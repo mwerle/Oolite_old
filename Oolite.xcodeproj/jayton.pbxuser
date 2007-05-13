@@ -2556,7 +2556,7 @@
 			PBXWorkspaceStateSaveDate = 200658446;
 		};
 		perUserProjectItems = {
-			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
+			1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */ = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
