@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A45B0A50BD8E2FC0078EA87 /* OOTextureScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */; };
+		1A45B0A50BD8E2FC0078EA87 /* OOTextureScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31"; }; };
 		1A45B0AA0BD8E30F0078EA87 /* OOTextureLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */; };
 		1A45B0AB0BD8E30F0078EA87 /* OOPNGTextureLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A80BD8E30F0078EA87 /* OOPNGTextureLoader.m */; };
 		1A45B0CA0BD8E3670078EA87 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0B50BD8E3670078EA87 /* pngwutil.c */; };
@@ -40,6 +40,7 @@
 		1AFAFAF60BF5CC20008AE909 /* rgb200x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFAF50BF5CC20008AE909 /* rgb200x200.png */; };
 		1AFAFDCD0BF67119008AE909 /* grey300x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFDCC0BF67119008AE909 /* grey300x256.png */; };
 		1AFAFE280BF67F76008AE909 /* rgb300x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFE270BF67F75008AE909 /* rgb300x256.png */; };
+		1AFAFE500BF69BA8008AE909 /* grey300x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AFAFE4F0BF69BA8008AE909 /* grey300x200.png */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -91,6 +92,7 @@
 		1AFAFAF50BF5CC20008AE909 /* rgb200x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rgb200x200.png; sourceTree = "<group>"; };
 		1AFAFDCC0BF67119008AE909 /* grey300x256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey300x256.png; sourceTree = "<group>"; };
 		1AFAFE270BF67F75008AE909 /* rgb300x256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rgb300x256.png; sourceTree = "<group>"; };
+		1AFAFE4F0BF69BA8008AE909 /* grey300x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey300x200.png; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -224,6 +226,7 @@
 				1AFAFA5D0BF5C606008AE909 /* grey200x256.png */,
 				1AFAFA970BF5C913008AE909 /* grey200x200.png */,
 				1AFAFDCC0BF67119008AE909 /* grey300x256.png */,
+				1AFAFE4F0BF69BA8008AE909 /* grey300x200.png */,
 				1A45B2480BD8F6DA0078EA87 /* rgb256x200.png */,
 				1AFAFA920BF5C8B0008AE909 /* rgb200x256.png */,
 				1AFAFAF50BF5CC20008AE909 /* rgb200x200.png */,
@@ -296,6 +299,7 @@
 				1AFAFAF60BF5CC20008AE909 /* rgb200x200.png in Resources */,
 				1AFAFDCD0BF67119008AE909 /* grey300x256.png in Resources */,
 				1AFAFE280BF67F76008AE909 /* rgb300x256.png in Resources */,
+				1AFAFE500BF69BA8008AE909 /* grey300x200.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,8 +355,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = Source/scaling_Prefix.pch;
@@ -365,7 +371,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = scaling;
 				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -376,7 +381,9 @@
 					ppc,
 					i386,
 				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREFIX_HEADER = Source/scaling_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (

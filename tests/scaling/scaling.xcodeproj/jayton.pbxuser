@@ -43,22 +43,22 @@
 	1A45B0A30BD8E2FC0078EA87 /* OOTextureScaling.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1242, 1168}}";
-			sepNavSelRange = "{2260, 0}";
-			sepNavVisRect = "{{0, 331}, {1242, 836}}";
+			sepNavSelRange = "{2356, 0}";
+			sepNavVisRect = "{{0, 134}, {1242, 836}}";
 		};
 	};
 	1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 18672}}";
-			sepNavSelRange = "{31763, 0}";
-			sepNavVisRect = "{{0, 17830}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1217, 19328}}";
+			sepNavSelRange = "{2212, 0}";
+			sepNavVisRect = "{{0, 830}, {1217, 344}}";
 		};
 	};
 	1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1116, 6816}}";
-			sepNavSelRange = "{1768, 0}";
-			sepNavVisRect = "{{0, 1051}, {1116, 326}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1217, 8576}}";
+			sepNavSelRange = "{9762, 0}";
+			sepNavVisRect = "{{0, 6124}, {1217, 344}}";
 		};
 	};
 	1A45B0A70BD8E30F0078EA87 /* OOTextureLoader.h */ = {
@@ -111,7 +111,7 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Debug;
+		activeBuildConfigurationName = Release;
 		activeExecutable = 1A45B0790BD8E22C0078EA87 /* scaling */;
 		activeTarget = 8D1107260486CEB800E47090 /* scaling */;
 		addToTargets = (
@@ -187,9 +187,9 @@
 	};
 	29B97316FDCFA39411CA2CEA /* main.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 2400}}";
-			sepNavSelRange = "{1270, 0}";
-			sepNavVisRect = "{{0, 27}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 2768}}";
+			sepNavSelRange = "{379, 0}";
+			sepNavVisRect = "{{0, 0}, {1242, 836}}";
 		};
 	};
 	32CA4F630368D1EE00C91783 /* scaling_Prefix.pch */ = {

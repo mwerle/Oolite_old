@@ -14,6 +14,13 @@
 #import "OOTextureLoader.h"
 
 
+// Set to greater than 1 for stability testing or profiling.
+#define ITERATIONS		100
+
+#define DUMP_DATA		0
+#define USE_POOL		1
+
+
 @interface ResourceManager: NSObject
 + (NSArray *)rootPaths;
 @end
@@ -41,15 +48,27 @@ int main(int argc, char *argv[])
 	
 	#define TEST_TEXTURE(name)		do { id loader = GetTexture(name); if (loader != nil) DumpTexture(loader, name); } while (0)
 	
-	TEST_TEXTURE(@"grey256x200");
-	TEST_TEXTURE(@"grey200x256");
-	TEST_TEXTURE(@"grey200x200");
-	TEST_TEXTURE(@"grey300x256");
-	TEST_TEXTURE(@"rgb256x200");
-	TEST_TEXTURE(@"rgb200x256");
-	TEST_TEXTURE(@"rgb200x200");
-	TEST_TEXTURE(@"rgb300x256");
-	
+	unsigned iter = ITERATIONS;
+	while (iter--)
+	{
+#if USE_POOL
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+#endif
+		
+		TEST_TEXTURE(@"grey256x200");
+		TEST_TEXTURE(@"grey200x256");
+		TEST_TEXTURE(@"grey200x200");
+		TEST_TEXTURE(@"grey300x256");
+		TEST_TEXTURE(@"grey300x200");
+		TEST_TEXTURE(@"rgb256x200");
+		TEST_TEXTURE(@"rgb200x256");
+		TEST_TEXTURE(@"rgb200x200");
+		TEST_TEXTURE(@"rgb300x256");
+		
+#if USE_POOL
+		[pool release];
+#endif
+	}
 	return 0;
 }
 
@@ -78,9 +97,6 @@ static void DumpTexture(OOTextureLoader *loader, NSString *name)
 	OOTextureDataFormat		format;
 	uint32_t				width, height;
 	uint8_t					planes;
-	NSString				*dumpName = nil;
-	NSString				*dumpPath = nil;
-	NSData					*dumpData = nil;
 	
 	if (![loader getResult:&data format:&format width:&width height:&height])
 	{
@@ -101,11 +117,18 @@ static void DumpTexture(OOTextureLoader *loader, NSString *name)
 		return;
 	}
 	
+#if DUMP_DATA
+	NSString				*dumpName = nil;
+	NSString				*dumpPath = nil;
+	NSData					*dumpData = nil;
+	
 	dumpName = [NSString stringWithFormat:@"%@ %ux%u@%u.raw", name, width, height, planes];
 	dumpPath = [sOutDirectory stringByAppendingPathComponent:dumpName];
 	dumpData = [NSData dataWithBytesNoCopy:data length:width * planes * height freeWhenDone:YES];
 	[dumpData writeToFile:dumpPath atomically:NO];
+	
 	OOLog(@"dumpTexture.dump", @"Dumped %@.png to %@", name, dumpName);
+#endif
 }
 
 
