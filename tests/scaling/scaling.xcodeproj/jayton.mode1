@@ -236,8 +236,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -353,6 +351,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -510,7 +510,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>200757899.181862</real>
+	<real>200758012.20653099</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -531,7 +531,6 @@
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1AC4D2CE0BF74B430029D6A7</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1AC4D3260BF7528B0029D6A7</string>
 		<string>1A45B0940BD8E2A20078EA87</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/tests/scaling/scaling.xcodeproj</string>
 	</array>
@@ -626,7 +625,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A45B0940BD8E2A20078EA87</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -988,7 +987,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

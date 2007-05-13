@@ -708,9 +708,9 @@
 	};
 	1A26D0E50BCF9D3B0073F257 /* OOTextureLoader.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 8560}}";
-			sepNavSelRange = "{9762, 0}";
-			sepNavVisRect = "{{0, 6079}, {1384, 410}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 8608}}";
+			sepNavSelRange = "{9656, 0}";
+			sepNavVisRect = "{{0, 5861}, {1242, 836}}";
 		};
 	};
 	1A26D0F40BCF9D8D0073F257 /* pngusr.h */ = {
@@ -1441,6 +1441,8 @@
 			1A496EB40BF0C3F300177340 /* OOShaderMaterial.m:185 */,
 			1ADF07600BF47ADE00B21660 /* OOCache.m:496 */,
 			1ADF077A0BF47F4200B21660 /* OOShaderUniform.m:491 */,
+			1AFAFC790BF5EAB7008AE909 /* OOCache.m:314 */,
+			1AFAFC8E0BF5ED56008AE909 /* OOTexture.m:322 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -1452,7 +1454,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 200685306.504621;
+		modificationTime = 200685306.5046211;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -1605,9 +1607,9 @@
 	};
 	1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 16496}}";
-			sepNavSelRange = "{29064, 0}";
-			sepNavVisRect = "{{0, 2687}, {1384, 410}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 19744}}";
+			sepNavSelRange = "{19495, 0}";
+			sepNavVisRect = "{{0, 10437}, {1242, 836}}";
 		};
 	};
 	1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */ = {
@@ -2380,6 +2382,15 @@
 			1A87006E0BEB8165006E3B60 /* OOTexture.m:306 */,
 			1AFAFC790BF5EAB7008AE909 /* OOCache.m:314 */,
 			1AFAFC8E0BF5ED56008AE909 /* OOTexture.m:322 */,
+			1A8700720BEB81B1006E3B60 /* OOSingleTextureMaterial.m:65 */,
+			1A8700A70BEB848A006E3B60 /* OOShaderUniform.m:208 */,
+			1A8700B40BEB84CA006E3B60 /* OOShaderUniform.m:328 */,
+			1A496E160BF0B21700177340 /* OOTexture.m:322 */,
+			1A496E870BF0C06700177340 /* OOCacheManager.m:181 */,
+			1A496EA80BF0C32000177340 /* OOMesh.m:156 */,
+			1A496EB10BF0C3E400177340 /* OOSingleTextureMaterial.m:85 */,
+			1A496EB40BF0C3F300177340 /* OOShaderMaterial.m:185 */,
+			1ADF07600BF47ADE00B21660 /* OOCache.m:496 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -2552,11 +2563,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 200658446;
-			PBXWorkspaceStateSaveDate = 200658446;
+			PBXPerProjectTemplateStateSaveDate = 200758020;
+			PBXWorkspaceStateSaveDate = 200758020;
 		};
 		perUserProjectItems = {
-			1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */ = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
+			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
 		userBookmarkGroup = 1A8A39E20B9AD43E00AB7625 /* PBXBookmarkGroup */;
