@@ -49,16 +49,16 @@
 	};
 	1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 21344}}";
-			sepNavSelRange = "{1931, 47}";
-			sepNavVisRect = "{{0, 61}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 20720}}";
+			sepNavSelRange = "{7055, 0}";
+			sepNavVisRect = "{{0, 2678}, {1242, 836}}";
 		};
 	};
 	1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1217, 8576}}";
-			sepNavSelRange = "{9762, 0}";
-			sepNavVisRect = "{{0, 6124}, {1217, 344}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1242, 8608}}";
+			sepNavSelRange = "{9694, 0}";
+			sepNavVisRect = "{{0, 5634}, {1242, 836}}";
 		};
 	};
 	1A45B0A70BD8E30F0078EA87 /* OOTextureLoader.h */ = {
