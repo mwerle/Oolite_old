@@ -457,15 +457,15 @@
 	1A26D0920BCF9CF70073F257 /* SkyEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1242, 8016}}";
-			sepNavSelRange = "{2052, 15}";
-			sepNavVisRect = "{{0, 773}, {1242, 836}}";
+			sepNavSelRange = "{1821, 0}";
+			sepNavVisRect = "{{0, 631}, {1242, 836}}";
 		};
 	};
 	1A26D0930BCF9CF70073F257 /* SkyEntity.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1242, 1248}}";
 			sepNavSelRange = "{1687, 0}";
-			sepNavVisRect = "{{0, 411}, {1242, 836}}";
+			sepNavVisRect = "{{0, 148}, {1242, 836}}";
 		};
 	};
 	1A26D0940BCF9CF70073F257 /* RingEntity.m */ = {
@@ -681,8 +681,8 @@
 	1A26D0E10BCF9D3B0073F257 /* OOTexture.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1242, 3760}}";
-			sepNavSelRange = "{2758, 0}";
-			sepNavVisRect = "{{0, 716}, {1242, 836}}";
+			sepNavSelRange = "{3510, 24}";
+			sepNavVisRect = "{{0, 1158}, {1242, 836}}";
 		};
 	};
 	1A26D0E20BCF9D3B0073F257 /* OOPNGTextureLoader.m */ = {
@@ -736,7 +736,7 @@
 		modificationTime = 201279478.014116;
 		state = 1;
 	};
-	1A28CA7F0BFF3A96000EBA08 /* SkyEntity.m:51 */ = {
+	1A28CA7F0BFF3A96000EBA08 /* SkyEntity.m:48 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -746,12 +746,12 @@
 		fileReference = 1A26D0920BCF9CF70073F257 /* SkyEntity.m */;
 		functionName = "-init";
 		hitCount = 1;
-		lineNumber = 51;
+		lineNumber = 48;
 		location = OoliteDev;
 		modificationTime = 201279477.1697;
 		state = 1;
 	};
-	1A28CA810BFF3A99000EBA08 /* SkyEntity.m:129 */ = {
+	1A28CA810BFF3A99000EBA08 /* SkyEntity.m:110 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -761,7 +761,7 @@
 		fileReference = 1A26D0920BCF9CF70073F257 /* SkyEntity.m */;
 		functionName = "-initAsWitchspace";
 		hitCount = 1;
-		lineNumber = 129;
+		lineNumber = 110;
 		location = OoliteDev;
 		modificationTime = 201279477.16971;
 		state = 1;
@@ -2210,8 +2210,8 @@
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
 			1A26D1DF0BCFB71D0073F257 /* OOPNGTextureLoader.m:245 */,
-			1A28CA7F0BFF3A96000EBA08 /* SkyEntity.m:51 */,
-			1A28CA810BFF3A99000EBA08 /* SkyEntity.m:129 */,
+			1A28CA7F0BFF3A96000EBA08 /* SkyEntity.m:48 */,
+			1A28CA810BFF3A99000EBA08 /* SkyEntity.m:110 */,
 			1A28CB270BFF47F0000EBA08 /* PlanetEntity.m:660 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
