@@ -273,7 +273,6 @@
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>1A8A3BE90B963F02007D20B8</string>
-								<string>1A2314300B9C667F00EF0852</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
@@ -281,7 +280,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>15</integer>
+									<integer>6</integer>
 									<integer>2</integer>
 									<integer>0</integer>
 								</array>
@@ -514,7 +513,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>201305815.694004</real>
+	<real>201309568.48156601</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -529,11 +528,15 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1A52BFFC0BFC995200942A71</string>
-		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/Oolite.xcodeproj</string>
-		<string>1A07B8050BFFAE3F00FBF815</string>
+		<string>1A07B8830BFFBB3B00FBF815</string>
+		<string>1A07B8840BFFBB3B00FBF815</string>
+		<string>1A38B5810B989622001ED4A0</string>
+		<string>1CD10A99069EF8BA00B06720</string>
+		<string>1A07B8810BFFBB3B00FBF815</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/Oolite.xcodeproj</string>
+		<string>1A52BFFC0BFC995200942A71</string>
 	</array>
 	<key>WindowString</key>
 	<string>1667 -30 797 426 1440 -372 1024 768 </string>
@@ -628,7 +631,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A52BFFC0BFC995200942A71</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -723,14 +726,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>1A28CA1C0BFF31CF000EBA08</string>
+				<string>1A07B87B0BFFBB3B00FBF815</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>1A28CA1D0BFF31CF000EBA08</string>
-				<string>1A28CA1E0BFF31CF000EBA08</string>
-				<string>1A28CA1F0BFF31CF000EBA08</string>
-				<string>1A28CA200BFF31CF000EBA08</string>
-				<string>1A28CA210BFF31CF000EBA08</string>
-				<string>1A28CA220BFF31CF000EBA08</string>
+				<string>1A07B87C0BFFBB3B00FBF815</string>
+				<string>1A07B87D0BFFBB3B00FBF815</string>
+				<string>1A07B87E0BFFBB3B00FBF815</string>
+				<string>1A07B87F0BFFBB3B00FBF815</string>
+				<string>1A07B8800BFFBB3B00FBF815</string>
+				<string>1A07B8810BFFBB3B00FBF815</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
@@ -739,7 +742,7 @@
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -830,7 +833,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
@@ -849,8 +852,6 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -886,7 +887,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1A38B5810B989622001ED4A0</string>
-				<string>1A28CA230BFF31CF000EBA08</string>
+				<string>1A07B8820BFFBB3B00FBF815</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>WindowString</key>
@@ -894,7 +895,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A38B5810B989622001ED4A0</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -992,7 +993,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
