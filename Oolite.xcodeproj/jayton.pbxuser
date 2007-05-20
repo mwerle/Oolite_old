@@ -739,8 +739,8 @@
 		functionName = "PNGError()";
 		hitCount = 1;
 		lineNumber = 245;
-		location = OoliteDev;
-		modificationTime = 201360353.311532;
+		location = Oolite;
+		modificationTime = 201364545.931116;
 		state = 1;
 	};
 	1A28CA810BFF3A99000EBA08 /* SkyEntity.m:114 */ = {
@@ -791,8 +791,8 @@
 		functionName = "-setUpMaterialsWithMaterialsDictionary:shadersDictionary::::";
 		hitCount = 1;
 		lineNumber = 434;
-		location = OoliteDev;
-		modificationTime = 201360352.525054;
+		location = Oolite;
+		modificationTime = 201364545.260273;
 		state = 1;
 	};
 	1A28CC6C0BFFA999000EBA08 /* OOMesh.m:830 */ = {
@@ -806,8 +806,8 @@
 		functionName = "-loadData:";
 		hitCount = 1;
 		lineNumber = 830;
-		location = OoliteDev;
-		modificationTime = 201360352.525063;
+		location = Oolite;
+		modificationTime = 201364545.260284;
 		state = 1;
 	};
 	1A28CC6E0BFFAA25000EBA08 /* OOMesh.m:1015 */ = {
@@ -948,9 +948,9 @@
 	};
 	1A2A1CA90BD2914F00152975 /* OOMesh.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 26544}}";
-			sepNavSelRange = "{5039, 0}";
-			sepNavVisRect = "{{0, 3461}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1384, 26176}}";
+			sepNavSelRange = "{4011, 0}";
+			sepNavVisRect = "{{0, 2203}, {1384, 363}}";
 		};
 	};
 	1A2A1DEA0BD2A28E00152975 /* OOMacroOpenGL.h */ = {
@@ -1085,9 +1085,9 @@
 	};
 	1A43234B0BCFC9BB00F65914 /* OOOpenGLExtensionManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 6016}}";
-			sepNavSelRange = "{3134, 0}";
-			sepNavVisRect = "{{0, 1261}, {1384, 374}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 5904}}";
+			sepNavSelRange = "{5020, 0}";
+			sepNavVisRect = "{{0, 2795}, {1014, 836}}";
 		};
 	};
 	1A5DB1E80BBD8F0000D57389 /* OOConstToString.h */ = {
@@ -1405,7 +1405,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 201360359.671755;
+		modificationTime = 201364550.362412;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -1558,9 +1558,9 @@
 	};
 	1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 19744}}";
-			sepNavSelRange = "{19495, 0}";
-			sepNavVisRect = "{{0, 10437}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 19824}}";
+			sepNavSelRange = "{26180, 0}";
+			sepNavVisRect = "{{0, 14757}, {1014, 836}}";
 		};
 	};
 	1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */ = {
@@ -1706,8 +1706,8 @@
 		functionName = "-loadData:";
 		hitCount = 1;
 		lineNumber = 493;
-		location = OoliteDev;
-		modificationTime = 201360352.525044;
+		location = Oolite;
+		modificationTime = 201364545.260264;
 		state = 1;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
@@ -2275,7 +2275,7 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Development;
+		activeBuildConfigurationName = Deployment;
 		activeExecutable = 1AD9AF780B91E1BB00FB704E /* Oolite */;
 		activeTarget = 0865423506B8447D000CA0AB /* Oolite */;
 		addToTargets = (
