@@ -463,23 +463,23 @@
 	};
 	1A26D0920BCF9CF70073F257 /* SkyEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 8496}}";
-			sepNavSelRange = "{15734, 0}";
-			sepNavVisRect = "{{0, 7659}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 8720}}";
+			sepNavSelRange = "{1524, 0}";
+			sepNavVisRect = "{{0, 534}, {1014, 836}}";
 		};
 	};
 	1A26D0930BCF9CF70073F257 /* SkyEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 1232}}";
-			sepNavSelRange = "{1811, 0}";
-			sepNavVisRect = "{{0, 395}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {857, 1248}}";
+			sepNavSelRange = "{1719, 0}";
+			sepNavVisRect = "{{0, 411}, {857, 836}}";
 		};
 	};
 	1A26D0940BCF9CF70073F257 /* RingEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1024, 2832}}";
-			sepNavSelRange = "{2332, 0}";
-			sepNavVisRect = "{{0, 1109}, {1024, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 2608}}";
+			sepNavSelRange = "{2846, 0}";
+			sepNavVisRect = "{{0, 1345}, {1014, 836}}";
 		};
 	};
 	1A26D0950BCF9CF70073F257 /* RingEntity.h */ = {
@@ -505,9 +505,9 @@
 	};
 	1A26D0990BCF9CF70073F257 /* PlanetEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 34144}}";
-			sepNavSelRange = "{19113, 0}";
-			sepNavVisRect = "{{0, 10452}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 33776}}";
+			sepNavSelRange = "{51331, 0}";
+			sepNavVisRect = "{{0, 27269}, {1014, 836}}";
 		};
 	};
 	1A26D09A0BCF9CF70073F257 /* PlanetEntity.h */ = {
@@ -687,9 +687,9 @@
 	};
 	1A26D0E10BCF9D3B0073F257 /* OOTexture.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 3728}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 3728}}";
 			sepNavSelRange = "{3157, 0}";
-			sepNavVisRect = "{{0, 1006}, {1242, 836}}";
+			sepNavVisRect = "{{0, 2391}, {1014, 836}}";
 		};
 	};
 	1A26D0E20BCF9D3B0073F257 /* OOPNGTextureLoader.m */ = {
@@ -740,10 +740,10 @@
 		hitCount = 1;
 		lineNumber = 245;
 		location = OoliteDev;
-		modificationTime = 201309065.682943;
+		modificationTime = 201360353.311532;
 		state = 1;
 	};
-	1A28CA810BFF3A99000EBA08 /* SkyEntity.m:120 */ = {
+	1A28CA810BFF3A99000EBA08 /* SkyEntity.m:114 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -751,11 +751,11 @@
 		continueAfterActions = 0;
 		delayBeforeContinue = 0;
 		fileReference = 1A26D0920BCF9CF70073F257 /* SkyEntity.m */;
-		functionName = "-initAsWitchspace";
+		functionName = "-initWithColors::andSystemInfo:";
 		hitCount = 1;
-		lineNumber = 120;
+		lineNumber = 114;
 		location = OoliteDev;
-		modificationTime = 201309064.97152;
+		modificationTime = 201359594.174058;
 		state = 1;
 	};
 	1A28CAB40BFF404F000EBA08 /* planetinfo.plist */ = {
@@ -765,7 +765,7 @@
 			sepNavVisRect = "{{0, 0}, {1242, 836}}";
 		};
 	};
-	1A28CB270BFF47F0000EBA08 /* PlanetEntity.m:660 */ = {
+	1A28CB270BFF47F0000EBA08 /* PlanetEntity.m:640 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -775,12 +775,12 @@
 		fileReference = 1A26D0990BCF9CF70073F257 /* PlanetEntity.m */;
 		functionName = "-initPlanetFromDictionary:";
 		hitCount = 1;
-		lineNumber = 660;
+		lineNumber = 640;
 		location = OoliteDev;
-		modificationTime = 201309064.971531;
+		modificationTime = 201359698.028497;
 		state = 1;
 	};
-	1A28CBE30BFF9E5C000EBA08 /* OOMesh.m:563 */ = {
+	1A28CBE30BFF9E5C000EBA08 /* OOMesh.m:434 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -790,12 +790,12 @@
 		fileReference = 1A2A1CA90BD2914F00152975 /* OOMesh.m */;
 		functionName = "-setUpMaterialsWithMaterialsDictionary:shadersDictionary::::";
 		hitCount = 1;
-		lineNumber = 563;
+		lineNumber = 434;
 		location = OoliteDev;
-		modificationTime = 201309000.84852;
+		modificationTime = 201360352.525054;
 		state = 1;
 	};
-	1A28CC6C0BFFA999000EBA08 /* OOMesh.m:963 */ = {
+	1A28CC6C0BFFA999000EBA08 /* OOMesh.m:830 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -805,12 +805,12 @@
 		fileReference = 1A2A1CA90BD2914F00152975 /* OOMesh.m */;
 		functionName = "-loadData:";
 		hitCount = 1;
-		lineNumber = 963;
+		lineNumber = 830;
 		location = OoliteDev;
-		modificationTime = 201309007.179927;
+		modificationTime = 201360352.525063;
 		state = 1;
 	};
-	1A28CC6E0BFFAA25000EBA08 /* OOMesh.m:1156 */ = {
+	1A28CC6E0BFFAA25000EBA08 /* OOMesh.m:1015 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -820,12 +820,12 @@
 		fileReference = 1A2A1CA90BD2914F00152975 /* OOMesh.m */;
 		functionName = "-setUpVertexArrays";
 		hitCount = 1;
-		lineNumber = 1156;
+		lineNumber = 1015;
 		location = OoliteDev;
-		modificationTime = 201305604.230912;
+		modificationTime = 201360411.347971;
 		state = 1;
 	};
-	1A28CC700BFFAA2D000EBA08 /* OOMesh.m:195 */ = {
+	1A28CC700BFFAA2D000EBA08 /* OOMesh.m:190 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -834,13 +834,13 @@
 		delayBeforeContinue = 0;
 		fileReference = 1A2A1CA90BD2914F00152975 /* OOMesh.m */;
 		functionName = "-renderOpaqueParts";
-		hitCount = 1;
-		lineNumber = 195;
+		hitCount = 2;
+		lineNumber = 190;
 		location = OoliteDev;
-		modificationTime = 201309313.018165;
+		modificationTime = 201360612.573329;
 		state = 1;
 	};
-	1A28CC720BFFAA33000EBA08 /* OOMesh.m:549 */ = {
+	1A28CC720BFFAA33000EBA08 /* OOMesh.m:420 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -850,9 +850,9 @@
 		fileReference = 1A2A1CA90BD2914F00152975 /* OOMesh.m */;
 		functionName = "-setUpMaterialsWithMaterialsDictionary:shadersDictionary::::";
 		hitCount = 1;
-		lineNumber = 549;
+		lineNumber = 420;
 		location = OoliteDev;
-		modificationTime = 201308999.797489;
+		modificationTime = 201360414.739741;
 		state = 1;
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
@@ -927,30 +927,30 @@
 	};
 	1A2A1B280BD277D800152975 /* OOSelfDrawingEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 1920}}";
-			sepNavSelRange = "{1073, 0}";
-			sepNavVisRect = "{{0, 26}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1584}}";
+			sepNavSelRange = "{2188, 0}";
+			sepNavVisRect = "{{0, 747}, {1014, 836}}";
 		};
 	};
 	1A2A1B290BD277D800152975 /* OOSelfDrawingEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {857, 24688}}";
-			sepNavSelRange = "{1969, 0}";
-			sepNavVisRect = "{{0, 631}, {857, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 21744}}";
+			sepNavSelRange = "{4082, 0}";
+			sepNavVisRect = "{{0, 2421}, {1014, 836}}";
 		};
 	};
 	1A2A1CA80BD2914F00152975 /* OOMesh.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {857, 3120}}";
-			sepNavSelRange = "{4710, 0}";
-			sepNavVisRect = "{{0, 1368}, {857, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {857, 2592}}";
+			sepNavSelRange = "{3805, 0}";
+			sepNavVisRect = "{{0, 1755}, {857, 836}}";
 		};
 	};
 	1A2A1CA90BD2914F00152975 /* OOMesh.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 28528}}";
-			sepNavSelRange = "{16968, 0}";
-			sepNavVisRect = "{{0, 10577}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 26544}}";
+			sepNavSelRange = "{5039, 0}";
+			sepNavVisRect = "{{0, 3461}, {1014, 836}}";
 		};
 	};
 	1A2A1DEA0BD2A28E00152975 /* OOMacroOpenGL.h */ = {
@@ -1078,9 +1078,9 @@
 	};
 	1A43234A0BCFC9BB00F65914 /* OOOpenGLExtensionManager.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 2576}}";
-			sepNavSelRange = "{3725, 0}";
-			sepNavVisRect = "{{0, 1310}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {857, 2560}}";
+			sepNavSelRange = "{5828, 0}";
+			sepNavVisRect = "{{0, 1723}, {857, 836}}";
 		};
 	};
 	1A43234B0BCFC9BB00F65914 /* OOOpenGLExtensionManager.m */ = {
@@ -1386,14 +1386,14 @@
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
 			1A26D1DF0BCFB71D0073F257 /* OOPNGTextureLoader.m:245 */,
-			1ADC3D100BF8ADAD000E0F89 /* OOMesh.m:626 */,
-			1A28CA810BFF3A99000EBA08 /* SkyEntity.m:120 */,
-			1A28CB270BFF47F0000EBA08 /* PlanetEntity.m:660 */,
-			1A28CBE30BFF9E5C000EBA08 /* OOMesh.m:563 */,
-			1A28CC6C0BFFA999000EBA08 /* OOMesh.m:963 */,
-			1A28CC6E0BFFAA25000EBA08 /* OOMesh.m:1156 */,
-			1A28CC700BFFAA2D000EBA08 /* OOMesh.m:195 */,
-			1A28CC720BFFAA33000EBA08 /* OOMesh.m:549 */,
+			1ADC3D100BF8ADAD000E0F89 /* OOMesh.m:493 */,
+			1A28CA810BFF3A99000EBA08 /* SkyEntity.m:114 */,
+			1A28CB270BFF47F0000EBA08 /* PlanetEntity.m:640 */,
+			1A28CBE30BFF9E5C000EBA08 /* OOMesh.m:434 */,
+			1A28CC6C0BFFA999000EBA08 /* OOMesh.m:830 */,
+			1A28CC6E0BFFAA25000EBA08 /* OOMesh.m:1015 */,
+			1A28CC700BFFAA2D000EBA08 /* OOMesh.m:190 */,
+			1A28CC720BFFAA33000EBA08 /* OOMesh.m:420 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -1405,7 +1405,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 201309070.157871;
+		modificationTime = 201360359.671755;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -1695,7 +1695,7 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	1ADC3D100BF8ADAD000E0F89 /* OOMesh.m:626 */ = {
+	1ADC3D100BF8ADAD000E0F89 /* OOMesh.m:493 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1705,9 +1705,9 @@
 		fileReference = 1A2A1CA90BD2914F00152975 /* OOMesh.m */;
 		functionName = "-loadData:";
 		hitCount = 1;
-		lineNumber = 626;
+		lineNumber = 493;
 		location = OoliteDev;
-		modificationTime = 201306801.176653;
+		modificationTime = 201360352.525044;
 		state = 1;
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
@@ -2284,9 +2284,9 @@
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
 			1A26D1DF0BCFB71D0073F257 /* OOPNGTextureLoader.m:245 */,
-			1A28CA810BFF3A99000EBA08 /* SkyEntity.m:120 */,
-			1A28CB270BFF47F0000EBA08 /* PlanetEntity.m:660 */,
-			1A28CC700BFFAA2D000EBA08 /* OOMesh.m:195 */,
+			1ADC3D100BF8ADAD000E0F89 /* OOMesh.m:493 */,
+			1A28CBE30BFF9E5C000EBA08 /* OOMesh.m:434 */,
+			1A28CC6C0BFFA999000EBA08 /* OOMesh.m:830 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -2459,8 +2459,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 201305550;
-			PBXWorkspaceStateSaveDate = 201305550;
+			PBXPerProjectTemplateStateSaveDate = 201354005;
+			PBXWorkspaceStateSaveDate = 201354005;
 		};
 		perUserProjectItems = {
 			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
