@@ -4,18 +4,21 @@
         {
             ACTIONS = {
                 clearTextureCacheAction = id; 
+                createShipAction = id; 
+                createShipPanelOKAction = id; 
                 dumpEntityListAction = id; 
                 graphicsResetAction = id; 
-                logMsgClassPanelCancelAction = id; 
                 logMsgClassPanelDisableAction = id; 
                 logMsgClassPanelEnableAction = id; 
-                logMsgClassPanelTextChangedAction = id; 
+                modalPanelCancelAction = id; 
                 otherLogMessageClassAction = id; 
                 resetAndClearAction = id; 
             }; 
             CLASS = OODebugController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                createShipPanel = NSPanel; 
+                createShipPanelTextField = NSTextField; 
                 logMessageClassPanel = NSPanel; 
                 logMessageClassSubMenu = NSMenu; 
                 logMsgClassPanelTextField = NSTextField; 
