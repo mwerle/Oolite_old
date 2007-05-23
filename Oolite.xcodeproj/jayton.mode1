@@ -511,7 +511,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>201625047.21782801</real>
+	<real>201626244.09572899</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -533,19 +533,8 @@
 		<string>1A8071AA0C047D1D00BA1935</string>
 		<string>1AED2CA00C04550A004A1118</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/Oolite.xcodeproj</string>
-		<string>1A8072B80C048DC900BA1935</string>
-		<string>1A8072B90C048DC900BA1935</string>
-		<string>1A8072BA0C048DC900BA1935</string>
-		<string>1A8072BB0C048DC900BA1935</string>
-		<string>1A8072BC0C048DC900BA1935</string>
-		<string>1A8072BD0C048DC900BA1935</string>
-		<string>1A8072BE0C048DC900BA1935</string>
-		<string>1A8072BF0C048DC900BA1935</string>
-		<string>1A8072C00C048DC900BA1935</string>
-		<string>1A8072C10C048DC900BA1935</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1A8072C20C048DC900BA1935</string>
 	</array>
 	<key>WindowString</key>
 	<string>1667 38 797 426 1440 -304 1024 768 </string>
@@ -783,7 +772,7 @@
 										<key>Frame</key>
 										<string>{{0, 0}, {927, 0}}</string>
 										<key>RubberWindowFrame</key>
-										<string>556 241 927 567 0 0 1440 878 </string>
+										<string>473 308 927 567 0 0 1440 878 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXNavigatorGroup</string>
@@ -809,7 +798,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {927, 521}}</string>
 								<key>RubberWindowFrame</key>
-								<string>556 241 927 567 0 0 1440 878 </string>
+								<string>473 308 927 567 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXProjectFindModule</string>
@@ -838,7 +827,7 @@
 				<string>1CD0528E0623707200166675</string>
 			</array>
 			<key>WindowString</key>
-			<string>556 241 927 567 0 0 1440 878 </string>
+			<string>473 308 927 567 0 0 1440 878 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>

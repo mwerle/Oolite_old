@@ -695,8 +695,8 @@
 	1A26D0E10BCF9D3B0073F257 /* OOTexture.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 3872}}";
-			sepNavSelRange = "{2031, 0}";
-			sepNavVisRect = "{{0, 421}, {1014, 836}}";
+			sepNavSelRange = "{3025, 0}";
+			sepNavVisRect = "{{0, 967}, {1014, 836}}";
 		};
 	};
 	1A26D0E20BCF9D3B0073F257 /* OOPNGTextureLoader.m */ = {
@@ -822,16 +822,16 @@
 	};
 	1A2A1B280BD277D800152975 /* OOSelfDrawingEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1584}}";
-			sepNavSelRange = "{1508, 0}";
-			sepNavVisRect = "{{0, 488}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1616}}";
+			sepNavSelRange = "{1431, 7}";
+			sepNavVisRect = "{{0, 702}, {1014, 836}}";
 		};
 	};
 	1A2A1B290BD277D800152975 /* OOSelfDrawingEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 21904}}";
-			sepNavSelRange = "{788, 19}";
-			sepNavVisRect = "{{0, 237}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 21936}}";
+			sepNavSelRange = "{4983, 0}";
+			sepNavVisRect = "{{0, 2092}, {1014, 836}}";
 		};
 	};
 	1A2A1CA80BD2914F00152975 /* OOMesh.h */ = {
@@ -1890,9 +1890,9 @@
 	};
 	251610D5099544090037C2E1 /* OOCASound.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 5600}}";
-			sepNavSelRange = "{854, 29}";
-			sepNavVisRect = "{{0, 0}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 5616}}";
+			sepNavSelRange = "{3445, 0}";
+			sepNavVisRect = "{{0, 3056}, {1014, 836}}";
 		};
 	};
 	251610D6099544090037C2E1 /* OOCASoundChannel.m */ = {
@@ -2003,8 +2003,8 @@
 	25161108099544390037C2E1 /* OOTrumble.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 15568}}";
-			sepNavSelRange = "{5315, 0}";
-			sepNavVisRect = "{{0, 2661}, {1014, 836}}";
+			sepNavSelRange = "{743, 0}";
+			sepNavVisRect = "{{0, 0}, {1014, 836}}";
 		};
 	};
 	2516110B099544390037C2E1 /* GameController.h */ = {
@@ -2023,9 +2023,9 @@
 	};
 	25161110099544390037C2E1 /* OOTrumble.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1280, 2688}}";
-			sepNavSelRange = "{1016, 0}";
-			sepNavVisRect = "{{0, 182}, {1280, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 2688}}";
+			sepNavSelRange = "{3487, 0}";
+			sepNavVisRect = "{{0, 1564}, {1014, 836}}";
 		};
 	};
 	25161116099544390037C2E1 /* OOSound.h */ = {
@@ -2086,9 +2086,9 @@
 	};
 	25161139099544390037C2E1 /* ResourceManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 11088}}";
-			sepNavSelRange = "{12139, 0}";
-			sepNavVisRect = "{{0, 6560}, {1384, 368}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 11200}}";
+			sepNavSelRange = "{17733, 0}";
+			sepNavVisRect = "{{0, 9248}, {1014, 836}}";
 		};
 	};
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
@@ -2110,7 +2110,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 120752}}";
 			sepNavSelRange = "{910, 0}";
-			sepNavVisRect = "{{0, 70}, {1014, 836}}";
+			sepNavVisRect = "{{0, 945}, {1014, 836}}";
 		};
 	};
 	25161144099544390037C2E1 /* Universe.h */ = {
