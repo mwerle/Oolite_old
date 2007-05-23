@@ -1,0 +1,4 @@
+OODebugController.nib
+Mac-specific debug UI
+
+Place OODebugController.nib in a search path (e.g. the AddOns directory) to add a Debug menu to Oolite (debug builds only). Works in conjunction with OODebugController.m.
