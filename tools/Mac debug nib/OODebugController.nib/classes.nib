@@ -4,12 +4,23 @@
         {
             ACTIONS = {
                 clearTextureCacheAction = id; 
+                dumpEntityListAction = id; 
                 graphicsResetAction = id; 
+                logMsgClassPanelCancelAction = id; 
+                logMsgClassPanelDisableAction = id; 
+                logMsgClassPanelEnableAction = id; 
+                logMsgClassPanelTextChangedAction = id; 
+                otherLogMessageClassAction = id; 
                 resetAndClearAction = id; 
             }; 
             CLASS = OODebugController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {menu = NSMenu; }; 
+            OUTLETS = {
+                logMessageClassPanel = NSPanel; 
+                logMessageClassSubMenu = NSMenu; 
+                logMsgClassPanelTextField = NSTextField; 
+                menu = NSMenu; 
+            }; 
             SUPERCLASS = NSObject; 
         }
     ); 

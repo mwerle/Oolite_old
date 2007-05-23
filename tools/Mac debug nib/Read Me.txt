@@ -2,3 +2,5 @@ OODebugController.nib
 Mac-specific debug UI
 
 Place OODebugController.nib in a search path (e.g. the AddOns directory) to add a Debug menu to Oolite (debug builds only). Works in conjunction with OODebugController.m.
+
+Note on the Log Message Classes submenu: for ease of editing, items in this submenu with no action specified are used to toggle (and display) the log message class specified in their title. Display titles (optional) are set in the Attributed Title property. Thus, to add a menu item to control the foo.bar message class, simply add an item titled foo.bar.

@@ -99,9 +99,9 @@
 	};
 	1A2316E80B9CFAD700EF0852 /* logcontrol.plist */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 5008}}";
-			sepNavSelRange = "{10685, 0}";
-			sepNavVisRect = "{{0, 4134}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 5056}}";
+			sepNavSelRange = "{5006, 0}";
+			sepNavVisRect = "{{0, 1622}, {1014, 836}}";
 		};
 	};
 	1A2316E90B9CFAD700EF0852 /* missiontext.plist */ = {
@@ -526,9 +526,9 @@
 	};
 	1A26D09C0BCF9CF70073F257 /* PlayerEntityControls.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 43936}}";
-			sepNavSelRange = "{68396, 0}";
-			sepNavVisRect = "{{0, 37445}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 44128}}";
+			sepNavSelRange = "{31092, 0}";
+			sepNavVisRect = "{{0, 16327}, {1014, 836}}";
 		};
 	};
 	1A26D09D0BCF9CF70073F257 /* Entity.h */ = {
@@ -680,9 +680,9 @@
 	};
 	1A26D0E00BCF9D3B0073F257 /* OOTexture.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 11376}}";
-			sepNavSelRange = "{16611, 0}";
-			sepNavVisRect = "{{0, 7568}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 11392}}";
+			sepNavSelRange = "{15521, 0}";
+			sepNavVisRect = "{{0, 8079}, {1014, 836}}";
 		};
 	};
 	1A26D0E10BCF9D3B0073F257 /* OOTexture.h */ = {
@@ -740,7 +740,7 @@
 		hitCount = 1;
 		lineNumber = 245;
 		location = OoliteDev;
-		modificationTime = 201617973.071261;
+		modificationTime = 201622848.554113;
 		state = 1;
 	};
 	1A29967C0B9F064C002D2149 /* OOCache.h */ = {
@@ -932,15 +932,15 @@
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 2336}}";
-			sepNavSelRange = "{5699, 22}";
-			sepNavVisRect = "{{0, 1499}, {1014, 836}}";
+			sepNavSelRange = "{2897, 30}";
+			sepNavVisRect = "{{0, 1071}, {1014, 836}}";
 		};
 	};
 	1A38B4AB0B988532001ED4A0 /* OOLogging.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 12768}}";
-			sepNavSelRange = "{4814, 63}";
-			sepNavVisRect = "{{0, 2149}, {1014, 836}}";
+			sepNavSelRange = "{5087, 0}";
+			sepNavVisRect = "{{0, 2471}, {1014, 836}}";
 		};
 	};
 	1A3A04610BC547DC00B5E2D9 /* OOTypes.h */ = {
@@ -1205,6 +1205,34 @@
 			sepNavVisRect = "{{0, 1781}, {891, 836}}";
 		};
 	};
+	1A8071D90C0480C000BA1935 /* OODebugContinuousTextField.m */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.objc;
+		name = OODebugContinuousTextField.m;
+		path = "/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/src/Cocoa/OODebugContinuousTextField.m";
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1056}}";
+			sepNavSelRange = "{1899, 0}";
+			sepNavVisRect = "{{0, 219}, {1014, 836}}";
+		};
+	};
+	1A8071FC0C04822400BA1935 /* OODebugContinuousTextField.m:58 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 1A8071D90C0480C000BA1935 /* OODebugContinuousTextField.m */;
+		functionName = "-keyDown:";
+		hitCount = 1;
+		lineNumber = 58;
+		location = OoliteDev;
+		modificationTime = 201622847.634674;
+		state = 1;
+	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1184, 2672}}";
@@ -1274,7 +1302,7 @@
 		objects = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
 			1A26D1DF0BCFB71D0073F257 /* OOPNGTextureLoader.m:245 */,
-			1AED2E360C047196004A1118 /* OODebugController.m:65 */,
+			1AED2E360C047196004A1118 /* OODebugController.m:68 */,
 		);
 	};
 	1A8A3F670B9B47E300AB7625 /* -[NSException raise] */ = {
@@ -1286,7 +1314,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 201617977.732535;
+		modificationTime = 201622854.078708;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -1683,19 +1711,19 @@
 	};
 	1AED2DE50C046BA2004A1118 /* OODebugController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1136}}";
-			sepNavSelRange = "{2054, 0}";
-			sepNavVisRect = "{{0, 299}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1376}}";
+			sepNavSelRange = "{2369, 0}";
+			sepNavVisRect = "{{0, 523}, {1014, 836}}";
 		};
 	};
 	1AED2DE60C046BA2004A1118 /* OODebugController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 2880}}";
-			sepNavSelRange = "{2567, 0}";
-			sepNavVisRect = "{{0, 788}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 4208}}";
+			sepNavSelRange = "{2070, 0}";
+			sepNavVisRect = "{{0, 314}, {1014, 836}}";
 		};
 	};
-	1AED2E360C047196004A1118 /* OODebugController.m:65 */ = {
+	1AED2E360C047196004A1118 /* OODebugController.m:68 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1705,9 +1733,9 @@
 		fileReference = 1AED2DE60C046BA2004A1118 /* OODebugController.m */;
 		functionName = "-init";
 		hitCount = 1;
-		lineNumber = 65;
+		lineNumber = 68;
 		location = OoliteDev;
-		modificationTime = 201617982.678199;
+		modificationTime = 201620777.747483;
 		state = 1;
 	};
 	1AED74C70BBA3CAA009410CD /* logcontrol.plist.xml */ = {
@@ -2200,7 +2228,7 @@
 		breakpoints = (
 			1A8A3F670B9B47E300AB7625 /* -[NSException raise] */,
 			1A26D1DF0BCFB71D0073F257 /* OOPNGTextureLoader.m:245 */,
-			1AED2E360C047196004A1118 /* OODebugController.m:65 */,
+			1A8071FC0C04822400BA1935 /* OODebugContinuousTextField.m:58 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
