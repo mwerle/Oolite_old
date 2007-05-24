@@ -407,9 +407,9 @@
 	};
 	1A231A160B9D8B1B00EF0852 /* OOCacheManager.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {857, 1088}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1088}}";
 			sepNavSelRange = "{1197, 0}";
-			sepNavVisRect = "{{0, 26}, {857, 836}}";
+			sepNavVisRect = "{{0, 25}, {1014, 836}}";
 		};
 	};
 	1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */ = {
@@ -845,7 +845,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 20688}}";
 			sepNavSelRange = "{805, 0}";
-			sepNavVisRect = "{{0, 6}, {1014, 836}}";
+			sepNavVisRect = "{{0, 5}, {1014, 836}}";
 		};
 	};
 	1A2A1DEA0BD2A28E00152975 /* OOMacroOpenGL.h */ = {
@@ -1219,11 +1219,6 @@
 		name = OODebugContinuousTextField.m;
 		path = "/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/src/Cocoa/OODebugContinuousTextField.m";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1056}}";
-			sepNavSelRange = "{1899, 0}";
-			sepNavVisRect = "{{0, 219}, {1014, 836}}";
-		};
 	};
 	1A8071FC0C04822400BA1935 /* OODebugContinuousTextField.m:58 */ = {
 		isa = PBXFileBreakpoint;
@@ -2087,8 +2082,8 @@
 	25161139099544390037C2E1 /* ResourceManager.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 11200}}";
-			sepNavSelRange = "{17733, 0}";
-			sepNavVisRect = "{{0, 9248}, {1014, 836}}";
+			sepNavSelRange = "{10045, 0}";
+			sepNavVisRect = "{{0, 4320}, {1014, 836}}";
 		};
 	};
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
@@ -2408,8 +2403,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 201618297;
-			PBXWorkspaceStateSaveDate = 201618297;
+			PBXPerProjectTemplateStateSaveDate = 201693356;
+			PBXWorkspaceStateSaveDate = 201693356;
 		};
 		perUserProjectItems = {
 			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
