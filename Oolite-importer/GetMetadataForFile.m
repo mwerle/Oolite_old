@@ -83,13 +83,16 @@ static BOOL GetMetadataForSaveFile(void* thisInterface, NSMutableDictionary *att
 		ok = YES;
 		
 		value = [content objectForKey:@"player_name"];
-		if (nil != value) [attributes setObject:value forKey:(NSString *)kMDItemTitle];
+		if (nil != value)  [attributes setObject:value forKey:(NSString *)kMDItemTitle];
 		
 		value = [content objectForKey:@"ship_desc"];
-		if (nil != value) [attributes setObject:[NSArray arrayWithObject:value] forKey:kShipIDs];
+		if (nil != value)  [attributes setObject:[NSArray arrayWithObject:value] forKey:kShipIDs];
+		
+		value = [content objectForKey:@"ship_name"];
+		if (nil != value)  [attributes setObject:[NSArray arrayWithObject:value] forKey:kShipClassNames];
 		
 		value = [content objectForKey:@"comm_log"];
-		if (0 != [value count]) [attributes setObject:[value componentsJoinedByString:@"\n"] forKey:(NSString *)kMDItemTextContent];
+		if (0 != [value count])  [attributes setObject:[value componentsJoinedByString:@"\n"] forKey:(NSString *)kMDItemTextContent];
 		
 		value = [content objectForKey:@"ship_kills"];
 		if (nil != value)
@@ -152,10 +155,10 @@ static BOOL GetMetadataForOXP(void* thisInterface, NSMutableDictionary *attribut
 		for (shipEnum = [content objectEnumerator]; ship = [shipEnum nextObject]; )
 		{
 			string = [ship objectForKey:@"name"];
-			if (nil != string) [names addObject:string];
+			if (nil != string)  [names addObject:string];
 			
 			string = [ship objectForKey:@"model"];
-			if (nil != string) [models addObject:string];
+			if (nil != string)  [models addObject:string];
 			
 			string = [ship objectForKey:@"roles"];
 			if (nil != string)

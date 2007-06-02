@@ -55,8 +55,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 194708619;
-			PBXWorkspaceStateSaveDate = 194708619;
+			PBXPerProjectTemplateStateSaveDate = 202492517;
+			PBXWorkspaceStateSaveDate = 202492517;
 		};
 		sourceControlManager = 1A1AB0850909AE56001039FA /* Source Control */;
 		userBuildSettings = {
@@ -103,9 +103,9 @@
 	};
 	2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1101, 3040}}";
-			sepNavSelRange = "{782, 0}";
-			sepNavVisRect = "{{0, 0}, {1101, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 3088}}";
+			sepNavSelRange = "{4997, 0}";
+			sepNavVisRect = "{{0, 0}, {1014, 836}}";
 		};
 	};
 	8D57630D048677EA00EA77CD /* Oolite-importer */ = {
@@ -127,9 +127,9 @@
 	};
 	C88FB7DB0674470F006EBB30 /* English */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1049, 822}}";
-			sepNavSelRange = "{891, 0}";
-			sepNavVisRect = "{{0, 0}, {1049, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 837}}";
+			sepNavSelRange = "{893, 0}";
+			sepNavVisRect = "{{0, 0}, {1014, 836}}";
 		};
 	};
 }
