@@ -673,9 +673,9 @@
 	};
 	1A26D0D10BCF9D0D0073F257 /* OOShaderMaterial.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 7664}}";
-			sepNavSelRange = "{11736, 0}";
-			sepNavVisRect = "{{0, 6349}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {913, 7664}}";
+			sepNavSelRange = "{9992, 0}";
+			sepNavVisRect = "{{0, 4749}, {913, 836}}";
 		};
 	};
 	1A26D0D20BCF9D0D0073F257 /* OOMaterial.m */ = {
@@ -715,9 +715,9 @@
 	};
 	1A26D0DB0BCF9D1E0073F257 /* OOShaderUniform.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 9600}}";
-			sepNavSelRange = "{6047, 0}";
-			sepNavVisRect = "{{0, 5064}, {1384, 384}}";
+			sepNavIntBoundsRect = "{{0, 0}, {913, 9888}}";
+			sepNavSelRange = "{15300, 0}";
+			sepNavVisRect = "{{0, 8894}, {913, 836}}";
 		};
 	};
 	1A26D0E00BCF9D3B0073F257 /* OOTexture.m */ = {
@@ -1832,9 +1832,9 @@
 	};
 	1AED2DE50C046BA2004A1118 /* OODebugController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {913, 1504}}";
-			sepNavSelRange = "{2544, 41}";
-			sepNavVisRect = "{{0, 651}, {913, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {913, 1696}}";
+			sepNavSelRange = "{2317, 0}";
+			sepNavVisRect = "{{0, 361}, {913, 836}}";
 		};
 	};
 	1AED2DE60C046BA2004A1118 /* OODebugController.m */ = {
