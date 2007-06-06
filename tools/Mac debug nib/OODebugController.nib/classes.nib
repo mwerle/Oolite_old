@@ -3,6 +3,7 @@
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
+                clearAllCachesAction = id; 
                 clearTextureCacheAction = id; 
                 createShipAction = id; 
                 createShipPanelOKAction = id; 
