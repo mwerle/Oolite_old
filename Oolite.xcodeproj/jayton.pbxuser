@@ -127,9 +127,9 @@
 	};
 	1A2316E70B9CFAD700EF0852 /* keyconfig.plist */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {913, 1024}}";
-			sepNavSelRange = "{929, 0}";
-			sepNavVisRect = "{{0, 2}, {913, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 1024}}";
+			sepNavSelRange = "{768, 13}";
+			sepNavVisRect = "{{0, 187}, {1205, 836}}";
 		};
 	};
 	1A2316E80B9CFAD700EF0852 /* logcontrol.plist */ = {
@@ -260,9 +260,9 @@
 	};
 	1A23179E0B9D022500EF0852 /* interceptAI.plist */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1089, 837}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 837}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 0}, {1089, 836}}";
+			sepNavVisRect = "{{0, 0}, {1205, 836}}";
 		};
 	};
 	1A23179F0B9D022500EF0852 /* minerAI.plist */ = {
@@ -485,8 +485,8 @@
 	1A26D08D0BCF9CF70073F257 /* PlayerEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1205, 103408}}";
-			sepNavSelRange = "{61524, 0}";
-			sepNavVisRect = "{{0, 32277}, {1205, 836}}";
+			sepNavSelRange = "{72720, 0}";
+			sepNavVisRect = "{{0, 41433}, {1205, 836}}";
 		};
 	};
 	1A26D08E0BCF9CF70073F257 /* PlayerEntity.h */ = {
@@ -575,9 +575,9 @@
 	};
 	1A26D09C0BCF9CF70073F257 /* PlayerEntityControls.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 44128}}";
-			sepNavSelRange = "{18831, 19}";
-			sepNavVisRect = "{{0, 9968}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 43952}}";
+			sepNavSelRange = "{7352, 0}";
+			sepNavVisRect = "{{0, 3637}, {1205, 836}}";
 		};
 	};
 	1A26D09D0BCF9CF70073F257 /* Entity.h */ = {
@@ -949,7 +949,7 @@
 		hitCount = 1;
 		lineNumber = 307;
 		location = OoliteDev;
-		modificationTime = 202993120.445358;
+		modificationTime = 203007131.097434;
 		state = 1;
 	};
 	1A34912D0BC25EBC00802DA7 /* oolite-legacy-script.plist */ = {
@@ -1319,6 +1319,7 @@
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A2E39910C16C3560024DD79 /* OOShaderProgram.m:307 */,
 			1AE544CD0C18D07E005B89F3 /* Entity.m:660 */,
+			1AE546420C19A3C7005B89F3 /* PlayerEntityControls.m:633 */,
 		);
 	};
 	1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */ = {
@@ -1330,7 +1331,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 202993127.20765;
+		modificationTime = 203007139.251024;
 		state = 1;
 		symbolName = "-[_NSZombie methodSignatureForSelector:]";
 	};
@@ -1385,9 +1386,9 @@
 	};
 	1A9404920BAF4582005F6CF3 /* OOMaths.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 1840}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 1840}}";
 			sepNavSelRange = "{2520, 16}";
-			sepNavVisRect = "{{0, 1003}, {1242, 836}}";
+			sepNavVisRect = "{{0, 1003}, {1205, 836}}";
 		};
 	};
 	1A9404A10BAF462D005F6CF3 /* OOVector.h */ = {
@@ -1427,9 +1428,9 @@
 	};
 	1A94057E0BAF52AD005F6CF3 /* OOQuaternion.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 5040}}";
-			sepNavSelRange = "{1594, 21}";
-			sepNavVisRect = "{{0, 475}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 5216}}";
+			sepNavSelRange = "{8265, 0}";
+			sepNavVisRect = "{{0, 4379}, {1205, 836}}";
 		};
 	};
 	1A9406290BAF6170005F6CF3 /* OOBoundingBox.h */ = {
@@ -1504,9 +1505,9 @@
 	};
 	1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 4752}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 4752}}";
 			sepNavSelRange = "{5652, 0}";
-			sepNavVisRect = "{{0, 1619}, {1384, 363}}";
+			sepNavVisRect = "{{0, 1619}, {1205, 836}}";
 		};
 	};
 	1AB01BBA0BB16A8A00F1B949 /* OOFastArithmetic.m */ = {
@@ -1636,9 +1637,9 @@
 	};
 	1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {337, 816}}";
-			sepNavSelRange = "{945, 37}";
-			sepNavVisRect = "{{0, 602}, {337, 214}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 1040}}";
+			sepNavSelRange = "{1472, 0}";
+			sepNavVisRect = "{{0, 203}, {1205, 836}}";
 		};
 	};
 	1AE544CD0C18D07E005B89F3 /* Entity.m:660 */ = {
@@ -1653,8 +1654,23 @@
 		hitCount = 1;
 		lineNumber = 660;
 		location = OoliteDev;
-		modificationTime = 202993124.705816;
+		modificationTime = 203007131.09893;
 		state = 2;
+	};
+	1AE546420C19A3C7005B89F3 /* PlayerEntityControls.m:633 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 1A26D09C0BCF9CF70073F257 /* PlayerEntityControls.m */;
+		functionName = "-pollFlightControls:";
+		hitCount = 1;
+		lineNumber = 633;
+		location = OoliteDev;
+		modificationTime = 203007131.100441;
+		state = 1;
 	};
 	1AEAAC730BA457E6000705D0 /* jsbool.h */ = {
 		uiCtxt = {
@@ -1749,16 +1765,16 @@
 	};
 	1AED2DE50C046BA2004A1118 /* OODebugController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {913, 1696}}";
-			sepNavSelRange = "{2317, 0}";
-			sepNavVisRect = "{{0, 361}, {913, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 1760}}";
+			sepNavSelRange = "{2746, 0}";
+			sepNavVisRect = "{{0, 0}, {1205, 836}}";
 		};
 	};
 	1AED2DE60C046BA2004A1118 /* OODebugController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 4736}}";
-			sepNavSelRange = "{2349, 0}";
-			sepNavVisRect = "{{0, 757}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 4848}}";
+			sepNavSelRange = "{2143, 0}";
+			sepNavVisRect = "{{0, 137}, {1205, 836}}";
 		};
 	};
 	1AED74C70BBA3CAA009410CD /* logcontrol.plist.xml */ = {
@@ -1871,9 +1887,9 @@
 	};
 	251610D0099544090037C2E1 /* OOCASound.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 1216}}";
-			sepNavSelRange = "{924, 29}";
-			sepNavVisRect = "{{0, 0}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 1216}}";
+			sepNavSelRange = "{859, 1122}";
+			sepNavVisRect = "{{0, 0}, {1205, 836}}";
 		};
 	};
 	251610D1099544090037C2E1 /* OOCASoundMixer.m */ = {
@@ -2145,9 +2161,9 @@
 	};
 	2576E7B209B4F418007410F7 /* MyOpenGLView.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 3200}}";
-			sepNavSelRange = "{3922, 0}";
-			sepNavVisRect = "{{0, 2363}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 3200}}";
+			sepNavSelRange = "{3533, 0}";
+			sepNavVisRect = "{{0, 1003}, {1205, 836}}";
 		};
 	};
 	25F3E6300994F033002F25FD /* legacy_random.h */ = {
@@ -2236,9 +2252,9 @@
 	};
 	25F4676309969672009483BF /* MyOpenGLView.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 11184}}";
-			sepNavSelRange = "{999, 0}";
-			sepNavVisRect = "{{0, 0}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1205, 11168}}";
+			sepNavSelRange = "{1027, 0}";
+			sepNavVisRect = "{{0, 0}, {1205, 836}}";
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
@@ -2252,6 +2268,7 @@
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A2E39910C16C3560024DD79 /* OOShaderProgram.m:307 */,
 			1AE544CD0C18D07E005B89F3 /* Entity.m:660 */,
+			1AE546420C19A3C7005B89F3 /* PlayerEntityControls.m:633 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
