@@ -1190,6 +1190,16 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
+	1A358E7D0C1AF91300E52220 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A2316E70B9CFAD700EF0852 /* keyconfig.plist */;
+		name = key_autopilot;
+		rLen = 13;
+		rLoc = 768;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1074, 2592}}";
@@ -2265,9 +2275,9 @@
 	};
 	2516110C099544390037C2E1 /* GameController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1074, 15296}}";
-			sepNavSelRange = "{19403, 0}";
-			sepNavVisRect = "{{0, 10201}, {1074, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 15248}}";
+			sepNavSelRange = "{6651, 12}";
+			sepNavVisRect = "{{0, 4373}, {1074, 836}}";
 		};
 	};
 	25161110099544390037C2E1 /* OOTrumble.h */ = {
@@ -2680,6 +2690,7 @@
 			1A358E5A0C1AF6A300E52220 /* PBXTextBookmark */ = 1A358E5A0C1AF6A300E52220 /* PBXTextBookmark */;
 			1A358E620C1AF7A900E52220 /* PBXTextBookmark */ = 1A358E620C1AF7A900E52220 /* PBXTextBookmark */;
 			1A358E6D0C1AF84D00E52220 /* PBXTextBookmark */ = 1A358E6D0C1AF84D00E52220 /* PBXTextBookmark */;
+			1A358E7D0C1AF91300E52220 /* PBXTextBookmark */ = 1A358E7D0C1AF91300E52220 /* PBXTextBookmark */;
 			1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */ = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
