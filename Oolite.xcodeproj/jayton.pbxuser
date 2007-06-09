@@ -673,16 +673,16 @@
 	};
 	1A26D0D00BCF9D0D0073F257 /* OOShaderMaterial.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 2384}}";
-			sepNavSelRange = "{4558, 11}";
-			sepNavVisRect = "{{0, 1536}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 2576}}";
+			sepNavSelRange = "{2246, 0}";
+			sepNavVisRect = "{{0, 482}, {1074, 836}}";
 		};
 	};
 	1A26D0D10BCF9D0D0073F257 /* OOShaderMaterial.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 7776}}";
-			sepNavSelRange = "{10379, 0}";
-			sepNavVisRect = "{{0, 4956}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 8016}}";
+			sepNavSelRange = "{10911, 0}";
+			sepNavVisRect = "{{0, 5381}, {1074, 836}}";
 		};
 	};
 	1A26D0D20BCF9D0D0073F257 /* OOMaterial.m */ = {
@@ -701,9 +701,9 @@
 	};
 	1A26D0D80BCF9D1E0073F257 /* OOShaderUniform.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 1680}}";
-			sepNavSelRange = "{3572, 0}";
-			sepNavVisRect = "{{0, 843}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 1760}}";
+			sepNavSelRange = "{3113, 0}";
+			sepNavVisRect = "{{0, 827}, {1074, 836}}";
 		};
 	};
 	1A26D0D90BCF9D1E0073F257 /* OOShaderProgram.m */ = {
@@ -722,9 +722,9 @@
 	};
 	1A26D0DB0BCF9D1E0073F257 /* OOShaderUniform.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 9856}}";
-			sepNavSelRange = "{12910, 0}";
-			sepNavVisRect = "{{0, 7328}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 10000}}";
+			sepNavSelRange = "{7084, 0}";
+			sepNavVisRect = "{{0, 3429}, {1074, 836}}";
 		};
 	};
 	1A26D0E00BCF9D3B0073F257 /* OOTexture.m */ = {
@@ -736,9 +736,9 @@
 	};
 	1A26D0E10BCF9D3B0073F257 /* OOTexture.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 3872}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 3872}}";
 			sepNavSelRange = "{5565, 21}";
-			sepNavVisRect = "{{0, 2298}, {1014, 836}}";
+			sepNavVisRect = "{{0, 867}, {1074, 836}}";
 		};
 	};
 	1A26D0E20BCF9D3B0073F257 /* OOPNGTextureLoader.m */ = {
@@ -2168,9 +2168,9 @@
 	};
 	2576E7B209B4F418007410F7 /* MyOpenGLView.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 3200}}";
-			sepNavSelRange = "{3533, 0}";
-			sepNavVisRect = "{{0, 2363}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 3200}}";
+			sepNavSelRange = "{1936, 0}";
+			sepNavVisRect = "{{0, 763}, {1074, 836}}";
 		};
 	};
 	25F3E6300994F033002F25FD /* legacy_random.h */ = {
@@ -2259,9 +2259,9 @@
 	};
 	25F4676309969672009483BF /* MyOpenGLView.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 11168}}";
-			sepNavSelRange = "{1027, 0}";
-			sepNavVisRect = "{{0, 0}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 11200}}";
+			sepNavSelRange = "{2075, 0}";
+			sepNavVisRect = "{{0, 677}, {1074, 836}}";
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
