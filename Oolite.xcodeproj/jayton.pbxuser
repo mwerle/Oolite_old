@@ -71,9 +71,9 @@
 	};
 	1A15044A0C12C50D0032F3E8 /* OOSkyDrawable.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1188, 10448}}";
-			sepNavSelRange = "{8788, 0}";
-			sepNavVisRect = "{{0, 4747}, {1188, 432}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1188, 10464}}";
+			sepNavSelRange = "{12006, 0}";
+			sepNavVisRect = "{{0, 6360}, {1188, 432}}";
 		};
 	};
 	1A15049C0C12CA070032F3E8 /* OOProbabilisticTextureManager.h */ = {
@@ -512,16 +512,16 @@
 	};
 	1A26D0920BCF9CF70073F257 /* SkyEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1074, 837}}";
-			sepNavSelRange = "{83, 13}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 13104}}";
+			sepNavSelRange = "{886, 0}";
 			sepNavVisRect = "{{0, 0}, {1074, 836}}";
 		};
 	};
 	1A26D0930BCF9CF70073F257 /* SkyEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1074, 837}}";
-			sepNavSelRange = "{24, 0}";
-			sepNavVisRect = "{{0, 0}, {1074, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 2048}}";
+			sepNavSelRange = "{1196, 0}";
+			sepNavVisRect = "{{0, 276}, {1074, 836}}";
 		};
 	};
 	1A26D0940BCF9CF70073F257 /* RingEntity.m */ = {
@@ -1354,7 +1354,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 203173785.792568;
+		modificationTime = 203175842.118787;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -1838,6 +1838,36 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
+	1A3591710C1C375C00E52220 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A2316E70B9CFAD700EF0852 /* keyconfig.plist */;
+		name = key_autopilot;
+		rLen = 13;
+		rLoc = 768;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	1A3591740C1C378500E52220 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A2316E70B9CFAD700EF0852 /* keyconfig.plist */;
+		name = key_autopilot;
+		rLen = 13;
+		rLoc = 768;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	1A3591860C1C385000E52220 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A2316E70B9CFAD700EF0852 /* keyconfig.plist */;
+		name = key_autopilot;
+		rLen = 13;
+		rLoc = 768;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1074, 2592}}";
@@ -2194,7 +2224,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 203173785.705221;
+		modificationTime = 203175833.255104;
 		state = 1;
 		symbolName = "-[_NSZombie methodSignatureForSelector:]";
 	};
@@ -2333,9 +2363,9 @@
 	};
 	1A9407BF0BAF7032005F6CF3 /* GNUmakefile */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 837}}";
-			sepNavSelRange = "{2607, 6}";
-			sepNavVisRect = "{{0, 0}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 837}}";
+			sepNavSelRange = "{1836, 0}";
+			sepNavVisRect = "{{0, 0}, {1074, 836}}";
 		};
 	};
 	1A9533890C02089E004EBB58 /* material-defaults.plist */ = {
@@ -2980,9 +3010,9 @@
 	};
 	25161144099544390037C2E1 /* Universe.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1384, 8160}}";
-			sepNavSelRange = "{17147, 0}";
-			sepNavVisRect = "{{0, 7763}, {1384, 363}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 8208}}";
+			sepNavSelRange = "{3292, 31}";
+			sepNavVisRect = "{{0, 1049}, {1074, 836}}";
 		};
 	};
 	25161145099544390037C2E1 /* TextureStore.m */ = {
@@ -3362,6 +3392,9 @@
 			1A3591050C1C2F9E00E52220 /* PBXTextBookmark */ = 1A3591050C1C2F9E00E52220 /* PBXTextBookmark */;
 			1A35910C0C1C301C00E52220 /* PBXTextBookmark */ = 1A35910C0C1C301C00E52220 /* PBXTextBookmark */;
 			1A3591100C1C307F00E52220 /* PBXTextBookmark */ = 1A3591100C1C307F00E52220 /* PBXTextBookmark */;
+			1A3591710C1C375C00E52220 /* PBXTextBookmark */ = 1A3591710C1C375C00E52220 /* PBXTextBookmark */;
+			1A3591740C1C378500E52220 /* PBXTextBookmark */ = 1A3591740C1C378500E52220 /* PBXTextBookmark */;
+			1A3591860C1C385000E52220 /* PBXTextBookmark */ = 1A3591860C1C385000E52220 /* PBXTextBookmark */;
 			1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */ = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
