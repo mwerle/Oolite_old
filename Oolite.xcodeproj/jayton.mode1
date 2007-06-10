@@ -274,17 +274,18 @@
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>1A8A3BE90B963F02007D20B8</string>
 								<string>1C37FBAC04509CD000000102</string>
+								<string>1C37FAAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>7</integer>
+									<integer>4</integer>
 									<integer>2</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 12}, {199, 364}}</string>
+							<string>{{0, 29}, {199, 364}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -331,7 +332,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>1A358E7D0C1AF91300E52220</string>
+										<string>1A3591100C1C307F00E52220</string>
 										<key>history</key>
 										<array>
 											<string>1ADBA6720BD10AE5008FC99C</string>
@@ -516,7 +517,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>203094291.86573401</real>
+	<real>203174016.00873899</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -531,17 +532,16 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1A358F370C1B4BF300E52220</string>
 		<string>1A358DE30C1ADAC500E52220</string>
 		<string>1A358DE40C1ADAC500E52220</string>
-		<string>1A38B5810B989622001ED4A0</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A358DCB0C1AD9FB00E52220</string>
-		<string>1AED2CA00C04550A004A1118</string>
-		<string>1A358E640C1AF7A900E52220</string>
-		<string>1A358E6E0C1AF84D00E52220</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>1AED2CA00C04550A004A1118</string>
+		<string>1A38B5810B989622001ED4A0</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/Oolite.xcodeproj</string>
-		<string>1A358E540C1AF5CA00E52220</string>
+		<string>1A3590D80C1C235900E52220</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 	</array>
 	<key>WindowString</key>
@@ -666,8 +666,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {613, 353}}</string>
-											<string>{{613, 0}, {812, 353}}</string>
+											<string>{{0, 0}, {527, 352}}</string>
+											<string>{{527, 0}, {702, 352}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -682,8 +682,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {1425, 353}}</string>
-											<string>{{0, 353}, {1425, 448}}</string>
+											<string>{{0, 0}, {1229, 352}}</string>
+											<string>{{0, 352}, {1229, 449}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -705,9 +705,9 @@
 								<key>DebugSTDIOWindowFrame</key>
 								<string>{{200, 200}, {500, 300}}</string>
 								<key>Frame</key>
-								<string>{{0, 0}, {1425, 801}}</string>
+								<string>{{0, 0}, {1229, 801}}</string>
 								<key>RubberWindowFrame</key>
-								<string>331 36 1425 842 0 0 1440 878 </string>
+								<string>15 36 1229 842 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXDebugSessionModule</string>
@@ -742,7 +742,7 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
 			<key>WindowString</key>
-			<string>331 36 1425 842 0 0 1440 878 </string>
+			<string>15 36 1229 842 0 0 1440 878 </string>
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
@@ -837,7 +837,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
@@ -901,7 +901,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A38B5810B989622001ED4A0</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -963,18 +963,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1023, 408}}</string>
+								<string>{{0, 0}, {1024, 234}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1440 -53 1023 449 1440 -372 1024 768 </string>
+								<string>1440 121 1024 275 1440 -372 1024 768 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXRunSessionModule</string>
 							<key>Proportion</key>
-							<string>408pt</string>
+							<string>234pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
-					<string>408pt</string>
+					<string>234pt</string>
 				</dict>
 			</array>
 			<key>Name</key>
@@ -995,7 +995,7 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
 			<key>WindowString</key>
-			<string>1440 -53 1023 449 1440 -372 1024 768 </string>
+			<string>1440 121 1024 275 1440 -372 1024 768 </string>
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
@@ -1099,8 +1099,6 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXBottomSmartGroupGIDs</key>
@@ -1162,6 +1160,8 @@
 							<string>185pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -1201,8 +1201,8 @@
 			<true/>
 			<key>TableOfContents</key>
 			<array>
-				<string>1AE544800C18CC60005B89F3</string>
-				<string>1AE544810C18CC60005B89F3</string>
+				<string>1A358F370C1B4BF300E52220</string>
+				<string>1A358F380C1B4BF300E52220</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
 				<string>1CA1AED706398EBD00589147</string>
 			</array>
@@ -1211,7 +1211,7 @@
 			<key>WindowString</key>
 			<string>1591 -16 871 412 1440 -372 1024 768 </string>
 			<key>WindowToolGUID</key>
-			<string>1AE544800C18CC60005B89F3</string>
+			<string>1A358F370C1B4BF300E52220</string>
 			<key>WindowToolIsVisible</key>
 			<false/>
 		</dict>
