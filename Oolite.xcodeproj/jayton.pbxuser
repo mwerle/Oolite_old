@@ -71,9 +71,9 @@
 	};
 	1A15044A0C12C50D0032F3E8 /* OOSkyDrawable.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1074, 10608}}";
-			sepNavSelRange = "{5887, 0}";
-			sepNavVisRect = "{{0, 2973}, {1074, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 10320}}";
+			sepNavSelRange = "{11125, 0}";
+			sepNavVisRect = "{{0, 5765}, {1074, 836}}";
 		};
 	};
 	1A15049C0C12CA070032F3E8 /* OOProbabilisticTextureManager.h */ = {
@@ -491,9 +491,9 @@
 	};
 	1A26D08C0BCF9CF70073F257 /* PlayerEntityLoadSave.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 15056}}";
-			sepNavSelRange = "{25474, 0}";
-			sepNavVisRect = "{{0, 13571}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 15056}}";
+			sepNavSelRange = "{13876, 0}";
+			sepNavVisRect = "{{0, 7384}, {1074, 836}}";
 		};
 	};
 	1A26D08D0BCF9CF70073F257 /* PlayerEntity.m */ = {
@@ -526,9 +526,9 @@
 	};
 	1A26D0920BCF9CF70073F257 /* SkyEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1074, 13104}}";
-			sepNavSelRange = "{10486, 0}";
-			sepNavVisRect = "{{0, 6207}, {1074, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 13024}}";
+			sepNavSelRange = "{14578, 5}";
+			sepNavVisRect = "{{0, 8069}, {1074, 836}}";
 		};
 	};
 	1A26D0930BCF9CF70073F257 /* SkyEntity.h */ = {
@@ -1062,6 +1062,16 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
+	1A359FDB0C1D77D50047E026 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1A2316E70B9CFAD700EF0852 /* keyconfig.plist */;
+		name = key_autopilot;
+		rLen = 13;
+		rLoc = 768;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1074, 2592}}";
@@ -1459,16 +1469,16 @@
 	};
 	1A9404640BAF42BE005F6CF3 /* OOPListParsing.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1244, 837}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 837}}";
 			sepNavSelRange = "{1371, 20}";
-			sepNavVisRect = "{{0, 0}, {1244, 836}}";
+			sepNavVisRect = "{{0, 0}, {1074, 836}}";
 		};
 	};
 	1A9404650BAF42BF005F6CF3 /* OOPListParsing.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 11408}}";
-			sepNavSelRange = "{3270, 0}";
-			sepNavVisRect = "{{0, 1167}, {1184, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 11472}}";
+			sepNavSelRange = "{5038, 0}";
+			sepNavVisRect = "{{0, 1881}, {1074, 836}}";
 		};
 	};
 	1A9404920BAF4582005F6CF3 /* OOMaths.h */ = {
@@ -2070,9 +2080,9 @@
 	};
 	25161102099544380037C2E1 /* OOXMLExtensions.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 4112}}";
-			sepNavSelRange = "{7665, 0}";
-			sepNavVisRect = "{{0, 3275}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 928}}";
+			sepNavSelRange = "{774, 0}";
+			sepNavVisRect = "{{0, 91}, {1074, 836}}";
 		};
 	};
 	25161106099544390037C2E1 /* AI.h */ = {
@@ -2084,9 +2094,9 @@
 	};
 	25161107099544390037C2E1 /* OOXMLExtensions.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1184}}";
-			sepNavSelRange = "{1141, 0}";
-			sepNavVisRect = "{{0, 347}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 837}}";
+			sepNavSelRange = "{1181, 0}";
+			sepNavVisRect = "{{0, 0}, {1074, 836}}";
 		};
 	};
 	25161108099544390037C2E1 /* OOTrumble.m */ = {
@@ -2175,9 +2185,9 @@
 	};
 	25161139099544390037C2E1 /* ResourceManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 11328}}";
-			sepNavSelRange = "{10887, 148}";
-			sepNavVisRect = "{{0, 5844}, {1014, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 11168}}";
+			sepNavSelRange = "{3483, 0}";
+			sepNavVisRect = "{{0, 0}, {1074, 836}}";
 		};
 	};
 	2516113A099544390037C2E1 /* ResourceManager.h */ = {
@@ -2507,6 +2517,7 @@
 			1A359F6F0C1D5F3A0047E026 /* PBXTextBookmark */ = 1A359F6F0C1D5F3A0047E026 /* PBXTextBookmark */;
 			1A359F7A0C1D5F5E0047E026 /* PBXTextBookmark */ = 1A359F7A0C1D5F5E0047E026 /* PBXTextBookmark */;
 			1A359F8E0C1D611B0047E026 /* PBXTextBookmark */ = 1A359F8E0C1D611B0047E026 /* PBXTextBookmark */;
+			1A359FDB0C1D77D50047E026 /* PBXTextBookmark */ = 1A359FDB0C1D77D50047E026 /* PBXTextBookmark */;
 			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
