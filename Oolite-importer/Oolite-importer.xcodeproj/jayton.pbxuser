@@ -1,7 +1,7 @@
 // !$*UTF8*$!
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
-		activeBuildConfigurationName = Development;
+		activeBuildConfigurationName = "Deployment – Test Release";
 		activeTarget = 8D57630D048677EA00EA77CD /* Oolite-importer */;
 		addToTargets = (
 			8D57630D048677EA00EA77CD /* Oolite-importer */,
@@ -55,8 +55,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 202492517;
-			PBXWorkspaceStateSaveDate = 202492517;
+			PBXPerProjectTemplateStateSaveDate = 204411031;
+			PBXWorkspaceStateSaveDate = 204411031;
 		};
 		sourceControlManager = 1A1AB0850909AE56001039FA /* Source Control */;
 		userBuildSettings = {
