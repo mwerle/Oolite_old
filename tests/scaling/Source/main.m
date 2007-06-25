@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
 #if ITERATIONS > 1
 		OOLog(@"scaleTest.iteration", @"Iteration %d", ITERATIONS - iter);
 #endif
+		// Problem texture from BlackMonks.oxp
+		TEST_TEXTURE(@"beatletex");
 		
 		TEST_TEXTURE(@"grey200x200");
 		TEST_TEXTURE(@"grey200x256");

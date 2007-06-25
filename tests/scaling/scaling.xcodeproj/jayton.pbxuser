@@ -1,5 +1,11 @@
 // !$*UTF8*$!
 {
+	1A08338E0C2F279700E3AE25 /* XCBreakpointsBucket */ = {
+		isa = XCBreakpointsBucket;
+		name = scaling;
+		objects = (
+		);
+	};
 	1A45B0790BD8E22C0078EA87 /* scaling */ = {
 		isa = PBXExecutable;
 		activeArgIndex = 2147483647;
@@ -111,7 +117,7 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Release;
+		activeBuildConfigurationName = Debug;
 		activeExecutable = 1A45B0790BD8E22C0078EA87 /* scaling */;
 		activeTarget = 8D1107260486CEB800E47090 /* scaling */;
 		addToTargets = (
@@ -119,6 +125,7 @@
 		);
 		breakpoints = (
 		);
+		breakpointsGroup = 1A08338E0C2F279700E3AE25 /* XCBreakpointsBucket */;
 		codeSenseManager = 1A45B0850BD8E23F0078EA87 /* Code sense */;
 		executables = (
 			1A45B0790BD8E22C0078EA87 /* scaling */,
@@ -180,8 +187,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 200758085;
-			PBXWorkspaceStateSaveDate = 200758085;
+			PBXPerProjectTemplateStateSaveDate = 204416912;
+			PBXWorkspaceStateSaveDate = 204416912;
 		};
 		sourceControlManager = 1A45B0840BD8E23F0078EA87 /* Source Control */;
 		userBuildSettings = {
@@ -189,9 +196,9 @@
 	};
 	29B97316FDCFA39411CA2CEA /* main.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 2864}}";
-			sepNavSelRange = "{355, 0}";
-			sepNavVisRect = "{{0, 0}, {1242, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1052, 2896}}";
+			sepNavSelRange = "{1449, 0}";
+			sepNavVisRect = "{{0, 658}, {1052, 836}}";
 		};
 	};
 	32CA4F630368D1EE00C91783 /* scaling_Prefix.pch */ = {

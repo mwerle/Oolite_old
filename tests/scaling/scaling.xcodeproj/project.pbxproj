@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A0833900C2F279B00E3AE25 /* beatletex.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A08338F0C2F279B00E3AE25 /* beatletex.png */; };
 		1A45B0A50BD8E2FC0078EA87 /* OOTextureScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31"; }; };
 		1A45B0AA0BD8E30F0078EA87 /* OOTextureLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */; };
 		1A45B0AB0BD8E30F0078EA87 /* OOPNGTextureLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A80BD8E30F0078EA87 /* OOPNGTextureLoader.m */; };
@@ -53,6 +54,7 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		1A08338F0C2F279B00E3AE25 /* beatletex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beatletex.png; sourceTree = "<group>"; };
 		1A45B0A30BD8E2FC0078EA87 /* OOTextureScaling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextureScaling.h; sourceTree = "<group>"; };
 		1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextureScaling.m; sourceTree = "<group>"; };
 		1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOTextureLoader.m; path = Materials/OOTextureLoader.m; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1A08338F0C2F279B00E3AE25 /* beatletex.png */,
 				1AFAFA970BF5C913008AE909 /* grey200x200.png */,
 				1AFAFA5D0BF5C606008AE909 /* grey200x256.png */,
 				1A45B1600BD8E71C0078EA87 /* grey256x200.png */,
@@ -312,6 +315,7 @@
 				1AC4D2AA0BF747E90029D6A7 /* grey256x300.png in Resources */,
 				1AC4D2F20BF74EB60029D6A7 /* rgb256x300.png in Resources */,
 				1AC4D3130BF751D80029D6A7 /* rgb300x300.png in Resources */,
+				1A0833900C2F279B00E3AE25 /* beatletex.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
