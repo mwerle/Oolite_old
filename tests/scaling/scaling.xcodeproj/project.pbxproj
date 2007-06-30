@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1A0833900C2F279B00E3AE25 /* beatletex.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A08338F0C2F279B00E3AE25 /* beatletex.png */; };
-		1A45B0A50BD8E2FC0078EA87 /* OOTextureScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31"; }; };
+		1A45B0A50BD8E2FC0078EA87 /* OOTextureScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A40BD8E2FC0078EA87 /* OOTextureScaling.m */; };
 		1A45B0AA0BD8E30F0078EA87 /* OOTextureLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A60BD8E30F0078EA87 /* OOTextureLoader.m */; };
 		1A45B0AB0BD8E30F0078EA87 /* OOPNGTextureLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0A80BD8E30F0078EA87 /* OOPNGTextureLoader.m */; };
 		1A45B0CA0BD8E3670078EA87 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0B50BD8E3670078EA87 /* pngwutil.c */; };
