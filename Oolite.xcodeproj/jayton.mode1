@@ -302,7 +302,7 @@
 							<real>199</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>1657 -74 797 426 1440 -372 1024 768 </string>
+						<string>1673 -30 797 426 1440 -372 1024 768 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -343,7 +343,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {576, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1657 -74 797 426 1440 -372 1024 768 </string>
+								<string>1673 -30 797 426 1440 -372 1024 768 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -365,7 +365,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {576, 380}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1657 -74 797 426 1440 -372 1024 768 </string>
+								<string>1673 -30 797 426 1440 -372 1024 768 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -510,7 +510,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>204942770.247044</real>
+	<real>204975679.259381</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -525,20 +525,18 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1A7D742C0C372CDF00E4A5F5</string>
 		<string>1A7D74240C372C4A00E4A5F5</string>
 		<string>1A7D74250C372C4A00E4A5F5</string>
+		<string>1A38B5810B989622001ED4A0</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A7D741F0C372C4A00E4A5F5</string>
 		<string>1AED2CA00C04550A004A1118</string>
-		<string>1A7D74160C372AFD00E4A5F5</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1A38B5810B989622001ED4A0</string>
-		<string>1A7D742C0C372CDF00E4A5F5</string>
-		<string>1A7D742E0C372CDF00E4A5F5</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/clean-trunk/Oolite.xcodeproj</string>
-		<string>1CD10A99069EF8BA00B06720</string>
+		<string>1C0AD2B3069F1EA900FABCE6</string>
 	</array>
 	<key>WindowString</key>
-	<string>1657 -74 797 426 1440 -372 1024 768 </string>
+	<string>1673 -30 797 426 1440 -372 1024 768 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -741,7 +739,7 @@
 			<key>WindowToolGUID</key>
 			<string>1CD10A99069EF8BA00B06720</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -896,7 +894,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A38B5810B989622001ED4A0</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -1208,7 +1206,7 @@
 			<key>WindowToolGUID</key>
 			<string>1A7D742C0C372CDF00E4A5F5</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

@@ -19,6 +19,7 @@
 
 #define DUMP_DATA		1
 #define USE_POOL		1
+#define USE_MIP_MAPPING	0
 
 
 @interface ResourceManager: NSObject
@@ -90,7 +91,11 @@ static OOTextureLoader *GetTexture(NSString *name)
 		return nil;
 	}
 	
-	OOTextureLoader *result = [OOTextureLoader loaderWithPath:path options:kOOTextureDefaultOptions];
+	uint32_t options = kOOTextureMagFilterLinear;
+#if USE_MIP_MAPPING
+	options |= kOOTextureMinFilterMipMap;
+#endif
+	OOTextureLoader *result = [OOTextureLoader loaderWithPath:path options:options];
 	if (result == nil)
 	{
 		OOLog(@"getTexture.noLoader", @"Could not create loader for %@.png", name);

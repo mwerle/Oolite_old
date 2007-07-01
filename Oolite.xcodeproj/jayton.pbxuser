@@ -55,21 +55,6 @@
 			1AD9AF780B91E1BB00FB704E /* Oolite */,
 		);
 	};
-	1A08335E0C2F269800E3AE25 /* OOLogging.m:496 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1A38B4AB0B988532001ED4A0 /* OOLogging.m */;
-		functionName = "OOLogGenericParameterErrorForFunction()";
-		hitCount = 1;
-		lineNumber = 496;
-		location = OoliteDev;
-		modificationTime = 204942747.161016;
-		state = 1;
-	};
 	1A1502F50C1201C30032F3E8 /* oolite-unknown-ship.dat */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 24800}}";
@@ -1287,6 +1272,21 @@
 			sepNavVisRect = "{{0, 1781}, {891, 836}}";
 		};
 	};
+	1A7D74A80C37A9D400E4A5F5 /* OOTextureScaling.m:190 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */;
+		functionName = "OOScalePixMap()";
+		hitCount = 1;
+		lineNumber = 190;
+		location = scaling;
+		modificationTime = 204975074.949451;
+		state = 1;
+	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1184, 2672}}";
@@ -1358,11 +1358,7 @@
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A358FF50C1B5EAE00E52220 /* -[NSException raise] */,
 			1AAE85DB0C1ED02600EAF7AC /* malloc_printf */,
-			1AFC0ED10C2BEAD600B7BFFC /* OODebugDrawing.m:178 */,
-			1AFC0ED30C2BEAD800B7BFFC /* OODebugDrawing.m:247 */,
-			1AFC0ED70C2BEADD00B7BFFC /* OODebugDrawing.m:129 */,
-			1AC775790C2D3B2700ECFF3B /* OODebugDrawing.m:159 */,
-			1A08335E0C2F269800E3AE25 /* OOLogging.m:496 */,
+			1A7D74A80C37A9D400E4A5F5 /* OOTextureScaling.m:190 */,
 		);
 	};
 	1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */ = {
@@ -1601,21 +1597,6 @@
 			sepNavVisRect = "{{0, 560}, {1101, 815}}";
 		};
 	};
-	1AC775790C2D3B2700ECFF3B /* OODebugDrawing.m:159 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1AFC0E340C2BDCAC00B7BFFC /* OODebugDrawing.m */;
-		functionName = "OODebugDrawBasis()";
-		hitCount = 1;
-		lineNumber = 159;
-		location = OoliteDev;
-		modificationTime = 204942747.133992;
-		state = 2;
-	};
 	1AC775E00C2DD4E900ECFF3B /* OODebugGLDrawing.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1052, 2640}}";
@@ -1848,56 +1829,6 @@
 		rType = 0;
 		vrLen = 1471;
 		vrLoc = 125198;
-	};
-	1AFC0E340C2BDCAC00B7BFFC /* OODebugDrawing.m */ = {
-		isa = PBXFileReference;
-		fileEncoding = 4;
-		lastKnownFileType = sourcecode.c.objc;
-		name = OODebugDrawing.m;
-		path = "/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/src/Core/OODebugDrawing.m";
-		sourceTree = "<absolute>";
-	};
-	1AFC0ED10C2BEAD600B7BFFC /* OODebugDrawing.m:178 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1AFC0E340C2BDCAC00B7BFFC /* OODebugDrawing.m */;
-		functionName = "OODebugDrawRenderAll()";
-		hitCount = 1;
-		lineNumber = 178;
-		modificationTime = 204942773.300586;
-		state = 1;
-	};
-	1AFC0ED30C2BEAD800B7BFFC /* OODebugDrawing.m:247 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1AFC0E340C2BDCAC00B7BFFC /* OODebugDrawing.m */;
-		functionName = "SubmitTransformedLineSegment()";
-		hitCount = 1;
-		lineNumber = 247;
-		modificationTime = 204942773.297587;
-		state = 1;
-	};
-	1AFC0ED70C2BEADD00B7BFFC /* OODebugDrawing.m:129 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1AFC0E340C2BDCAC00B7BFFC /* OODebugDrawing.m */;
-		functionName = "OODebugDrawBoundingBoxBetween()";
-		hitCount = 1;
-		lineNumber = 129;
-		modificationTime = 204942773.302731;
-		state = 1;
 	};
 	2512833C09BA27C100F43D55 /* Octree.m */ = {
 		uiCtxt = {
@@ -2373,11 +2304,7 @@
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A358FF50C1B5EAE00E52220 /* -[NSException raise] */,
 			1AAE85DB0C1ED02600EAF7AC /* malloc_printf */,
-			1AC775790C2D3B2700ECFF3B /* OODebugDrawing.m:159 */,
-			1AFC0ED10C2BEAD600B7BFFC /* OODebugDrawing.m:178 */,
-			1AFC0ED30C2BEAD800B7BFFC /* OODebugDrawing.m:247 */,
-			1AFC0ED70C2BEADD00B7BFFC /* OODebugDrawing.m:129 */,
-			1A08335E0C2F269800E3AE25 /* OOLogging.m:496 */,
+			1A7D74A80C37A9D400E4A5F5 /* OOTextureScaling.m:190 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
