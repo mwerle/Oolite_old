@@ -67,7 +67,7 @@
 		hitCount = 1;
 		lineNumber = 496;
 		location = OoliteDev;
-		modificationTime = 204658538.065398;
+		modificationTime = 204942747.161016;
 		state = 1;
 	};
 	1A1502F50C1201C30032F3E8 /* oolite-unknown-ship.dat */ = {
@@ -646,9 +646,9 @@
 	};
 	1A26D0A20BCF9CF70073F257 /* StationEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1188, 29632}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1384, 29632}}";
 			sepNavSelRange = "{28781, 0}";
-			sepNavVisRect = "{{0, 13795}, {1188, 363}}";
+			sepNavVisRect = "{{0, 13770}, {1384, 363}}";
 		};
 	};
 	1A26D0A30BCF9CF70073F257 /* StationEntity.h */ = {
@@ -1003,7 +1003,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 204658545.516141;
+		modificationTime = 204942755.19892;
 		state = 1;
 		symbolName = "-[NSException raise]";
 	};
@@ -1357,10 +1357,7 @@
 		objects = (
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A358FF50C1B5EAE00E52220 /* -[NSException raise] */,
-			1AAE85D40C1ECFD900EAF7AC /* OOTextureScaling.m:1229 */,
 			1AAE85DB0C1ED02600EAF7AC /* malloc_printf */,
-			1AF597AA0C258581006E45E8 /* StationEntity.m:873 */,
-			1AF597AC0C258583006E45E8 /* StationEntity.m:888 */,
 			1AFC0ED10C2BEAD600B7BFFC /* OODebugDrawing.m:178 */,
 			1AFC0ED30C2BEAD800B7BFFC /* OODebugDrawing.m:247 */,
 			1AFC0ED70C2BEADD00B7BFFC /* OODebugDrawing.m:129 */,
@@ -1377,7 +1374,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 204658545.296201;
+		modificationTime = 204942754.892921;
 		state = 1;
 		symbolName = "-[_NSZombie methodSignatureForSelector:]";
 	};
@@ -1425,9 +1422,9 @@
 	};
 	1A9404650BAF42BF005F6CF3 /* OOPListParsing.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1074, 11472}}";
-			sepNavSelRange = "{891, 3}";
-			sepNavVisRect = "{{0, 190}, {1074, 660}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1384, 11328}}";
+			sepNavSelRange = "{3045, 0}";
+			sepNavVisRect = "{{0, 1267}, {1384, 363}}";
 		};
 	};
 	1A9404920BAF4582005F6CF3 /* OOMaths.h */ = {
@@ -1535,21 +1532,6 @@
 			sepNavVisRect = "{{0, 0}, {1234, 836}}";
 		};
 	};
-	1AAE85D40C1ECFD900EAF7AC /* OOTextureScaling.m:1229 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */;
-		functionName = "EnsureCorrectDataSize()";
-		hitCount = 1;
-		lineNumber = 1229;
-		location = OoliteDev;
-		modificationTime = 204658538.065347;
-		state = 1;
-	};
 	1AAE85DB0C1ED02600EAF7AC /* malloc_printf */ = {
 		isa = PBXSymbolicBreakpoint;
 		actions = (
@@ -1559,7 +1541,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = libSystem.B.dylib;
-		modificationTime = 204658538.066851;
+		modificationTime = 204942747.174992;
 		state = 1;
 		symbolName = malloc_printf;
 	};
@@ -1572,9 +1554,9 @@
 	};
 	1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1188, 19776}}";
-			sepNavSelRange = "{32207, 26}";
-			sepNavVisRect = "{{0, 19410}, {1188, 366}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1047, 20240}}";
+			sepNavSelRange = "{32009, 0}";
+			sepNavVisRect = "{{0, 19403}, {1047, 836}}";
 		};
 	};
 	1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */ = {
@@ -1631,7 +1613,7 @@
 		hitCount = 1;
 		lineNumber = 159;
 		location = OoliteDev;
-		modificationTime = 204658538.065359;
+		modificationTime = 204942747.133992;
 		state = 2;
 	};
 	1AC775E00C2DD4E900ECFF3B /* OODebugGLDrawing.h */ = {
@@ -1647,16 +1629,6 @@
 			sepNavSelRange = "{2715, 0}";
 			sepNavVisRect = "{{0, 809}, {1052, 836}}";
 		};
-	};
-	1AC7769D0C2EADA800ECFF3B /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 1A2316E70B9CFAD700EF0852 /* keyconfig.plist */;
-		name = key_autopilot;
-		rLen = 13;
-		rLoc = 768;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	1AD9AF780B91E1BB00FB704E /* Oolite */ = {
 		isa = PBXExecutable;
@@ -1855,9 +1827,9 @@
 	};
 	1AED2DE60C046BA2004A1118 /* OODebugController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1188, 6656}}";
-			sepNavSelRange = "{6840, 0}";
-			sepNavVisRect = "{{0, 1125}, {1188, 366}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1047, 6752}}";
+			sepNavSelRange = "{6131, 0}";
+			sepNavVisRect = "{{0, 3797}, {1047, 836}}";
 		};
 	};
 	1AED74C70BBA3CAA009410CD /* logcontrol.plist.xml */ = {
@@ -1876,36 +1848,6 @@
 		rType = 0;
 		vrLen = 1471;
 		vrLoc = 125198;
-	};
-	1AF597AA0C258581006E45E8 /* StationEntity.m:873 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1A26D0A20BCF9CF70073F257 /* StationEntity.m */;
-		functionName = "-shipIsInDockingCorridor:";
-		hitCount = 1;
-		lineNumber = 873;
-		location = OoliteDev;
-		modificationTime = 204658715.693399;
-		state = 1;
-	};
-	1AF597AC0C258583006E45E8 /* StationEntity.m:888 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = 1A26D0A20BCF9CF70073F257 /* StationEntity.m */;
-		functionName = "-shipIsInDockingCorridor:";
-		hitCount = 1;
-		lineNumber = 888;
-		location = OoliteDev;
-		modificationTime = 204658538.065457;
-		state = 1;
 	};
 	1AFC0E340C2BDCAC00B7BFFC /* OODebugDrawing.m */ = {
 		isa = PBXFileReference;
@@ -1926,7 +1868,7 @@
 		functionName = "OODebugDrawRenderAll()";
 		hitCount = 1;
 		lineNumber = 178;
-		modificationTime = 204658742.053627;
+		modificationTime = 204942773.300586;
 		state = 1;
 	};
 	1AFC0ED30C2BEAD800B7BFFC /* OODebugDrawing.m:247 */ = {
@@ -1940,7 +1882,7 @@
 		functionName = "SubmitTransformedLineSegment()";
 		hitCount = 1;
 		lineNumber = 247;
-		modificationTime = 204658742.053696;
+		modificationTime = 204942773.297587;
 		state = 1;
 	};
 	1AFC0ED70C2BEADD00B7BFFC /* OODebugDrawing.m:129 */ = {
@@ -1954,7 +1896,7 @@
 		functionName = "OODebugDrawBoundingBoxBetween()";
 		hitCount = 1;
 		lineNumber = 129;
-		modificationTime = 204658742.053716;
+		modificationTime = 204942773.302731;
 		state = 1;
 	};
 	2512833C09BA27C100F43D55 /* Octree.m */ = {
@@ -2430,15 +2372,12 @@
 		breakpoints = (
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A358FF50C1B5EAE00E52220 /* -[NSException raise] */,
-			1AAE85D40C1ECFD900EAF7AC /* OOTextureScaling.m:1229 */,
 			1AAE85DB0C1ED02600EAF7AC /* malloc_printf */,
 			1AC775790C2D3B2700ECFF3B /* OODebugDrawing.m:159 */,
 			1AFC0ED10C2BEAD600B7BFFC /* OODebugDrawing.m:178 */,
 			1AFC0ED30C2BEAD800B7BFFC /* OODebugDrawing.m:247 */,
 			1AFC0ED70C2BEADD00B7BFFC /* OODebugDrawing.m:129 */,
 			1A08335E0C2F269800E3AE25 /* OOLogging.m:496 */,
-			1AF597AC0C258583006E45E8 /* StationEntity.m:888 */,
-			1AF597AA0C258581006E45E8 /* StationEntity.m:873 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -2611,11 +2550,10 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 204719220;
-			PBXWorkspaceStateSaveDate = 204719220;
+			PBXPerProjectTemplateStateSaveDate = 204940767;
+			PBXWorkspaceStateSaveDate = 204940767;
 		};
 		perUserProjectItems = {
-			1AC7769D0C2EADA800ECFF3B = 1AC7769D0C2EADA800ECFF3B /* PBXTextBookmark */;
 			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 1AD9AF860B91E1C500FB704E /* Source Control */;
