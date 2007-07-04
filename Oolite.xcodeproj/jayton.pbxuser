@@ -463,9 +463,9 @@
 	};
 	1A26D0880BCF9CF70073F257 /* PlayerEntityLegacyScriptEngine.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 37568}}";
-			sepNavSelRange = "{35415, 0}";
-			sepNavVisRect = "{{0, 18219}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1047, 38720}}";
+			sepNavSelRange = "{33599, 0}";
+			sepNavVisRect = "{{0, 17807}, {1047, 836}}";
 		};
 	};
 	1A26D0890BCF9CF70073F257 /* ShipEntityAI.m */ = {
@@ -498,9 +498,9 @@
 	};
 	1A26D08D0BCF9CF70073F257 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1052, 103680}}";
-			sepNavSelRange = "{76154, 0}";
-			sepNavVisRect = "{{0, 43329}, {1052, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1047, 103712}}";
+			sepNavSelRange = "{171842, 0}";
+			sepNavVisRect = "{{0, 54421}, {1047, 836}}";
 		};
 	};
 	1A26D08E0BCF9CF70073F257 /* PlayerEntity.h */ = {
@@ -979,19 +979,6 @@
 			sepNavVisRect = "{{0, 0}, {1074, 836}}";
 		};
 	};
-	1A358FF50C1B5EAE00E52220 /* -[NSException raise] */ = {
-		isa = PBXSymbolicBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 1;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		hitCount = 1;
-		location = Foundation;
-		modificationTime = 204942755.19892;
-		state = 1;
-		symbolName = "-[NSException raise]";
-	};
 	1A38B4AA0B988532001ED4A0 /* OOLogging.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1052, 2592}}";
@@ -1008,9 +995,9 @@
 	};
 	1A3A04610BC547DC00B5E2D9 /* OOTypes.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 4624}}";
-			sepNavSelRange = "{2291, 0}";
-			sepNavVisRect = "{{0, 1074}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1047, 4624}}";
+			sepNavSelRange = "{5823, 0}";
+			sepNavVisRect = "{{0, 3787}, {1047, 836}}";
 		};
 	};
 	1A3AFF1D0BC4462200B5E2D9 /* OOJSVector.h */ = {
@@ -1071,9 +1058,9 @@
 	};
 	1A5DBA9B0BC000DC00D57389 /* OOJavaScriptEngine.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1205, 25760}}";
-			sepNavSelRange = "{8660, 0}";
-			sepNavVisRect = "{{0, 4550}, {1205, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1047, 25680}}";
+			sepNavSelRange = "{13302, 0}";
+			sepNavVisRect = "{{0, 6099}, {1047, 836}}";
 		};
 	};
 	1A5DBA9C0BC000DC00D57389 /* OOJSScript.h */ = {
@@ -1283,9 +1270,22 @@
 		functionName = "OOScalePixMap()";
 		hitCount = 1;
 		lineNumber = 190;
-		location = scaling;
-		modificationTime = 204975074.949451;
+		location = OoliteDev;
+		modificationTime = 205241520.199464;
 		state = 1;
+	};
+	1A7D79BE0C3BBAB600E4A5F5 /* -[NSException raise] */ = {
+		isa = PBXSymbolicBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 1;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		hitCount = 1;
+		location = Foundation;
+		modificationTime = 205241527.04538;
+		state = 1;
+		symbolName = "-[NSException raise]";
 	};
 	1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {
 		uiCtxt = {
@@ -1356,9 +1356,8 @@
 		name = Oolite;
 		objects = (
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
-			1A358FF50C1B5EAE00E52220 /* -[NSException raise] */,
-			1AAE85DB0C1ED02600EAF7AC /* malloc_printf */,
 			1A7D74A80C37A9D400E4A5F5 /* OOTextureScaling.m:190 */,
+			1A7D79BE0C3BBAB600E4A5F5 /* -[NSException raise] */,
 		);
 	};
 	1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */ = {
@@ -1370,7 +1369,7 @@
 		delayBeforeContinue = 0;
 		hitCount = 1;
 		location = Foundation;
-		modificationTime = 204942754.892921;
+		modificationTime = 205241526.705286;
 		state = 1;
 		symbolName = "-[_NSZombie methodSignatureForSelector:]";
 	};
@@ -1527,19 +1526,6 @@
 			sepNavSelRange = "{45, 0}";
 			sepNavVisRect = "{{0, 0}, {1234, 836}}";
 		};
-	};
-	1AAE85DB0C1ED02600EAF7AC /* malloc_printf */ = {
-		isa = PBXSymbolicBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 1;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		hitCount = 1;
-		location = libSystem.B.dylib;
-		modificationTime = 204942747.174992;
-		state = 1;
-		symbolName = malloc_printf;
 	};
 	1AB01ABC0BB15AED00F1B949 /* OOTextureScaling.h */ = {
 		uiCtxt = {
@@ -2302,9 +2288,8 @@
 		);
 		breakpoints = (
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
-			1A358FF50C1B5EAE00E52220 /* -[NSException raise] */,
-			1AAE85DB0C1ED02600EAF7AC /* malloc_printf */,
 			1A7D74A80C37A9D400E4A5F5 /* OOTextureScaling.m:190 */,
+			1A7D79BE0C3BBAB600E4A5F5 /* -[NSException raise] */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -2477,8 +2462,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 204940767;
-			PBXWorkspaceStateSaveDate = 204940767;
+			PBXPerProjectTemplateStateSaveDate = 205240189;
+			PBXWorkspaceStateSaveDate = 205240189;
 		};
 		perUserProjectItems = {
 			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;
