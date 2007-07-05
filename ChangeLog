@@ -1,0 +1,110 @@
+Oolite 1.69-test:
+* New materials model and more flexibility for shaders.
+* Lasers can now be any colour, with the limitation that they must be
+  reasonably bright. The new colour spec syntax introduced for lasers is also
+  supported for sky colours, but not planets in this release.
+* Raised vertex and face counts for meshes, while reducing memory usage.
+* Reformatted keyconfig.plist to be more legible and easier to edit.
+* Advanced Navigation Array default key changed to ^ (shift-6 on UK keyboards)
+  to avoid surprise launches.
+* Save/load screens now show more information, and show the correct ship type
+  even if it isn’t currently installed (only applies to games saved with 1.69
+  or later). Also, a question mark is now shown in place of unknown ships (but
+  looks bad due to bugs in setting up smoothed models).
+  Under Mac OS X, this only applies in full-screen mode as standard system
+  dialogs are used in windowed mode.
+* The commander status screen now shows damaged equipment in orange.
+* The appearance of interstellar space is now set in planetinfo.plist.
+* (Mac OS X only) Support for a new Debug menu added. It is enabled by a
+  special OXP, Debug Menu.oxp.
+* New debugging key, key_dump_target_state, which dumps a lot of information
+  about the player’s target (or the player, if there is no target) to the log.
+  Not bound to anything by default.
+* New requires.plist key added: max_version. This is not expected to be useful
+  very often, except for Debug Menu.oxp. Any unknown keys in required.plist
+  will now cause an OXP not to load.
+* Improved robustness in various ways, especially with regards to property
+  list parsing.
+* Various redundant bits of code removed; code cleanup; some optimization.
+* Cache is no longer pruned at all. Since it’s rebuilt when OXPs are changed,
+  the maximum size of the cache is limited by the installed OXPs. In practice,
+  sizes of a few MB can be expected. Under GNUstep, cache read/write should be
+  more efficient and the folder the cache lives in will be created if needed.
+* Under Mac OS X and Windows, you can force a cache rebuild by holding down
+  shift during start-up. This probably sort of works on Linux other systems if
+  you press it just at the right moment.
+* Fixed various issues under Linux (catching up with changes since pre 1.67).
+* (Mac OS X only) Spotlight indexer indexes name of ship for games saved with
+  1.69 or later.
+
+Known bugs:
+* Several OXP/scripting bugs have been reported and not fixed.
+* Greyscale textures with alpha channels are not loaded correctly.
+* Some textures still break when swapping between full-screen and windowed
+  mode or resizing window (except under Mac OS X).
+* Need to analyze memory usage; there seem to be significant leaks.
+* equipment_price_factor only affecting station’s sell price not addressed.
+* Civilian ships spawning in interstellar space not addressed.
+* Ability to scoop more cargo than you have space for under some circumstances
+  not addressed.
+
+Oolite 1.68-test:
+* Added initial JavaScript support.
+* Improvements to shader support:
+  - Shaders can be stored in separate files.
+  - Shipdata.plist can set uniform variables for shaders.
+  - New game-provided uniform, hull_heat_level.
+  - Added predefined macros to specify availability of game-provided uniforms.
+* This version uses different blending modes for various visual effects.
+* Added error reporting for bad property lists.
+* Reporting of too-new OXPs fixed.
+* Fix for most XML “don’t know how to load entity” errors in custom Linux
+  builds.
+* port_radius should now work for stations.
+* New script query method, systemEconomy_string.
+* Improvements to speed and especially smoothness.
+* Various minor bug fixes and code clean-ups. 
+
+Oolite 1.67.1-test:
+* Advanced Navigation Array can now be purchased (for any ship).
+* Yaw control, now with workingness. (Keyboard only. Default keys: ‘,’ and
+  ’.’; not available in strict mode.)
+* Hopefully fixed crashing bug in streaming sound.
+* Increased precision of certain geometric calculations, most noticable in
+  laser accuracy.
+* Cache is now rebuilt if OXPs are added or removed. Cache is now saved when
+  docking rather than when saving.
+* (Mac OS X only) Fixed two similar sound glitches.
+* (Mac OS X only) Fixed calculation of sound size; sounds larger than 1 MB
+  will now be streamed from disk (was 16 MB for stereo and 8 MB for mono).
+* Introduced, and hopefully fixed, a bug that made mouse control randomly not
+  work.
+* (Mac OS X only) Made application about 11 MB smaller.
+
+Oolite 1.67-test:
+* GLSL shader support. Now you too can have psychadelic Thargons, assuming
+  your hardware supports it.
+* another_commander’s Advanced Navigational Array. Activated by ‘!’, replacing
+  the Mac-only dump-galactic-chart command (you can find the dumped data on
+  the wiki at http://wiki.alioth.net/index.php/Oolite_planet_list).
+* Bigger radar blobs for big blobby things.
+* Giles’s experimental procedural textures (not dajt’s). Activate by pausing
+  (‘P’), then pressing ‘T’. The change will take effect when a new planet
+  texture is generated, i.e. it won’t affect the planet in the current system.
+  This feature is, er, in need of additional performance optimization.
+* Yaw control, possibly. The comments say “keypad 1 and 3”, but those don’t
+  work for me (presumably GNUstep/Cocoa differences). Have fun trying to find
+  out what does. To do: disable this in strict mode.
+* Audio improvements: removed restriction on sound effect size; large sound
+  effects are now streamed from disk rather than preloaded. Sound effects are
+  now played in stereo.
+* New spiffy log filtering system (now with 20% extra spiff). As described
+  elswhere (http://www.aegidian.org/bb/viewtopic.php?t=3208).
+* Planet rotation speed control (rotation_speed and rotation_speed_factor in
+  planetInfo). Default speed has been halved.
+* Image placement in HUDs should be consistent across platforms. Presumably
+  this will break some HUDs.
+* AI changes. Don’t know whether these changes are noticable.
+* Possible ghost ship fix.
+* Added d256_number and pseudoFixedD256_number.
+* Various bug fixes.
