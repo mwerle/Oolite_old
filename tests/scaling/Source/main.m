@@ -21,6 +21,8 @@
 #define USE_POOL		1
 #define USE_MIP_MAPPING	0
 
+#define FORCE_MAX_SIZE	256
+
 
 @interface ResourceManager: NSObject
 + (NSArray *)rootPaths;
@@ -49,6 +51,10 @@ int main(int argc, char *argv[])
 	
 	#define TEST_TEXTURE(name)		do { id loader = GetTexture(name); if (loader != nil) DumpTexture(loader, name); } while (0)
 	
+#if FORCE_MAX_SIZE
+	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:FORCE_MAX_SIZE] forKey:@"max-texture-size"]];
+#endif
+	
 	unsigned iter = ITERATIONS;
 	while (iter--)
 	{
@@ -73,6 +79,8 @@ int main(int argc, char *argv[])
 		TEST_TEXTURE(@"rgb256x300");
 		TEST_TEXTURE(@"rgb300x256");
 		TEST_TEXTURE(@"rgb300x300");
+		
+		TEST_TEXTURE(@"edgecase-test");
 		
 #if USE_POOL
 		[pool release];
