@@ -279,7 +279,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>4</integer>
+									<integer>15</integer>
 									<integer>2</integer>
 									<integer>0</integer>
 								</array>
@@ -512,7 +512,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>205685816.71119499</real>
+	<real>205689740.507898</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -533,12 +533,13 @@
 		<string>1A38B5810B989622001ED4A0</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1A7D94040C427B23004B094A</string>
-		<string>1A7D94230C427F43004B094A</string>
-		<string>1A7D94240C427F43004B094A</string>
-		<string>1A7D94250C427F43004B094A</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1AED2CA00C04550A004A1118</string>
+		<string>1A7D94230C427F43004B094A</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/Oolite.xcodeproj</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>1A7D96510C42938C004B094A</string>
+		<string>1A7D96520C42938C004B094A</string>
+		<string>1A7D94240C427F43004B094A</string>
 	</array>
 	<key>WindowString</key>
 	<string>1681 -30 797 426 1440 -372 1024 768 </string>
@@ -631,7 +632,7 @@
 			<key>WindowToolGUID</key>
 			<string>1AED2CA00C04550A004A1118</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

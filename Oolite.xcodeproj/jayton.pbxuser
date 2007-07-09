@@ -1341,7 +1341,7 @@
 		hitCount = 1;
 		lineNumber = 94;
 		location = OoliteDev;
-		modificationTime = 205685413.282488;
+		modificationTime = 205689725.013633;
 		state = 1;
 	};
 	1A7D961E0C4281A3004B094A /* PlayerEntityLoadSave.m:368 */ = {
@@ -2362,7 +2362,6 @@
 		breakpoints = (
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A7D79BE0C3BBAB600E4A5F5 /* -[NSException raise] */,
-			1A7D89680C426EF700E4A5F5 /* OOPListParsing.m:94 */,
 			1A7D961E0C4281A3004B094A /* PlayerEntityLoadSave.m:368 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
