@@ -1,0 +1,2 @@
+_UnsanitySCR_CanInstall
+_UnsanitySCR_Install
