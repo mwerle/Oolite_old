@@ -149,8 +149,8 @@
 	1A2316EB0B9CFAD700EF0852 /* shipdata.plist */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1088, 78768}}";
-			sepNavSelRange = "{1389, 16}";
-			sepNavVisRect = "{{0, 438}, {1088, 836}}";
+			sepNavSelRange = "{81742, 9}";
+			sepNavVisRect = "{{0, 48004}, {1088, 836}}";
 		};
 	};
 	1A2316EC0B9CFAD700EF0852 /* shipyard.plist */ = {
@@ -274,9 +274,9 @@
 	};
 	1A2317A00B9D022500EF0852 /* missileAI.plist */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1089, 837}}";
-			sepNavSelRange = "{473, 7}";
-			sepNavVisRect = "{{0, 0}, {1089, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1088, 837}}";
+			sepNavSelRange = "{904, 0}";
+			sepNavVisRect = "{{0, 0}, {1088, 836}}";
 		};
 	};
 	1A2317A10B9D022500EF0852 /* nullAI.plist */ = {
@@ -498,9 +498,9 @@
 	};
 	1A26D08D0BCF9CF70073F257 /* PlayerEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1088, 100736}}";
-			sepNavSelRange = "{42138, 46}";
-			sepNavVisRect = "{{0, 21063}, {1088, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1088, 100720}}";
+			sepNavSelRange = "{163817, 0}";
+			sepNavVisRect = "{{0, 89653}, {1088, 836}}";
 		};
 	};
 	1A26D08E0BCF9CF70073F257 /* PlayerEntity.h */ = {
@@ -513,8 +513,8 @@
 	1A26D08F0BCF9CF70073F257 /* ShipEntity.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1088, 116096}}";
-			sepNavSelRange = "{100011, 0}";
-			sepNavVisRect = "{{0, 59376}, {1088, 836}}";
+			sepNavSelRange = "{13604, 15}";
+			sepNavVisRect = "{{0, 6070}, {1088, 836}}";
 		};
 	};
 	1A26D0900BCF9CF70073F257 /* ShipEntity.h */ = {
@@ -596,9 +596,9 @@
 	};
 	1A26D09C0BCF9CF70073F257 /* PlayerEntityControls.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1088, 43312}}";
-			sepNavSelRange = "{64889, 0}";
-			sepNavVisRect = "{{0, 35701}, {1088, 836}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1088, 43376}}";
+			sepNavSelRange = "{6830, 0}";
+			sepNavVisRect = "{{0, 3398}, {1088, 836}}";
 		};
 	};
 	1A26D09D0BCF9CF70073F257 /* Entity.h */ = {
@@ -1321,7 +1321,7 @@
 			sepNavVisRect = "{{0, 1589}, {1298, 363}}";
 		};
 	};
-	1A7D86C40C419CB200E4A5F5 /* PlayerEntity.m:1344 */ = {
+	1A7D86C40C419CB200E4A5F5 /* PlayerEntity.m:1343 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1331,7 +1331,7 @@
 		fileReference = 1A26D08D0BCF9CF70073F257 /* PlayerEntity.m */;
 		functionName = "-update:";
 		hitCount = 1;
-		lineNumber = 1344;
+		lineNumber = 1343;
 		location = OoliteDev;
 		modificationTime = 205863347.252255;
 		state = 1;
@@ -1406,7 +1406,7 @@
 		objects = (
 			1A8D4DBB0C0728DA00AD1771 /* -[_NSZombie methodSignatureForSelector:] */,
 			1A7D79BE0C3BBAB600E4A5F5 /* -[NSException raise] */,
-			1A7D86C40C419CB200E4A5F5 /* PlayerEntity.m:1344 */,
+			1A7D86C40C419CB200E4A5F5 /* PlayerEntity.m:1343 */,
 			1AD0C5240C4683A90070BD23 /* Universe.m:5209 */,
 			1AD0C5310C46846D0070BD23 /* objc_exception_raise */,
 			1AD0C5480C4688500070BD23 /* ShipEntity.m:3739 */,
@@ -1702,8 +1702,8 @@
 	1AD0C6C80C47B76F0070BD23 /* SCRDynamicShim.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1088, 2000}}";
-			sepNavSelRange = "{3806, 0}";
-			sepNavVisRect = "{{0, 1163}, {1088, 836}}";
+			sepNavSelRange = "{2855, 0}";
+			sepNavVisRect = "{{0, 518}, {1088, 836}}";
 		};
 	};
 	1AD0C6E40C47B82C0070BD23 /* SmartCrashReportsInstall.h */ = {
@@ -2397,7 +2397,7 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Development;
+		activeBuildConfigurationName = "Deployment – Test Release";
 		activeExecutable = 1AD9AF780B91E1BB00FB704E /* Oolite */;
 		activeTarget = 0865423506B8447D000CA0AB /* Oolite */;
 		addToTargets = (
@@ -2409,6 +2409,7 @@
 			1AD0C5240C4683A90070BD23 /* Universe.m:5209 */,
 			1AD0C5310C46846D0070BD23 /* objc_exception_raise */,
 			1AD0C5480C4688500070BD23 /* ShipEntity.m:3739 */,
+			1A7D86C40C419CB200E4A5F5 /* PlayerEntity.m:1343 */,
 		);
 		breakpointsGroup = 1A8A3BE20B963EE5007D20B8 /* XCBreakpointsBucket */;
 		codeSenseManager = 1AD9AF870B91E1C500FB704E /* Code sense */;
@@ -2565,7 +2566,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
 					200,
-					64,
+					157,
 					20,
 					48,
 					43,
@@ -2581,8 +2582,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 205759535;
-			PBXWorkspaceStateSaveDate = 205759535;
+			PBXPerProjectTemplateStateSaveDate = 206035516;
+			PBXWorkspaceStateSaveDate = 206035516;
 		};
 		perUserProjectItems = {
 			1ADBA6720BD10AE5008FC99C = 1ADBA6720BD10AE5008FC99C /* PBXTextBookmark */;

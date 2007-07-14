@@ -236,8 +236,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -275,17 +273,19 @@
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>1A8A3BE90B963F02007D20B8</string>
-								<string>29B97323FDCFA39411CA2CEA</string>
 								<string>1C37FBAC04509CD000000102</string>
+								<string>1A6704000C48CF58002551AA</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>29</integer>
+									<integer>43</integer>
+									<integer>24</integer>
+									<integer>23</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 207}, {199, 367}}</string>
+							<string>{{0, 417}, {199, 367}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -353,6 +353,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -389,9 +391,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1AD0C00A0C43A4340070BD23</string>
+				<string>1A6703BA0C47DA3E002551AA</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1AD0C00B0C43A4340070BD23</string>
+				<string>1A6703BB0C47DA3E002551AA</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -510,7 +512,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>206030714.48419401</real>
+	<real>206099203.86782601</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -525,16 +527,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1AD0C5250C4683B40070BD23</string>
-		<string>1AD0C1210C43CC140070BD23</string>
-		<string>1AD0C1220C43CC140070BD23</string>
-		<string>1A38B5810B989622001ED4A0</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>1AD0C11E0C43C9300070BD23</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1AED2CA00C04550A004A1118</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/Oolite.xcodeproj</string>
+		<string>1AED2CA00C04550A004A1118</string>
 	</array>
 	<key>WindowString</key>
 	<string>1668 -30 797 426 1440 -372 1024 768 </string>
@@ -580,13 +574,13 @@
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXBuildLogShowsTranscriptDefaultKey</key>
-								<string>{{0, 500}, {1022, 290}}</string>
+								<string>{{0, 458}, {1022, 332}}</string>
 								<key>PBXProjectModuleGUID</key>
 								<string>XCMainBuildResultsModuleGUID</string>
 								<key>PBXProjectModuleLabel</key>
 								<string>Build</string>
 								<key>XCBuildResultsTrigger_Collapse</key>
-								<integer>1024</integer>
+								<integer>1021</integer>
 								<key>XCBuildResultsTrigger_Open</key>
 								<integer>1010</integer>
 							</dict>
@@ -618,7 +612,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1AED2CA00C04550A004A1118</string>
-				<string>1AD0C00E0C43A65D0070BD23</string>
+				<string>1A6703CC0C48C7BA002551AA</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -629,7 +623,7 @@
 			<key>WindowToolGUID</key>
 			<string>1AED2CA00C04550A004A1118</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
