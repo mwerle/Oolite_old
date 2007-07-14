@@ -1,13 +1,16 @@
 # A copy of this script is used in the "Copy SCR Shim" build phase in Xcode.
 
+TARGET_DIR="$BUILT_PRODUCTS_DIR/Oolite.app/Contents/Frameworks"
+
 if [ $COPY_SCR_SHIM ]
 then
 	echo "Copying SCR shim"
 	
-	TARGET_DIR="$BUILT_PRODUCTS_DIR/Oolite.app/Contents/Frameworks"
 	if [ ! -e "$TARGET_DIR" ]
 	then
 		mkdir "$TARGET_DIR"
 	fi
 	cp "$SRCROOT/deps/Cocoa-deps/SCRDynamicShim/bin/SCRDynamicShim.dylib" "$TARGET_DIR/SCRDynamicShim.dylib"
+else
+	rmdir "$TARGET_DIR"
 fi
