@@ -333,6 +333,7 @@
 		1A5DBD590BC17F0900D57389 /* NSStringOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5DBD570BC17F0900D57389 /* NSStringOOExtensions.m */; };
 		1A5E462F0C32DACE008104B4 /* OOShaderUniformMethodType.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5E462D0C32DACE008104B4 /* OOShaderUniformMethodType.m */; };
 		1A5E46300C32DACE008104B4 /* OOShaderUniformMethodType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A5E462E0C32DACE008104B4 /* OOShaderUniformMethodType.h */; };
+		1A67050F0C4904ED002551AA /* oolite-cloaking-device.js in Copy Scripts */ = {isa = PBXBuildFile; fileRef = 1A67050E0C4904ED002551AA /* oolite-cloaking-device.js */; };
 		1A71E6F80BCE345000CD5C13 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A71E6F30BCE340C00CD5C13 /* libpng.a */; };
 		1A71E7170BCE34CF00CD5C13 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A71E7030BCE34CF00CD5C13 /* pngconf.h */; };
 		1A71E7180BCE34CF00CD5C13 /* pngmem.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A71E7040BCE34CF00CD5C13 /* pngmem.c */; };
@@ -399,6 +400,9 @@
 		1AC775E30C2DD4E900ECFF3B /* OODebugGLDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AC775E10C2DD4E900ECFF3B /* OODebugGLDrawing.m */; };
 		1AD0C1C30C44DF230070BD23 /* TextureStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 25161145099544390037C2E1 /* TextureStore.m */; };
 		1AD0C1C40C44DF240070BD23 /* TextureStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 25161134099544390037C2E1 /* TextureStore.h */; };
+		1AD0C3300C463FCC0070BD23 /* autoAImap.plist in Copy Config */ = {isa = PBXBuildFile; fileRef = 1AD0C32F0C463FCB0070BD23 /* autoAImap.plist */; };
+		1AD0C6C90C47B77E0070BD23 /* SCRDynamicShim.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD0C6C80C47B76F0070BD23 /* SCRDynamicShim.m */; };
+		1AD0C6E60C47B82C0070BD23 /* SmartCrashReportsInstall.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD0C6E40C47B82C0070BD23 /* SmartCrashReportsInstall.h */; };
 		1ADBA5500BD0F173008FC99C /* OOBasicMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ADBA54E0BD0F173008FC99C /* OOBasicMaterial.h */; };
 		1ADBA5510BD0F173008FC99C /* OOBasicMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ADBA54F0BD0F173008FC99C /* OOBasicMaterial.m */; };
 		1ADF5CEC0B9DF59A00FDB2A3 /* OOCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A231A170B9D8B1B00EF0852 /* OOCacheManager.m */; };
@@ -461,7 +465,7 @@
 		2512834209BA27EC00F43D55 /* Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 2512834009BA27EC00F43D55 /* Geometry.h */; };
 		2512834309BA27EC00F43D55 /* Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 2512834109BA27EC00F43D55 /* Geometry.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31 -falign-functions=32"; }; };
 		2512834609BA281500F43D55 /* CollisionRegion.h in Headers */ = {isa = PBXBuildFile; fileRef = 2512834409BA281500F43D55 /* CollisionRegion.h */; };
-		2512834709BA281500F43D55 /* CollisionRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = 2512834509BA281500F43D55 /* CollisionRegion.m */; };
+		2512834709BA281500F43D55 /* CollisionRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = 2512834509BA281500F43D55 /* CollisionRegion.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31 -falign-functions=32"; }; };
 		25160E2F0995362F0037C2E1 /* OOCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 25160E2E0995362F0037C2E1 /* OOCocoa.h */; };
 		251610DD099544090037C2E1 /* OOCABufferedSound.h in Headers */ = {isa = PBXBuildFile; fileRef = 251610CA099544090037C2E1 /* OOCABufferedSound.h */; };
 		251610DE099544090037C2E1 /* OOCASoundMixer.h in Headers */ = {isa = PBXBuildFile; fileRef = 251610CB099544090037C2E1 /* OOCASoundMixer.h */; };
@@ -564,6 +568,7 @@
 			dstPath = Config;
 			dstSubfolderSpec = 7;
 			files = (
+				1AD0C3300C463FCC0070BD23 /* autoAImap.plist in Copy Config */,
 				1A3591830C1C382700E52220 /* nebulatextures.plist in Copy Config */,
 				1A3591840C1C382700E52220 /* startextures.plist in Copy Config */,
 				1A34912A0BC25EAA00802DA7 /* world-scripts.plist in Copy Config */,
@@ -828,6 +833,7 @@
 			dstSubfolderSpec = 7;
 			files = (
 				1A34912E0BC25EBC00802DA7 /* oolite-legacy-script.plist in Copy Scripts */,
+				1A67050F0C4904ED002551AA /* oolite-cloaking-device.js in Copy Scripts */,
 			);
 			name = "Copy Scripts";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -866,7 +872,7 @@
 		083325DC09DDBCDE00F5B8E4 /* OOColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOColor.m; sourceTree = "<group>"; };
 		083DB4D30A70E51E00B419B2 /* OOBrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOBrain.h; sourceTree = "<group>"; };
 		083DB4D40A70E51E00B419B2 /* OOBrain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOBrain.m; sourceTree = "<group>"; };
-		0865432206B8447D000CA0AB /* OoliteDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OoliteDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0865432206B8447D000CA0AB /* Oolite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Oolite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0878FD2F086EF845004CB752 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1A08317C0C2EED9700E3AE25 /* debugLogMessageClassesMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = debugLogMessageClassesMenu.plist; sourceTree = "<group>"; };
@@ -1190,6 +1196,7 @@
 		1A5DBD570BC17F0900D57389 /* NSStringOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSStringOOExtensions.m; sourceTree = "<group>"; };
 		1A5E462D0C32DACE008104B4 /* OOShaderUniformMethodType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOShaderUniformMethodType.m; sourceTree = "<group>"; };
 		1A5E462E0C32DACE008104B4 /* OOShaderUniformMethodType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOShaderUniformMethodType.h; sourceTree = "<group>"; };
+		1A67050E0C4904ED002551AA /* oolite-cloaking-device.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-cloaking-device.js"; sourceTree = "<group>"; };
 		1A71D85A0BCA88AA00CD5C13 /* OOPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOPlayer.h; sourceTree = "<group>"; };
 		1A71D85B0BCA88AA00CD5C13 /* OOPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOPlayer.m; sourceTree = "<group>"; };
 		1A71D89F0BCA8B6500CD5C13 /* OOLocalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLocalPlayer.h; sourceTree = "<group>"; };
@@ -1263,6 +1270,10 @@
 		1AC0E94B0B974DC200C46994 /* README_LINUX.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README_LINUX.TXT; sourceTree = "<group>"; };
 		1AC775E00C2DD4E900ECFF3B /* OODebugGLDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugGLDrawing.h; sourceTree = "<group>"; };
 		1AC775E10C2DD4E900ECFF3B /* OODebugGLDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugGLDrawing.m; sourceTree = "<group>"; };
+		1AD0C32F0C463FCB0070BD23 /* autoAImap.plist */ = {isa = PBXFileReference; fileEncoding = 4; languageSpecificationIdentifier = plist; lastKnownFileType = text.xml; path = autoAImap.plist; sourceTree = "<group>"; };
+		1AD0C6C80C47B76F0070BD23 /* SCRDynamicShim.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCRDynamicShim.m; sourceTree = "<group>"; };
+		1AD0C6E30C47B82C0070BD23 /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = SmartCrashReportsInstall.o; sourceTree = "<group>"; };
+		1AD0C6E40C47B82C0070BD23 /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartCrashReportsInstall.h; sourceTree = "<group>"; };
 		1ADBA54E0BD0F173008FC99C /* OOBasicMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOBasicMaterial.h; sourceTree = "<group>"; };
 		1ADBA54F0BD0F173008FC99C /* OOBasicMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOBasicMaterial.m; sourceTree = "<group>"; };
 		1ADF5F110B9E374B00FDB2A3 /* JoystickHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickHandler.h; sourceTree = "<group>"; };
@@ -1455,7 +1466,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0865432206B8447D000CA0AB /* OoliteDev.app */,
+				0865432206B8447D000CA0AB /* Oolite.app */,
 				1A71E6F30BCE340C00CD5C13 /* libpng.a */,
 			);
 			name = Products;
@@ -1500,6 +1511,7 @@
 		1A2316DD0B9CFAD700EF0852 /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				1AD0C32F0C463FCB0070BD23 /* autoAImap.plist */,
 				1A2316DE0B9CFAD700EF0852 /* characters.plist */,
 				1A2316DF0B9CFAD700EF0852 /* commodities.plist */,
 				1A2316E00B9CFAD700EF0852 /* customsounds.plist */,
@@ -1795,6 +1807,7 @@
 			isa = PBXGroup;
 			children = (
 				1A34912D0BC25EBC00802DA7 /* oolite-legacy-script.plist */,
+				1A67050E0C4904ED002551AA /* oolite-cloaking-device.js */,
 			);
 			path = Scripts;
 			sourceTree = "<group>";
@@ -2193,6 +2206,26 @@
 			path = Doc;
 			sourceTree = "<group>";
 		};
+		1AD0C6B90C47B70F0070BD23 /* Smart Crash Reports */ = {
+			isa = PBXGroup;
+			children = (
+				1AD0C6BC0C47B7350070BD23 /* SCRDynamicShim */,
+				1AD0C6E30C47B82C0070BD23 /* SmartCrashReportsInstall.o */,
+				1AD0C6E40C47B82C0070BD23 /* SmartCrashReportsInstall.h */,
+			);
+			name = "Smart Crash Reports";
+			path = "deps/Cocoa-deps/Smart Crash Reports SDK";
+			sourceTree = "<group>";
+		};
+		1AD0C6BC0C47B7350070BD23 /* SCRDynamicShim */ = {
+			isa = PBXGroup;
+			children = (
+				1AD0C6C80C47B76F0070BD23 /* SCRDynamicShim.m */,
+			);
+			name = SCRDynamicShim;
+			path = "deps/Cocoa-deps/SCRDynamicShim";
+			sourceTree = SOURCE_ROOT;
+		};
 		1ADC3F850BFA1388000E0F89 /* Drawables */ = {
 			isa = PBXGroup;
 			children = (
@@ -2278,6 +2311,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1AD0C6B90C47B70F0070BD23 /* Smart Crash Reports */,
 				1A71E6FB0BCE345800CD5C13 /* libpng */,
 				1A71E8780BCE8EB100CD5C13 /* libz.dylib */,
 				1AEAAC6C0BA457C3000705D0 /* SpiderMonkey headers */,
@@ -2452,6 +2486,7 @@
 				1A7D83010C40111B00E4A5F5 /* OOLogOutputHandler.h in Headers */,
 				1A7D833A0C40147800E4A5F5 /* OOAsyncQueue.h in Headers */,
 				1AD0C1C40C44DF240070BD23 /* TextureStore.h in Headers */,
+				1AD0C6E60C47B82C0070BD23 /* SmartCrashReportsInstall.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2487,6 +2522,8 @@
 				1A2319BA0B9D032700EF0852 /* Copy Sounds */,
 				1A3491320BC25ED400802DA7 /* Copy Scripts */,
 				1A8072280C0483FA00BA1935 /* Copy Debug Add-ons */,
+				1AD0C7890C47C1680070BD23 /* Build SCR Shim */,
+				1AD0C7300C47BDEF0070BD23 /* Copy SCR Shim (test release only) */,
 			);
 			buildRules = (
 			);
@@ -2497,7 +2534,7 @@
 			name = Oolite;
 			productInstallPath = "$(HOME)/Applications";
 			productName = Oolite;
-			productReference = 0865432206B8447D000CA0AB /* OoliteDev.app */;
+			productReference = 0865432206B8447D000CA0AB /* Oolite.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1A71E6F20BCE340C00CD5C13 /* libpng-custom */ = {
@@ -2585,6 +2622,38 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "plutil -convert xml1 -o $SRCROOT/Resources/Config/logcontrol.plist.xml $SRCROOT/Resources/Config/logcontrol.plist\necho Updated logcontrol.plist.xml.\n";
+		};
+		1AD0C7300C47BDEF0070BD23 /* Copy SCR Shim (test release only) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/deps/Cocoa-deps/SCRDynamicShim/bin/SCRDynamicShim.dylib",
+			);
+			name = "Copy SCR Shim (test release only)";
+			outputPaths = (
+				$BUILT_PRODUCTS_DIR/Oolite.app/Contents/Frameworks/SCRDynamicShim.dylib,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "TARGET_DIR=\"$BUILT_PRODUCTS_DIR/Oolite.app/Contents/Frameworks\"\n\nif [ $COPY_SCR_SHIM ]\nthen\n\techo \"Copying SCR shim\"\n\t\n\tif [ ! -e \"$TARGET_DIR\" ]\n\tthen\n\t\tmkdir \"$TARGET_DIR\"\n\tfi\n\tcp \"$SRCROOT/deps/Cocoa-deps/SCRDynamicShim/bin/SCRDynamicShim.dylib\" \"$TARGET_DIR/SCRDynamicShim.dylib\"\nelse\n\trmdir \"$TARGET_DIR\"\nfi\n";
+		};
+		1AD0C7890C47C1680070BD23 /* Build SCR Shim */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/deps/Cocoa-deps/Smart Crash Reports SDK/SmartCrashReportsInstall.o",
+			);
+			name = "Build SCR Shim";
+			outputPaths = (
+				"$(SRCROOT)/deps/Cocoa-deps/SCRDynamicShim/bin/SCRDynamicShim.dylib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# A copy of this script is used in the \"Build SCR Shim\" build phase in Xcode.\n\nif [ $COPY_SCR_SHIM ]\nthen\n\techo \"Building SCR shim\"\n\t\n\tSHIM_DIR=\"$SRCROOT/deps/Cocoa-deps/SCRDynamicShim/\"\n\tBIN_DIR=\"$SHIM_DIR/bin\"\n\tif [ ! -e \"$BIN_DIR\" ]\n\tthen\n\t\tmkdir \"$BIN_DIR\"\n\tfi\n\t\n\t/usr/bin/gcc -o \"$BIN_DIR/SCRDynamicShim.dylib\" -L/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/darwin/default \"$SHIM_DIR/../Smart Crash Reports SDK/SmartCrashReportsInstall.o\" -exported_symbols_list \"$SHIM_DIR/ExportList.txt\" -framework Carbon -framework Security -lz -arch ppc -Wl,-single_module -compatibility_version 1 -current_version 1 -install_name /usr/local/lib/SCRDynamicShim.dylib -Wl,-Y,1455 -dynamiclib -mmacosx-version-min=10.4 -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2696,6 +2765,7 @@
 				1A7D83020C40111B00E4A5F5 /* OOLogOutputHandler.m in Sources */,
 				1A7D833B0C40147800E4A5F5 /* OOAsyncQueue.m in Sources */,
 				1AD0C1C30C44DF230070BD23 /* TextureStore.m in Sources */,
+				1AD0C6C90C47B77E0070BD23 /* SCRDynamicShim.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2799,9 +2869,13 @@
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/\"";
 				GCC_DEBUGGING_SYMBOLS = used;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = XP_UNIX;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					NDEBUG,
+					OOLOG_NO_FILE_NAME,
+				);
 				GCC_REUSE_STRINGS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS_QUOTED_1)",
@@ -2894,13 +2968,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				COPY_SCR_SHIM = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/\"";
 				GCC_DEBUGGING_SYMBOLS = used;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = XP_UNIX;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					XP_UNIX,
+					"OO_SMART_CRASH_REPORT_INSTALL=1",
+				);
 				GCC_REUSE_STRINGS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS_QUOTED_1)",
@@ -2921,7 +2999,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg\\ Vorbis\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/deps/Cocoa-deps/js\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				OTHER_LDFLAGS = "-lSystem";
+				OTHER_LDFLAGS_i386 = "\"$(SRCROOT)/deps/Cocoa-deps/Smart Crash Reports SDK/SmartCrashReportsInstall.o\" -framework Security";
 				PREBINDING = NO;
 				PRODUCT_NAME = Oolite;
 				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;

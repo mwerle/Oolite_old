@@ -235,7 +235,11 @@ static BOOL rotateCargo_pressed;
 static BOOL autopilot_key_pressed;
 static BOOL fast_autopilot_key_pressed;
 static BOOL target_autopilot_key_pressed;
+
+#ifndef NDEBUG
 static BOOL dump_target_state_pressed;
+#endif
+
 
 static int				saved_view_direction;
 static double			saved_script_time;
@@ -505,13 +509,13 @@ static NSTimeInterval	time_last_frame;
 				if (!target_missile_pressed)
 				{
 					missile_status = MISSILE_STATUS_ARMED;
-					if ((ident_engaged) && ([self getPrimaryTarget]))
+					if ((ident_engaged) && ([self primaryTarget]))
 					{
 						if ([[missile_entity[activeMissile] roles] hasSuffix:@"MISSILE"])
 						{
 							missile_status = MISSILE_STATUS_TARGET_LOCKED;
-							[missile_entity[activeMissile] addTarget:[self getPrimaryTarget]];
-							[UNIVERSE addMessage:[NSString stringWithFormat:ExpandDescriptionForCurrentSystem(@"[missile-locked-onto-@]"), [(ShipEntity *)[self getPrimaryTarget] identFromShip: self]] forCount:4.5];
+							[missile_entity[activeMissile] addTarget:[self primaryTarget]];
+							[UNIVERSE addMessage:[NSString stringWithFormat:ExpandDescriptionForCurrentSystem(@"[missile-locked-onto-@]"), [(ShipEntity *)[self primaryTarget] identFromShip: self]] forCount:4.5];
 							if (![UNIVERSE playCustomSound:@"[missile-locked-on]"])
 								[self beep];
 						}
@@ -688,7 +692,7 @@ static NSTimeInterval	time_last_frame;
 			{
 				if (has_docking_computer && (!target_autopilot_key_pressed))
 				{
-					Entity* primeTarget = [self getPrimaryTarget];
+					Entity* primeTarget = [self primaryTarget];
 					if ((primeTarget)&&(primeTarget->isStation)&&[primeTarget isKindOfClass:[StationEntity class]])
 					{
 						targetStation = primaryTarget;
@@ -934,7 +938,7 @@ static NSTimeInterval	time_last_frame;
 			if (!dump_target_state_pressed)
 			{
 				dump_target_state_pressed = YES;
-				id target = [self getPrimaryTarget];
+				id target = [self primaryTarget];
 				if (target == nil)	target = self;
 				[target dumpState];
 			}

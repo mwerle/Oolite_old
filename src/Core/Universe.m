@@ -57,6 +57,7 @@ MA 02110-1301, USA.
 #import "WormholeEntity.h"
 #import "RingEntity.h"
 #import "ParticleEntity.h"
+#import "ShipEntityAI.h"
 
 #define kOOLogUnconvertedNSLog @"unclassified.Universe"
 
@@ -731,7 +732,7 @@ static NSComparisonResult comparePrice(NSDictionary *dict1, NSDictionary *dict2,
 	/*--*/
 	
 	/*- the dust particle system -*/
-	thing = [[DustEntity alloc] init];	// alloc retains!
+	thing = [[DustEntity alloc] init];
 	[thing setScanClass: CLASS_NO_DRAW];
 	[self addEntity:thing];
 	[thing release];
@@ -758,7 +759,7 @@ static NSComparisonResult comparePrice(NSDictionary *dict1, NSDictionary *dict2,
 		n_thargs = 2;   // just to be sure
 	int i;
 	int thargoid_group = NO_TARGET;
-
+	
 	Vector		tharg_start_pos = [self getWitchspaceExitPosition];
 	ranrot_srand([[NSDate date] timeIntervalSince1970]);   // reset randomiser with current time
 
@@ -2753,6 +2754,10 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	NSMutableArray			*foundShips = nil;
 	NSMutableArray			*foundChance = nil;
 	float					foundf = 0.0, selectedf;
+	NSDictionary			*shipDict = nil;
+	NSArray					*shipRoles = nil;
+	NSString				*autoAI = nil;
+	NSDictionary			*autoAIMap = nil;
 	
 	pool = [[NSAutoreleasePool alloc] init];
 	
@@ -2771,8 +2776,8 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	
 	for (shipEnum = [shipdata keyEnumerator]; (shipKey = [shipEnum nextObject]); )
 	{
-		NSDictionary*	shipDict = [shipdata objectForKey:shipKey];
-		NSArray*		shipRoles = ScanTokensFromString([shipDict objectForKey:@"roles"]);
+		shipDict = [shipdata objectForKey:shipKey];
+		shipRoles = ScanTokensFromString([shipDict objectForKey:@"roles"]);
 		
 		if ([shipDict objectForKey:@"conditions"])
 		{
@@ -2828,8 +2833,22 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 	
 	if (found)
 	{
-		ship = [self newShipWithName:(NSString *)[foundShips objectAtIndex:i]];	// may return nil if not found!
-		[ship setRoles:search];											// set its roles to this one particular chosen role
+		shipKey = [foundShips objectAtIndex:i];
+		
+		ship = [self newShipWithName:shipKey];		// may return nil if not found!
+		[ship setRoles:search];						// set its roles to this one particular chosen role
+		
+		shipDict = [shipdata objectForKey:shipKey];
+		if ([shipDict fuzzyBooleanForKey:@"auto_ai"])
+		{
+			// Set AI based on role
+			autoAIMap = [ResourceManager dictionaryFromFilesNamed:@"autoAImap.plist" inFolder:@"Config" andMerge:YES];
+			autoAI = [autoAIMap stringForKey:search];
+			if (autoAI != nil)
+			{
+				[ship setAITo:autoAI];
+			}
+		}
 	}
 	else
 	{
@@ -3023,8 +3042,8 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 		ShipEntity* container = [self newShipWithRole:@"cargopod"];	// retained
 		
 		// look for a pre-set filling
-		int co_type = [container getCommodityType];
-		int co_amount = [container getCommodityAmount];
+		int co_type = [container commodityType];
+		int co_amount = [container commodityAmount];
 		
 		int qr;
 		// select a random point in the histogram
@@ -3093,8 +3112,8 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 		ShipEntity* container = [self newShipWithRole:@"cargopod"];
 		
 		// look for a pre-set filling
-		int co_type = [container getCommodityType];
-		int co_amount = [container getCommodityAmount];
+		int co_type = [container commodityType];
+		int co_amount = [container commodityAmount];
 		
 		if ((co_type == NSNotFound)||(co_amount == 0))
 		{
@@ -3214,13 +3233,21 @@ GLfloat docked_light_specular[]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5,
 - (OOCargoType) commodityForName:(NSString *) co_name
 {
 	unsigned		i, count;
-	NSString		*capName = [co_name capitalizedString];
+	NSString		*name;
 	
 	count = [commoditydata count];
 	for (i = 0; i < count; i++)
 	{
-		if ([capName isEqual:[commoditydata objectAtIndex:MARKET_NAME]])
+		/*	Bug: NSNotFound being returned for valid names.
+			Analysis: Looking for name in commoditydata rather than ith element.
+			Fix: look in [commoditydata objectAtIndex:i].
+			-- Ahruman 20070714
+		*/
+		name = [[commoditydata objectAtIndex:i] stringAtIndex:MARKET_NAME];
+		if ([co_name caseInsensitiveCompare:name] == NSOrderedSame)
+		{
 			return i;
+		}
 	}
 	return NSNotFound;
 }
@@ -5159,8 +5186,6 @@ static BOOL MaintainLinkedLists(Universe* uni)
 						}
 					}
 				}
-				
-				////
 			}
 			
 			update_stage = @"updating linked lists";

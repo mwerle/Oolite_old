@@ -33,6 +33,7 @@ MA 02110-1301, USA.
 #import "OODebugController.h"
 #import <Carbon/Carbon.h>
 #import "JoystickHandler.h"
+#import "SmartCrashReportsInstall.h"
 
 
 static NSString * kOOLogKeyCodeOutOfRange	= @"input.keyMapping.codeOutOfRange";
@@ -109,9 +110,22 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 
 
 - (void)awakeFromNib
-{	
+{
+	[self performSelector:@selector(performLateSetup) withObject:nil afterDelay:0.0];
+}
+
+
+- (void)performLateSetup
+{
 #if OO_INCLUDE_DEBUG_CONTROLLER
 	(void)[OODebugController sharedDebugController];
+#endif
+#if OO_SMART_CRASH_REPORT_INSTALL
+	Boolean authenticationWillBeRequired = NO;
+	if (UnsanitySCR_CanInstall(&authenticationWillBeRequired))
+	{
+		UnsanitySCR_Install(authenticationWillBeRequired ? kUnsanitySCR_GlobalInstall : 0);
+	}
 #endif
 }
 
@@ -366,9 +380,23 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 
 - (void) keyUp:(NSEvent *)theEvent
 {
-	NSString	*stringValue = [theEvent charactersIgnoringModifiers];
-	int			key = [stringValue characterAtIndex:0];
-	int			keycode = [theEvent keyCode] & 255;
+	NSString	*stringValue = nil;
+	int			key;
+	int			keycode;
+	
+	stringValue = [theEvent charactersIgnoringModifiers];
+	
+	/*	Bug: exception when releasing accent key.
+		Analysis: Dead keys (accents and similar) return an empty string.
+		Fix: reject zero-length strings. This is the Wrong Thing - we should
+		really be using KeyTranslate()/UCKeyTranslate() to find out what the
+		string would be if you pressed the key and then space.
+		-- Ahruman 20070714
+	*/
+	if ([stringValue length] < 1)  return;
+	
+	key = [stringValue characterAtIndex:0];
+	keycode = [theEvent keyCode] & 255;
 	
 	supressKeys = NO;
 	
@@ -391,9 +419,23 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 
 - (void) keyDown:(NSEvent *)theEvent
 {
-	NSString	*stringValue = [theEvent charactersIgnoringModifiers];
-	int			key = [stringValue characterAtIndex:0];
-	int			keycode = [theEvent keyCode] & 255;
+	NSString	*stringValue = nil;
+	int			key;
+	int			keycode;
+	
+	stringValue = [theEvent charactersIgnoringModifiers];
+	
+	/*	Bug: exception when pressing accent key.
+		Analysis: Dead keys (accents and similar) return an empty string.
+		Fix: reject zero-length strings. This is the Wrong Thing - we should
+		really be using KeyTranslate()/UCKeyTranslate() to find out what the
+		string would be if you pressed the key and then space.
+		-- Ahruman 20070714
+	*/
+	if ([stringValue length] < 1)  return;
+	
+	key = [stringValue characterAtIndex:0];
+	keycode = [theEvent keyCode] & 255;
 	
 	key = [self translateKeyCode:key];
 	
