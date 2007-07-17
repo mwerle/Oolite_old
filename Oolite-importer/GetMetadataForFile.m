@@ -152,7 +152,7 @@ static BOOL GetMetadataForOXP(void* thisInterface, NSMutableDictionary *attribut
 		
 		[attributes setObject:[content allKeys] forKey:kShipIDs];
 		
-		for (shipEnum = [content objectEnumerator]; ship = [shipEnum nextObject]; )
+		for (shipEnum = [content objectEnumerator]; (ship = [shipEnum nextObject]); )
 		{
 			string = [ship objectForKey:@"name"];
 			if (nil != string)  [names addObject:string];

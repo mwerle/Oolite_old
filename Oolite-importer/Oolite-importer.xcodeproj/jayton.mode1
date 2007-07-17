@@ -281,7 +281,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>0</integer>
+									<integer>13</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -387,9 +387,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1A0832DE0C2F109900E3AE25</string>
+				<string>1AB2AA300C4CC2110008CF4E</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1A0832DF0C2F109900E3AE25</string>
+				<string>1AB2AA310C4CC2110008CF4E</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -508,7 +508,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>204411031.169792</real>
+	<real>206357009.23574701</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -523,6 +523,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1A5BF2670916D11400BF238F</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/Oolite-importer/Oolite-importer.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -573,7 +574,7 @@
 								<key>PBXProjectModuleLabel</key>
 								<string>Build</string>
 								<key>XCBuildResultsTrigger_Collapse</key>
-								<integer>1024</integer>
+								<integer>1021</integer>
 								<key>XCBuildResultsTrigger_Open</key>
 								<integer>1010</integer>
 							</dict>
@@ -605,7 +606,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1A5BF2670916D11400BF238F</string>
-				<string>1ABC30E30C11CAB700C5800D</string>
+				<string>1AB2AA280C4CC20C0008CF4E</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

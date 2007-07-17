@@ -218,6 +218,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -240,9 +241,9 @@
 				SECTORDER_FLAGS = "";
 				SYMROOT = ../build;
 				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
@@ -270,6 +271,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -289,9 +291,9 @@
 				SECTORDER_FLAGS = "";
 				SYMROOT = ../build;
 				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
@@ -324,6 +326,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -346,9 +349,9 @@
 				SECTORDER_FLAGS = "";
 				SYMROOT = ../build;
 				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
