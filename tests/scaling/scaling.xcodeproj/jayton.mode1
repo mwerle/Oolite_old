@@ -276,7 +276,6 @@
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>29B97315FDCFA39411CA2CEA</string>
 								<string>1A45B0830BD8E23F0078EA87</string>
-								<string>29B97317FDCFA39411CA2CEA</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
@@ -389,9 +388,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1A7D7B620C3BE36B00E4A5F5</string>
+				<string>1A2F5FA70C5BC6BA003872C8</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1A7D7B630C3BE36B00E4A5F5</string>
+				<string>1A2F5FA80C5BC6BA003872C8</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -510,7 +509,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>205259972.02200401</real>
+	<real>207337981.10083199</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -525,8 +524,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1A7D7B5E0C3BE33900E4A5F5</string>
 		<string>/Users/jayton/Programming/Projects/Oolite-proj/svn-repo/trunk/tests/scaling/scaling.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
