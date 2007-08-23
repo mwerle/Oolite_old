@@ -82,9 +82,12 @@ static OODebugController *sSingleton = nil;
 	self = [super init];
 	if (self != nil)
 	{
-		nibPath = [ResourceManager pathForFileNamed:@"OODebugController.nib" inFolder:nil];
+		_bundle = [[NSBundle bundleForClass:[self class]] retain];
+		
+		nibPath = [_bundle pathForResource:@"OODebugController" ofType:@"nib"];
 		if (nibPath == nil)
 		{
+			OOLog(@"debugOXP.load.failed", @"Could not find OODebugController.oxp.");
 			[self release];
 			self = nil;
 		}
@@ -94,6 +97,7 @@ static OODebugController *sSingleton = nil;
 			
 			[self insertDebugMenu];
 			[self setUpLogMessageClassMenu];
+			OOLog(@"debugOXP.success", @"Success!");
 		}
 	}
 	
@@ -104,6 +108,13 @@ static OODebugController *sSingleton = nil;
 - (void)dealloc
 {
 	if (sSingleton == self)  sSingleton = nil;
+	
+	[menu release];
+	[logMessageClassPanel release];
+	[logPrefsWindow release];
+	[createShipPanel release];
+	
+	[_bundle release];
 	
 	[super dealloc];
 }

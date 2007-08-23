@@ -84,6 +84,8 @@ message class, simply add an item titled foo.bar in the nib.
 	
 	IBOutlet NSPanel			*createShipPanel;
 	IBOutlet NSTextField		*createShipPanelTextField;
+	
+	NSBundle					*_bundle;
 }
 
 + (id)sharedDebugController;
