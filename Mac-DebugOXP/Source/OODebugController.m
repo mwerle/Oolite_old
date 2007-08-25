@@ -3,26 +3,7 @@
 OODebugController.m
 
 
-Oolite
-Copyright (C) 2004-2007 Giles C Williams and contributors
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-MA 02110-1301, USA.
-
-
-This file may also be distributed under the MIT/X11 license:
+Oolite Debug OXP
 
 Copyright (C) 2007 Jens Ayton
 
@@ -48,8 +29,6 @@ SOFTWARE.
 
 #import "OODebugController.h"
 
-#if OO_INCLUDE_DEBUG_CONTROLLER
-
 #import "ResourceManager.h"
 
 #import "OOGraphicsResetManager.h"
@@ -60,6 +39,9 @@ SOFTWARE.
 #import "OOCacheManager.h"
 #import "PlayerEntity.h"
 #import "OOCollectionExtractors.h"
+#import "OOLogOutputHandler.h"
+
+#import <FScript/FScript.h>
 
 
 static OODebugController *sSingleton = nil;
@@ -84,7 +66,7 @@ static OODebugController *sSingleton = nil;
 	{
 		_bundle = [[NSBundle bundleForClass:[self class]] retain];
 		
-		nibPath = [_bundle pathForResource:@"OODebugController" ofType:@"nib"];
+		nibPath = [self pathForResource:@"OODebugController" ofType:@"nib"];
 		if (nibPath == nil)
 		{
 			OOLog(@"debugOXP.load.failed", @"Could not find OODebugController.oxp.");
@@ -97,7 +79,7 @@ static OODebugController *sSingleton = nil;
 			
 			[self insertDebugMenu];
 			[self setUpLogMessageClassMenu];
-			OOLog(@"debugOXP.success", @"Success!");
+			OOLog(@"debugOXP.load.success", @"Debug OXP loaded successfully.");
 		}
 	}
 	
@@ -113,6 +95,7 @@ static OODebugController *sSingleton = nil;
 	[logMessageClassPanel release];
 	[logPrefsWindow release];
 	[createShipPanel release];
+	[jsConsoleController release];
 	
 	[_bundle release];
 	
@@ -128,13 +111,37 @@ static OODebugController *sSingleton = nil;
 }
 
 
+- (NSBundle *)bundle
+{
+	return _bundle;
+}
+
+
+- (NSString *)pathForResource:(NSString *)name ofType:(NSString *)type
+{
+	return [[self bundle] pathForResource:name ofType:type];
+}
+
+
 - (void)awakeFromNib
 {
+	FSInterpreter				*interpreter = nil;
+	
 	[logPrefsWindow center];
+	
+	interpreter = [[fscriptMenuItem interpreterView] interpreter];
+	[interpreter setObject:UNIVERSE forIdentifier:@"universe"];
+	[interpreter setObject:[PlayerEntity sharedPlayer] forIdentifier:@"player"];
 }
 
 
 #pragma mark -
+
+- (IBAction)showLogAction:sender
+{
+	[[NSWorkspace sharedWorkspace] openFile:OOLogHandlerGetLogPath()];
+}
+
 
 - (IBAction)graphicsResetAction:sender
 {
@@ -344,12 +351,21 @@ static OODebugController *sSingleton = nil;
 - (void)insertDebugMenu
 {
 	NSMenuItem					*item = nil;
+	int							index;
 	
 	[menu setTitle:@"Debug"];
 	item = [[NSMenuItem alloc] initWithTitle:@"Debug" action:nil keyEquivalent:@""];
 	[item setSubmenu:menu];
 	[[NSApp mainMenu] addItem:item];
 	[item release];
+	
+	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"debug-show-extra-menu-items"])
+	{
+		while (index = [menu indexOfItemWithTag:-42], index != -1)
+		{
+			[menu removeItemAtIndex:index];
+		}
+	}
 }
 
 
@@ -429,5 +445,3 @@ static OODebugController *sSingleton = nil;
 }
 
 @end
-
-#endif	// NDEBUG

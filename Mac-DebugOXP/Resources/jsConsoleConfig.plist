@@ -1,0 +1,28 @@
+/*	JavaScript console configuration.
+	
+	This plist is merged and overrideable in the usual fashion.
+*/
+
+{
+	// Background colours for various types of console messages. Standard Oolite colour specifiers.
+	// Each colour specifier comes in a pair, foo-foreground-color and foo-background-color.
+	general-foreground-color	= blackColor;
+	general-background-color	= whiteColor;
+	command-background-color	= { hue = 240; brightness = 1.0; saturation = 0.12; };	// Very pale blue
+	warning-background-color	= { hue = 60; brightness = 1.0; saturation = 0.3; };	// Pale yellow
+	error-background-color		= { hue = 0; brightness = 1.0; saturation = 0.3; };		// Pale red
+	exception-background-color	= { hue = 320; brightness = 1.0; saturation = 0.3; };	// Pale magentaish
+	
+	// Alternative configuration for people who find black on which insufficiently l33t:
+/*
+	general-background-color		= blackColor;
+	general-foreground-color		= "0.8 0.8 0.8";
+	command-foreground-color		= cyanColor;
+	warning-foreground-color		= yellowColor;
+	error-foreground-color			= redColor;
+	exception-foreground-color		= orangeColor;
+*/
+	
+	font-face = "Courier";
+	font-size = "11";
+}

@@ -4,27 +4,8 @@ OODebugController.h
 
 Add debug utility GUI to debug builds of Oolite.
 
-
-Oolite
-Copyright (C) 2004-2007 Giles C Williams and contributors
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-MA 02110-1301, USA.
-
-
-This file may also be distributed under the MIT/X11 license:
+ 
+Oolite Debug OXP
 
 Copyright (C) 2007 Jens Ayton
 
@@ -57,40 +38,52 @@ message class specified in their title. Display titles (optional) are set in
 the Attributed Title property. Thus, to add a menu item to control the foo.bar
 message class, simply add an item titled foo.bar in the nib.
 
+Note on extra menu items: some esoteric (and dangerous, in the case of the
+F-Script submenu) commands are hidden by default. To show them, set the
+ preference debug-show-extra-menu-items:
+
+	defaults write org.aegidian.oolite debug-show-extra-menu-items -bool YES
+
 */
 
 
-#define OO_INCLUDE_DEBUG_CONTROLLER		(!defined (NDEBUG))
-
-
-#if OO_INCLUDE_DEBUG_CONTROLLER
-
 #import <Cocoa/Cocoa.h>
+
+@class OOJavaScriptConsoleController, FScriptMenuItem;
 
 
 @interface OODebugController: NSObject
 {
-	IBOutlet NSMenu				*menu;
-	IBOutlet NSMenu				*logMessageClassSubMenu;
+	IBOutlet NSMenu							*menu;
+	IBOutlet NSMenu							*logMessageClassSubMenu;
 	
-	IBOutlet NSPanel			*logMessageClassPanel;
-	IBOutlet NSTextField		*logMsgClassPanelTextField;
+	IBOutlet NSPanel						*logMessageClassPanel;
+	IBOutlet NSTextField					*logMsgClassPanelTextField;
 	
-	IBOutlet NSWindow			*logPrefsWindow;
-	IBOutlet NSButton			*logShowAppNameCheckBox;
-	IBOutlet NSButton			*logShowFunctionCheckBox;
-	IBOutlet NSButton			*logShowFileAndLineCheckBox;
-	IBOutlet NSButton			*logShowMessageClassCheckBox;
+	IBOutlet NSWindow						*logPrefsWindow;
+	IBOutlet NSButton						*logShowAppNameCheckBox;
+	IBOutlet NSButton						*logShowFunctionCheckBox;
+	IBOutlet NSButton						*logShowFileAndLineCheckBox;
+	IBOutlet NSButton						*logShowMessageClassCheckBox;
 	
-	IBOutlet NSPanel			*createShipPanel;
-	IBOutlet NSTextField		*createShipPanelTextField;
+	IBOutlet NSPanel						*createShipPanel;
+	IBOutlet NSTextField					*createShipPanelTextField;
 	
-	NSBundle					*_bundle;
+	IBOutlet OOJavaScriptConsoleController	*jsConsoleController;
+	
+	IBOutlet FScriptMenuItem				*fscriptMenuItem;
+		
+	NSBundle								*_bundle;
+	
 }
 
 + (id)sharedDebugController;
 
+- (NSBundle *)bundle;
+- (NSString *)pathForResource:(NSString *)name ofType:(NSString *)type;
+
 // Debug menu commands
+- (IBAction)showLogAction:sender;
 - (IBAction)graphicsResetAction:sender;
 - (IBAction)clearTextureCacheAction:sender;
 - (IBAction)resetAndClearAction:sender;
@@ -125,5 +118,3 @@ message class, simply add an item titled foo.bar in the nib.
 - (IBAction)modalPanelCancelAction:sender;
 
 @end
-
-#endif	// OO_INCLUDE_DEBUG_CONTROLLER

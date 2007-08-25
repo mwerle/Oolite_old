@@ -1,5 +1,17 @@
 {
     IBClasses = (
+        {
+            ACTIONS = {
+                openObjectBrowser = id; 
+                showConsole = id; 
+                showPreferencePanel = id; 
+                updatePreference = id; 
+            }; 
+            CLASS = FScriptMenuItem; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {fontSizeUI = NSTextField; interpreterView = FSInterpreterView; }; 
+            SUPERCLASS = NSMenuItem; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
@@ -20,6 +32,7 @@
                 modalPanelCancelAction = id; 
                 otherLogMessageClassAction = id; 
                 resetAndClearAction = id; 
+                showLogAction = id; 
                 showLogPreferencesAction = id; 
                 toggleThisDebugFlagAction = id; 
                 toggleThisLogMessageClassAction = id; 
@@ -29,6 +42,8 @@
             OUTLETS = {
                 createShipPanel = NSPanel; 
                 createShipPanelTextField = NSTextField; 
+                fscriptMenuItem = FScriptMenuItem; 
+                jsConsoleController = OOJavaScriptConsoleController; 
                 logMessageClassPanel = NSPanel; 
                 logMessageClassSubMenu = NSMenu; 
                 logMsgClassPanelTextField = NSTextField; 
@@ -38,6 +53,23 @@
                 logShowFunctionCheckBox = NSButton; 
                 logShowMessageClassCheckBox = NSButton; 
                 menu = NSMenu; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                consolePerformCommand = id; 
+                showConsole = id; 
+                toggleShowOnError = id; 
+                toggleShowOnLog = id; 
+                toggleShowOnWarning = id; 
+            }; 
+            CLASS = OOJavaScriptConsoleController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                consoleInputField = NSTextField; 
+                consoleTextView = NSTextView; 
+                consoleWindow = NSWindow; 
             }; 
             SUPERCLASS = NSObject; 
         }
