@@ -262,7 +262,7 @@ as "general", the fallback colour.
 	}
 	else if ([string isKindOfClass:[NSAttributedString class]])
 	{
-		mutableStr = [string mutableCopy];
+		mutableStr = [[string mutableCopy] autorelease];
 	}
 	else
 	{
