@@ -1,8 +1,8 @@
 /*
 
-OOJavaScriptConsoleController.h
+OOJSConsole.h
 
-JavaScript debugging console for Oolite.
+JavaScript object representing the JavaScript console.
 
 
 Oolite Debug OXP
@@ -29,43 +29,5 @@ SOFTWARE.
 
 */
 
-#import <Cocoa/Cocoa.h>
-#import "OOWeakReference.h"
-
-@class OOScript;
-
-
-@interface OOJavaScriptConsoleController: OOWeakRefObject
-{
-	IBOutlet NSWindow					*consoleWindow;
-	IBOutlet NSTextView					*consoleTextView;
-	IBOutlet NSTextField				*consoleInputField;
-
-	
-	NSScrollView						*_consoleScrollView;
-	NSFont								*_baseFont,
-										*_boldFont;
-	
-	NSDictionary						*_config;
-	
-	// Caches
-	NSMutableDictionary					*_fgColors,
-										*_bgColors,
-										*_sourceFiles;
-	
-	OOScript							*_script;
-	
-	BOOL								_showOnWarning,
-										_showOnError,
-										_showOnLog;
-}
-
-- (IBAction)showConsole:sender;
-- (IBAction)toggleShowOnLog:sender;
-- (IBAction)toggleShowOnWarning:sender;
-- (IBAction)toggleShowOnError:sender;
-- (IBAction)consolePerformCommand:sender;
-
-- (void)appendLine:(id)string colorKey:(NSString *)colorKey;
-
-@end
+#import <Foundation/Foundation.h>
+#import <jsapi.h>

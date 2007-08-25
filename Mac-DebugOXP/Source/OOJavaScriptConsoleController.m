@@ -36,6 +36,7 @@ SOFTWARE.
 #import "ResourceManager.h"
 #import "NSStringOOExtensions.h"
 
+#import "OOScript.h"
 #import "OOJavaScriptEngine.h"
 
 enum
@@ -49,7 +50,6 @@ enum
 @interface OOJavaScriptConsoleController (Private) <OOJavaScriptEngineMonitor>
 
 - (void)appendString:(id)string;	// May be plain or attributed
-- (void)appendLine:(id)string colorKey:(NSString *)colorKey;
 
 /*	Find a colour specified in the config plist, with the key
 key-foreground-color or key-background-color. A key of nil will be treated
@@ -87,6 +87,8 @@ as "general", the fallback colour.
 - (void)awakeFromNib
 {
 	NSUserDefaults				*defaults = nil;
+	NSDictionary				*jsProps = nil;
+	
 	
 	assert(kConsoleTrimToSize < kConsoleMaxSize);
 	
@@ -120,6 +122,10 @@ as "general", the fallback colour.
 	[[OOJavaScriptEngine sharedEngine] setMonitor:self];
 	
 	[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
+	
+	// Set up JavaScript side of console.
+	jsProps = [NSDictionary dictionaryWithObject:self forKey:@"console"];
+	_script = [[OOScript nonLegacyScriptFromFileNamed:@"oolite-mac-js-console.js" properties:jsProps] retain];
 }
 
 
@@ -155,13 +161,13 @@ as "general", the fallback colour.
 
 - (IBAction)consolePerformCommand:sender
 {
-	NSString					*string = nil;
+	NSString					*command = nil;
 	NSMutableAttributedString	*attrString = nil;
 	NSDictionary				*fullAttributes = nil,
 								*cmdAttributes = nil;
 	
 	// Use consoleInputField rather than sender so we can, e.g., add a button.
-	string = [consoleInputField stringValue];
+	command = [consoleInputField stringValue];
 	[consoleInputField setStringValue:@""];
 	
 	fullAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -174,12 +180,58 @@ as "general", the fallback colour.
 						[self foregroundColorForKey:@"command"], NSForegroundColorAttributeName,
 						nil];
 	
-	attrString = [NSMutableAttributedString stringWithString:[NSString stringWithFormat:@"> %@\n", string]];
+	attrString = [NSMutableAttributedString stringWithString:[NSString stringWithFormat:@"> %@\n", command]];
 	[attrString addAttributes:fullAttributes range:NSMakeRange(0, [attrString length])];
-	[attrString addAttributes:cmdAttributes range:NSMakeRange(2, [string length])];
+	[attrString addAttributes:cmdAttributes range:NSMakeRange(2, [command length])];
 	
 	[self appendString:attrString];
 	[consoleWindow makeFirstResponder:consoleInputField];
+	
+	// Perform the actual command.
+	[_script doEvent:@"consolePerformJSCommand" withArgument:command];
+}
+
+
+- (void)appendLine:(id)string colorKey:(NSString *)colorKey
+{
+	NSMutableAttributedString			*mutableStr = nil;
+	NSColor								*fgColor = nil,
+		*bgColor = nil;
+	
+	if ([string isKindOfClass:[NSString class]])
+	{
+		mutableStr = [NSMutableAttributedString stringWithString:string font:_baseFont];
+	}
+	else if ([string isKindOfClass:[NSAttributedString class]])
+	{
+		mutableStr = [[string mutableCopy] autorelease];
+	}
+	else
+	{
+		if (string != nil)
+		{
+			OOLog(@"debugOXP.jsConsole.appendString.failed", @"Attempt to append non-string type %@ to JavaScript console. This is an internal error, please report it.", [string class]);
+		}
+		
+		return;
+	}
+	
+	[mutableStr appendAttributedString:[@"\n" asAttributedStringWithFont:_baseFont]];
+	
+	fgColor = [self foregroundColorForKey:colorKey];
+	if (fgColor != nil)
+	{
+		if ([fgColor alphaComponent] == 0.0)  return;
+		[mutableStr addAttribute:NSForegroundColorAttributeName value:fgColor range:NSMakeRange(0, [mutableStr length])];
+	}
+	
+	bgColor = [self backgroundColorForKey:colorKey];
+	if (bgColor != nil)
+	{
+		[mutableStr addAttribute:NSBackgroundColorAttributeName value:bgColor range:NSMakeRange(0, [mutableStr length])];
+	}
+	
+	[self appendString:mutableStr];
 }
 
 
@@ -247,48 +299,6 @@ as "general", the fallback colour.
 	
 	// Scroll to end of field
 	if (doScroll)  [consoleTextView scrollRangeToVisible:NSMakeRange([[consoleTextView string] length], 0)];
-}
-
-
-- (void)appendLine:(id)string colorKey:(NSString *)colorKey
-{
-	NSMutableAttributedString			*mutableStr = nil;
-	NSColor								*fgColor = nil,
-										*bgColor = nil;
-	
-	if ([string isKindOfClass:[NSString class]])
-	{
-		mutableStr = [NSMutableAttributedString stringWithString:string font:_baseFont];
-	}
-	else if ([string isKindOfClass:[NSAttributedString class]])
-	{
-		mutableStr = [[string mutableCopy] autorelease];
-	}
-	else
-	{
-		if (string != nil)
-		{
-			OOLog(@"debugOXP.jsConsole.appendString.failed", @"Attempt to append non-string type %@ to JavaScript console. This is an internal error, please report it.", [string class]);
-		}
-		
-		return;
-	}
-	
-	[mutableStr appendAttributedString:[@"\n" asAttributedStringWithFont:_baseFont]];
-	
-	fgColor = [self foregroundColorForKey:colorKey];
-	if (fgColor != nil)
-	{
-		[mutableStr addAttribute:NSForegroundColorAttributeName value:fgColor range:NSMakeRange(0, [mutableStr length])];
-	}
-	
-	bgColor = [self backgroundColorForKey:colorKey];
-	if (bgColor != nil)
-	{
-		[mutableStr addAttribute:NSBackgroundColorAttributeName value:bgColor range:NSMakeRange(0, [mutableStr length])];
-	}
-	
-	[self appendString:mutableStr];
 }
 
 

@@ -4,23 +4,46 @@
 */
 
 {
-	// Background colours for various types of console messages. Standard Oolite colour specifiers.
-	// Each colour specifier comes in a pair, foo-foreground-color and foo-background-color.
-	general-foreground-color	= blackColor;
-	general-background-color	= whiteColor;
-	command-background-color	= { hue = 240; brightness = 1.0; saturation = 0.12; };	// Very pale blue
-	warning-background-color	= { hue = 60; brightness = 1.0; saturation = 0.3; };	// Pale yellow
-	error-background-color		= { hue = 0; brightness = 1.0; saturation = 0.3; };		// Pale red
-	exception-background-color	= { hue = 320; brightness = 1.0; saturation = 0.3; };	// Pale magentaish
+	/*	Colours for various types of console messages. These are standard
+		Oolite colour specifiers.
+		Each colour key comes in a pair, foo-foreground-color and
+		foo-background-color. A class of messages can be hidden by giving its
+		colour key a fully transparent colour (such as clearColor).
+	*/
+	general-foreground-color			= blackColor;
+	general-background-color			= whiteColor;
+	command-background-color			= { hue = 240; brightness = 1.0; saturation = 0.12; };	// Pale blue
+	warning-background-color			= { hue = 60; brightness = 1.0; saturation = 0.25; };	// Pale yellow
+	error-background-color				= { hue = 0; brightness = 1.0; saturation = 0.25; };	// Pale red
+	exception-background-color			= { hue = 320; brightness = 1.0; saturation = 0.25; };	// Pale magentaish
+	
+	// These colours are used by oolite-mac-js-console.js
+	command-result-background-color		= { hue = 240; brightness = 1.0; saturation = 0.08; };	// Very pale blue
+	macro-expansion-background-color	= { hue = 240; brightness = 1.0; saturation = 0.08; };	// Very pale blue
+	macro-expansion-foreground-color	= darkGrayColor;
+	macro-warning-background-color		= { hue = 60; brightness = 1.0; saturation = 0.12; };	// Very pale yellow
+	unknown-macro-background-color		= { hue = 60; brightness = 1.0; saturation = 0.12; };	// Very pale yellow
+	macro-error-background-color		= { hue = 0; brightness = 1.0; saturation = 0.12; };	// Very pale red
+	macro-info-background-color			= { hue = 240; brightness = 1.0; saturation = 0.08; };	// Very pale blue
+	command-exception-background-color	= { hue = 320; brightness = 1.0; saturation = 0.25; };	// Pale magentaish
 	
 	// Alternative configuration for people who find black on which insufficiently l33t:
+	
 /*
-	general-background-color		= blackColor;
-	general-foreground-color		= "0.8 0.8 0.8";
-	command-foreground-color		= cyanColor;
-	warning-foreground-color		= yellowColor;
-	error-foreground-color			= redColor;
-	exception-foreground-color		= orangeColor;
+	general-background-color			= blackColor;
+	general-foreground-color			= "0.8 0.8 0.8";
+	command-foreground-color			= cyanColor;
+	warning-foreground-color			= yellowColor;
+	error-foreground-color				= redColor;
+	exception-foreground-color			= orangeColor;
+	
+	command-result-foreground-color		= greenColor;
+	macro-expansion-foreground-color	= "0 0.8 0.8";
+	macro-warning-foreground-color		= "1 0.5 1";
+	unknown-macro-foreground-color		= "1 0.5 1";
+	macro-error-foreground-color		= "1 0.5 0.5";
+	macro-info-foreground-color			= greenColor;
+	command-exception-foreground-color	= "1 0.75 0.5";
 */
 	
 	font-face = "Courier";
