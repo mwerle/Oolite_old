@@ -82,6 +82,15 @@ SOFTWARE.
 
 @end
 
+@implementation NSMutableAttributedString (OODebugExtensions)
+
+- (void)setString:(NSString *)string
+{
+	[self setAttributedString:[string asAttributedString]];
+}
+
+@end
+
 @implementation NSString (OODebugExtensions)
 
 - (NSAttributedString *)asAttributedString

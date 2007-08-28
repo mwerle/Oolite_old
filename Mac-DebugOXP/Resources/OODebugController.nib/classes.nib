@@ -70,9 +70,17 @@
                 consoleInputField = NSTextField; 
                 consoleTextView = NSTextView; 
                 consoleWindow = NSWindow; 
+                inputHistoryManager = OOTextFieldHistoryManager; 
             }; 
+            SUPERCLASS = OOWeakRefObject; 
+        }, 
+        {
+            CLASS = OOTextFieldHistoryManager; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {textField = NSTextField; }; 
             SUPERCLASS = NSObject; 
-        }
+        }, 
+        {CLASS = OOWeakRefObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 
     IBVersion = 1; 
 }

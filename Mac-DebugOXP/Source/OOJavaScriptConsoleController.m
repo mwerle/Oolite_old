@@ -35,15 +35,20 @@ SOFTWARE.
 #import "OODebugUtilities.h"
 #import "ResourceManager.h"
 #import "NSStringOOExtensions.h"
+#import "OOTextFieldHistoryManager.h"
 
 #import "OOScript.h"
+#import "OOJSScript.h"
 #import "OOJavaScriptEngine.h"
 
 enum
 {
 	// Size limit for console scrollback
 	kConsoleMaxSize			= 100000,
-	kConsoleTrimToSize		= 80000
+	kConsoleTrimToSize		= 80000,
+	
+	// Number of lines of console input to remember
+	kConsoleMemory			= 100
 };
 
 
@@ -70,6 +75,7 @@ as "general", the fallback colour.
 - (void)dealloc
 {
 	[consoleWindow release];
+	[inputHistoryManager release];
 	
 	[_baseFont release];
 	[_boldFont release];
@@ -98,6 +104,11 @@ as "general", the fallback colour.
 	_showOnWarning = [defaults boolForKey:@"debug-show-js-console-on-warning" defaultValue:YES];
 	_showOnError = [defaults boolForKey:@"debug-show-js-console-on-error" defaultValue:YES];
 	_showOnLog = [defaults boolForKey:@"debug-show-js-console-on-log" defaultValue:NO];
+	[inputHistoryManager setHistory:[defaults arrayForKey:@"debug-js-console-scrollback"]];
+	
+	OOLog(@"editor", @"%@", [consoleWindow fieldEditor:YES forObject:consoleInputField]);
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 	
 	OOLog(@"debugOXP.jsConsole.flags", @"showOnWarning: %s  showOnError: %s", _showOnWarning ? "YES" : "NO", _showOnError ? "YES" : "NO");
 	
@@ -123,9 +134,24 @@ as "general", the fallback colour.
 	
 	[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
 	
+	// Ensure auto-scrolling will work.
+	[[_consoleScrollView verticalScroller] setFloatValue:1.0];
+	
 	// Set up JavaScript side of console.
 	jsProps = [NSDictionary dictionaryWithObject:self forKey:@"console"];
 	_script = [[OOScript nonLegacyScriptFromFileNamed:@"oolite-mac-js-console.js" properties:jsProps] retain];
+}
+
+
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+	NSArray						*history = nil;
+	
+	history = [inputHistoryManager history];
+	if (history != nil)
+	{
+		[[NSUserDefaults standardUserDefaults] setObject:history forKey:@"debug-js-console-scrollback"];
+	}
 }
 
 
@@ -162,27 +188,38 @@ as "general", the fallback colour.
 - (IBAction)consolePerformCommand:sender
 {
 	NSString					*command = nil;
-	NSMutableAttributedString	*attrString = nil;
-	NSDictionary				*fullAttributes = nil,
-								*cmdAttributes = nil;
 	
 	// Use consoleInputField rather than sender so we can, e.g., add a button.
 	command = [consoleInputField stringValue];
 	[consoleInputField setStringValue:@""];
+	[inputHistoryManager addToHistory:command];
+	
+	[self performCommand:command];
+}
+
+
+- (void)performCommand:(NSString *)command
+{
+	NSString					*indentedCommand = nil;
+	NSMutableAttributedString	*attrString = nil;
+	NSDictionary				*fullAttributes = nil,
+								*cmdAttributes = nil;
+	
+	indentedCommand = [[command componentsSeparatedByString:@"\n"] componentsJoinedByString:@"\n  "];
 	
 	fullAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-						_baseFont, NSFontAttributeName,
-						[self backgroundColorForKey:@"command"], NSBackgroundColorAttributeName,
-						[self foregroundColorForKey:nil], NSForegroundColorAttributeName,
-						nil];
+		_baseFont, NSFontAttributeName,
+		[self backgroundColorForKey:@"command"], NSBackgroundColorAttributeName,
+		[self foregroundColorForKey:nil], NSForegroundColorAttributeName,
+		nil];
 	cmdAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-						_boldFont, NSFontAttributeName,
-						[self foregroundColorForKey:@"command"], NSForegroundColorAttributeName,
-						nil];
+		_boldFont, NSFontAttributeName,
+		[self foregroundColorForKey:@"command"], NSForegroundColorAttributeName,
+		nil];
 	
-	attrString = [NSMutableAttributedString stringWithString:[NSString stringWithFormat:@"> %@\n", command]];
+	attrString = [NSMutableAttributedString stringWithString:[NSString stringWithFormat:@"> %@\n", indentedCommand]];
 	[attrString addAttributes:fullAttributes range:NSMakeRange(0, [attrString length])];
-	[attrString addAttributes:cmdAttributes range:NSMakeRange(2, [command length])];
+	[attrString addAttributes:cmdAttributes range:NSMakeRange(2, [indentedCommand length])];
 	
 	[self appendString:attrString];
 	[consoleWindow makeFirstResponder:consoleInputField];
@@ -232,6 +269,15 @@ as "general", the fallback colour.
 	}
 	
 	[self appendString:mutableStr];
+}
+
+
+- (void)clear
+{
+	NSTextStorage				*textStorage = nil;
+	
+	textStorage = [consoleTextView textStorage];
+	[textStorage deleteCharactersInRange:NSMakeRange(0, [textStorage length])];
 }
 
 
@@ -426,6 +472,7 @@ as "general", the fallback colour.
 	NSString					*filePath = nil;
 	NSString					*fileAndLine = nil;
 	NSString					*sourceLine = nil;
+	NSString					*scriptLine = nil;
 	
 	if (errorReport->flags & JSREPORT_WARNING)
 	{
@@ -454,6 +501,10 @@ as "general", the fallback colour.
 	[formattedMessage addAttribute:NSFontAttributeName value:_boldFont range:NSMakeRange(0, [prefix length])];
 	[formattedMessage addAttribute:NSFontAttributeName value:_baseFont range:NSMakeRange([prefix length], [message length])];
 	
+	// Note that the "active script" isn't necessarily the one causing the error, since one script can call another's methods.
+	scriptLine = [[OOJSScript currentlyRunningScript] displayName];
+	if (scriptLine != nil)  scriptLine = [@"    Active script: " stringByAppendingString:[[OOJSScript currentlyRunningScript] displayName]];
+	
 	filePath = [NSString stringWithUTF8String:errorReport->filename];
 	fileAndLine = [filePath lastPathComponent];
 	fileAndLine = [NSString stringWithFormat:@"    %@, line %u:", fileAndLine, errorReport->lineno];
@@ -464,6 +515,7 @@ as "general", the fallback colour.
 	[self appendLine:formattedMessage colorKey:colorKey];
 	[self appendLine:fileAndLine colorKey:colorKey];
 	if (sourceLine != nil)  [self appendLine:sourceLine colorKey:colorKey];
+	if (scriptLine != nil)  [self appendLine:scriptLine colorKey:colorKey];
 	
 	if (((errorReport->flags & JSREPORT_WARNING) && _showOnWarning) || _showOnError)
 	{

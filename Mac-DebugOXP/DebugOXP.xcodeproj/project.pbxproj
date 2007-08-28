@@ -19,6 +19,8 @@
 		1A9590820C80538800C112A9 /* oolite-mac-js-console.js in Copy Files to Scripts */ = {isa = PBXBuildFile; fileRef = 1A9590810C80538800C112A9 /* oolite-mac-js-console.js */; };
 		1A9590E80C80673700C112A9 /* OOJSConsole.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A9590E60C80673700C112A9 /* OOJSConsole.h */; };
 		1A9590E90C80673700C112A9 /* OOJSConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9590E70C80673700C112A9 /* OOJSConsole.m */; };
+		1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */; };
+		1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -85,9 +87,11 @@
 		1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = OODebugController.nib; sourceTree = "<group>"; };
 		1A0518D10C7CC69600BA5CCA /* OODebugController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugController.h; sourceTree = "<group>"; };
 		1A0518D20C7CC69600BA5CCA /* OODebugController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugController.m; sourceTree = "<group>"; };
-		1A9590810C80538800C112A9 /* oolite-mac-js-console.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-mac-js-console.js"; sourceTree = "<group>"; };
+		1A9590810C80538800C112A9 /* oolite-mac-js-console.js */ = {isa = PBXFileReference; fileEncoding = 4; languageSpecificationIdentifier = javascript; lastKnownFileType = sourcecode.javascript; path = "oolite-mac-js-console.js"; sourceTree = "<group>"; };
 		1A9590E60C80673700C112A9 /* OOJSConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSConsole.h; sourceTree = "<group>"; };
 		1A9590E70C80673700C112A9 /* OOJSConsole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSConsole.m; sourceTree = "<group>"; };
+		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
+		1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextFieldHistoryManager.m; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Debug.oxp */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Debug.oxp; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
@@ -186,6 +190,8 @@
 				1A02587B0C7F36CD00F622D4 /* OODebugUtilities.m */,
 				1A9590E60C80673700C112A9 /* OOJSConsole.h */,
 				1A9590E70C80673700C112A9 /* OOJSConsole.m */,
+				1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */,
+				1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -198,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A9590E80C80673700C112A9 /* OOJSConsole.h in Headers */,
+				1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +287,7 @@
 				1A0256260C7F0D7100F622D4 /* OOJavaScriptConsoleController.m in Sources */,
 				1A02587D0C7F36CD00F622D4 /* OODebugUtilities.m in Sources */,
 				1A9590E90C80673700C112A9 /* OOJSConsole.m in Sources */,
+				1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

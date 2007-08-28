@@ -18,13 +18,14 @@
 	exception-background-color			= { hue = 320; brightness = 1.0; saturation = 0.25; };	// Pale magentaish
 	
 	// These colours are used by oolite-mac-js-console.js
-	command-result-background-color		= { hue = 240; brightness = 1.0; saturation = 0.08; };	// Very pale blue
-	macro-expansion-background-color	= { hue = 240; brightness = 1.0; saturation = 0.08; };	// Very pale blue
+	command-result-background-color		= { hue = 120; brightness = 1.0; saturation = 0.2; };	// Pale green
+	command-error-background-color		= { hue = 0; brightness = 1.0; saturation = 0.12; };	// Very pale red
+	macro-expansion-background-color	= { hue = 240; brightness = 1.0; saturation = 0.06; };	// Very pale blue
 	macro-expansion-foreground-color	= darkGrayColor;
 	macro-warning-background-color		= { hue = 60; brightness = 1.0; saturation = 0.12; };	// Very pale yellow
 	unknown-macro-background-color		= { hue = 60; brightness = 1.0; saturation = 0.12; };	// Very pale yellow
 	macro-error-background-color		= { hue = 0; brightness = 1.0; saturation = 0.12; };	// Very pale red
-	macro-info-background-color			= { hue = 240; brightness = 1.0; saturation = 0.08; };	// Very pale blue
+	macro-info-background-color			= { hue = 120; brightness = 1.0; saturation = 0.2; };	// Pale green
 	command-exception-background-color	= { hue = 320; brightness = 1.0; saturation = 0.25; };	// Pale magentaish
 	
 	// Alternative configuration for people who find black on which insufficiently l33t:
@@ -47,5 +48,5 @@
 */
 	
 	font-face = "Courier";
-	font-size = "11";
+	font-size = "12";
 }

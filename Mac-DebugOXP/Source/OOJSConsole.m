@@ -46,6 +46,7 @@ static void ConsoleFinalize(JSContext *context, JSObject *this);
 
 // Methods
 static JSBool ConsoleConsoleMessage(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
+static JSBool ConsoleClearConsole(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool ConsoleScriptStack(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 
 
@@ -90,6 +91,7 @@ static JSFunctionSpec sConsoleMethods[] =
 {
 	// JS name					Function					min args
 	{ "consoleMessage",			ConsoleConsoleMessage,		2 },
+	{ "clearConsole",			ConsoleClearConsole,		0 },
 	{ "scriptStack",			ConsoleScriptStack,			0 },
 	{ 0 }
 };
@@ -196,6 +198,22 @@ static JSBool ConsoleConsoleMessage(JSContext *context, JSObject *this, uintN ar
 	message = [NSString concatenationOfStringsFromJavaScriptValues:argv + 1 count:argc - 1 separator:@", " inContext:context];
 	
 	[console appendLine:message colorKey:colorKey];
+	return YES;
+}
+
+
+static JSBool ConsoleClearConsole(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
+{
+	id					console = nil;
+	
+	console = JSObjectToObject(context, this);
+	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	{
+		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		return NO;
+	}
+	
+	[console clear];
 	return YES;
 }
 

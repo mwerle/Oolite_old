@@ -22,6 +22,9 @@ function consoleMessage(colorCode: string, message: string) : void
 	Similar to Log(), but takes a colour code which is looked up in
 	jsConsoleConfig.plist. null is equivalent to "general".
 
+function clearConsole() : void
+	Clear the console.
+
 function scriptStack() : array
 	Since a script may perform actions that cause other scripts to run, more
 	than one script may be “running” at a time, although only one will be
@@ -71,12 +74,57 @@ this.macros =
 	"setM":		"setMacro(PARAM)",
 	"delM":		"deleteMacro(PARAM)",
 	"showM":	"showMacro(PARAM)",
+	
+	"listM":	"dumpObject(debugConsole.macros)",
 	"ds":		"dumpSystemInfo()",
 	"d":		"dumpObject(eval(PARAM))",
-	"dl":		"dumpObjectLong(eval(PARAM))"
+	"dl":		"dumpObjectLong(eval(PARAM))",
+	
+	"clr":		"debugConsole.clearConsole()",
+	"clear":	"debugConsole.clearConsole()",
+	
+	"fgColor":	"setColorFromString(PARAM, 'foreground', debugConsole.script.setForegroundColor)",
+	"bgColor":	"setColorFromString(PARAM, 'background', debugConsole.script.setBackgroundColor)"
 }
 
 // ****  Convenience functions -- copy this script and add your own here.
+
+function setColorFromString(string, typeName, applyFunc)
+{ 
+	var components = string.split(' ')
+	if (components.length == 4)
+	{
+		var key = components[0]
+		// FIXME: ugly. Look into making Vector callable as constructor instead.
+		var value = eval("new Vector(" + components.slice(1) + ")")
+		if (value)
+		{
+			applyFunc(components[0], value);
+			ConsoleMessage("command-result", "Set foreground colour “" + key + "” to " + value + ".")
+		}
+		else
+		{
+			ConsoleMessage("command-error", "Bad format - should be “:color name red green blue.”")
+		}
+	}
+	else
+	{
+		ConsoleMessage("command-error", "Bad format - should be “:color name red green blue.”")
+	}
+}
+
+
+this.setForegroundColor = function(name, v)
+{
+	Log("Pretending to set colour key “" + name + "” to " + v + ".");
+}
+
+
+this.setBackgroundColor = function(name, v)
+{
+	Log("Pretending to set colour key “" + name + "” to " + v + ".");
+}
+
 
 // Example: type dumpSystemInfo() at the console to get information about the system.
 function dumpSystemInfo()
@@ -115,13 +163,6 @@ function dumpObjectLong(x)
 
 // ****  Conosole command handler
 
-this.evaluate = function(command, type, PARAM)
-{
-	var result = eval(command)
-	if (result)  ConsoleMessage("command-result", result.toString())
-}
-
-
 this.consolePerformJSCommand = function(command)
 {
 	while (command.charAt(0) == " ")
@@ -135,31 +176,45 @@ this.consolePerformJSCommand = function(command)
 	}
 	else
 	{
-		// Handle macros.
-		// Strip the initial colon
-		command = command.substring(1)
-		
-		// Strip any additional space
-		while (command.charAt(0) == " ")
-		{
-			command = command.substring(1)
-		}
-		
-		// Separate into macro name and paramters.
-		var spaceIdx = command.indexOf(" ")
-		if (spaceIdx != -1)
-		{
-			var macroName = command.substring(0, spaceIdx)
-			var parameters = command.substring(spaceIdx + 1)
-		}
-		else
-		{
-			var macroName = command
-			var parameters = null
-		}
-		
-		this.handleMacro(macroName, parameters)
+		// Colon prefix, this is a macro.
+		this.handleMacro(command)
 	}
+}
+
+
+this.evaluate = function(command, type, PARAM)
+{
+	var result = eval(command)
+	if (result)  ConsoleMessage("command-result", result.toString())
+}
+
+
+this.handleMacro = function(command)
+{
+	// Handle macros.
+	// Strip the initial colon
+	command = command.substring(1)
+	
+	// Strip any additional space
+	while (command.charAt(0) == " ")
+	{
+		command = command.substring(1)
+	}
+	
+	// Separate into macro name and paramters.
+	var spaceIdx = command.indexOf(" ")
+	if (spaceIdx != -1)
+	{
+		var macroName = command.substring(0, spaceIdx)
+		var parameters = command.substring(spaceIdx + 1)
+	}
+	else
+	{
+		var macroName = command
+		var parameters = null
+	}
+	
+	this.performMacro(macroName, parameters)
 }
 
 
@@ -232,7 +287,7 @@ function showMacro(parameters)
 }
 
 
-this.handleMacro = function(macroName, parameters)
+this.performMacro = function(macroName, parameters)
 {
 	// Command should be prefixed with :. Parameters are currently ignored.
 	var expansion = macros[macroName]
@@ -269,6 +324,7 @@ this.handleMacro = function(macroName, parameters)
 // Make console globally visible as debugConsole
 var global = this.console.global
 global.debugConsole = this.console
+debugConsole.script = this
 
 // Make console.consoleMessage() globally visible as ConsoleMessage()
 global.ConsoleMessage = function()

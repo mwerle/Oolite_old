@@ -32,7 +32,7 @@ SOFTWARE.
 #import <Cocoa/Cocoa.h>
 #import "OOWeakReference.h"
 
-@class OOScript;
+@class OOScript, OOTextFieldHistoryManager;
 
 
 @interface OOJavaScriptConsoleController: OOWeakRefObject
@@ -40,9 +40,10 @@ SOFTWARE.
 	IBOutlet NSWindow					*consoleWindow;
 	IBOutlet NSTextView					*consoleTextView;
 	IBOutlet NSTextField				*consoleInputField;
-
+	IBOutlet OOTextFieldHistoryManager	*inputHistoryManager;
 	
 	NSScrollView						*_consoleScrollView;
+	
 	NSFont								*_baseFont,
 										*_boldFont;
 	
@@ -66,6 +67,10 @@ SOFTWARE.
 - (IBAction)toggleShowOnError:sender;
 - (IBAction)consolePerformCommand:sender;
 
+// Perform a JS command as though entered at the console, including echoing.
+- (void)performCommand:(NSString *)command;
+
 - (void)appendLine:(id)string colorKey:(NSString *)colorKey;
+- (void)clear;
 
 @end

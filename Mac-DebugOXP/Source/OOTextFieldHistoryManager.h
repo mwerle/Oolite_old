@@ -1,6 +1,8 @@
 /*
 
-OODebugUtilities.h
+OOTextFieldHistoryManager.h
+
+Text field delegate to manage input history.
 
 
 Oolite Debug OXP
@@ -27,44 +29,32 @@ SOFTWARE.
 
 */
 
-
 #import <Cocoa/Cocoa.h>
-#import "OOColor.h"
 
 
-@interface OOColor (NSColorConversion)
-
-- (NSColor *)asNSColor;
-
-@end
-
-@interface NSColor (OOColorConversion)
-
-// Wrapper for +[OOColor colorWithDescription:]
-+ (NSColor *)colorWithOOColorDescription:(id)description;
-- (id)initWithOOColorDescription:(id)description;
-
-- (OOColor *)asOOColor;
-
-@end
+enum
+{
+	kDefaultHistorySize = 100
+};
 
 
-@interface NSAttributedString (OODebugExtensions)
+@interface OOTextFieldHistoryManager: NSObject
+{
+	IBOutlet NSTextField		*textField;
+	
+	NSMutableArray				*_history;			// History buffer, newest lines at end
+	unsigned					_historyMaxSize,	// Max allowable history entries
+								_historyCurrSize,	// Current count
+								_historyCursor;		// Index from end+1 -- 0 means new line, 1 means last entry in history
+	NSString					*_latest;			// Last entered string when paging through history.
+}
 
-+ (id)stringWithString:(NSString *)string;
-+ (id)stringWithString:(NSString *)string font:(NSFont *)font;
+- (NSArray *)history;
+- (void)setHistory:(NSArray *)history;
 
-@end
+- (void)addToHistory:(NSString *)string;
 
-@interface NSMutableAttributedString (OODebugExtensions)
-
-- (void)setString:(NSString *)string;
-
-@end
-
-@interface NSString (OODebugExtensions)
-
-- (NSAttributedString *)asAttributedString;
-- (NSAttributedString *)asAttributedStringWithFont:(NSFont *)font;
+- (unsigned)historySize;
+- (void)setHistorySize:(unsigned)size;
 
 @end
