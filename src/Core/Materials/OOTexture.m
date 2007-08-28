@@ -74,7 +74,7 @@ SOFTWARE.
 */
 enum
 {
-	kRecentTexturesCount		= 1002
+	kRecentTexturesCount		= 50
 };
 
 static NSMutableDictionary	*sInUseTextures = nil;
