@@ -79,50 +79,27 @@ this.macros =
 	"ds":		"dumpSystemInfo()",
 	"d":		"dumpObject(eval(PARAM))",
 	"dl":		"dumpObjectLong(eval(PARAM))",
+	"ds":		"dumpObject(debugConsole.settings)",
 	
 	"clr":		"debugConsole.clearConsole()",
 	"clear":	"debugConsole.clearConsole()",
 	
-	"fgColor":	"setColorFromString(PARAM, 'foreground', debugConsole.script.setForegroundColor)",
-	"bgColor":	"setColorFromString(PARAM, 'background', debugConsole.script.setBackgroundColor)"
+	// For creating/testing colour sets. Colours changed in this way aren’t saved.
+	"fgColor":	"setColorFromString(PARAM, 'foreground')",
+	"bgColor":	"setColorFromString(PARAM, 'background')"
 }
 
 // ****  Convenience functions -- copy this script and add your own here.
 
-function setColorFromString(string, typeName, applyFunc)
+function setColorFromString(string, typeName)
 { 
 	var components = string.split(' ')
-	if (components.length == 4)
-	{
-		var key = components[0]
-		// FIXME: ugly. Look into making Vector callable as constructor instead.
-		var value = eval("new Vector(" + components.slice(1) + ")")
-		if (value)
-		{
-			applyFunc(components[0], value);
-			ConsoleMessage("command-result", "Set foreground colour “" + key + "” to " + value + ".")
-		}
-		else
-		{
-			ConsoleMessage("command-error", "Bad format - should be “:color name red green blue.”")
-		}
-	}
-	else
-	{
-		ConsoleMessage("command-error", "Bad format - should be “:color name red green blue.”")
-	}
-}
-
-
-this.setForegroundColor = function(name, v)
-{
-	Log("Pretending to set colour key “" + name + "” to " + v + ".");
-}
-
-
-this.setBackgroundColor = function(name, v)
-{
-	Log("Pretending to set colour key “" + name + "” to " + v + ".");
+	var key = components[0]
+	var fullKey = key + "-" + typeName + "-color"
+	var value = components.slice(1)
+	
+	debugConsole.settings[fullKey] = value
+	ConsoleMessage("command-result", "Set " + typeName + " colour “" + key + "” to " + value + ".")
 }
 
 

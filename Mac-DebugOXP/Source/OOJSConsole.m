@@ -29,19 +29,19 @@ SOFTWARE.
 
 #import "OOJSConsole.h"
 #import "OOJavaScriptConsoleController.h"
+#import <stdint.h>
 
 #import "OOJavaScriptEngine.h"
 #import "OOJSScript.h"
+#import "OOJSVector.h"
 
 
 static JSObject *sConsolePrototype = NULL;
-
-OOJavaScriptConsoleController *sConsoleController;
+static JSObject *sConsoleSettingsPrototype = NULL;
 
 
 static JSBool ConsoleGetProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue);
 static JSBool ConsoleSetProperty(JSContext *context, JSObject *this, jsval name, jsval *value);
-static JSBool ConsoleConvert(JSContext *context, JSObject *this, JSType type, jsval *outValue);
 static void ConsoleFinalize(JSContext *context, JSObject *this);
 
 // Methods
@@ -49,27 +49,25 @@ static JSBool ConsoleConsoleMessage(JSContext *context, JSObject *this, uintN ar
 static JSBool ConsoleClearConsole(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool ConsoleScriptStack(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 
+static JSBool ConsoleSettingsDeleteProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue);
+static JSBool ConsoleSettingsGetProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue);
+static JSBool ConsoleSettingsSetProperty(JSContext *context, JSObject *this, jsval name, jsval *value);
 
-static JSExtendedClass sConsoleClass =
+
+static JSClass sConsoleClass =
 {
-	{
-		"Console",
-		JSCLASS_HAS_PRIVATE | JSCLASS_IS_EXTENDED,
-		
-		JS_PropertyStub,		// addProperty
-		JS_PropertyStub,		// delProperty
-		ConsoleGetProperty,		// getProperty
-		ConsoleSetProperty,		// setProperty
-		JS_EnumerateStub,		// enumerate
-		JS_ResolveStub,			// resolve
-		ConsoleConvert,			// convert
-		ConsoleFinalize,		// finalize
-		JSCLASS_NO_OPTIONAL_MEMBERS
-	},
-	NULL,						// equality
-	NULL,						// outerObject
-	NULL,						// innerObject
-	JSCLASS_NO_RESERVED_MEMBERS
+	"Console",
+	JSCLASS_HAS_PRIVATE,
+	
+	JS_PropertyStub,		// addProperty
+	JS_PropertyStub,		// delProperty
+	ConsoleGetProperty,		// getProperty
+	ConsoleSetProperty,		// setProperty
+	JS_EnumerateStub,		// enumerate
+	JS_ResolveStub,			// resolve
+	JS_ConvertStub,			// convert
+	ConsoleFinalize,		// finalize
+	JSCLASS_NO_OPTIONAL_MEMBERS
 };
 
 
@@ -97,38 +95,77 @@ static JSFunctionSpec sConsoleMethods[] =
 };
 
 
+static JSClass sConsoleSettingsClass =
+{
+	"ConsoleSettings",
+	JSCLASS_HAS_PRIVATE,
+	
+	JS_PropertyStub,		// addProperty
+	ConsoleSettingsDeleteProperty, // delProperty
+	ConsoleSettingsGetProperty, // getProperty
+	ConsoleSettingsSetProperty, // setProperty
+	JS_EnumerateStub,		// enumerate. FIXME: this should work.
+	JS_ResolveStub,			// resolve
+	JS_ConvertStub,			// convert
+	ConsoleFinalize,		// finalize (same as Console)
+	JSCLASS_NO_OPTIONAL_MEMBERS
+};
+
+
 static void InitOOJSConsole(JSContext *context, JSObject *global)
 {
-    sConsolePrototype = JS_InitClass(context, global, NULL, &sConsoleClass.base, NULL, 0, sConsoleProperties, sConsoleMethods, NULL, NULL);
-	JSRegisterObjectConverter(&sConsoleClass.base, JSBasicPrivateObjectConverter);
+    sConsolePrototype = JS_InitClass(context, global, NULL, &sConsoleClass, NULL, 0, sConsoleProperties, sConsoleMethods, NULL, NULL);
+	JSRegisterObjectConverter(&sConsoleClass, JSBasicPrivateObjectConverter);
+	
+    sConsoleSettingsPrototype = JS_InitClass(context, global, NULL, &sConsoleSettingsClass, NULL, 0, NULL, NULL, NULL, NULL);
+	JSRegisterObjectConverter(&sConsoleSettingsClass, JSBasicPrivateObjectConverter);
 }
 
 
-@implementation OOJavaScriptConsoleController (OOJavaScriptConversion)
-
-- (jsval)javaScriptValueInContext:(JSContext *)context
+JSObject *ConsoleToJSConsole(JSContext *context, OOJavaScriptConsoleController *console)
 {
 	OOJavaScriptEngine		*engine = nil;
 	JSObject				*object = NULL;
+	JSObject				*settingsObject = NULL;
+	jsval					value;
 	
 	engine = [OOJavaScriptEngine sharedEngine];
+	if (context == NULL) context = [engine context];
 	
 	if (sConsolePrototype == NULL)
 	{
-		InitOOJSConsole([engine context], [engine globalObject]);
+		InitOOJSConsole(context, [engine globalObject]);
 	}
 	
-	if (context == NULL) context = [engine context];
-	object = JS_NewObject(context, &sConsoleClass.base, sConsolePrototype, NULL);
+	// Create Console object
+	object = JS_NewObject(context, &sConsoleClass, sConsolePrototype, NULL);
 	if (object != NULL)
 	{
-		if (!JS_SetPrivate(context, object, [self weakRetain]))  object = NULL;
+		if (!JS_SetPrivate(context, object, [console weakRetain]))  object = NULL;
 	}
-	if (object != NULL)  return OBJECT_TO_JSVAL(object);
-	else  return JSVAL_NULL;
-}
+	
+	if (object != NULL)
+	{
+		// Create ConsoleSettings object
+		settingsObject = JS_NewObject(context, &sConsoleSettingsClass, sConsoleSettingsPrototype, NULL);
+		if (settingsObject != NULL)
+		{
+			if (!JS_SetPrivate(context, settingsObject, [console weakRetain]))  settingsObject = NULL;
+		}
+		if (settingsObject != NULL)
+		{
+			value = OBJECT_TO_JSVAL(settingsObject);
+			if (!JS_SetProperty(context, object, "settings", &value))
+			{
+				settingsObject = NULL;
+			}
+		}
 
-@end
+		if (settingsObject == NULL)  object = NULL;
+	}
+	
+	return object;
+}
 
 
 static JSBool ConsoleGetProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue)
@@ -158,26 +195,92 @@ static JSBool ConsoleSetProperty(JSContext *context, JSObject *this, jsval name,
 }
 
 
-static JSBool ConsoleConvert(JSContext *context, JSObject *this, JSType type, jsval *outValue)
-{
-	switch (type)
-	{
-		case JSTYPE_VOID:		// Used for string concatenation.
-		case JSTYPE_STRING:
-			*outValue = STRING_TO_JSVAL(JS_InternString(context, "[Console]"));
-			return YES;
-			
-		default:
-			// Contrary to what passes for documentation, JS_ConvertStub is not a no-op.
-			return JS_ConvertStub(context, this, type, outValue);
-	}
-}
-
-
 static void ConsoleFinalize(JSContext *context, JSObject *this)
 {
 	[(id)JS_GetPrivate(context, this) release];
 	JS_SetPrivate(context, this, nil);
+}
+
+
+static JSBool ConsoleSettingsDeleteProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue)
+{
+	NSString			*key = nil;
+	id					console = nil;
+	
+	if (!JSVAL_IS_STRING(name))  return NO;
+	
+	key = [NSString stringWithJavaScriptValue:name inContext:context];
+	
+	console = JSObjectToObject(context, this);
+	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	{
+		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		return NO;
+	}
+	
+	[console setConfigurationValue:nil forKey:key];
+	*outValue = JSVAL_TRUE;
+	return YES;
+}
+
+
+static JSBool ConsoleSettingsGetProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue)
+{
+	NSString			*key = nil;
+	id					value = nil;
+	id					console = nil;
+	
+	if (!JSVAL_IS_STRING(name))  return YES;
+	key = [NSString stringWithJavaScriptValue:name inContext:context];
+	
+	console = JSObjectToObject(context, this);
+	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	{
+		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		return YES;
+	}
+	
+	value = [console configurationValueForKey:key];
+	*outValue = [value javaScriptValueInContext:context];
+	
+	return YES;
+}
+
+
+static JSBool ConsoleSettingsSetProperty(JSContext *context, JSObject *this, jsval name, jsval *inValue)
+{
+	NSString			*key = nil;
+	id					value = nil;
+	id					console = nil;
+	
+	if (!JSVAL_IS_STRING(name))  return YES;
+	key = [NSString stringWithJavaScriptValue:name inContext:context];
+	
+	console = JSObjectToObject(context, this);
+	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	{
+		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		return YES;
+	}
+	
+	if (JSVAL_IS_NULL(*inValue) || JSVAL_IS_VOID(*inValue))
+	{
+		[console setConfigurationValue:nil forKey:key];
+	}
+	else
+	{
+		value = JSValueToObject(context, *inValue);
+		if (value != nil)
+		{
+			[console setConfigurationValue:value forKey:key];
+		}
+		else
+		{
+			OOReportJavaScriptWarning(context, @"debugConsole.settings: could not convert %@ to native object.", [NSString stringWithJavaScriptValue:*inValue inContext:context]);
+		}
+	}
+	
+	return YES;
 }
 
 
@@ -210,7 +313,7 @@ static JSBool ConsoleClearConsole(JSContext *context, JSObject *this, uintN argc
 	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
 	{
 		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
-		return NO;
+		return YES;
 	}
 	
 	[console clear];

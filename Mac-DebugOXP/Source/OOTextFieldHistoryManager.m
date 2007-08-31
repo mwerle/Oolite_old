@@ -49,15 +49,17 @@
 {
 	if (control == textField)
 	{
-		if (commandSelector == @selector(moveToBeginningOfParagraph:))
+		if (commandSelector == @selector(moveToBeginningOfParagraph:) ||
+			commandSelector == @selector(scrollPageUp:))
 		{
-			// Sent for option-up arrow. For just up arrow, use moveUp.
+			// Option-up arrow or page up. (For just up arrow, use moveUp:.)
 			[self moveHistoryCursorBy:1 fieldEditor:textView];
 			return YES;
 		}
-		else if (commandSelector == @selector(moveToEndOfParagraph:))
+		else if (commandSelector == @selector(moveToEndOfParagraph:) ||
+				 commandSelector == @selector(scrollPageDown:))
 		{
-			// Sent for option-down arrow. For just down arrow, use moveDown.
+			// Option-down arrow or page down. (For just down arrow, use moveDown:.)
 			[self moveHistoryCursorBy:-1 fieldEditor:textView];
 			return YES;
 		}
@@ -110,7 +112,10 @@
 {
 	[self checkInvariant];
 	
-	[_history addObject:[[string copy] autorelease]];
+	if (_historyCurrSize == 0 || ![string isEqual:[_history objectAtIndex:_historyCurrSize - 1]])
+	{
+		[_history addObject:[[string copy] autorelease]];
+	}
 	_historyCursor = 0;
 	[_latest release];
 	_latest = nil;

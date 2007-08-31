@@ -37,6 +37,7 @@ SOFTWARE.
 #import "NSStringOOExtensions.h"
 #import "OOTextFieldHistoryManager.h"
 
+#import "OOJSConsole.h"
 #import "OOScript.h"
 #import "OOJSScript.h"
 #import "OOJavaScriptEngine.h"
@@ -67,6 +68,8 @@ as "general", the fallback colour.
 
 - (NSArray *)loadSourceFile:(NSString *)filePath;
 
+- (void)setUpFonts;
+
 @end
 
 
@@ -85,6 +88,11 @@ as "general", the fallback colour.
 	[_fgColors release];
 	[_bgColors release];
 	[_sourceFiles release];
+	
+	if (_jsSelf != NULL)
+	{
+		JS_RemoveRoot([[OOJavaScriptEngine sharedEngine] context], &_jsSelf);
+	}
 	
 	[super dealloc];
 }
@@ -112,22 +120,11 @@ as "general", the fallback colour.
 	
 	OOLog(@"debugOXP.jsConsole.flags", @"showOnWarning: %s  showOnError: %s", _showOnWarning ? "YES" : "NO", _showOnError ? "YES" : "NO");
 	
-	_config = [ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
-											   inFolder:@"Config"
-											   andMerge:YES];
-	[_config retain];
+	_config = [[ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
+												inFolder:@"Config"
+												andMerge:YES] mutableCopy];
 	
-	// Set font.
-	NSString *fontFace = [_config stringForKey:@"font-face" defaultValue:@"Courier"];
-	int fontSize = [_config intForKey:@"font-size" defaultValue:12];
-	_baseFont = [NSFont fontWithName:fontFace size:fontSize];
-	if (_baseFont == nil)  _baseFont = [NSFont userFixedPitchFontOfSize:0];
-	[_baseFont retain];
-	
-	// Get bold variant of font.
-	_boldFont = [[NSFontManager sharedFontManager] convertFont:_baseFont toHaveTrait:NSBoldFontMask];
-	if (_boldFont == nil)  _boldFont = _baseFont;
-	[_boldFont retain];
+	[self setUpFonts];
 	
 	OOLog(@"debugOXP.jsConsole.setMonitor", @"Setting monitor for JS engine %@", [OOJavaScriptEngine sharedEngine]);
 	[[OOJavaScriptEngine sharedEngine] setMonitor:self];
@@ -191,6 +188,8 @@ as "general", the fallback colour.
 	
 	// Use consoleInputField rather than sender so we can, e.g., add a button.
 	command = [consoleInputField stringValue];
+	if ([command length] == 0)  return;
+	
 	[consoleInputField setStringValue:@""];
 	[inputHistoryManager addToHistory:command];
 	
@@ -278,6 +277,50 @@ as "general", the fallback colour.
 	
 	textStorage = [consoleTextView textStorage];
 	[textStorage deleteCharactersInRange:NSMakeRange(0, [textStorage length])];
+}
+
+
+- (id)configurationValueForKey:(NSString *)key
+{
+	return [_config objectForKey:key];
+}
+
+
+- (void)setConfigurationValue:(id)value forKey:(NSString *)key
+{
+	if (key == nil)  return;
+	if (value == nil)
+	{
+		[_config removeObjectForKey:key];
+	}
+	else
+	{
+		if (_config == nil)  _config = [[NSMutableDictionary alloc] init];
+		[_config setObject:value forKey:key];
+	}
+	
+	// Apply changes
+	if ([key hasSuffix:@"-foreground-color"])
+	{
+		// Flush foreground colour cache
+		[_fgColors removeAllObjects];
+	}
+	else if ([key hasSuffix:@"-background-color"])
+	{
+		// Flush background colour cache
+		[_bgColors removeAllObjects];
+	}
+	else if ([key hasPrefix:@"font-"])
+	{
+		[self setUpFonts];
+	}
+}
+
+
+- (NSArray *)configurationKeys
+{
+	if (_config != nil)  return [[[_config allKeys] copy] autorelease];
+	else  return [NSArray array];
 }
 
 
@@ -459,6 +502,27 @@ as "general", the fallback colour.
 }
 
 
+- (void)setUpFonts
+{
+	[_baseFont release];
+	_baseFont = nil;
+	[_boldFont release];
+	_boldFont = nil;
+	
+	// Set font.
+	NSString *fontFace = [_config stringForKey:@"font-face" defaultValue:@"Courier"];
+	int fontSize = [_config intForKey:@"font-size" defaultValue:12];
+	_baseFont = [NSFont fontWithName:fontFace size:fontSize];
+	if (_baseFont == nil)  _baseFont = [NSFont userFixedPitchFontOfSize:0];
+	[_baseFont retain];
+	
+	// Get bold variant of font.
+	_boldFont = [[NSFontManager sharedFontManager] convertFont:_baseFont toHaveTrait:NSBoldFontMask];
+	if (_boldFont == nil)  _boldFont = _baseFont;
+	[_boldFont retain];
+}
+
+
 #pragma mark -
 
 - (oneway void)jsEngine:(in byref OOJavaScriptEngine *)engine
@@ -531,6 +595,28 @@ as "general", the fallback colour.
 {
 	[self appendLine:message colorKey:@"log"];
 	if (_showOnLog)  [self showConsole:nil];
+}
+
+
+#pragma mark -
+
+- (jsval)javaScriptValueInContext:(JSContext *)context
+{
+	if (context != [[OOJavaScriptEngine sharedEngine] context])  return JSVAL_VOID;
+	if (_jsSelf == NULL)
+	{
+		_jsSelf = ConsoleToJSConsole(context, self);
+		if (_jsSelf != NULL)
+		{
+			if (!JS_AddNamedRoot(context, &_jsSelf, "debug console"))
+			{
+				_jsSelf = NULL;
+			}
+		}
+	}
+	
+	if (_jsSelf != NULL)  return OBJECT_TO_JSVAL(_jsSelf);
+	else  return JSVAL_NULL;
 }
 
 @end

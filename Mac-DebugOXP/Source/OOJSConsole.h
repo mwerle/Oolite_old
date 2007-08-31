@@ -31,3 +31,8 @@ SOFTWARE.
 
 #import <Foundation/Foundation.h>
 #import <jsapi.h>
+
+@class OOJavaScriptConsoleController;
+
+
+JSObject *ConsoleToJSConsole(JSContext *context, OOJavaScriptConsoleController *console);

@@ -47,7 +47,7 @@ SOFTWARE.
 	NSFont								*_baseFont,
 										*_boldFont;
 	
-	NSDictionary						*_config;
+	NSMutableDictionary					*_config;
 	
 	// Caches
 	NSMutableDictionary					*_fgColors,
@@ -55,6 +55,7 @@ SOFTWARE.
 										*_sourceFiles;
 	
 	OOScript							*_script;
+	struct JSObject						*_jsSelf;
 	
 	BOOL								_showOnWarning,
 										_showOnError,
@@ -72,5 +73,9 @@ SOFTWARE.
 
 - (void)appendLine:(id)string colorKey:(NSString *)colorKey;
 - (void)clear;
+
+- (id)configurationValueForKey:(NSString *)key;
+- (void)setConfigurationValue:(id)value forKey:(NSString *)key;
+- (NSArray *)configurationKeys;
 
 @end
