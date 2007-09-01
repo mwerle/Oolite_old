@@ -70,6 +70,11 @@ as "general", the fallback colour.
 
 - (void)setUpFonts;
 
+/*	Convert a configuration dictionary to a standard form. In particular,
+	convert all colour specifiers to RGBA arrays with values in [0, 1].
+*/
+- (NSMutableDictionary *)normalizeConfigDictionary:(NSDictionary *)dictionary;
+
 @end
 
 
@@ -83,7 +88,8 @@ as "general", the fallback colour.
 	[_baseFont release];
 	[_boldFont release];
 	
-	[_config release];
+	[_configFromOXPs release];
+	[_configOverrides release];
 	
 	[_fgColors release];
 	[_bgColors release];
@@ -102,7 +108,7 @@ as "general", the fallback colour.
 {
 	NSUserDefaults				*defaults = nil;
 	NSDictionary				*jsProps = nil;
-	
+	NSDictionary				*config = nil;
 	
 	assert(kConsoleTrimToSize < kConsoleMaxSize);
 	
@@ -114,15 +120,17 @@ as "general", the fallback colour.
 	_showOnLog = [defaults boolForKey:@"debug-show-js-console-on-log" defaultValue:NO];
 	[inputHistoryManager setHistory:[defaults arrayForKey:@"debug-js-console-scrollback"]];
 	
-	OOLog(@"editor", @"%@", [consoleWindow fieldEditor:YES forObject:consoleInputField]);
-	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 	
-	OOLog(@"debugOXP.jsConsole.flags", @"showOnWarning: %s  showOnError: %s", _showOnWarning ? "YES" : "NO", _showOnError ? "YES" : "NO");
+	config = [[ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
+											   inFolder:@"Config"
+											   andMerge:YES] mutableCopy];
+	_configFromOXPs = [[self normalizeConfigDictionary:config] copy];
 	
-	_config = [[ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
-												inFolder:@"Config"
-												andMerge:YES] mutableCopy];
+	config = [defaults dictionaryForKey:@"debug-settings-override"];
+	config = [self normalizeConfigDictionary:config];
+	if (config == nil)  config = [NSMutableDictionary dictionary];
+	_configOverrides = [config retain];
 	
 	[self setUpFonts];
 	
@@ -142,12 +150,20 @@ as "general", the fallback colour.
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
+	NSUserDefaults				*defaults = nil;
 	NSArray						*history = nil;
+	
+	defaults = [NSUserDefaults standardUserDefaults];
 	
 	history = [inputHistoryManager history];
 	if (history != nil)
 	{
-		[[NSUserDefaults standardUserDefaults] setObject:history forKey:@"debug-js-console-scrollback"];
+		[defaults setObject:history forKey:@"debug-js-console-scrollback"];
+	}
+	
+	if (_configOverrides != nil)
+	{
+		[defaults setObject:_configOverrides forKey:@"debug-settings-override"];
 	}
 }
 
@@ -282,7 +298,36 @@ as "general", the fallback colour.
 
 - (id)configurationValueForKey:(NSString *)key
 {
-	return [_config objectForKey:key];
+	return [self configurationValueForKey:key class:Nil defaultValue:nil];
+}
+
+
+- (id)configurationValueForKey:(NSString *)key class:(Class)class defaultValue:(id)value
+{
+	id							result = nil;
+	
+	if (class == Nil)  class = [NSObject class];
+	
+	result = [_configOverrides objectForKey:key];
+	if (![result isKindOfClass:class] && result != [NSNull null])  result = [_configFromOXPs objectForKey:key];
+	if (![result isKindOfClass:class] && result != [NSNull null])  result = [[value retain] autorelease];
+	if (result == [NSNull null])  result = nil;
+	
+	return result;
+}
+
+
+- (long long)configurationIntValueForKey:(NSString *)key defaultValue:(long long)value
+{
+	long long					result;
+	id							object = nil;
+	
+	object = [self configurationValueForKey:key];
+	if ([object respondsToSelector:@selector(longLongValue)])  result = [object longLongValue];
+	else if ([object respondsToSelector:@selector(intValue)])  result = [object intValue];
+	else  result = value;
+	
+	return result;
 }
 
 
@@ -291,21 +336,21 @@ as "general", the fallback colour.
 	if (key == nil)  return;
 	if (value == nil)
 	{
-		[_config removeObjectForKey:key];
+		[_configOverrides removeObjectForKey:key];
 	}
 	else
 	{
-		if (_config == nil)  _config = [[NSMutableDictionary alloc] init];
-		[_config setObject:value forKey:key];
+		if (_configOverrides == nil)  _configOverrides = [[NSMutableDictionary alloc] init];
+		[_configOverrides setObject:value forKey:key];
 	}
 	
 	// Apply changes
-	if ([key hasSuffix:@"-foreground-color"])
+	if ([key hasSuffix:@"-foreground-color"] || [key hasSuffix:@"-foreground-colour"])
 	{
 		// Flush foreground colour cache
 		[_fgColors removeAllObjects];
 	}
-	else if ([key hasSuffix:@"-background-color"])
+	else if ([key hasSuffix:@"-background-color"] || [key hasSuffix:@"-background-colour"])
 	{
 		// Flush background colour cache
 		[_bgColors removeAllObjects];
@@ -319,8 +364,13 @@ as "general", the fallback colour.
 
 - (NSArray *)configurationKeys
 {
-	if (_config != nil)  return [[[_config allKeys] copy] autorelease];
-	else  return [NSArray array];
+	NSMutableSet				*result = nil;
+	
+	result = [NSMutableSet setWithCapacity:[_configFromOXPs count] + [_configOverrides count]];
+	[result addObjectsFromArray:[_configFromOXPs allKeys]];
+	[result addObjectsFromArray:[_configOverrides allKeys]];
+	
+	return [[result allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 }
 
 
@@ -403,11 +453,11 @@ as "general", the fallback colour.
 	{
 		// No cached colour; load colour description from config file
 		expandedKey = [key stringByAppendingString:@"-foreground-color"];
-		result = [NSColor colorWithOOColorDescription:[_config objectForKey:expandedKey]];
+		result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
 		if (result == nil)
 		{
 			expandedKey = [key stringByAppendingString:@"-foreground-colour"];
-			result = [NSColor colorWithOOColorDescription:[_config objectForKey:expandedKey]];
+			result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
 		}
 		if (result == nil && ![key isEqualToString:@"general"])
 		{
@@ -439,11 +489,11 @@ as "general", the fallback colour.
 	{
 		// No cached colour; load colour description from config file
 		expandedKey = [key stringByAppendingString:@"-background-color"];
-		result = [NSColor colorWithOOColorDescription:[_config objectForKey:expandedKey]];
+		result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
 		if (result == nil)
 		{
 			expandedKey = [key stringByAppendingString:@"-background-colour"];
-			result = [NSColor colorWithOOColorDescription:[_config objectForKey:expandedKey]];
+			result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
 		}
 		if (result == nil && ![key isEqualToString:@"general"])
 		{
@@ -504,22 +554,55 @@ as "general", the fallback colour.
 
 - (void)setUpFonts
 {
+	NSString					*fontFace = nil;
+	int							fontSize;
+	
 	[_baseFont release];
 	_baseFont = nil;
 	[_boldFont release];
 	_boldFont = nil;
 	
 	// Set font.
-	NSString *fontFace = [_config stringForKey:@"font-face" defaultValue:@"Courier"];
-	int fontSize = [_config intForKey:@"font-size" defaultValue:12];
+	fontFace = [self configurationValueForKey:@"font-face"
+										class:[NSString class]
+								 defaultValue:@"Courier"];
+	fontSize = [self configurationIntValueForKey:@"font-size"
+									defaultValue:12];
+	
 	_baseFont = [NSFont fontWithName:fontFace size:fontSize];
 	if (_baseFont == nil)  _baseFont = [NSFont userFixedPitchFontOfSize:0];
 	[_baseFont retain];
 	
 	// Get bold variant of font.
-	_boldFont = [[NSFontManager sharedFontManager] convertFont:_baseFont toHaveTrait:NSBoldFontMask];
+	_boldFont = [[NSFontManager sharedFontManager] convertFont:_baseFont
+												   toHaveTrait:NSBoldFontMask];
 	if (_boldFont == nil)  _boldFont = _baseFont;
 	[_boldFont retain];
+}
+
+
+- (NSMutableDictionary *)normalizeConfigDictionary:(NSDictionary *)dictionary
+{
+	NSMutableDictionary		*result = nil;
+	NSEnumerator			*keyEnum = nil;
+	NSString				*key = nil;
+	id						value = nil;
+	OOColor					*color = nil;
+	
+	result = [NSMutableDictionary dictionaryWithCapacity:[dictionary count]];
+	for (keyEnum = [dictionary keyEnumerator]; (key = [keyEnum nextObject]); )
+	{
+		value = [dictionary objectForKey:key];
+		if ([key hasSuffix:@"-color"] || [key hasSuffix:@"-colour"])
+		{
+			color = [OOColor colorWithDescription:value];
+			value = [color normalizedArray];
+		}
+		
+		if (key != nil && value != nil)  [result setObject:value forKey:key];
+	}
+	
+	return result;
 }
 
 
@@ -562,8 +645,12 @@ as "general", the fallback colour.
 	
 	// Format string: bold for prefix, standard font for rest.
 	formattedMessage = [NSMutableAttributedString stringWithString:[prefix stringByAppendingString:message]];
-	[formattedMessage addAttribute:NSFontAttributeName value:_boldFont range:NSMakeRange(0, [prefix length])];
-	[formattedMessage addAttribute:NSFontAttributeName value:_baseFont range:NSMakeRange([prefix length], [message length])];
+	[formattedMessage addAttribute:NSFontAttributeName
+							 value:_boldFont
+							 range:NSMakeRange(0, [prefix length])];
+	[formattedMessage addAttribute:NSFontAttributeName
+							 value:_baseFont
+							 range:NSMakeRange([prefix length], [message length])];
 	
 	// Note that the "active script" isn't necessarily the one causing the error, since one script can call another's methods.
 	scriptLine = [[OOJSScript currentlyRunningScript] displayName];

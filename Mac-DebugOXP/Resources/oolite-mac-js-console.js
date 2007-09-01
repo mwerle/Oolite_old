@@ -93,12 +93,14 @@ this.macros =
 
 function setColorFromString(string, typeName)
 { 
-	var components = string.split(' ')
-	var key = components[0]
-	var fullKey = key + "-" + typeName + "-color"
-	var value = components.slice(1)
+	// Slice of the first component, where components are separated by one or more spaces.
+	var tok = getOneToken(string)
+	var key = tok[0]
+	var value = tok[1]
 	
-	debugConsole.settings[fullKey] = value
+	var fullKey = key + "-" + typeName + "-color"
+	
+	debugConsole.settings[fullKey] = eval(value)
 	ConsoleMessage("command-result", "Set " + typeName + " colour “" + key + "” to " + value + ".")
 }
 
@@ -172,24 +174,10 @@ this.handleMacro = function(command)
 	// Strip the initial colon
 	command = command.substring(1)
 	
-	// Strip any additional space
-	while (command.charAt(0) == " ")
-	{
-		command = command.substring(1)
-	}
-	
-	// Separate into macro name and paramters.
-	var spaceIdx = command.indexOf(" ")
-	if (spaceIdx != -1)
-	{
-		var macroName = command.substring(0, spaceIdx)
-		var parameters = command.substring(spaceIdx + 1)
-	}
-	else
-	{
-		var macroName = command
-		var parameters = null
-	}
+	// Split at first series of spaces
+	var tok = getOneToken(command)
+	var macroName = tok[0]
+	var parameters = tok[1]
 	
 	this.performMacro(macroName, parameters)
 }
@@ -199,67 +187,67 @@ this.handleMacro = function(command)
 
 function setMacro(parameters)
 {
-	var spaceIdx = parameters.indexOf(" ")
-	if (spaceIdx != -1)
+	// Split at first series of spaces
+	var tok = getOneToken(parameters)
+	var name = tok[0]
+	var body = tok[1]
+	
+	if (body)
 	{
-		var name = parameters.substring(0, spaceIdx)
-		if (name.charAt(0) == ":")  name = name.substring(1)
-		var body = parameters.substring(spaceIdx + 1)
-		
 		macros[name] = body
 		
 		ConsoleMessage("macro-info", "Set macro :" + name + ".")
 	}
 	else
 	{
-		ConsoleMessage("macro-warning", "setMacro(): a macro definition must have a name and a body.")
+		ConsoleMessage("macro-error", "setMacro(): a macro definition must have a name and a body.")
 	}
 }
 
 
 function deleteMacro(parameters)
 {
-	// Ignore anything following a space.
-	var spaceIdx = parameters.indexOf(" ")
-	if (spaceIdx != -1)
+	var tok = getOneToken(parameters)
+	var name = tok[0]
+	var tail = tok[1]
+	
+	if (tail)
 	{
-		parameters = parameters.substring(0, spaceIdx)
-		ConsoleMessage("macro-warning", "deleteMacro(): warning, ignoring trailing junk.")
+		ConsoleMessage("macro-warning", "deleteMacro(): ignoring trailing junk.")
 	}
+	if (name.charAt(0) == ":")  name = name.substring(1)
 	
-	if (parameters.charAt(0) == ":")  parameters = parameters.substring(1)
-	
-	if (macros[parameters])
+	if (macros[name])
 	{
-		macros[parameters] = undefined
-		ConsoleMessage("macro-info", "Deleted macro :" + parameters + ".")
+		delete macros[name]
+		ConsoleMessage("macro-info", "Deleted macro :" + name + ".")
 	}
 	else
 	{
-		ConsoleMessage("macro-info", "Macro :" + parameters + " is not defined.")
+		ConsoleMessage("macro-info", "Macro :" + name + " is not defined.")
 	}
 }
 
 
 function showMacro(parameters)
 {
-	// Ignore anything following a space.
-	var spaceIdx = parameters.indexOf(" ")
-	if (spaceIdx != -1)
+	var tok = getOneToken(parameters)
+	var name = tok[0]
+	var tail = tok[1]
+	
+	if (tail)
 	{
-		parameters = parameters.substring(0, spaceIdx)
-		ConsoleMessage("macro-warning", ":rmMacro: warning, ignoring trailing junk.")
+		ConsoleMessage("macro-warning", "showMacro(): ignoring trailing junk.")
 	}
+	if (name.charAt(0) == ":")  name = name.substring(1)
 	
-	if (parameters.charAt(0) == ":")  parameters = parameters.substring(1)
-	
-	if (macros[parameters])
+	if (macros[name])
 	{
-		ConsoleMessage("macro-info", ":" + parameters + " = " + macros[parameters])
+		ConsoleMessage("macro-info", ":" + name + " = " + macros[name])
 	}
 	else
 	{
-		ConsoleMessage("macro-info", "Macro :" + parameters + " is not defined.")
+		ConsoleMessage("macro-info", "Macro :" + name + " is not defined.")
 	}
 }
 
@@ -275,6 +263,7 @@ this.performMacro = function(macroName, parameters)
 		if (parameters)
 		{
 			// Substitute parameter string into display expansion, going from 'foo(PARAM)' to 'foo("parameters")'.
+			// This isn't entirely right; it doesn’t perform proper escaping of quotation marks, for instance.
 			var paramString = '"' + parameters + '"'
 			var offset = displayExpansion.indexOf("PARAM")
 			while (offset != -1)
@@ -338,5 +327,41 @@ global.LogScriptStack = function(messageClass)
 		}
 		LogWithClass(messageClass, message)
 		depth++
+	}
+}
+
+
+/*
+	Split a string at the first sequence of spaces, returning an array with
+	two elements. If there are no spaces, the first element of the result will
+	be the input string, and the second will be null. Leading spaces are
+	stripped. Examples:
+	
+	getOneToken("x y") == ["x", "y"]
+	getOneToken("x   y") == ["x", "y"]
+	getOneToken("  x y") == ["x", "y"]
+	getOneToken("xy") == ["xy", null]
+	getOneToken(" xy") == ["xy", null]
+	getOneToken("") == ["", null]
+	getOneToken(" ") == ["", null]
+ */
+function getOneToken(string)
+{
+	var matcher = /\s+/g		// Regular expression to match one or more spaces.
+	matcher.lastIndex = 0
+	var match = matcher.exec(string)
+	
+	if (match)
+	{
+		var token = string.substring(0, match.index)	// Text before spaces
+		var tail = string.substring(matcher.lastIndex)	// Text after spaces
+		
+		if (token.length != 0)  return [token, tail]
+		else  return getOneToken(tail)  // Handle leading spaces case. This won't recurse more than once.
+	}
+	else
+	{
+		// No spaces
+		return [string, null]
 	}
 }

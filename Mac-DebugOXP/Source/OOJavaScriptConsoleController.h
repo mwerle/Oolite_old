@@ -47,7 +47,8 @@ SOFTWARE.
 	NSFont								*_baseFont,
 										*_boldFont;
 	
-	NSMutableDictionary					*_config;
+	NSDictionary						*_configFromOXPs;	// Settings from jsConsoleConfig.plist
+	NSMutableDictionary					*_configOverrides;	// Settings from preferences, modifiable through JS.
 	
 	// Caches
 	NSMutableDictionary					*_fgColors,
@@ -75,6 +76,8 @@ SOFTWARE.
 - (void)clear;
 
 - (id)configurationValueForKey:(NSString *)key;
+- (id)configurationValueForKey:(NSString *)key class:(Class)class defaultValue:(id)value;
+- (long long)configurationIntValueForKey:(NSString *)key defaultValue:(long long)value;
 - (void)setConfigurationValue:(id)value forKey:(NSString *)key;
 - (NSArray *)configurationKeys;
 

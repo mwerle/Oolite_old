@@ -1,6 +1,21 @@
 /*	JavaScript console configuration.
 	
-	This plist is merged and overrideable in the usual fashion.
+	This plist is merged and overrideable in the usual fashion. Additionally,
+	settings may be changed from within JavaScript using syntax such as:
+	
+		debugConsole.settings["font-face"] = "Palatino";
+		debugConsole.settings["command-background-color"] = [0.9, 0.9, 1];
+	
+	or using the predefined console macros fgColor and bgColor, like:
+	
+		:fgColor general "redColor"
+		:bgColor general "0.8 0.8 0.9"
+	
+	Settings like this are saved in Oolite's preferences and always override
+	settings in jsConsoleConfig.plist. An override can be removed in
+	JavaScript like this:
+	
+		delete debugConsole.settings["font-face"];
 */
 
 {
