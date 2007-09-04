@@ -5,6 +5,7 @@
 	
 		debugConsole.settings["font-face"] = "Palatino";
 		debugConsole.settings["command-background-color"] = [0.9, 0.9, 1];
+		debugConsole.settings["show-console-on-log"] = true;
 	
 	or using the predefined console macros fgColor and bgColor, like:
 	
@@ -43,8 +44,7 @@
 	macro-info-background-color			= { hue = 120; brightness = 1.0; saturation = 0.2; };	// Pale green
 	command-exception-background-color	= { hue = 320; brightness = 1.0; saturation = 0.25; };	// Pale magentaish
 	
-	// Alternative configuration for people who find black on which insufficiently l33t:
-	
+	// Alternative configuration for people who find black on white insufficiently l33t:
 /*
 	general-background-color			= blackColor;
 	general-foreground-color			= "0.8 0.8 0.8";
@@ -62,6 +62,50 @@
 	command-exception-foreground-color	= "1 0.75 0.5";
 */
 	
-	font-face = "Courier";
-	font-size = "12";
+	font-face							= "Courier";
+	font-size							= "12";
+	
+	// Automatic showing of console for various types of message
+	show-console-on-warning				= yes;	// JavaScript warning
+	show-console-on-error				= yes;	// JavaScript error or exception
+	show-console-on-log					= no;	// Log() or LogWithClass() called
+	
+	// Macro definitions for the console macro system (implemented in oolite-mac-js-console.js)
+	macros =
+	{
+		// Manipulating macros
+		"setM"		= "setMacro(PARAM)";
+		"delM"		= "deleteMacro(PARAM)";
+		"showM"		= "showMacro(PARAM)";
+		"listM"		= "for (let prop in macros) { ConsoleMessage('macro-list', ':' + prop) }";
+		
+		// Reload macros from plist, removing any custom ones.
+		// (Note: the ;undefined on the end is to stop the result of the delete operation ("true") from being written to the console.)
+		"resetM"	= "delete debugConsole.settings.macros; macros = debugConsole.settings.macros; undefined";
+		
+		// Examining (“dumping”) objects
+		"d"			= "dumpObjectLong(eval(PARAM))";
+		"ds"		= "dumpObjectShort(eval(PARAM))";
+		
+		// Clearing the console
+		"clr"		= "debugConsole.clearConsole()";
+		"clear"		= "debugConsole.clearConsole()";
+		
+		/*	For creating/testing colour sets. Syntax is flexible, as in plists,
+			for example:
+			:fgColor general "redColor"
+			:bgColor command { hue: 60, saturation: 0.1 }
+			:bgColor general [0, 0, 1, 1]
+			
+			rmFgColor/rmBgColor remove the specified setting from config
+			overrides, returning to whatever is set in the plist.
+		*/
+		"fgColor"	= "setColorFromString(PARAM, 'foreground')";
+		"bgColor"	= "setColorFromString(PARAM, 'background')";
+		"rmFgColor"	= "delete debugConsole.settings[PARAM + '-foreground-color']; undefined";
+		"rmBgColor"	= "delete debugConsole.settings[PARAM + '-background-color']; undefined";
+		
+		// For calling old-school scripting methods (on player), as in :: gui_screen_string
+		":"			= "player.call(PARAM)";
+	};
 }

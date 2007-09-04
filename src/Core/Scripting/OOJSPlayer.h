@@ -37,8 +37,6 @@ BOOL JSPlayerGetPlayerEntity(JSContext *context, JSObject *playerObj, PlayerEnti
 JSClass *JSPlayerClass(void);
 JSObject *JSPlayerPrototype(void);
 
-JSObject *JSPlayerObject(void);
-
 
 /*	All JS functions which talk to the player entity should call
 	OOPlayerForScripting() to ensure that the script target (for the legacy

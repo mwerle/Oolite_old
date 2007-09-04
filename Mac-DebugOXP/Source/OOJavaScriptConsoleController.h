@@ -57,10 +57,6 @@ SOFTWARE.
 	
 	OOScript							*_script;
 	struct JSObject						*_jsSelf;
-	
-	BOOL								_showOnWarning,
-										_showOnError,
-										_showOnLog;
 }
 
 - (IBAction)showConsole:sender;

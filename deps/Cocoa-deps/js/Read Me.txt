@@ -1,3 +1,0 @@
-Building libjs (SpiderMonkey) for OS X:
-
-Download a SpiderMonkey tarball from <http://www.mozilla.org/js/spidermonkey/>, unpack it. Unpack xcode.zip, and drop the resulting xcode folder into the unpacked SpiderMonkey directory (the same directory as the src/ subdirectory). Open xcode/libjs.xcodeproj and build the Release build. This will produce a Universal static library, libjs.a.

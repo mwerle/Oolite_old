@@ -58,22 +58,32 @@ enum
 - (void)appendString:(id)string;	// May be plain or attributed
 
 /*	Find a colour specified in the config plist, with the key
-key-foreground-color or key-background-color. A key of nil will be treated
-as "general", the fallback colour.
+	key-foreground-color or key-background-color. A key of nil will be treated
+	as "general", the fallback colour.
 */
 - (NSColor *)foregroundColorForKey:(NSString *)key;
 - (NSColor *)backgroundColorForKey:(NSString *)key;
+
+- (BOOL)showOnWarning;
+- (void)setShowOnWarning:(BOOL)flag;
+- (BOOL)showOnError;
+- (void)setShowOnError:(BOOL)flag;
+- (BOOL)showOnLog;
+- (void)setShowOnLog:(BOOL)flag;
 
 - (NSString *)sourceCodeForFile:(NSString *)filePath line:(unsigned)line;
 
 - (NSArray *)loadSourceFile:(NSString *)filePath;
 
+// Load certain groups of config settings.
 - (void)setUpFonts;
 
 /*	Convert a configuration dictionary to a standard form. In particular,
-	convert all colour specifiers to RGBA arrays with values in [0, 1].
+	convert all colour specifiers to RGBA arrays with values in [0, 1], and
+	converts "show-console" values to booleans.
 */
 - (NSMutableDictionary *)normalizeConfigDictionary:(NSDictionary *)dictionary;
+- (id)normalizeConfigValue:(id)value forKey:(NSString *)key;
 
 @end
 
@@ -115,12 +125,7 @@ as "general", the fallback colour.
 	_consoleScrollView = [consoleTextView enclosingScrollView];
 	
 	defaults = [NSUserDefaults standardUserDefaults];
-	_showOnWarning = [defaults boolForKey:@"debug-show-js-console-on-warning" defaultValue:YES];
-	_showOnError = [defaults boolForKey:@"debug-show-js-console-on-error" defaultValue:YES];
-	_showOnLog = [defaults boolForKey:@"debug-show-js-console-on-log" defaultValue:NO];
 	[inputHistoryManager setHistory:[defaults arrayForKey:@"debug-js-console-scrollback"]];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 	
 	config = [[ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
 											   inFolder:@"Config"
@@ -133,11 +138,11 @@ as "general", the fallback colour.
 	_configOverrides = [config retain];
 	
 	[self setUpFonts];
-	
-	OOLog(@"debugOXP.jsConsole.setMonitor", @"Setting monitor for JS engine %@", [OOJavaScriptEngine sharedEngine]);
-	[[OOJavaScriptEngine sharedEngine] setMonitor:self];
-	
 	[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
+	
+	[[OOJavaScriptEngine sharedEngine] setMonitor:self];
 	
 	// Ensure auto-scrolling will work.
 	[[_consoleScrollView verticalScroller] setFloatValue:1.0];
@@ -177,24 +182,21 @@ as "general", the fallback colour.
 }
 
 
-- (IBAction)toggleShowOnLog:sender
-{
-	_showOnLog = !_showOnLog;
-	[[NSUserDefaults standardUserDefaults] setBool:_showOnLog forKey:@"debug-show-js-console-on-log"];
-}
-
-
 - (IBAction)toggleShowOnWarning:sender
 {
-	_showOnWarning = !_showOnWarning;
-	[[NSUserDefaults standardUserDefaults] setBool:_showOnWarning forKey:@"debug-show-js-console-on-warning"];
+	[self setShowOnWarning:![self showOnWarning]];
 }
 
 
 - (IBAction)toggleShowOnError:sender
 {
-	_showOnError = !_showOnError;
-	[[NSUserDefaults standardUserDefaults] setBool:_showOnWarning forKey:@"debug-show-js-console-on-error"];
+	[self setShowOnError:![self showOnError]];
+}
+
+
+- (IBAction)toggleShowOnLog:sender
+{
+	[self setShowOnLog:![self showOnLog]];
 }
 
 
@@ -334,6 +336,9 @@ as "general", the fallback colour.
 - (void)setConfigurationValue:(id)value forKey:(NSString *)key
 {
 	if (key == nil)  return;
+	
+	value = [self normalizeConfigValue:value forKey:key];
+	
 	if (value == nil)
 	{
 		[_configOverrides removeObjectForKey:key];
@@ -354,6 +359,7 @@ as "general", the fallback colour.
 	{
 		// Flush background colour cache
 		[_bgColors removeAllObjects];
+		[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
 	}
 	else if ([key hasPrefix:@"font-"])
 	{
@@ -384,17 +390,17 @@ as "general", the fallback colour.
 	
 	if (action == @selector(toggleShowOnWarning:))
 	{
-		[menuItem setState:_showOnWarning];
+		[menuItem setState:[self showOnWarning]];
 		return YES;
 	}
 	if (action == @selector(toggleShowOnError:))
 	{
-		[menuItem setState:_showOnError];
+		[menuItem setState:[self showOnError]];
 		return YES;
 	}
 	if (action == @selector(toggleShowOnLog:))
 	{
-		[menuItem setState:_showOnLog];
+		[menuItem setState:[self showOnLog]];
 		return YES;
 	}
 	
@@ -513,6 +519,42 @@ as "general", the fallback colour.
 }
 
 
+- (BOOL)showOnWarning
+{
+	return OOBooleanFromObject([self configurationValueForKey:@"show-console-on-warning"], YES);
+}
+
+
+- (void)setShowOnWarning:(BOOL)flag
+{
+	[self setConfigurationValue:[NSNumber numberWithBool:flag] forKey:@"show-console-on-warning"];
+}
+
+
+- (BOOL)showOnError
+{
+	return OOBooleanFromObject([self configurationValueForKey:@"show-console-on-error"], YES);
+}
+
+
+- (void)setShowOnError:(BOOL)flag
+{
+	[self setConfigurationValue:[NSNumber numberWithBool:flag] forKey:@"show-console-on-error"];
+}
+
+
+- (BOOL)showOnLog
+{
+	return OOBooleanFromObject([self configurationValueForKey:@"show-console-on-log"], NO);
+}
+
+
+- (void)setShowOnLog:(BOOL)flag
+{
+	[self setConfigurationValue:[NSNumber numberWithBool:flag] forKey:@"show-console-on-log"];
+}
+
+
 - (NSString *)sourceCodeForFile:(NSString *)filePath line:(unsigned)line
 {
 	id							linesForFile = nil;
@@ -587,22 +629,40 @@ as "general", the fallback colour.
 	NSEnumerator			*keyEnum = nil;
 	NSString				*key = nil;
 	id						value = nil;
-	OOColor					*color = nil;
 	
 	result = [NSMutableDictionary dictionaryWithCapacity:[dictionary count]];
 	for (keyEnum = [dictionary keyEnumerator]; (key = [keyEnum nextObject]); )
 	{
 		value = [dictionary objectForKey:key];
-		if ([key hasSuffix:@"-color"] || [key hasSuffix:@"-colour"])
-		{
-			color = [OOColor colorWithDescription:value];
-			value = [color normalizedArray];
-		}
+		value = [self normalizeConfigValue:value forKey:key];
 		
 		if (key != nil && value != nil)  [result setObject:value forKey:key];
 	}
 	
 	return result;
+}
+
+
+- (id)normalizeConfigValue:(id)value forKey:(NSString *)key
+{
+	OOColor					*color = nil;
+	BOOL					boolValue;
+	
+	if (value != nil)
+	{
+		if ([key hasSuffix:@"-color"] || [key hasSuffix:@"-colour"])
+		{
+			color = [OOColor colorWithDescription:value];
+			value = [color normalizedArray];
+		}
+		else if ([key hasPrefix:@"show-console"])
+		{
+			boolValue = OOBooleanFromObject(value, NO);
+			value = [NSNumber numberWithBool:boolValue];
+		}
+	}
+	
+	return value;
 }
 
 
@@ -620,6 +680,7 @@ as "general", the fallback colour.
 	NSString					*fileAndLine = nil;
 	NSString					*sourceLine = nil;
 	NSString					*scriptLine = nil;
+	BOOL						show;
 	
 	if (errorReport->flags & JSREPORT_WARNING)
 	{
@@ -668,7 +729,9 @@ as "general", the fallback colour.
 	if (sourceLine != nil)  [self appendLine:sourceLine colorKey:colorKey];
 	if (scriptLine != nil)  [self appendLine:scriptLine colorKey:colorKey];
 	
-	if (((errorReport->flags & JSREPORT_WARNING) && _showOnWarning) || _showOnError)
+	if (errorReport->flags & JSREPORT_WARNING)  show = [self showOnWarning];
+	else  show = [self showOnError];
+	if (show)
 	{
 		[self showConsole:nil];
 	}
@@ -681,7 +744,7 @@ as "general", the fallback colour.
 				ofClass:(in NSString *)messageClass
 {
 	[self appendLine:message colorKey:@"log"];
-	if (_showOnLog)  [self showConsole:nil];
+	if ([self showOnLog])  [self showConsole:nil];
 }
 
 

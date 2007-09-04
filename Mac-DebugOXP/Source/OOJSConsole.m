@@ -80,7 +80,7 @@ enum
 static JSPropertySpec sConsoleProperties[] =
 {
 	// JS name					ID							flags
-	{ "global",					kConsole_global,			JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
+//	{ "global",					kConsole_global,			JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
 	{ 0 }
 };
 
