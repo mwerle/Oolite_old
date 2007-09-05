@@ -40,8 +40,6 @@ static JSObject *sConsolePrototype = NULL;
 static JSObject *sConsoleSettingsPrototype = NULL;
 
 
-static JSBool ConsoleGetProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue);
-static JSBool ConsoleSetProperty(JSContext *context, JSObject *this, jsval name, jsval *value);
 static void ConsoleFinalize(JSContext *context, JSObject *this);
 
 // Methods
@@ -61,27 +59,13 @@ static JSClass sConsoleClass =
 	
 	JS_PropertyStub,		// addProperty
 	JS_PropertyStub,		// delProperty
-	ConsoleGetProperty,		// getProperty
-	ConsoleSetProperty,		// setProperty
+	JS_PropertyStub,		// getProperty
+	JS_PropertyStub,		// setProperty
 	JS_EnumerateStub,		// enumerate
 	JS_ResolveStub,			// resolve
 	JS_ConvertStub,			// convert
 	ConsoleFinalize,		// finalize
 	JSCLASS_NO_OPTIONAL_MEMBERS
-};
-
-
-enum
-{
-	kConsole_global				// The global object
-};
-
-
-static JSPropertySpec sConsoleProperties[] =
-{
-	// JS name					ID							flags
-//	{ "global",					kConsole_global,			JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
-	{ 0 }
 };
 
 
@@ -114,7 +98,7 @@ static JSClass sConsoleSettingsClass =
 
 static void InitOOJSConsole(JSContext *context, JSObject *global)
 {
-    sConsolePrototype = JS_InitClass(context, global, NULL, &sConsoleClass, NULL, 0, sConsoleProperties, sConsoleMethods, NULL, NULL);
+    sConsolePrototype = JS_InitClass(context, global, NULL, &sConsoleClass, NULL, 0, NULL, sConsoleMethods, NULL, NULL);
 	JSRegisterObjectConverter(&sConsoleClass, JSBasicPrivateObjectConverter);
 	
     sConsoleSettingsPrototype = JS_InitClass(context, global, NULL, &sConsoleSettingsClass, NULL, 0, NULL, NULL, NULL, NULL);
@@ -165,33 +149,6 @@ JSObject *ConsoleToJSConsole(JSContext *context, OOJavaScriptConsoleController *
 	}
 	
 	return object;
-}
-
-
-static JSBool ConsoleGetProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue)
-{
-	if (!JSVAL_IS_INT(name))  return YES;
-	
-	switch (JSVAL_TO_INT(name))
-	{
-		case kConsole_global:
-			*outValue = OBJECT_TO_JSVAL([[OOJavaScriptEngine sharedEngine] globalObject]);
-			break;
-			
-		default:
-			OOReportJavaScriptBadPropertySelector(context, @"Console", JSVAL_TO_INT(name));
-			return NO;
-	}
-	
-	return YES;
-}
-
-
-static JSBool ConsoleSetProperty(JSContext *context, JSObject *this, jsval name, jsval *value)
-{
-	if (!JSVAL_IS_INT(name))  return YES;
-	OOReportJavaScriptBadPropertySelector(context, @"Console", JSVAL_TO_INT(name));
-	return NO;
 }
 
 
