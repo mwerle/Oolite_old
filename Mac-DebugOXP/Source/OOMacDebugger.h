@@ -1,8 +1,12 @@
 /*
 
-OOJavaScriptConsoleController.h
+OOMacDebugger.h
 
-JavaScript debugging console for Oolite.
+Mac OS X/Appkit based implementation of Oolite debugging interface.
+
+This mostly acts as a dispatcher. Currently it dispatches everything to
+OOJavaScriptConsoleController, but that could changed as non-JavaScript
+debugging facilities are added.
 
 
 Oolite Debug OXP
@@ -30,51 +34,29 @@ SOFTWARE.
 */
 
 #import <Cocoa/Cocoa.h>
-#import "OOWeakReference.h"
 
-@class OOScript, OOTextFieldHistoryManager;
+@class OODebugMonitor, OOJavaScriptConsoleController;
 
 
-@interface OOJavaScriptConsoleController: OOWeakRefObject
+@interface OOMacDebugger: NSObject
 {
-	IBOutlet NSWindow					*consoleWindow;
-	IBOutlet NSTextView					*consoleTextView;
-	IBOutlet NSTextField				*consoleInputField;
-	IBOutlet OOTextFieldHistoryManager	*inputHistoryManager;
+	OODebugMonitor						*_monitor;
+	IBOutlet OOJavaScriptConsoleController *jsConsoleController;
 	
-	NSScrollView						*_consoleScrollView;
-	
-	NSFont								*_baseFont,
-										*_boldFont;
-	
-	NSDictionary						*_configFromOXPs;	// Settings from jsConsoleConfig.plist
-	NSMutableDictionary					*_configOverrides;	// Settings from preferences, modifiable through JS.
-	
-	// Caches
-	NSMutableDictionary					*_fgColors,
-										*_bgColors,
-										*_sourceFiles;
-	
-	OOScript							*_script;
-	struct JSObject						*_jsSelf;
+	// "Local" copy of configuration. This distinction is of little importance in the current implementation, but will be useful if moving to a separate process.
+	NSMutableDictionary					*_configuration;
 }
 
-- (IBAction)showConsole:sender;
-- (IBAction)toggleShowOnLog:sender;
-- (IBAction)toggleShowOnWarning:sender;
-- (IBAction)toggleShowOnError:sender;
-- (IBAction)consolePerformCommand:sender;
+- (void)performConsoleCommand:(NSString *)command;
 
-// Perform a JS command as though entered at the console, including echoing.
-- (void)performCommand:(NSString *)command;
-
-- (void)appendLine:(id)string colorKey:(NSString *)colorKey;
-- (void)clear;
-
+// *** Configuration management.
 - (id)configurationValueForKey:(NSString *)key;
 - (id)configurationValueForKey:(NSString *)key class:(Class)class defaultValue:(id)value;
 - (long long)configurationIntValueForKey:(NSString *)key defaultValue:(long long)value;
+- (BOOL)configurationBoolValueForKey:(NSString *)key;
+
 - (void)setConfigurationValue:(id)value forKey:(NSString *)key;
+
 - (NSArray *)configurationKeys;
 
 @end

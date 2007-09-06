@@ -125,6 +125,10 @@ this.consolePerformJSCommand = function(command)
 	{
 		command = command.substring(1)
 	}
+	
+	// Echo input to console, emphasising the command itself.
+	ConsoleMessage("command", "> " + command, 2, command.length)
+	
 	if (command.charAt(0) != ":")
 	{
 		// No colon prefix, just JavaScript code.

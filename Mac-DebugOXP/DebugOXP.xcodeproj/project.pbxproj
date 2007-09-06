@@ -16,6 +16,11 @@
 		1A0259F60C7F8D3800F622D4 /* FScript.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0259B80C7F894100F622D4 /* FScript.framework */; };
 		1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */; };
 		1A0518D30C7CC69600BA5CCA /* OODebugController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0518D20C7CC69600BA5CCA /* OODebugController.m */; };
+		1A4D0B9D0C8EFF1200A6FBDB /* OODebugMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */; };
+		1A4D0B9E0C8EFF1200A6FBDB /* OODebugMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */; };
+		1A4D0BB90C8F04C200A6FBDB /* OODebuggerInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */; };
+		1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */; };
+		1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */; };
 		1A4FB04F0C8C267E00DC8E1F /* oolite-mac-js-console.js in Copy Files to Scripts */ = {isa = PBXBuildFile; fileRef = 1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */; };
 		1A4FB2FF0C8DB89E00DC8E1F /* jspubtd.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FC0C8DB89E00DC8E1F /* jspubtd.h */; };
 		1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */; };
@@ -91,6 +96,11 @@
 		1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = OODebugController.nib; sourceTree = "<group>"; };
 		1A0518D10C7CC69600BA5CCA /* OODebugController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugController.h; sourceTree = "<group>"; };
 		1A0518D20C7CC69600BA5CCA /* OODebugController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugController.m; sourceTree = "<group>"; };
+		1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugMonitor.h; sourceTree = "<group>"; };
+		1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugMonitor.m; sourceTree = "<group>"; };
+		1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebuggerInterface.h; sourceTree = "<group>"; };
+		1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMacDebugger.h; sourceTree = "<group>"; };
+		1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMacDebugger.m; sourceTree = "<group>"; };
 		1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-mac-js-console.js"; sourceTree = "<group>"; };
 		1A4FB2FC0C8DB89E00DC8E1F /* jspubtd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jspubtd.h; path = src/jspubtd.h; sourceTree = "<group>"; };
 		1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jstypes.h; path = src/jstypes.h; sourceTree = "<group>"; };
@@ -184,6 +194,11 @@
 			children = (
 				1A0518D10C7CC69600BA5CCA /* OODebugController.h */,
 				1A0518D20C7CC69600BA5CCA /* OODebugController.m */,
+				1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */,
+				1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */,
+				1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */,
+				1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */,
+				1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */,
 				1A0256230C7F0D7100F622D4 /* OOJavaScriptConsoleController.h */,
 				1A0256240C7F0D7100F622D4 /* OOJavaScriptConsoleController.m */,
 				1A02587A0C7F36CD00F622D4 /* OODebugUtilities.h */,
@@ -221,6 +236,9 @@
 				1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */,
 				1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */,
 				1A4FB3030C8DB8AA00DC8E1F /* jsautocfg.h in Headers */,
+				1A4D0B9D0C8EFF1200A6FBDB /* OODebugMonitor.h in Headers */,
+				1A4D0BB90C8F04C200A6FBDB /* OODebuggerInterface.h in Headers */,
+				1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,6 +322,8 @@
 				1A02587D0C7F36CD00F622D4 /* OODebugUtilities.m in Sources */,
 				1A9590E90C80673700C112A9 /* OOJSConsole.m in Sources */,
 				1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */,
+				1A4D0B9E0C8EFF1200A6FBDB /* OODebugMonitor.m in Sources */,
+				1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

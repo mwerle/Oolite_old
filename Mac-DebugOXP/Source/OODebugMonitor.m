@@ -1,6 +1,6 @@
 /*
 
-OOJavaScriptConsoleController.m
+OODebugMonitor.m
 
 
 Oolite Debug OXP
@@ -28,55 +28,27 @@ SOFTWARE.
 */
 
 
-#import "OOJavaScriptConsoleController.h"
+#import "OODebugMonitor.h"
 #import "OOCollectionExtractors.h"
 #import "OOLogging.h"
-#import "OOColor.h"
 #import "OODebugUtilities.h"
 #import "ResourceManager.h"
 #import "NSStringOOExtensions.h"
-#import "OOTextFieldHistoryManager.h"
 
 #import "OOJSConsole.h"
 #import "OOScript.h"
 #import "OOJSScript.h"
 #import "OOJavaScriptEngine.h"
 
-enum
-{
-	// Size limit for console scrollback
-	kConsoleMaxSize			= 100000,
-	kConsoleTrimToSize		= 80000,
-	
-	// Number of lines of console input to remember
-	kConsoleMemory			= 100
-};
+
+static OODebugMonitor *sSingleton = nil;
 
 
-@interface OOJavaScriptConsoleController (Private) <OOJavaScriptEngineMonitor>
+@interface OODebugMonitor (Private) <OOJavaScriptEngineMonitor>
 
-- (void)appendString:(id)string;	// May be plain or attributed
+- (void)disconnectDebuggerWithMessage:(NSString *)message;
 
-/*	Find a colour specified in the config plist, with the key
-	key-foreground-color or key-background-color. A key of nil will be treated
-	as "general", the fallback colour.
-*/
-- (NSColor *)foregroundColorForKey:(NSString *)key;
-- (NSColor *)backgroundColorForKey:(NSString *)key;
-
-- (BOOL)showOnWarning;
-- (void)setShowOnWarning:(BOOL)flag;
-- (BOOL)showOnError;
-- (void)setShowOnError:(BOOL)flag;
-- (BOOL)showOnLog;
-- (void)setShowOnLog:(BOOL)flag;
-
-- (NSString *)sourceCodeForFile:(NSString *)filePath line:(unsigned)line;
-
-- (NSArray *)loadSourceFile:(NSString *)filePath;
-
-// Load certain groups of config settings.
-- (void)setUpFonts;
+- (NSDictionary *)mergedConfiguration;
 
 /*	Convert a configuration dictionary to a standard form. In particular,
 	convert all colour specifiers to RGBA arrays with values in [0, 1], and
@@ -85,18 +57,49 @@ enum
 - (NSMutableDictionary *)normalizeConfigDictionary:(NSDictionary *)dictionary;
 - (id)normalizeConfigValue:(id)value forKey:(NSString *)key;
 
+- (NSArray *)loadSourceFile:(NSString *)filePath;
+
 @end
 
 
-@implementation OOJavaScriptConsoleController
+@implementation OODebugMonitor
+
+- (id)init
+{
+	NSUserDefaults				*defaults = nil;
+	NSDictionary				*jsProps = nil;
+	NSDictionary				*config = nil;
+	
+	self = [super init];
+	if (self != nil)
+	{
+		config = [[ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
+												   inFolder:@"Config"
+												   andMerge:YES] mutableCopy];
+		_configFromOXPs = [[self normalizeConfigDictionary:config] copy];
+		
+		defaults = [NSUserDefaults standardUserDefaults];
+		config = [defaults dictionaryForKey:@"debug-settings-override"];
+		config = [self normalizeConfigDictionary:config];
+		if (config == nil)  config = [NSMutableDictionary dictionary];
+		_configOverrides = [config retain];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
+		
+		[[OOJavaScriptEngine sharedEngine] setMonitor:self];
+		
+		// Set up JavaScript side of console.
+		jsProps = [NSDictionary dictionaryWithObject:self forKey:@"console"];
+		_script = [[OOScript nonLegacyScriptFromFileNamed:@"oolite-mac-js-console.js" properties:jsProps] retain];
+	}
+	
+	return self;
+}
+
 
 - (void)dealloc
 {
-	[consoleWindow release];
-	[inputHistoryManager release];
-	
-	[_baseFont release];
-	[_boldFont release];
+	[self disconnectDebuggerWithMessage:@"Debug controller object destroyed while debugging in progress."];
 	
 	[_configFromOXPs release];
 	[_configOverrides release];
@@ -114,191 +117,112 @@ enum
 }
 
 
-- (void)awakeFromNib
++ (id)sharedDebugMonitor
 {
-	NSUserDefaults				*defaults = nil;
-	NSDictionary				*jsProps = nil;
-	NSDictionary				*config = nil;
+	// NOTE: assumes single-threaded access. The debug monitor is not, on the whole, thread safe.
+	if (sSingleton == nil)
+	{
+		[[self alloc] init];
+	}
 	
-	assert(kConsoleTrimToSize < kConsoleMaxSize);
-	
-	_consoleScrollView = [consoleTextView enclosingScrollView];
-	
-	defaults = [NSUserDefaults standardUserDefaults];
-	[inputHistoryManager setHistory:[defaults arrayForKey:@"debug-js-console-scrollback"]];
-	
-	config = [[ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
-											   inFolder:@"Config"
-											   andMerge:YES] mutableCopy];
-	_configFromOXPs = [[self normalizeConfigDictionary:config] copy];
-	
-	config = [defaults dictionaryForKey:@"debug-settings-override"];
-	config = [self normalizeConfigDictionary:config];
-	if (config == nil)  config = [NSMutableDictionary dictionary];
-	_configOverrides = [config retain];
-	
-	[self setUpFonts];
-	[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
-	
-	[[OOJavaScriptEngine sharedEngine] setMonitor:self];
-	
-	// Ensure auto-scrolling will work.
-	[[_consoleScrollView verticalScroller] setFloatValue:1.0];
-	
-	// Set up JavaScript side of console.
-	jsProps = [NSDictionary dictionaryWithObject:self forKey:@"console"];
-	_script = [[OOScript nonLegacyScriptFromFileNamed:@"oolite-mac-js-console.js" properties:jsProps] retain];
+	return sSingleton;
 }
 
 
-- (void)applicationWillTerminate:(NSNotification *)notification
+- (BOOL)setDebugger:(id<OODebuggerInterface>)newDebugger
 {
-	NSUserDefaults				*defaults = nil;
-	NSArray						*history = nil;
+	NSString					*error = nil;
 	
-	defaults = [NSUserDefaults standardUserDefaults];
-	
-	history = [inputHistoryManager history];
-	if (history != nil)
+	if (newDebugger != _debugger)
 	{
-		[defaults setObject:history forKey:@"debug-js-console-scrollback"];
+		// Disconnect existing debugger, if any.
+		if (newDebugger != nil)
+		{
+			[self disconnectDebuggerWithMessage:@"New debugger set."];
+		}
+		else
+		{
+			[self disconnectDebuggerWithMessage:@"Debugger disconnected programatically."];
+		}
+		
+		// If a new debugger was specified, try to connect it.
+		if (newDebugger != nil)
+		{
+			NS_DURING
+				if ([newDebugger connectDebugMonitor:self errorMessage:&error])
+				{
+					[newDebugger debugMonitor:self
+							noteConfiguration:[self mergedConfiguration]];
+					_debugger = [newDebugger retain];
+				}
+				else
+				{
+					OOLog(@"debugMonitor.setDebugger.failed", @"Could not connect to debugger %@, because an error occurred: %@", newDebugger, error);
+				}
+			NS_HANDLER
+				OOLog(@"debugMonitor.setDebugger.failed", @"Could not connect to debugger %@, because an exception occurred: %@ -- %@", newDebugger, [localException name], [localException reason]);
+			NS_ENDHANDLER
+		}
 	}
 	
-	if (_configOverrides != nil)
-	{
-		[defaults setObject:_configOverrides forKey:@"debug-settings-override"];
-	}
+	return _debugger == newDebugger;
+}
+
+
+- (oneway void)performJSConsoleCommand:(in NSString *)command
+{
+	[_script doEvent:@"consolePerformJSCommand" withArgument:command];
+}
+
+
+- (void)appendJSConsoleLine:(id)string
+				   colorKey:(NSString *)colorKey
+			  emphasisRange:(NSRange)emphasisRange
+{
+	NS_DURING
+		[_debugger debugMonitor:self
+				jsConsoleOutput:string
+					   colorKey:colorKey
+				  emphasisRange:emphasisRange];
+	NS_HANDLER
+		OOLog(@"debugMonitor.debuggerConnection.exception", @"Exception while attempting to send JavaScript console text to debugger: %@ -- %@", [localException name], [localException reason]);
+	NS_ENDHANDLER
+}
+
+
+- (void)appendJSConsoleLine:(id)string
+				   colorKey:(NSString *)colorKey
+{
+	[self appendJSConsoleLine:string
+					 colorKey:colorKey
+				emphasisRange:NSMakeRange(0, 0)];
+}
+
+
+- (void)clearJSConsole
+{
+	NS_DURING
+		[_debugger debugMonitorClearConsole:self];
+	NS_HANDLER
+		OOLog(@"debugMonitor.debuggerConnection.exception", @"Exception while attempting to clear JavaScript console: %@ -- %@", [localException name], [localException reason]);
+	NS_ENDHANDLER
+}
+
+
+- (void)showJSConsole
+{
+	NS_DURING
+		[_debugger debugMonitorShowConsole:self];
+	NS_HANDLER
+		OOLog(@"debugMonitor.debuggerConnection.exception", @"Exception while attempting to show JavaScript console: %@ -- %@", [localException name], [localException reason]);
+	NS_ENDHANDLER
 }
 
 
 #pragma mark -
 
-- (IBAction)showConsole:sender
-{
-	[consoleWindow makeKeyAndOrderFront:sender];
-	[consoleWindow makeFirstResponder:consoleInputField];
-}
 
-
-- (IBAction)toggleShowOnWarning:sender
-{
-	[self setShowOnWarning:![self showOnWarning]];
-}
-
-
-- (IBAction)toggleShowOnError:sender
-{
-	[self setShowOnError:![self showOnError]];
-}
-
-
-- (IBAction)toggleShowOnLog:sender
-{
-	[self setShowOnLog:![self showOnLog]];
-}
-
-
-- (IBAction)consolePerformCommand:sender
-{
-	NSString					*command = nil;
-	
-	// Use consoleInputField rather than sender so we can, e.g., add a button.
-	command = [consoleInputField stringValue];
-	if ([command length] == 0)  return;
-	
-	[consoleInputField setStringValue:@""];
-	[inputHistoryManager addToHistory:command];
-	
-	[self performCommand:command];
-}
-
-
-- (void)performCommand:(NSString *)command
-{
-	NSString					*indentedCommand = nil;
-	NSMutableAttributedString	*attrString = nil;
-	NSDictionary				*fullAttributes = nil,
-								*cmdAttributes = nil;
-	
-	indentedCommand = [[command componentsSeparatedByString:@"\n"] componentsJoinedByString:@"\n  "];
-	
-	fullAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-		_baseFont, NSFontAttributeName,
-		[self backgroundColorForKey:@"command"], NSBackgroundColorAttributeName,
-		[self foregroundColorForKey:nil], NSForegroundColorAttributeName,
-		nil];
-	cmdAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-		_boldFont, NSFontAttributeName,
-		[self foregroundColorForKey:@"command"], NSForegroundColorAttributeName,
-		nil];
-	
-	attrString = [NSMutableAttributedString stringWithString:[NSString stringWithFormat:@"> %@\n", indentedCommand]];
-	[attrString addAttributes:fullAttributes range:NSMakeRange(0, [attrString length])];
-	[attrString addAttributes:cmdAttributes range:NSMakeRange(2, [indentedCommand length])];
-	
-	[self appendString:attrString];
-	[consoleWindow makeFirstResponder:consoleInputField];
-	
-	// Perform the actual command.
-	[_script doEvent:@"consolePerformJSCommand" withArgument:command];
-}
-
-
-- (void)appendLine:(id)string colorKey:(NSString *)colorKey
-{
-	NSMutableAttributedString			*mutableStr = nil;
-	NSColor								*fgColor = nil,
-		*bgColor = nil;
-	
-	if ([string isKindOfClass:[NSString class]])
-	{
-		mutableStr = [NSMutableAttributedString stringWithString:string font:_baseFont];
-	}
-	else if ([string isKindOfClass:[NSAttributedString class]])
-	{
-		mutableStr = [[string mutableCopy] autorelease];
-	}
-	else
-	{
-		if (string != nil)
-		{
-			OOLog(@"debugOXP.jsConsole.appendString.failed", @"Attempt to append non-string type %@ to JavaScript console. This is an internal error, please report it.", [string class]);
-		}
-		
-		return;
-	}
-	
-	[mutableStr appendAttributedString:[@"\n" asAttributedStringWithFont:_baseFont]];
-	
-	fgColor = [self foregroundColorForKey:colorKey];
-	if (fgColor != nil)
-	{
-		if ([fgColor alphaComponent] == 0.0)  return;
-		[mutableStr addAttribute:NSForegroundColorAttributeName value:fgColor range:NSMakeRange(0, [mutableStr length])];
-	}
-	
-	bgColor = [self backgroundColorForKey:colorKey];
-	if (bgColor != nil)
-	{
-		[mutableStr addAttribute:NSBackgroundColorAttributeName value:bgColor range:NSMakeRange(0, [mutableStr length])];
-	}
-	
-	[self appendString:mutableStr];
-}
-
-
-- (void)clear
-{
-	NSTextStorage				*textStorage = nil;
-	
-	textStorage = [consoleTextView textStorage];
-	[textStorage deleteCharactersInRange:NSMakeRange(0, [textStorage length])];
-}
-
-
-- (id)configurationValueForKey:(NSString *)key
+- (id)configurationValueForKey:(in NSString *)key
 {
 	return [self configurationValueForKey:key class:Nil defaultValue:nil];
 }
@@ -333,7 +257,7 @@ enum
 }
 
 
-- (void)setConfigurationValue:(id)value forKey:(NSString *)key
+- (void)setConfigurationValue:(in id)value forKey:(in NSString *)key
 {
 	if (key == nil)  return;
 	
@@ -349,22 +273,19 @@ enum
 		[_configOverrides setObject:value forKey:key];
 	}
 	
-	// Apply changes
-	if ([key hasSuffix:@"-foreground-color"] || [key hasSuffix:@"-foreground-colour"])
+	// Send changed value to debugger
+	if (value == nil)
 	{
-		// Flush foreground colour cache
-		[_fgColors removeAllObjects];
+		// Setting a nil value removes an override, and may reveal an underlying OXP-defined value
+		value = [self configurationValueForKey:key];
 	}
-	else if ([key hasSuffix:@"-background-color"] || [key hasSuffix:@"-background-colour"])
-	{
-		// Flush background colour cache
-		[_bgColors removeAllObjects];
-		[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
-	}
-	else if ([key hasPrefix:@"font-"])
-	{
-		[self setUpFonts];
-	}
+	NS_DURING
+		[_debugger debugMonitor:self
+   noteChangedConfigrationValue:value
+						 forKey:key];
+	NS_HANDLER
+		OOLog(@"debugMonitor.debuggerConnection.exception", @"Exception while attempting to send configuration update to debugger: %@ -- %@", [localException name], [localException reason]);
+	NS_ENDHANDLER
 }
 
 
@@ -380,182 +301,7 @@ enum
 }
 
 
-#pragma mark -
-
-- (BOOL)validateMenuItem:(id <NSMenuItem>)menuItem
-{
-	SEL							action = NULL;
-	
-	action = [menuItem action];
-	
-	if (action == @selector(toggleShowOnWarning:))
-	{
-		[menuItem setState:[self showOnWarning]];
-		return YES;
-	}
-	if (action == @selector(toggleShowOnError:))
-	{
-		[menuItem setState:[self showOnError]];
-		return YES;
-	}
-	if (action == @selector(toggleShowOnLog:))
-	{
-		[menuItem setState:[self showOnLog]];
-		return YES;
-	}
-	
-	return [self respondsToSelector:action];
-}
-
-@end
-
-
-@implementation OOJavaScriptConsoleController (Private)
-
-- (void)appendString:(id)string
-{
-	NSTextStorage					*textStorage = nil;
-	BOOL							doScroll;
-	unsigned						length;
-	
-	if ([string isKindOfClass:[NSString class]])
-	{
-		string = [NSMutableAttributedString stringWithString:string font:_baseFont];
-	}
-	if (![string isKindOfClass:[NSAttributedString class]])
-	{
-		if (string != nil)
-		{
-			OOLog(@"debugOXP.jsConsole.appendString.failed", @"Attempt to append non-string type %@ to JavaScript console. This is an internal error, please report it.", [string class]);
-		}
-		
-		return;
-	}
-	
-	doScroll = [[_consoleScrollView verticalScroller] floatValue] > 0.980;
-	
-	textStorage = [consoleTextView textStorage];
-	[textStorage appendAttributedString:string];
-	length = [textStorage length];
-	if (length > kConsoleMaxSize)
-	{
-		[textStorage deleteCharactersInRange:NSMakeRange(length - kConsoleTrimToSize, kConsoleTrimToSize)];
-	}
-	
-	// Scroll to end of field
-	if (doScroll)  [consoleTextView scrollRangeToVisible:NSMakeRange([[consoleTextView string] length], 0)];
-}
-
-
-- (NSColor *)foregroundColorForKey:(NSString *)key
-{
-	NSColor						*result = nil;
-	NSString					*expandedKey = nil;
-	
-	if (key == nil)  key = @"general";
-	
-	result = [_fgColors objectForKey:key];
-	if (result == nil)
-	{
-		// No cached colour; load colour description from config file
-		expandedKey = [key stringByAppendingString:@"-foreground-color"];
-		result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
-		if (result == nil)
-		{
-			expandedKey = [key stringByAppendingString:@"-foreground-colour"];
-			result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
-		}
-		if (result == nil && ![key isEqualToString:@"general"])
-		{
-			result = [self foregroundColorForKey:nil];
-		}
-		if (result == nil)  result = [NSColor blackColor];
-		
-		// Store loaded colour in cache
-		if (result != nil)
-		{
-			if (_fgColors == nil)  _fgColors = [[NSMutableDictionary alloc] init];
-			[_fgColors setObject:result forKey:key];
-		}
-	}
-	
-	return result;
-}
-
-
-- (NSColor *)backgroundColorForKey:(NSString *)key
-{
-	NSColor						*result = nil;
-	NSString					*expandedKey = nil;
-	
-	if (key == nil)  key = @"general";
-	
-	result = [_bgColors objectForKey:key];
-	if (result == nil)
-	{
-		// No cached colour; load colour description from config file
-		expandedKey = [key stringByAppendingString:@"-background-color"];
-		result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
-		if (result == nil)
-		{
-			expandedKey = [key stringByAppendingString:@"-background-colour"];
-			result = [NSColor colorWithOOColorDescription:[self configurationValueForKey:expandedKey]];
-		}
-		if (result == nil && ![key isEqualToString:@"general"])
-		{
-			result = [self backgroundColorForKey:nil];
-		}
-		if (result == nil)  result = [NSColor whiteColor];
-		
-		// Store loaded colour in cache
-		if (result != nil)
-		{
-			if (_bgColors == nil)  _bgColors = [[NSMutableDictionary alloc] init];
-			[_bgColors setObject:result forKey:key];
-		}
-	}
-	
-	return result;
-}
-
-
-- (BOOL)showOnWarning
-{
-	return OOBooleanFromObject([self configurationValueForKey:@"show-console-on-warning"], YES);
-}
-
-
-- (void)setShowOnWarning:(BOOL)flag
-{
-	[self setConfigurationValue:[NSNumber numberWithBool:flag] forKey:@"show-console-on-warning"];
-}
-
-
-- (BOOL)showOnError
-{
-	return OOBooleanFromObject([self configurationValueForKey:@"show-console-on-error"], YES);
-}
-
-
-- (void)setShowOnError:(BOOL)flag
-{
-	[self setConfigurationValue:[NSNumber numberWithBool:flag] forKey:@"show-console-on-error"];
-}
-
-
-- (BOOL)showOnLog
-{
-	return OOBooleanFromObject([self configurationValueForKey:@"show-console-on-log"], NO);
-}
-
-
-- (void)setShowOnLog:(BOOL)flag
-{
-	[self setConfigurationValue:[NSNumber numberWithBool:flag] forKey:@"show-console-on-log"];
-}
-
-
-- (NSString *)sourceCodeForFile:(NSString *)filePath line:(unsigned)line
+- (NSString *)sourceCodeForFile:(in NSString *)filePath line:(in unsigned)line
 {
 	id							linesForFile = nil;
 	
@@ -576,6 +322,65 @@ enum
 }
 
 
+#pragma mark -
+
+- (void)disconnectDebugger:(in id<OODebuggerInterface>)debugger
+				   message:(in NSString *)message
+{
+	if (debugger == nil)  return;
+		
+	if (debugger == _debugger)
+	{
+		[self disconnectDebuggerWithMessage:message];
+	}
+	else
+	{
+		OOLog(@"debugMonitor.disconnect.ignored", @"Attempt to disconnect debugger %@, which is not current debugger; ignoring.", debugger);
+	}
+}
+
+
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+	if (_configOverrides != nil)
+	{
+		[[NSUserDefaults standardUserDefaults] setObject:_configOverrides forKey:@"debug-settings-override"];
+	}
+	
+	[self disconnectDebuggerWithMessage:@"Oolite is terminating."];
+}
+
+
+@end
+
+
+@implementation OODebugMonitor (Private)
+
+- (void)disconnectDebuggerWithMessage:(NSString *)message
+{
+	NS_DURING
+		[_debugger disconnectDebugMonitor:self message:message];
+	NS_HANDLER
+		OOLog(@"debugMonitor.debuggerConnection.exception", @"Exception while attempting to disconnect debugger: %@ -- %@", [localException name], [localException reason]);
+	NS_ENDHANDLER
+	
+	[_debugger release];
+	_debugger = nil;
+}
+
+
+- (NSDictionary *)mergedConfiguration
+{
+	NSMutableDictionary			*result = nil;
+	
+	result = [NSMutableDictionary dictionary];
+	if (_configFromOXPs != nil)  [result addEntriesFromDictionary:_configFromOXPs];
+	if (_configOverrides != nil)  [result addEntriesFromDictionary:_configOverrides];
+	
+	return result;
+}
+
+
 - (NSArray *)loadSourceFile:(NSString *)filePath
 {
 	NSString					*contents = nil;
@@ -587,39 +392,10 @@ enum
 	if (contents == nil)  return nil;
 	
 	/*	Extract lines from file.
-		FIXME: this works with CRLF and LF, but not CR.
-	*/
+FIXME: this works with CRLF and LF, but not CR.
+		*/
 	lines = [contents componentsSeparatedByString:@"\n"];
 	return lines;
-}
-
-
-- (void)setUpFonts
-{
-	NSString					*fontFace = nil;
-	int							fontSize;
-	
-	[_baseFont release];
-	_baseFont = nil;
-	[_boldFont release];
-	_boldFont = nil;
-	
-	// Set font.
-	fontFace = [self configurationValueForKey:@"font-face"
-										class:[NSString class]
-								 defaultValue:@"Courier"];
-	fontSize = [self configurationIntValueForKey:@"font-size"
-									defaultValue:12];
-	
-	_baseFont = [NSFont fontWithName:fontFace size:fontSize];
-	if (_baseFont == nil)  _baseFont = [NSFont userFixedPitchFontOfSize:0];
-	[_baseFont retain];
-	
-	// Get bold variant of font.
-	_boldFont = [[NSFontManager sharedFontManager] convertFont:_baseFont
-												   toHaveTrait:NSBoldFontMask];
-	if (_boldFont == nil)  _boldFont = _baseFont;
-	[_boldFont retain];
 }
 
 
@@ -675,12 +451,14 @@ enum
 {
 	NSString					*colorKey = nil;
 	NSString					*prefix = nil;
-	NSMutableAttributedString	*formattedMessage = nil;
 	NSString					*filePath = nil;
-	NSString					*fileAndLine = nil;
 	NSString					*sourceLine = nil;
 	NSString					*scriptLine = nil;
-	BOOL						show;
+	NSMutableString				*formattedMessage = nil;
+	NSRange						emphasisRange;
+	NSString					*showKey = nil;
+	
+	if (_debugger == nil)  return;
 	
 	if (errorReport->flags & JSREPORT_WARNING)
 	{
@@ -702,38 +480,43 @@ enum
 	{
 		prefix = [prefix stringByAppendingString:@" (strict mode)"];
 	}
-	prefix = [prefix stringByAppendingString:@": "];
 	
-	// Format string: bold for prefix, standard font for rest.
-	formattedMessage = [NSMutableAttributedString stringWithString:[prefix stringByAppendingString:message]];
-	[formattedMessage addAttribute:NSFontAttributeName
-							 value:_boldFont
-							 range:NSMakeRange(0, [prefix length])];
-	[formattedMessage addAttribute:NSFontAttributeName
-							 value:_baseFont
-							 range:NSMakeRange([prefix length], [message length])];
+	// Prefix and subsequent colon should be bold:
+	emphasisRange = NSMakeRange(0, [prefix length] + 1);
 	
-	// Note that the "active script" isn't necessarily the one causing the error, since one script can call another's methods.
+	formattedMessage = [NSMutableString stringWithFormat:@"%@: %@", prefix, message];
+	
+	// Note that the "active script" isn't necessarily the one causing the
+	// error, since one script can call another's methods.
 	scriptLine = [[OOJSScript currentlyRunningScript] displayName];
-	if (scriptLine != nil)  scriptLine = [@"    Active script: " stringByAppendingString:[[OOJSScript currentlyRunningScript] displayName]];
-	
-	filePath = [NSString stringWithUTF8String:errorReport->filename];
-	fileAndLine = [filePath lastPathComponent];
-	fileAndLine = [NSString stringWithFormat:@"    %@, line %u:", fileAndLine, errorReport->lineno];
-	
-	sourceLine = [self sourceCodeForFile:filePath line:errorReport->lineno];
-	sourceLine = [@"    " stringByAppendingString:sourceLine];
-	
-	[self appendLine:formattedMessage colorKey:colorKey];
-	[self appendLine:fileAndLine colorKey:colorKey];
-	if (sourceLine != nil)  [self appendLine:sourceLine colorKey:colorKey];
-	if (scriptLine != nil)  [self appendLine:scriptLine colorKey:colorKey];
-	
-	if (errorReport->flags & JSREPORT_WARNING)  show = [self showOnWarning];
-	else  show = [self showOnError];
-	if (show)
+	if (scriptLine != nil)
 	{
-		[self showConsole:nil];
+		[formattedMessage appendFormat:@"\n    Active script: %@", scriptLine];
+	}
+	
+	// Append file name and line
+	filePath = [[NSString stringWithUTF8String:errorReport->filename] lastPathComponent];
+	if ([filePath length] != 0)
+	{
+		[formattedMessage appendFormat:@"\n    %@, line %u", filePath, errorReport->lineno];
+		
+		// Append source code
+		sourceLine = [self sourceCodeForFile:filePath line:errorReport->lineno];
+		if (sourceLine != nil)
+		{
+			[formattedMessage appendFormat:@":\n    %@", sourceLine];
+		}
+	}
+	
+	[self appendJSConsoleLine:formattedMessage
+					 colorKey:colorKey
+				emphasisRange:emphasisRange];
+	
+	if (errorReport->flags & JSREPORT_WARNING)  showKey = @"show-console-on-warning";
+	else  showKey = @"show-console-on-warning";
+	if (OOBooleanFromObject([self configurationValueForKey:showKey], NO))
+	{
+		[self showJSConsole];
 	}
 }
 
@@ -743,8 +526,11 @@ enum
 			 logMessage:(in NSString *)message
 				ofClass:(in NSString *)messageClass
 {
-	[self appendLine:message colorKey:@"log"];
-	if ([self showOnLog])  [self showConsole:nil];
+	[self appendJSConsoleLine:message colorKey:@"log"];
+	if (OOBooleanFromObject([self configurationValueForKey:@"show-console-on-log"], NO))
+	{
+		[self showJSConsole];
+	}
 }
 
 
@@ -755,7 +541,7 @@ enum
 	if (context != [[OOJavaScriptEngine sharedEngine] context])  return JSVAL_VOID;
 	if (_jsSelf == NULL)
 	{
-		_jsSelf = ConsoleToJSConsole(context, self);
+		_jsSelf = DebugMonitorToJSConsole(context, self);
 		if (_jsSelf != NULL)
 		{
 			if (!JS_AddNamedRoot(context, &_jsSelf, "debug console"))
@@ -770,3 +556,54 @@ enum
 }
 
 @end
+
+
+@implementation OODebugMonitor (Singleton)
+
+/*	Canonical singleton boilerplate.
+See Cocoa Fundamentals Guide: Creating a Singleton Instance.
+See also +sharedDebugMonitor above.
+
+NOTE: assumes single-threaded access.
+*/
+
++ (id)allocWithZone:(NSZone *)inZone
+{
+	if (sSingleton == nil)
+	{
+		sSingleton = [super allocWithZone:inZone];
+		return sSingleton;
+	}
+	return nil;
+}
+
+
+- (id)copyWithZone:(NSZone *)inZone
+{
+	return self;
+}
+
+
+- (id)retain
+{
+	return self;
+}
+
+
+- (unsigned)retainCount
+{
+	return UINT_MAX;
+}
+
+
+- (void)release
+{}
+
+
+- (id)autorelease
+{
+	return self;
+}
+
+@end
+

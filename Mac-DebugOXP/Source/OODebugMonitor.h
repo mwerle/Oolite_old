@@ -1,8 +1,14 @@
 /*
 
-OOJavaScriptConsoleController.h
+OODebugMonitor.h
 
-JavaScript debugging console for Oolite.
+Debugging services object for Oolite.
+ 
+The debug controller implements Oolite's part of debugging support. It can
+connect to one debugger object, which conforms to the OODebuggerInterface
+formal protocol. This can either be (part of) a debugger loaded into Oolite
+itself (as in the Mac Debug OXP), or provide communications with an external
+debugger (for instance, over Distributed Objects or TCP/IP).
 
 
 Oolite Debug OXP
@@ -29,23 +35,40 @@ SOFTWARE.
 
 */
 
-#import <Cocoa/Cocoa.h>
+#import "OOCocoa.h"
 #import "OOWeakReference.h"
+#import "OODebuggerInterface.h"
 
-@class OOScript, OOTextFieldHistoryManager;
+@class OOScript;
 
 
-@interface OOJavaScriptConsoleController: OOWeakRefObject
+@protocol OODebugMonitorInterface
+
+// Note: disconnectDebugger:message: will cause a disconnectDebugMonitor:message: message to be sent to the debugger. The debugger should not send disconnectDebugger:message: in response to disconnectDebugMonitor:message:.
+- (void)disconnectDebugger:(in id<OODebuggerInterface>)debugger
+				   message:(in NSString *)message;
+
+
+// *** JavaScript console support.
+
+// Perform a JS command as though entered at the console, including echoing.
+- (oneway void)performJSConsoleCommand:(in NSString *)command;
+
+- (id)configurationValueForKey:(in NSString *)key;
+- (void)setConfigurationValue:(in id)value forKey:(in NSString *)key;
+
+- (NSString *)sourceCodeForFile:(in NSString *)filePath line:(in unsigned)line;
+
+@end
+
+
+@interface OODebugMonitor: OOWeakRefObject <OODebugMonitorInterface>
 {
-	IBOutlet NSWindow					*consoleWindow;
-	IBOutlet NSTextView					*consoleTextView;
-	IBOutlet NSTextField				*consoleInputField;
-	IBOutlet OOTextFieldHistoryManager	*inputHistoryManager;
+	id<OODebuggerInterface>				_debugger;
 	
-	NSScrollView						*_consoleScrollView;
-	
-	NSFont								*_baseFont,
-										*_boldFont;
+	// JavaScript console support.
+	OOScript							*_script;
+	struct JSObject						*_jsSelf;
 	
 	NSDictionary						*_configFromOXPs;	// Settings from jsConsoleConfig.plist
 	NSMutableDictionary					*_configOverrides;	// Settings from preferences, modifiable through JS.
@@ -54,27 +77,26 @@ SOFTWARE.
 	NSMutableDictionary					*_fgColors,
 										*_bgColors,
 										*_sourceFiles;
-	
-	OOScript							*_script;
-	struct JSObject						*_jsSelf;
 }
 
-- (IBAction)showConsole:sender;
-- (IBAction)toggleShowOnLog:sender;
-- (IBAction)toggleShowOnWarning:sender;
-- (IBAction)toggleShowOnError:sender;
-- (IBAction)consolePerformCommand:sender;
++ (id)sharedDebugMonitor;
+- (BOOL)setDebugger:(id<OODebuggerInterface>)debugger;
 
-// Perform a JS command as though entered at the console, including echoing.
-- (void)performCommand:(NSString *)command;
+	// *** JavaScript console support.
+- (void)appendJSConsoleLine:(id)string
+				   colorKey:(NSString *)colorKey
+			  emphasisRange:(NSRange)emphasisRange;
 
-- (void)appendLine:(id)string colorKey:(NSString *)colorKey;
-- (void)clear;
+- (void)appendJSConsoleLine:(id)string
+				   colorKey:(NSString *)colorKey;
 
-- (id)configurationValueForKey:(NSString *)key;
+- (void)clearJSConsole;
+- (void)showJSConsole;
+
 - (id)configurationValueForKey:(NSString *)key class:(Class)class defaultValue:(id)value;
 - (long long)configurationIntValueForKey:(NSString *)key defaultValue:(long long)value;
-- (void)setConfigurationValue:(id)value forKey:(NSString *)key;
+
 - (NSArray *)configurationKeys;
 
 @end
+

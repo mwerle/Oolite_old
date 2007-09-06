@@ -70,9 +70,16 @@
                 consoleInputField = NSTextField; 
                 consoleTextView = NSTextView; 
                 consoleWindow = NSWindow; 
+                debugger = OOMacDebugger; 
                 inputHistoryManager = OOTextFieldHistoryManager; 
             }; 
             SUPERCLASS = OOWeakRefObject; 
+        }, 
+        {
+            CLASS = OOMacDebugger; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {jsConsoleController = OOJavaScriptConsoleController; }; 
+            SUPERCLASS = NSObject; 
         }, 
         {
             CLASS = OOTextFieldHistoryManager; 

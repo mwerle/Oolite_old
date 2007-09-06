@@ -28,7 +28,7 @@ SOFTWARE.
 */
 
 #import "OOJSConsole.h"
-#import "OOJavaScriptConsoleController.h"
+#import "OODebugMonitor.h"
 #import <stdint.h>
 
 #import "OOJavaScriptEngine.h"
@@ -106,7 +106,7 @@ static void InitOOJSConsole(JSContext *context, JSObject *global)
 }
 
 
-JSObject *ConsoleToJSConsole(JSContext *context, OOJavaScriptConsoleController *console)
+JSObject *DebugMonitorToJSConsole(JSContext *context, OODebugMonitor *monitor)
 {
 	OOJavaScriptEngine		*engine = nil;
 	JSObject				*object = NULL;
@@ -125,7 +125,7 @@ JSObject *ConsoleToJSConsole(JSContext *context, OOJavaScriptConsoleController *
 	object = JS_NewObject(context, &sConsoleClass, sConsolePrototype, NULL);
 	if (object != NULL)
 	{
-		if (!JS_SetPrivate(context, object, [console weakRetain]))  object = NULL;
+		if (!JS_SetPrivate(context, object, [monitor weakRetain]))  object = NULL;
 	}
 	
 	if (object != NULL)
@@ -134,7 +134,7 @@ JSObject *ConsoleToJSConsole(JSContext *context, OOJavaScriptConsoleController *
 		settingsObject = JS_NewObject(context, &sConsoleSettingsClass, sConsoleSettingsPrototype, NULL);
 		if (settingsObject != NULL)
 		{
-			if (!JS_SetPrivate(context, settingsObject, [console weakRetain]))  settingsObject = NULL;
+			if (!JS_SetPrivate(context, settingsObject, [monitor weakRetain]))  settingsObject = NULL;
 		}
 		if (settingsObject != NULL)
 		{
@@ -162,20 +162,20 @@ static void ConsoleFinalize(JSContext *context, JSObject *this)
 static JSBool ConsoleSettingsDeleteProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue)
 {
 	NSString			*key = nil;
-	id					console = nil;
+	id					monitor = nil;
 	
 	if (!JSVAL_IS_STRING(name))  return NO;
 	
 	key = [NSString stringWithJavaScriptValue:name inContext:context];
 	
-	console = JSObjectToObject(context, this);
-	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	monitor = JSObjectToObject(context, this);
+	if (![monitor isKindOfClass:[OODebugMonitor class]])
 	{
-		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		OOReportJavaScriptError(context, @"Expected OODebugMonitor, got %@ in %s. This is an internal error, please report it.", [monitor class], __PRETTY_FUNCTION__);
 		return NO;
 	}
 	
-	[console setConfigurationValue:nil forKey:key];
+	[monitor setConfigurationValue:nil forKey:key];
 	*outValue = JSVAL_TRUE;
 	return YES;
 }
@@ -185,19 +185,19 @@ static JSBool ConsoleSettingsGetProperty(JSContext *context, JSObject *this, jsv
 {
 	NSString			*key = nil;
 	id					value = nil;
-	id					console = nil;
+	id					monitor = nil;
 	
 	if (!JSVAL_IS_STRING(name))  return YES;
 	key = [NSString stringWithJavaScriptValue:name inContext:context];
 	
-	console = JSObjectToObject(context, this);
-	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	monitor = JSObjectToObject(context, this);
+	if (![monitor isKindOfClass:[OODebugMonitor class]])
 	{
-		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		OOReportJavaScriptError(context, @"Expected OODebugMonitor, got %@ in %s. This is an internal error, please report it.", [monitor class], __PRETTY_FUNCTION__);
 		return YES;
 	}
 	
-	value = [console configurationValueForKey:key];
+	value = [monitor configurationValueForKey:key];
 	*outValue = [value javaScriptValueInContext:context];
 	
 	return YES;
@@ -208,28 +208,28 @@ static JSBool ConsoleSettingsSetProperty(JSContext *context, JSObject *this, jsv
 {
 	NSString			*key = nil;
 	id					value = nil;
-	id					console = nil;
+	id					monitor = nil;
 	
 	if (!JSVAL_IS_STRING(name))  return YES;
 	key = [NSString stringWithJavaScriptValue:name inContext:context];
 	
-	console = JSObjectToObject(context, this);
-	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	monitor = JSObjectToObject(context, this);
+	if (![monitor isKindOfClass:[OODebugMonitor class]])
 	{
-		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		OOReportJavaScriptError(context, @"Expected OODebugMonitor, got %@ in %s. This is an internal error, please report it.", [monitor class], __PRETTY_FUNCTION__);
 		return YES;
 	}
 	
 	if (JSVAL_IS_NULL(*inValue) || JSVAL_IS_VOID(*inValue))
 	{
-		[console setConfigurationValue:nil forKey:key];
+		[monitor setConfigurationValue:nil forKey:key];
 	}
 	else
 	{
 		value = JSValueToObject(context, *inValue);
 		if (value != nil)
 		{
-			[console setConfigurationValue:value forKey:key];
+			[monitor setConfigurationValue:value forKey:key];
 		}
 		else
 		{
@@ -244,36 +244,51 @@ static JSBool ConsoleSettingsSetProperty(JSContext *context, JSObject *this, jsv
 // Methods
 static JSBool ConsoleConsoleMessage(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
 {
-	id					console = nil;
-	NSString			*colorKey = nil, *message = nil;
+	id					monitor = nil;
+	NSString			*colorKey = nil,
+						*message = nil;
+	NSRange				emphasisRange = {0, 0};
+	jsdouble			location, length;
 	
-	console = JSObjectToObject(context, this);
-	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	monitor = JSObjectToObject(context, this);
+	if (![monitor isKindOfClass:[OODebugMonitor class]])
 	{
-		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		OOReportJavaScriptError(context, @"Expected OODebugMonitor, got %@ in %s. This is an internal error, please report it.", [monitor class], __PRETTY_FUNCTION__);
 		return NO;
 	}
 	
 	colorKey = [NSString stringWithJavaScriptValue:argv[0] inContext:context];
-	message = [NSString concatenationOfStringsFromJavaScriptValues:argv + 1 count:argc - 1 separator:@", " inContext:context];
+	message = [NSString stringWithJavaScriptValue:argv[1] inContext:context];
 	
-	[console appendLine:message colorKey:colorKey];
+	if (4 <= argc)
+	{
+		// Attempt to get two numbers, specifying an emphasis range.
+		if (JS_ValueToNumber(context, argv[2], &location) &&
+			JS_ValueToNumber(context, argv[3], &length))
+		{
+			emphasisRange = NSMakeRange(location, length);
+		}
+	}
+	
+	[monitor appendJSConsoleLine:message
+						colorKey:colorKey
+				   emphasisRange:emphasisRange];
 	return YES;
 }
 
 
 static JSBool ConsoleClearConsole(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
 {
-	id					console = nil;
+	id					monitor = nil;
 	
-	console = JSObjectToObject(context, this);
-	if (![console isKindOfClass:[OOJavaScriptConsoleController class]])
+	monitor = JSObjectToObject(context, this);
+	if (![monitor isKindOfClass:[OODebugMonitor class]])
 	{
-		OOReportJavaScriptError(context, @"Expected OOJavaScriptConsoleController, got %@ in %s. This is an internal error, please report it.", [console class], __PRETTY_FUNCTION__);
+		OOReportJavaScriptError(context, @"Expected OODebugMonitor, got %@ in %s. This is an internal error, please report it.", [monitor class], __PRETTY_FUNCTION__);
 		return YES;
 	}
 	
-	[console clear];
+	[monitor clearJSConsole];
 	return YES;
 }
 

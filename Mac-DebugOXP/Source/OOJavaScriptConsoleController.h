@@ -32,11 +32,12 @@ SOFTWARE.
 #import <Cocoa/Cocoa.h>
 #import "OOWeakReference.h"
 
-@class OOScript, OOTextFieldHistoryManager;
+@class OOMacDebugger, OOTextFieldHistoryManager;
 
 
 @interface OOJavaScriptConsoleController: OOWeakRefObject
 {
+	IBOutlet OOMacDebugger				*debugger;
 	IBOutlet NSWindow					*consoleWindow;
 	IBOutlet NSTextView					*consoleTextView;
 	IBOutlet NSTextField				*consoleInputField;
@@ -47,16 +48,9 @@ SOFTWARE.
 	NSFont								*_baseFont,
 										*_boldFont;
 	
-	NSDictionary						*_configFromOXPs;	// Settings from jsConsoleConfig.plist
-	NSMutableDictionary					*_configOverrides;	// Settings from preferences, modifiable through JS.
-	
 	// Caches
 	NSMutableDictionary					*_fgColors,
-										*_bgColors,
-										*_sourceFiles;
-	
-	OOScript							*_script;
-	struct JSObject						*_jsSelf;
+										*_bgColors;
 }
 
 - (IBAction)showConsole:sender;
@@ -65,16 +59,12 @@ SOFTWARE.
 - (IBAction)toggleShowOnError:sender;
 - (IBAction)consolePerformCommand:sender;
 
-// Perform a JS command as though entered at the console, including echoing.
-- (void)performCommand:(NSString *)command;
+- (void)appendMessage:(NSString *)string
+			 colorKey:(NSString *)colorKey
+		emphasisRange:(NSRange)emphasisRange;
 
-- (void)appendLine:(id)string colorKey:(NSString *)colorKey;
-- (void)clear;
+- (void)clearConsole;
 
-- (id)configurationValueForKey:(NSString *)key;
-- (id)configurationValueForKey:(NSString *)key class:(Class)class defaultValue:(id)value;
-- (long long)configurationIntValueForKey:(NSString *)key defaultValue:(long long)value;
-- (void)setConfigurationValue:(id)value forKey:(NSString *)key;
-- (NSArray *)configurationKeys;
+- (void)noteConfigurationChanged:(NSString *)key;
 
 @end
