@@ -310,7 +310,7 @@ static OODebugMonitor *sSingleton = nil;
 	if (linesForFile == nil)
 	{
 		linesForFile = [self loadSourceFile:filePath];
-		if (linesForFile == nil)  linesForFile = [NSString stringWithFormat:@"<Can't load file %@>", filePath];
+		if (linesForFile == nil)  linesForFile = [NSArray arrayWithObject:[NSString stringWithFormat:@"<Can't load file %@>", filePath]];
 		
 		if (_sourceFiles == nil)  _sourceFiles = [[NSMutableDictionary alloc] init];
 		[_sourceFiles setObject:linesForFile forKey:filePath];
@@ -495,10 +495,10 @@ FIXME: this works with CRLF and LF, but not CR.
 	}
 	
 	// Append file name and line
-	filePath = [[NSString stringWithUTF8String:errorReport->filename] lastPathComponent];
+	filePath = [NSString stringWithUTF8String:errorReport->filename];
 	if ([filePath length] != 0)
 	{
-		[formattedMessage appendFormat:@"\n    %@, line %u", filePath, errorReport->lineno];
+		[formattedMessage appendFormat:@"\n    %@, line %u", [filePath lastPathComponent], errorReport->lineno];
 		
 		// Append source code
 		sourceLine = [self sourceCodeForFile:filePath line:errorReport->lineno];
