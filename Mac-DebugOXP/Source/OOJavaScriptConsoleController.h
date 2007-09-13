@@ -32,7 +32,7 @@ SOFTWARE.
 #import <Cocoa/Cocoa.h>
 #import "OOWeakReference.h"
 
-@class OOMacDebugger, OOTextFieldHistoryManager;
+@class OOMacDebugger, OOTextFieldHistoryManager, RBSplitSubview;
 
 
 @interface OOJavaScriptConsoleController: OOWeakRefObject
@@ -42,6 +42,7 @@ SOFTWARE.
 	IBOutlet NSTextView					*consoleTextView;
 	IBOutlet NSTextField				*consoleInputField;
 	IBOutlet OOTextFieldHistoryManager	*inputHistoryManager;
+	IBOutlet RBSplitSubview				*inputSplitSubview;
 	
 	NSScrollView						*_consoleScrollView;
 	

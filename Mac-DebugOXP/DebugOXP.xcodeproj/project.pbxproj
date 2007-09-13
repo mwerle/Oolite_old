@@ -30,6 +30,11 @@
 		1A9590E90C80673700C112A9 /* OOJSConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9590E70C80673700C112A9 /* OOJSConsole.m */; };
 		1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */; };
 		1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */; };
+		1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF0246D0C99931C006F7275 /* RBSplitSubview.h */; };
+		1AF024730C99931C006F7275 /* RBSplitSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF0246E0C99931C006F7275 /* RBSplitSubview.m */; };
+		1AF024740C99931C006F7275 /* RBSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF0246F0C99931C006F7275 /* RBSplitView.h */; };
+		1AF024750C99931C006F7275 /* RBSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF024700C99931C006F7275 /* RBSplitView.m */; settings = {COMPILER_FLAGS = "-Wno-extra"; }; };
+		1AF024760C99931C006F7275 /* RBSplitViewPrivateDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF024710C99931C006F7275 /* RBSplitViewPrivateDefines.h */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +115,11 @@
 		1A9590E70C80673700C112A9 /* OOJSConsole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSConsole.m; sourceTree = "<group>"; };
 		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
 		1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextFieldHistoryManager.m; sourceTree = "<group>"; };
+		1AF0246D0C99931C006F7275 /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
+		1AF0246E0C99931C006F7275 /* RBSplitSubview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBSplitSubview.m; sourceTree = "<group>"; };
+		1AF0246F0C99931C006F7275 /* RBSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitView.h; sourceTree = "<group>"; };
+		1AF024700C99931C006F7275 /* RBSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBSplitView.m; sourceTree = "<group>"; };
+		1AF024710C99931C006F7275 /* RBSplitViewPrivateDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitViewPrivateDefines.h; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Debug.oxp */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Debug.oxp; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
@@ -207,6 +217,7 @@
 				1A9590E70C80673700C112A9 /* OOJSConsole.m */,
 				1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */,
 				1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */,
+				1AF0246C0C99931C006F7275 /* RBSplitView */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -221,6 +232,18 @@
 			);
 			name = "SpiderMonkey headers";
 			path = "../deps/Cross-platform-deps/SpiderMonkey/js";
+			sourceTree = "<group>";
+		};
+		1AF0246C0C99931C006F7275 /* RBSplitView */ = {
+			isa = PBXGroup;
+			children = (
+				1AF0246D0C99931C006F7275 /* RBSplitSubview.h */,
+				1AF0246E0C99931C006F7275 /* RBSplitSubview.m */,
+				1AF0246F0C99931C006F7275 /* RBSplitView.h */,
+				1AF024700C99931C006F7275 /* RBSplitView.m */,
+				1AF024710C99931C006F7275 /* RBSplitViewPrivateDefines.h */,
+			);
+			path = RBSplitView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -239,6 +262,9 @@
 				1A4D0B9D0C8EFF1200A6FBDB /* OODebugMonitor.h in Headers */,
 				1A4D0BB90C8F04C200A6FBDB /* OODebuggerInterface.h in Headers */,
 				1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */,
+				1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */,
+				1AF024740C99931C006F7275 /* RBSplitView.h in Headers */,
+				1AF024760C99931C006F7275 /* RBSplitViewPrivateDefines.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +350,8 @@
 				1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */,
 				1A4D0B9E0C8EFF1200A6FBDB /* OODebugMonitor.m in Sources */,
 				1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */,
+				1AF024730C99931C006F7275 /* RBSplitSubview.m in Sources */,
+				1AF024750C99931C006F7275 /* RBSplitView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

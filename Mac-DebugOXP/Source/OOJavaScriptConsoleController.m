@@ -35,6 +35,8 @@ SOFTWARE.
 #import "OODebugUtilities.h"
 #import "NSStringOOExtensions.h"
 #import "OOTextFieldHistoryManager.h"
+#import "RBSplitView.h"
+
 
 enum
 {
@@ -265,6 +267,13 @@ enum
 	}
 	
 	return [self respondsToSelector:action];
+}
+
+
+// Split view delegate method to ensure only the console field is resized when resizing window.
+- (void)splitView:(RBSplitView*)sender wasResizedFrom:(float)oldDimension to:(float)newDimension
+{
+	[sender adjustSubviewsExcepting:inputSplitSubview];
 }
 
 @end

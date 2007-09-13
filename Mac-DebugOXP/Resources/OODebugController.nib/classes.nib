@@ -72,6 +72,7 @@
                 consoleWindow = NSWindow; 
                 debugger = OOMacDebugger; 
                 inputHistoryManager = OOTextFieldHistoryManager; 
+                inputSplitSubview = RBSplitSubview; 
             }; 
             SUPERCLASS = OOWeakRefObject; 
         }, 
