@@ -147,7 +147,7 @@
 			 _historyCurrSize == [_history count] &&  // Size must be correct
 			 ((_historyCurrSize <= _historyMaxSize) || (_historyMaxSize == 0)) &&  // Size must be in bounds
 			 _historyCursor <= _historyCurrSize + 1,  // Cursor must be in bounds
-			 @"Invalid history buffer state in OOJavaScriptConsoleInputFieldEditor.");
+			 @"Invalid history buffer state in OOTextFieldHistoryManager.");
 }
 
 
