@@ -44,6 +44,7 @@ int main (int argc, const char * argv[])
 
 static void DumpQueue(OOPriorityQueue *queue)
 {
+#if 0
 	id					value = nil;
 	
 	while ((value = [queue nextObject]))
@@ -51,7 +52,19 @@ static void DumpQueue(OOPriorityQueue *queue)
 		DumpQueueState(queue);
 		NSLog(@"%@", value);
 	}
-	//NSLog(@"%@", [queue sortedObjects]);
+#else
+	NSArray				*values = nil;
+	NSArray				*resorted = nil;
+	
+	values = [queue sortedObjects];
+	NSLog(@"%@", values);
+	
+	resorted = [values sortedArrayUsingSelector:@selector(compare:)];
+	if (![values isEqual:resorted])
+	{
+		NSLog(@"FAILED - out of order. Correct order is: %@", resorted);
+	}
+#endif
 }
 
 
@@ -60,7 +73,7 @@ static void PutNumbersInQueue(unsigned count, OOPriorityQueue *queue)
 	while (count--)
 	{
 		[queue addObject:[NSNumber numberWithLong:random() % 100]];
-//		DumpQueueState(queue);
+		DumpQueueState(queue);
 	}
 }
 
@@ -69,7 +82,7 @@ static void PutStringsInQueue(OOPriorityQueue *queue)
 {
 	NSArray *array = [NSArray arrayWithObjects: @"dog", @"cat", @"apple", @"zebra", @"spanner", @"cat", nil];
 	[queue addObjects:array];
-//	DumpQueueState(queue);
+	DumpQueueState(queue);
 }
 
 
