@@ -145,6 +145,7 @@ this.consolePerformJSCommand = function(command)
 this.evaluate = function(command, type, PARAM)
 {
 	let result = eval(command)
+	if (result === null)  result = "null"
 	if (result != undefined)
 	{
 		ConsoleMessage("command-result", result.toString())

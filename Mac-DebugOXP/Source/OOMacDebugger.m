@@ -28,12 +28,20 @@ SOFTWARE.
 */
 
 
+#define TEST_TCP_DEBUGGER
+
+
 #import "OOMacDebugger.h"
 #import "OODebugMonitor.h"
 #import "OOJavaScriptConsoleController.h"
 
 #import "OOLogging.h"
 #import "OOCollectionExtractors.h"
+
+
+#ifdef TEST_TCP_DEBUGGER
+#import "OODebugTCPConsoleClient.h"
+#endif
 
 
 @interface OOMacDebugger (Private) <OODebuggerInterface>
@@ -46,6 +54,19 @@ SOFTWARE.
 - (id)init
 {
 	OODebugMonitor				*debugMonitor = nil;
+	
+#ifdef TEST_TCP_DEBUGGER
+	static BOOL haveSetUp = NO;
+	[self release];
+	self = nil;
+	if (haveSetUp)  return nil;
+	haveSetUp = YES;
+	
+	debugMonitor = [OODebugMonitor sharedDebugMonitor];
+	[debugMonitor setDebugger:[[[OODebugTCPConsoleClient alloc] init] autorelease]];
+	
+	return nil;
+#endif
 	
 	self = [super init];
 	if (self == nil)  return nil;

@@ -364,8 +364,9 @@ static OODebugMonitor *sSingleton = nil;
 		OOLog(@"debugMonitor.debuggerConnection.exception", @"Exception while attempting to disconnect debugger: %@ -- %@", [localException name], [localException reason]);
 	NS_ENDHANDLER
 	
-	[_debugger release];
+	id debugger = _debugger;
 	_debugger = nil;
+	[debugger release];
 }
 
 
