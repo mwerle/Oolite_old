@@ -340,8 +340,8 @@
 				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Scripts/oolite-mac-js-console.js",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nrm -rf $DST_PATH/*\nmkdir \"$DST_PATH/Config\"\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nmkdir \"$DST_PATH/Scripts\"\ncp \"$SRC_PATH/oolite-mac-js-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
+			shellPath = /bin/bash;
+			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-mac-js-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

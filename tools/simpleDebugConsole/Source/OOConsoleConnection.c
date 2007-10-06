@@ -6,6 +6,16 @@
 #include <stdlib.h>
 
 
+#define LOG_PACKETS		0
+
+
+#if LOG_PACKETS
+static void LogPacket(CFStringRef label, CFDictionaryRef packet);
+#else
+#define LogPacket(label, packet) do {} while (0)
+#endif
+
+
 typedef enum
 {
 	kStateWaitingForConnection,
@@ -271,6 +281,8 @@ static void SendPacketDictionary(OOConsoleConnectionRef connection, CFDictionary
 	packetData = CFPropertyListCreateXMLData(kCFAllocatorDefault, packet);
 	if (packetData != NULL)
 	{
+		LogPacket(CFSTR("OUT"), packet);
+		
 		length = CFDataGetLength(packetData);
 		if (length != 0)
 		{
@@ -324,6 +336,8 @@ static void DecoderPacket(void *cbInfo, OOALStringRef packetType, OOALDictionary
 	OOConsoleConnectionRef			connection = cbInfo;
 	
 	if (connection == NULL)  return;
+	
+	LogPacket(CFSTR("IN"), packet);
 	
 #define PACKET_CASE(x) else if (CFEqual(packetType, kOOTCPPacket_##x))  { Handle##x##Packet(connection, packet); }
 	if (0)  {}
@@ -565,3 +579,28 @@ static void RejectConnection(OOConsoleConnectionRef connection, CFStringRef mess
 		connection->configuration = NULL;
 	}
 }
+
+
+#if LOG_PACKETS
+#include "JAPrint.h"
+
+static void LogPacket(CFStringRef label, CFDictionaryRef packet)
+{
+	static Boolean			triedToOpen = FALSE;
+	static FILE				*file = NULL;
+	CFDataRef				data = NULL;
+	
+	if (!triedToOpen)
+	{
+		triedToOpen = TRUE;
+		file = fopen("traffic log.txt", "w");
+	}
+	if (file == NULL)  return;
+	
+	data = CFPropertyListCreateXMLData(kCFAllocatorDefault, packet);
+	
+	JAFPrint(file, CFSTR("* %@:\n"), label);
+	fwrite(CFDataGetBytePtr(data), CFDataGetLength(data), 1, file);
+	JAFPrint(file, CFSTR("\n\n"));
+}
+#endif
