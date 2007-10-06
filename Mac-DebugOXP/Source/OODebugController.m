@@ -317,13 +317,18 @@ static OODebugController *sSingleton = nil;
 - (void)spawnShip:(NSString *)shipRole
 {
 	NSString					*command = nil;
-//	[UNIVERSE addShipWithRole:shipRole nearRouteOneAt:1.0];
 	
 	if (shipRole == nil)  return;
 	
-	shipRole = 
-	command = [NSString stringWithFormat:@"system.legacy_addSystemShips(\"%@\", 1, 1)", [shipRole escapedForJavaScriptLiteral]];
-	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
+	if ([[OODebugMonitor sharedDebugMonitor] debuggerConnected])
+	{
+		command = [NSString stringWithFormat:@"system.legacy_addSystemShips(\"%@\", 1, 1)", [shipRole escapedForJavaScriptLiteral]];
+		[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
+	}
+	else
+	{
+		[UNIVERSE addShipWithRole:shipRole nearRouteOneAt:1.0];
+	}
 }
 
 
