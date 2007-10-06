@@ -28,6 +28,8 @@ SOFTWARE.
 */
 
 #import "OODebugController.h"
+#import "OODebugMonitor.h"
+#import "OOMacDebugger.h"
 
 #import "ResourceManager.h"
 
@@ -40,6 +42,7 @@ SOFTWARE.
 #import "PlayerEntity.h"
 #import "OOCollectionExtractors.h"
 #import "OOLogOutputHandler.h"
+#import "OOJavaScriptEngine.h"
 
 #import <FScript/FScript.h>
 
@@ -56,6 +59,12 @@ static OODebugController *sSingleton = nil;
 
 
 @implementation OODebugController
+
+- (id<OODebuggerInterface>) setUpDebugger
+{
+	return [[[OOMacDebugger alloc] initWithController:jsConsoleController] autorelease];
+}
+
 
 - (id)init
 {
@@ -307,7 +316,14 @@ static OODebugController *sSingleton = nil;
 
 - (void)spawnShip:(NSString *)shipRole
 {
-	[UNIVERSE addShipWithRole:shipRole nearRouteOneAt:1.0];
+	NSString					*command = nil;
+//	[UNIVERSE addShipWithRole:shipRole nearRouteOneAt:1.0];
+	
+	if (shipRole == nil)  return;
+	
+	shipRole = 
+	command = [NSString stringWithFormat:@"system.legacy_addSystemShips(\"%@\", 1, 1)", [shipRole escapedForJavaScriptLiteral]];
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
 }
 
 

@@ -15,10 +15,7 @@
 		1A0259F60C7F8D3800F622D4 /* FScript.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0259B80C7F894100F622D4 /* FScript.framework */; };
 		1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */; };
 		1A0518D30C7CC69600BA5CCA /* OODebugController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0518D20C7CC69600BA5CCA /* OODebugController.m */; };
-		1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A2DA4380CB788DB00DE6823 /* debugConfig.plist */; };
-		1A4D0B9D0C8EFF1200A6FBDB /* OODebugMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */; };
-		1A4D0B9E0C8EFF1200A6FBDB /* OODebugMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */; };
-		1A4D0BB90C8F04C200A6FBDB /* OODebuggerInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */; };
+		1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Copy Files to Config */ = {isa = PBXBuildFile; fileRef = 1A2DA4380CB788DB00DE6823 /* debugConfig.plist */; };
 		1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */; };
 		1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */; };
 		1A4FB04F0C8C267E00DC8E1F /* oolite-mac-js-console.js in Copy Files to Scripts */ = {isa = PBXBuildFile; fileRef = 1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */; };
@@ -26,15 +23,6 @@
 		1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */; };
 		1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */; };
 		1A4FB3030C8DB8AA00DC8E1F /* jsautocfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */; };
-		1A5F37EB0CB4544900C54824 /* OODebugTCPConsoleProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A5F37E40CB4544900C54824 /* OODebugTCPConsoleProtocol.h */; };
-		1A5F37EC0CB4544900C54824 /* OODebugTCPConsoleClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5F37E50CB4544900C54824 /* OODebugTCPConsoleClient.m */; };
-		1A5F37ED0CB4544900C54824 /* OOTCPStreamDecoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A5F37E60CB4544900C54824 /* OOTCPStreamDecoder.c */; };
-		1A5F37EE0CB4544900C54824 /* OODebugTCPConsoleClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A5F37E70CB4544900C54824 /* OODebugTCPConsoleClient.h */; };
-		1A5F37EF0CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A5F37E80CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.h */; };
-		1A5F37F00CB4544900C54824 /* OOTCPStreamDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A5F37E90CB4544900C54824 /* OOTCPStreamDecoder.h */; };
-		1A5F37F10CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5F37EA0CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.m */; };
-		1A9590E80C80673700C112A9 /* OOJSConsole.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A9590E60C80673700C112A9 /* OOJSConsole.h */; };
-		1A9590E90C80673700C112A9 /* OOJSConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9590E70C80673700C112A9 /* OOJSConsole.m */; };
 		1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */; };
 		1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */; };
 		1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF0246D0C99931C006F7275 /* RBSplitSubview.h */; };
@@ -74,6 +62,7 @@
 			dstPath = Config;
 			dstSubfolderSpec = 1;
 			files = (
+				1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Copy Files to Config */,
 				1A0255340C7E1BF000F622D4 /* debugLogMessageClassesMenu.plist in Copy Files to Config */,
 			);
 			name = "Copy Files to Config";
@@ -107,9 +96,6 @@
 		1A0518D10C7CC69600BA5CCA /* OODebugController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugController.h; sourceTree = "<group>"; };
 		1A0518D20C7CC69600BA5CCA /* OODebugController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugController.m; sourceTree = "<group>"; };
 		1A2DA4380CB788DB00DE6823 /* debugConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = debugConfig.plist; sourceTree = "<group>"; };
-		1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugMonitor.h; sourceTree = "<group>"; };
-		1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugMonitor.m; sourceTree = "<group>"; };
-		1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebuggerInterface.h; sourceTree = "<group>"; };
 		1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMacDebugger.h; sourceTree = "<group>"; };
 		1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMacDebugger.m; sourceTree = "<group>"; };
 		1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-mac-js-console.js"; sourceTree = "<group>"; };
@@ -117,15 +103,6 @@
 		1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jstypes.h; path = src/jstypes.h; sourceTree = "<group>"; };
 		1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = src/jsapi.h; sourceTree = "<group>"; };
 		1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsautocfg.h; path = xcode/jsautocfg.h; sourceTree = "<group>"; };
-		1A5F37E40CB4544900C54824 /* OODebugTCPConsoleProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OODebugTCPConsoleProtocol.h; path = ../src/Core/Debug/OODebugTCPConsoleProtocol.h; sourceTree = SOURCE_ROOT; };
-		1A5F37E50CB4544900C54824 /* OODebugTCPConsoleClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OODebugTCPConsoleClient.m; path = ../src/Core/Debug/OODebugTCPConsoleClient.m; sourceTree = SOURCE_ROOT; };
-		1A5F37E60CB4544900C54824 /* OOTCPStreamDecoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OOTCPStreamDecoder.c; path = ../src/Core/Debug/OOTCPStreamDecoder.c; sourceTree = SOURCE_ROOT; };
-		1A5F37E70CB4544900C54824 /* OODebugTCPConsoleClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OODebugTCPConsoleClient.h; path = ../src/Core/Debug/OODebugTCPConsoleClient.h; sourceTree = SOURCE_ROOT; };
-		1A5F37E80CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOTCPStreamDecoderAbstractionLayer.h; path = ../src/Core/Debug/OOTCPStreamDecoderAbstractionLayer.h; sourceTree = SOURCE_ROOT; };
-		1A5F37E90CB4544900C54824 /* OOTCPStreamDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOTCPStreamDecoder.h; path = ../src/Core/Debug/OOTCPStreamDecoder.h; sourceTree = SOURCE_ROOT; };
-		1A5F37EA0CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOTCPStreamDecoderAbstractionLayer.m; path = ../src/Core/Debug/OOTCPStreamDecoderAbstractionLayer.m; sourceTree = SOURCE_ROOT; };
-		1A9590E60C80673700C112A9 /* OOJSConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSConsole.h; sourceTree = "<group>"; };
-		1A9590E70C80673700C112A9 /* OOJSConsole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSConsole.m; sourceTree = "<group>"; };
 		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
 		1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextFieldHistoryManager.m; sourceTree = "<group>"; };
 		1AF0246D0C99931C006F7275 /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
@@ -217,26 +194,14 @@
 			children = (
 				1A0518D10C7CC69600BA5CCA /* OODebugController.h */,
 				1A0518D20C7CC69600BA5CCA /* OODebugController.m */,
-				1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */,
-				1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */,
-				1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */,
 				1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */,
 				1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */,
 				1A0256230C7F0D7100F622D4 /* OOJavaScriptConsoleController.h */,
 				1A0256240C7F0D7100F622D4 /* OOJavaScriptConsoleController.m */,
 				1A02587A0C7F36CD00F622D4 /* OODebugUtilities.h */,
 				1A02587B0C7F36CD00F622D4 /* OODebugUtilities.m */,
-				1A9590E60C80673700C112A9 /* OOJSConsole.h */,
-				1A9590E70C80673700C112A9 /* OOJSConsole.m */,
 				1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */,
 				1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */,
-				1A5F37E40CB4544900C54824 /* OODebugTCPConsoleProtocol.h */,
-				1A5F37E50CB4544900C54824 /* OODebugTCPConsoleClient.m */,
-				1A5F37E60CB4544900C54824 /* OOTCPStreamDecoder.c */,
-				1A5F37E70CB4544900C54824 /* OODebugTCPConsoleClient.h */,
-				1A5F37E80CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.h */,
-				1A5F37E90CB4544900C54824 /* OOTCPStreamDecoder.h */,
-				1A5F37EA0CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.m */,
 				1AF0246C0C99931C006F7275 /* RBSplitView */,
 			);
 			path = Source;
@@ -273,22 +238,15 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A9590E80C80673700C112A9 /* OOJSConsole.h in Headers */,
 				1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */,
 				1A4FB2FF0C8DB89E00DC8E1F /* jspubtd.h in Headers */,
 				1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */,
 				1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */,
 				1A4FB3030C8DB8AA00DC8E1F /* jsautocfg.h in Headers */,
-				1A4D0B9D0C8EFF1200A6FBDB /* OODebugMonitor.h in Headers */,
-				1A4D0BB90C8F04C200A6FBDB /* OODebuggerInterface.h in Headers */,
 				1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */,
 				1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */,
 				1AF024740C99931C006F7275 /* RBSplitView.h in Headers */,
 				1AF024760C99931C006F7275 /* RBSplitViewPrivateDefines.h in Headers */,
-				1A5F37EB0CB4544900C54824 /* OODebugTCPConsoleProtocol.h in Headers */,
-				1A5F37EE0CB4544900C54824 /* OODebugTCPConsoleClient.h in Headers */,
-				1A5F37EF0CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.h in Headers */,
-				1A5F37F00CB4544900C54824 /* OOTCPStreamDecoder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +266,7 @@
 				1A9590840C80539A00C112A9 /* Copy Files to Scripts */,
 				1A0259F00C7F8D2900F622D4 /* Copy Frameworks */,
 				1A0255AC0C7E211200F622D4 /* Run Script */,
+				1A2DA56B0CB7B6B000DE6823 /* Build Basic-debug.oxp */,
 			);
 			buildRules = (
 			);
@@ -340,7 +299,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */,
-				1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,7 +317,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n\n# Twiddle with loading of FScript.framework\ninstall_name_tool -change @executable_path/../Frameworks/FScript.framework/Versions/A/FScript @loader_path/../Frameworks/FScript.framework/Versions/A/FScript \"$BASE_PATH/Contents/MacOS/$EXECUTABLE_NAME\"\n";
+			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n\n# Twiddle with loading of FScript.framework\ninstall_name_tool -change \"@executable_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"@loader_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"$BASE_PATH/Contents/MacOS/$EXECUTABLE_NAME\"\n";
+		};
+		1A2DA56B0CB7B6B000DE6823 /* Build Basic-debug.oxp */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Resources/DebugOXPLocatorBeacon.magic",
+				"$(SRCROOT)/Resources/oolite-mac-js-console.js",
+				"$(SRCROOT)/Resources/debugConfig.plist",
+			);
+			name = "Build Basic-debug.oxp";
+			outputPaths = (
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp",
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/DebugOXPLocatorBeacon.magic",
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Scripts",
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Config",
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Config/debugConfig.plist",
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Config/requires.plist",
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Scripts/oolite-mac-js-console.js",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nrm -rf $DST_PATH/*\nmkdir \"$DST_PATH/Config\"\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nmkdir \"$DST_PATH/Scripts\"\ncp \"$SRC_PATH/oolite-mac-js-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -371,15 +353,10 @@
 				1A0518D30C7CC69600BA5CCA /* OODebugController.m in Sources */,
 				1A0256260C7F0D7100F622D4 /* OOJavaScriptConsoleController.m in Sources */,
 				1A02587D0C7F36CD00F622D4 /* OODebugUtilities.m in Sources */,
-				1A9590E90C80673700C112A9 /* OOJSConsole.m in Sources */,
 				1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */,
-				1A4D0B9E0C8EFF1200A6FBDB /* OODebugMonitor.m in Sources */,
 				1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */,
 				1AF024730C99931C006F7275 /* RBSplitSubview.m in Sources */,
 				1AF024750C99931C006F7275 /* RBSplitView.m in Sources */,
-				1A5F37EC0CB4544900C54824 /* OODebugTCPConsoleClient.m in Sources */,
-				1A5F37ED0CB4544900C54824 /* OOTCPStreamDecoder.c in Sources */,
-				1A5F37F10CB4544900C54824 /* OOTCPStreamDecoderAbstractionLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -408,7 +385,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Debug;
 				SYMROOT = ../build;
-				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
+				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
 				VERSION = 1.69.2;
 				WARNING_CFLAGS = (
 					"-Wall",

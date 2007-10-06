@@ -30,6 +30,7 @@ SOFTWARE.
 
 #import "OOJavaScriptConsoleController.h"
 #import "OOMacDebugger.h"
+#import "OODebugMonitor.h"
 
 #import "OOLogging.h"
 #import "OODebugUtilities.h"
@@ -59,6 +60,7 @@ enum
 - (NSColor *)backgroundColorForKey:(NSString *)key;
 
 // Load certain groups of config settings.
+- (void)reloadAllSettings;
 - (void)setUpFonts;
 
 @end
@@ -95,8 +97,7 @@ enum
 	defaults = [NSUserDefaults standardUserDefaults];
 	[inputHistoryManager setHistory:[defaults arrayForKey:@"debug-js-console-scrollback"]];
 	
-	[self setUpFonts];
-	[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
+	[self reloadAllSettings];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 }
@@ -118,26 +119,25 @@ enum
 
 - (IBAction)showConsole:sender
 {
-	[consoleWindow makeKeyAndOrderFront:sender];
-	[consoleWindow makeFirstResponder:consoleInputField];
+	[[OODebugMonitor sharedDebugMonitor] showJSConsole];
 }
 
 
 - (IBAction)toggleShowOnWarning:sender
 {
-	[debugger performConsoleCommand:@"console.settings[\"show-console-on-warning\"] = !console.settings[\"show-console-on-warning\"]"];
+	[_debugger performConsoleCommand:@"console.settings[\"show-console-on-warning\"] = !console.settings[\"show-console-on-warning\"]"];
 }
 
 
 - (IBAction)toggleShowOnError:sender
 {
-	[debugger performConsoleCommand:@"console.settings[\"show-console-on-error\"] = !console.settings[\"show-console-on-error\"]"];
+	[_debugger performConsoleCommand:@"console.settings[\"show-console-on-error\"] = !console.settings[\"show-console-on-error\"]"];
 }
 
 
 - (IBAction)toggleShowOnLog:sender
 {
-	[debugger performConsoleCommand:@"console.settings[\"show-console-on-log\"] = !console.settings[\"show-console-on-log\"]"];
+	[_debugger performConsoleCommand:@"console.settings[\"show-console-on-log\"] = !console.settings[\"show-console-on-log\"]"];
 }
 
 
@@ -153,7 +153,7 @@ enum
 	
 	[inputHistoryManager addToHistory:command];
 	
-	[debugger performConsoleCommand:command];
+	[_debugger performConsoleCommand:command];
 }
 
 
@@ -222,6 +222,13 @@ enum
 }
 
 
+- (void) doShowConsole
+{
+	[consoleWindow makeKeyAndOrderFront:nil];
+	[consoleWindow makeFirstResponder:consoleInputField];
+}
+
+
 - (void)noteConfigurationChanged:(NSString *)key
 {
 	if ([key hasSuffix:@"-foreground-color"] || [key hasSuffix:@"-foreground-colour"])
@@ -242,28 +249,41 @@ enum
 }
 
 
+- (void)setDebugger:(OOMacDebugger *)debugger
+{
+	_debugger = debugger;
+	[self reloadAllSettings];
+}
+
+
 #pragma mark -
 
 - (BOOL)validateMenuItem:(id <NSMenuItem>)menuItem
 {
 	SEL							action = NULL;
+	OODebugMonitor				*monitor = nil;
 	
 	action = [menuItem action];
+	monitor = [OODebugMonitor sharedDebugMonitor];
 	
 	if (action == @selector(toggleShowOnWarning:))
 	{
-		[menuItem setState:[debugger configurationBoolValueForKey:@"show-console-on-warning"]];
-		return YES;
+		[menuItem setState:[_debugger configurationBoolValueForKey:@"show-console-on-warning"]];
+		return [monitor debuggerConnected];
 	}
 	if (action == @selector(toggleShowOnError:))
 	{
-		[menuItem setState:[debugger configurationBoolValueForKey:@"show-console-on-error"]];
-		return YES;
+		[menuItem setState:[_debugger configurationBoolValueForKey:@"show-console-on-error"]];
+		return [monitor debuggerConnected];
 	}
 	if (action == @selector(toggleShowOnLog:))
 	{
-		[menuItem setState:[debugger configurationBoolValueForKey:@"show-console-on-log"]];
-		return YES;
+		[menuItem setState:[_debugger configurationBoolValueForKey:@"show-console-on-log"]];
+		return [monitor debuggerConnected];
+	}
+	if (action == @selector(showConsole:))
+	{
+		return [monitor debuggerConnected];
 	}
 	
 	return [self respondsToSelector:action];
@@ -293,11 +313,11 @@ enum
 	{
 		// No cached colour; load colour description from config file
 		expandedKey = [key stringByAppendingString:@"-foreground-color"];
-		result = [NSColor colorWithOOColorDescription:[debugger configurationValueForKey:expandedKey]];
+		result = [NSColor colorWithOOColorDescription:[_debugger configurationValueForKey:expandedKey]];
 		if (result == nil)
 		{
 			expandedKey = [key stringByAppendingString:@"-foreground-colour"];
-			result = [NSColor colorWithOOColorDescription:[debugger configurationValueForKey:expandedKey]];
+			result = [NSColor colorWithOOColorDescription:[_debugger configurationValueForKey:expandedKey]];
 		}
 		if (result == nil && ![key isEqualToString:@"general"])
 		{
@@ -329,11 +349,11 @@ enum
 	{
 		// No cached colour; load colour description from config file
 		expandedKey = [key stringByAppendingString:@"-background-color"];
-		result = [NSColor colorWithOOColorDescription:[debugger configurationValueForKey:expandedKey]];
+		result = [NSColor colorWithOOColorDescription:[_debugger configurationValueForKey:expandedKey]];
 		if (result == nil)
 		{
 			expandedKey = [key stringByAppendingString:@"-background-colour"];
-			result = [NSColor colorWithOOColorDescription:[debugger configurationValueForKey:expandedKey]];
+			result = [NSColor colorWithOOColorDescription:[_debugger configurationValueForKey:expandedKey]];
 		}
 		if (result == nil && ![key isEqualToString:@"general"])
 		{
@@ -353,6 +373,15 @@ enum
 }
 
 
+- (void)reloadAllSettings
+{
+	[_fgColors removeAllObjects];
+	[_bgColors removeAllObjects];
+	[consoleTextView setBackgroundColor:[self backgroundColorForKey:nil]];
+	[self setUpFonts];
+}
+
+
 - (void)setUpFonts
 {
 	NSString					*fontFace = nil;
@@ -364,10 +393,10 @@ enum
 	_boldFont = nil;
 	
 	// Set font.
-	fontFace = [debugger configurationValueForKey:@"font-face"
+	fontFace = [_debugger configurationValueForKey:@"font-face"
 											class:[NSString class]
 									 defaultValue:@"Courier"];
-	fontSize = [debugger configurationIntValueForKey:@"font-size"
+	fontSize = [_debugger configurationIntValueForKey:@"font-size"
 										defaultValue:12];
 	
 	_baseFont = [NSFont fontWithName:fontFace size:fontSize];

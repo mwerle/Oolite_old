@@ -37,12 +37,13 @@ SOFTWARE.
 
 @interface OOJavaScriptConsoleController: OOWeakRefObject
 {
-	IBOutlet OOMacDebugger				*debugger;
 	IBOutlet NSWindow					*consoleWindow;
 	IBOutlet NSTextView					*consoleTextView;
 	IBOutlet NSTextField				*consoleInputField;
 	IBOutlet OOTextFieldHistoryManager	*inputHistoryManager;
 	IBOutlet RBSplitSubview				*inputSplitSubview;
+	
+	OOMacDebugger						*_debugger;
 	
 	NSScrollView						*_consoleScrollView;
 	
@@ -65,7 +66,10 @@ SOFTWARE.
 		emphasisRange:(NSRange)emphasisRange;
 
 - (void)clearConsole;
+- (void) doShowConsole;	// Show the debug console window. -showConsole: dispatches to the active debugger via the debug monitor, -doShowConsole shows the actual Mac console.
 
 - (void)noteConfigurationChanged:(NSString *)key;
+
+- (void)setDebugger:(OOMacDebugger *)debugger;
 
 @end

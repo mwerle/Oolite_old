@@ -28,20 +28,12 @@ SOFTWARE.
 */
 
 
-#define TEST_TCP_DEBUGGER
-
-
 #import "OOMacDebugger.h"
 #import "OODebugMonitor.h"
 #import "OOJavaScriptConsoleController.h"
 
 #import "OOLogging.h"
 #import "OOCollectionExtractors.h"
-
-
-#ifdef TEST_TCP_DEBUGGER
-#import "OODebugTCPConsoleClient.h"
-#endif
 
 
 @interface OOMacDebugger (Private) <OODebuggerInterface>
@@ -51,36 +43,14 @@ SOFTWARE.
 
 @implementation OOMacDebugger
 
-- (id)init
+- (id) initWithController:(OOJavaScriptConsoleController *)controller
 {
-	OODebugMonitor				*debugMonitor = nil;
-	
-#ifdef TEST_TCP_DEBUGGER
-	static BOOL haveSetUp = NO;
-	[self release];
-	self = nil;
-	if (haveSetUp)  return nil;
-	haveSetUp = YES;
-	
-	debugMonitor = [OODebugMonitor sharedDebugMonitor];
-	[debugMonitor setDebugger:[[[OODebugTCPConsoleClient alloc] init] autorelease]];
-	
-	return nil;
-#endif
-	
 	self = [super init];
-	if (self == nil)  return nil;
-	
-	debugMonitor = [OODebugMonitor sharedDebugMonitor];
-	[debugMonitor setDebugger:self];
-	
-	// setDebugger: should have resulted in _monitor being set.
-	if (_monitor == nil)
+	if (self != nil)
 	{
-		[self release];
-		self = nil;
+		_jsConsoleController = controller;
+		[_jsConsoleController setDebugger:self];
 	}
-	
 	return self;
 }
 
@@ -88,7 +58,7 @@ SOFTWARE.
 - (void)dealloc
 {
 	[_monitor disconnectDebugger:self message:@"Debugger released."];
-	// _monitor and jsConsoleController are not retained.
+	// _monitor and _jsConsoleController are not retained.
 	
 	[_configuration release];
 	
@@ -194,9 +164,9 @@ SOFTWARE.
 	{
 		prefix = @"Debugger disconnected: ";
 		emphasisRange = NSMakeRange(0, [prefix length] - 1);
-		[jsConsoleController appendMessage:[prefix stringByAppendingString:message]
-								  colorKey:@"console-internal"
-							 emphasisRange:emphasisRange];
+		[_jsConsoleController appendMessage:[prefix stringByAppendingString:message]
+								   colorKey:@"console-internal"
+							  emphasisRange:emphasisRange];
 		
 		_monitor = nil;
 	}
@@ -205,9 +175,9 @@ SOFTWARE.
 		prefix = @"ERROR: ";
 		emphasisRange = NSMakeRange(0, [prefix length] - 1);
 		message = [NSString stringWithFormat:@"%@attempt to disconnect unconnected debug monitor %@ with message: %@", prefix, debugMonitor, message];
-		[jsConsoleController appendMessage:message
-								  colorKey:@"console-internal"
-							 emphasisRange:emphasisRange];
+		[_jsConsoleController appendMessage:message
+								   colorKey:@"console-internal"
+							  emphasisRange:emphasisRange];
 	}
 }
 
@@ -217,19 +187,19 @@ SOFTWARE.
 				   colorKey:(in NSString *)colorKey
 			  emphasisRange:(in NSRange)emphasisRange
 {
-	[jsConsoleController appendMessage:output
-							  colorKey:colorKey
-						 emphasisRange:emphasisRange];
+	[_jsConsoleController appendMessage:output
+							   colorKey:colorKey
+						  emphasisRange:emphasisRange];
 }
 
 - (oneway void)debugMonitorClearConsole:(in OODebugMonitor *)debugMonitor
 {
-	[jsConsoleController clearConsole];
+	[_jsConsoleController clearConsole];
 }
 
 - (oneway void)debugMonitorShowConsole:(in OODebugMonitor *)debugMonitor
 {
-	[jsConsoleController showConsole:nil];
+	[_jsConsoleController doShowConsole];
 }
 
 - (oneway void)debugMonitor:(in OODebugMonitor *)debugMonitor
@@ -238,7 +208,7 @@ SOFTWARE.
 	[_configuration release];
 	_configuration = [configuration mutableCopy];
 	
-	[jsConsoleController noteConfigurationChanged:nil];
+	[_jsConsoleController noteConfigurationChanged:nil];
 }
 
 
@@ -250,7 +220,7 @@ noteChangedConfigrationValue:(in id)newValue
 	if (newValue != nil)  [_configuration setObject:newValue forKey:key];
 	else  [_configuration removeObjectForKey:key];
 	
-	[jsConsoleController noteConfigurationChanged:key];
+	[_jsConsoleController noteConfigurationChanged:key];
 }
 
 @end

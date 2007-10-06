@@ -70,7 +70,6 @@
                 consoleInputField = NSTextField; 
                 consoleTextView = NSTextView; 
                 consoleWindow = NSWindow; 
-                debugger = OOMacDebugger; 
                 inputHistoryManager = OOTextFieldHistoryManager; 
                 inputSplitSubview = RBSplitSubview; 
             }; 

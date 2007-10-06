@@ -41,11 +41,14 @@ SOFTWARE.
 @interface OOMacDebugger: NSObject
 {
 	OODebugMonitor						*_monitor;
-	IBOutlet OOJavaScriptConsoleController *jsConsoleController;
+	
+	OOJavaScriptConsoleController		*_jsConsoleController;
 	
 	// "Local" copy of configuration. This distinction is of little importance in the current implementation, but will be useful if moving to a separate process.
 	NSMutableDictionary					*_configuration;
 }
+
+- (id) initWithController:(OOJavaScriptConsoleController *)controller;
 
 - (void)performConsoleCommand:(NSString *)command;
 
