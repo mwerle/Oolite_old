@@ -70,7 +70,7 @@ SOFTWARE.
 	OOScript							*_script;
 	struct JSObject						*_jsSelf;
 	
-	NSDictionary						*_configFromOXPs;	// Settings from jsConsoleConfig.plist
+	NSDictionary						*_configFromOXPs;	// Settings from debugConfig.plist
 	NSMutableDictionary					*_configOverrides;	// Settings from preferences, modifiable through JS.
 	
 	// Caches

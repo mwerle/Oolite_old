@@ -27,6 +27,8 @@ SOFTWARE.
 
 */
 
+#ifndef OO_EXCLUDE_DEBUG_SUPPORT
+
 #import "OOJSConsole.h"
 #import "OODebugMonitor.h"
 #import <stdint.h>
@@ -302,3 +304,5 @@ static JSBool ConsoleScriptStack(JSContext *context, JSObject *this, uintN argc,
 	OOLog(@"temp", @"Result = %@ -> %p", result, *outResult);
 	return YES;
 }
+
+#endif /* OO_EXCLUDE_DEBUG_SUPPORT */

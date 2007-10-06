@@ -36,9 +36,6 @@ SOFTWARE.
 
 - (NSColor *)asNSColor;
 
-// RGBA array with values in [0, 1]. One of the acceptable colorWithDescription: forms.
-- (NSArray *)normalizedArray;
-
 @end
 
 @interface NSColor (OOColorConversion)

@@ -11,11 +11,11 @@
 		1A02553C0C7E1C3400F622D4 /* DebugOXPLocatorBeacon.magic in Copy Files to Wrapper */ = {isa = PBXBuildFile; fileRef = 1A02553B0C7E1C3300F622D4 /* DebugOXPLocatorBeacon.magic */; };
 		1A0256260C7F0D7100F622D4 /* OOJavaScriptConsoleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0256240C7F0D7100F622D4 /* OOJavaScriptConsoleController.m */; };
 		1A02587D0C7F36CD00F622D4 /* OODebugUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A02587B0C7F36CD00F622D4 /* OODebugUtilities.m */; };
-		1A0258B30C7F386C00F622D4 /* jsConsoleConfig.plist in Copy Files to Config */ = {isa = PBXBuildFile; fileRef = 1A0258B20C7F386C00F622D4 /* jsConsoleConfig.plist */; };
 		1A0259B90C7F894100F622D4 /* FScript.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0259B80C7F894100F622D4 /* FScript.framework */; };
 		1A0259F60C7F8D3800F622D4 /* FScript.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0259B80C7F894100F622D4 /* FScript.framework */; };
 		1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */; };
 		1A0518D30C7CC69600BA5CCA /* OODebugController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0518D20C7CC69600BA5CCA /* OODebugController.m */; };
+		1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A2DA4380CB788DB00DE6823 /* debugConfig.plist */; };
 		1A4D0B9D0C8EFF1200A6FBDB /* OODebugMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */; };
 		1A4D0B9E0C8EFF1200A6FBDB /* OODebugMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */; };
 		1A4D0BB90C8F04C200A6FBDB /* OODebuggerInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */; };
@@ -74,7 +74,6 @@
 			dstPath = Config;
 			dstSubfolderSpec = 1;
 			files = (
-				1A0258B30C7F386C00F622D4 /* jsConsoleConfig.plist in Copy Files to Config */,
 				1A0255340C7E1BF000F622D4 /* debugLogMessageClassesMenu.plist in Copy Files to Config */,
 			);
 			name = "Copy Files to Config";
@@ -103,11 +102,11 @@
 		1A0256240C7F0D7100F622D4 /* OOJavaScriptConsoleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJavaScriptConsoleController.m; sourceTree = "<group>"; };
 		1A02587A0C7F36CD00F622D4 /* OODebugUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugUtilities.h; sourceTree = "<group>"; };
 		1A02587B0C7F36CD00F622D4 /* OODebugUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugUtilities.m; sourceTree = "<group>"; };
-		1A0258B20C7F386C00F622D4 /* jsConsoleConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = jsConsoleConfig.plist; sourceTree = "<group>"; };
 		1A0259B80C7F894100F622D4 /* FScript.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FScript.framework; sourceTree = "<group>"; };
 		1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = OODebugController.nib; sourceTree = "<group>"; };
 		1A0518D10C7CC69600BA5CCA /* OODebugController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugController.h; sourceTree = "<group>"; };
 		1A0518D20C7CC69600BA5CCA /* OODebugController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugController.m; sourceTree = "<group>"; };
+		1A2DA4380CB788DB00DE6823 /* debugConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = debugConfig.plist; sourceTree = "<group>"; };
 		1A4D0B9B0C8EFF1200A6FBDB /* OODebugMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugMonitor.h; sourceTree = "<group>"; };
 		1A4D0B9C0C8EFF1200A6FBDB /* OODebugMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugMonitor.m; sourceTree = "<group>"; };
 		1A4D0BB80C8F04C200A6FBDB /* OODebuggerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebuggerInterface.h; sourceTree = "<group>"; };
@@ -180,8 +179,8 @@
 				1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				1A0255330C7E1BF000F622D4 /* debugLogMessageClassesMenu.plist */,
+				1A2DA4380CB788DB00DE6823 /* debugConfig.plist */,
 				1A02553B0C7E1C3300F622D4 /* DebugOXPLocatorBeacon.magic */,
-				1A0258B20C7F386C00F622D4 /* jsConsoleConfig.plist */,
 				1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */,
 			);
 			path = Resources;
@@ -341,6 +340,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */,
+				1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

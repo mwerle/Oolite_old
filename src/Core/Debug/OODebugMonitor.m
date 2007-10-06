@@ -27,11 +27,12 @@ SOFTWARE.
 
 */
 
+#ifndef OO_EXCLUDE_DEBUG_SUPPORT
+
 
 #import "OODebugMonitor.h"
 #import "OOCollectionExtractors.h"
 #import "OOLogging.h"
-#import "OODebugUtilities.h"
 #import "ResourceManager.h"
 #import "NSStringOOExtensions.h"
 
@@ -73,7 +74,7 @@ static OODebugMonitor *sSingleton = nil;
 	self = [super init];
 	if (self != nil)
 	{
-		config = [[ResourceManager dictionaryFromFilesNamed:@"jsConsoleConfig.plist"
+		config = [[ResourceManager dictionaryFromFilesNamed:@"debugConfig.plist"
 												   inFolder:@"Config"
 												   andMerge:YES] mutableCopy];
 		_configFromOXPs = [[self normalizeConfigDictionary:config] copy];
@@ -608,3 +609,4 @@ NOTE: assumes single-threaded access.
 
 @end
 
+#endif /* OO_EXCLUDE_DEBUG_SUPPORT */

@@ -204,12 +204,14 @@
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOTCPSTREAM_USE_COREFOUNDATION=1";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INSTALL_PATH = "$(HOME)/bin";
 				PRODUCT_NAME = simpleDebugConsole;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
+					"-Wno-unused-parameter",
 				);
 			};
 			name = Release;
