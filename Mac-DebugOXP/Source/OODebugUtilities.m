@@ -76,6 +76,7 @@ SOFTWARE.
 
 + (id)stringWithString:(NSString *)string font:(NSFont *)font
 {
+	if (string == nil)  return nil;
 	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
 	return [[[self alloc] initWithString:string attributes:attr] autorelease];
 }

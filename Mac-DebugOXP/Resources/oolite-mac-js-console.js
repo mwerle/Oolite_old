@@ -80,10 +80,10 @@ this.macros =
 // List the enumerable properties of an object.
 this.dumpObjectShort = function(x)
 {
-	ConsoleMessage("dumpobject", x.toString() + ":")
+	ConsoleMessage("dumpObject", x.toString() + ":")
 	for (let prop in x)
 	{
-		ConsoleMessage("dumpobject", "    " + prop)
+		ConsoleMessage("dumpObject", "    " + prop)
 	}
 }
 
@@ -91,10 +91,23 @@ this.dumpObjectShort = function(x)
 // List the enumerable properties of an object, and their values.
 this.dumpObjectLong = function(x)
 {
-	ConsoleMessage("dumpobject", x.toString() + ":")
+	ConsoleMessage("dumpObject", x.toString() + ":")
 	for (let prop in x)
 	{
-		ConsoleMessage("dumpobject", "    " + prop + " = " + x[prop])
+		ConsoleMessage("dumpObject", "    " + prop + " = " + x[prop])
+	}
+}
+
+
+// Print the objects in a list on lines.
+this.printList = function(l)
+{
+	let length = l.length
+	
+	ConsoleMessage("printList", length.toString() + " items:")
+	for (let i = 0; i != length; i++)
+	{
+		ConsoleMessage("printList", "  " + l[i].toString())
 	}
 }
 
