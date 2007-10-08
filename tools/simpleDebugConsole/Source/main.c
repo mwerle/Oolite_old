@@ -383,6 +383,9 @@ static CFStringRef ErrnoDesc(void)
 			
 		case EPIPE:
 			return CFSTR("broken pipe");
+			
+		case ECONNRESET:
+			return CFSTR("connection reset by peer");
 	}
 	
 	return CFFMTSTR("unknown errno %i", error);
