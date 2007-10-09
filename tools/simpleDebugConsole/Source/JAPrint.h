@@ -15,6 +15,8 @@
 void JAPrint(CFStringRef format, ...);
 void JAPrintWithArguments(CFStringRef format, va_list args);
 
+#define JAPrintFlush()  fflush(stdout)
+
 void JAFPrint(FILE *file, CFStringRef format, ...);
 void JAFPrintWithArguments(FILE *file, CFStringRef format, va_list args);
 

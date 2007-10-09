@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -181,8 +182,19 @@ static void RunServerLoop(int serverSocket)
 					sClientSocket = newFD;
 					fcntl(sClientSocket, F_SETFL, O_NONBLOCK);
 					FD_SET(sClientSocket, &masterSet);
-					JAPrintC("- Client connected.\n");
-					fflush(stdout);
+					
+					// Specify the host, if not localhost.
+					if (clientAddress.sin_family == AF_INET)
+					{
+						if (clientAddress.sin_addr.s_addr != INADDR_LOOPBACK)
+						{
+							JAPrintC("- Client connected from %s.\n", inet_ntoa(clientAddress.sin_addr));
+						}
+						else  JAPrintC("- Client connected locally.\n");
+					}
+					else  JAPrintC("- Client connected.\n");
+					
+					JAPrintFlush();
 					if (sClientSocket > maxFD)  maxFD = sClientSocket;
 				}
 				else
@@ -297,6 +309,7 @@ static void ConnectionSendData(void *cbInfo, const void *bytes, size_t length)
 static void ConnectionConsoleOutput(void *cbInfo, CFStringRef text, CFStringRef colorKey, CFRange *emphasisRanges, uint32_t emphasisRangeCount)
 {
 	JAPrintC("  %@\n", text);
+	JAPrintFlush();
 }
 
 
