@@ -276,7 +276,7 @@ static void HandleIncomingData(void)
 	}
 	if (length == 0)
 	{
-		JAPrintC("*** Connection closed.\n\n");
+		JAPrintC("*** Connection closed by remote.\n\n");
 		sQuit = TRUE;
 	}
 }
@@ -321,7 +321,7 @@ static void ConnectionConnectionEstablished(void *cbInfo, CFStringRef ooliteVers
 
 static void ConnectionClose(void *cbInfo, Boolean closedRemotely, CFStringRef message)
 {
-	JAPrintC("- Connection closed (%@).\n\n", message ? message : CFSTR(""));
+	JAPrintC("- Connection closed: %@\n\n", message ? message : CFSTR("no reason given."));
 	sQuit = TRUE;
 }
 
