@@ -98,7 +98,6 @@
 		"listM"		= "for (let prop in macros) { ConsoleMessage('macro-list', ':' + prop) }";
 		
 		// Reload macros from plist, removing any custom ones.
-		// (Note: the ;undefined on the end is to stop the result of the delete operation ("true") from being written to the console.)
 		"resetM"	= "delete console.settings.macros; macros = console.settings.macros; undefined";
 		
 		// Examining (“dumping”) objects
@@ -120,8 +119,11 @@
 		*/
 		"fgColor"	= "setColorFromString(PARAM, 'foreground')";
 		"bgColor"	= "setColorFromString(PARAM, 'background')";
-		"rmFgColor"	= "delete console.settings[PARAM + '-foreground-color']; undefined";
-		"rmBgColor"	= "delete console.settings[PARAM + '-background-color']; undefined";
+		"rmFgColor"	= "void delete console.settings[PARAM + '-foreground-color']";
+		"rmBgColor"	= "void delete console.settings[PARAM + '-background-color']";
+		
+		// ":spawn foo" -- create a ship with role "foo" near the station.
+		"spawn"		= "system.legacy_addSystemShips(PARAM, 1, 1)";
 		
 		// For calling old-school scripting methods (on player), as in :: gui_screen_string
 		":"			= "player.call(PARAM)";
