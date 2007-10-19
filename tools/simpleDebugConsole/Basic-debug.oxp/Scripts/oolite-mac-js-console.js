@@ -346,9 +346,10 @@ debugConsole.script = this
 
 if (debugConsole.settings["macros"])  this.macros = debugConsole.settings["macros"]
 
-// As a convenience, make player and system available to console commands as single-letter variables:
+// As a convenience, make player, system and missionVariables available to console commands as single-letter variables:
 this.P = player
 this.S = system
+this.M = missionVariables
 
 
 // Make console.consoleMessage() globally visible as ConsoleMessage()
