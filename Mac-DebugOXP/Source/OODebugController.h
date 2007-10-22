@@ -72,7 +72,7 @@ F-Script submenu) commands are hidden by default. To show them, set the
 	IBOutlet OOJavaScriptConsoleController	*jsConsoleController;
 	
 	IBOutlet FScriptMenuItem				*fscriptMenuItem;
-		
+	
 	NSBundle								*_bundle;
 	
 }
@@ -91,6 +91,7 @@ F-Script submenu) commands are hidden by default. To show them, set the
 - (IBAction)dumpPlayerStateAction:sender;
 - (IBAction)createShipAction:sender;
 - (IBAction)clearAllCachesAction:sender;
+- (IBAction)toggleWireframeModeAction:sender;
 
 // Log Message Classes submenu
 - (IBAction)toggleThisLogMessageClassAction:sender;

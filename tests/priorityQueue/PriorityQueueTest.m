@@ -9,6 +9,13 @@
 #endif
 
 
+#ifdef DEBUG_GRAPHVIZ
+@interface OOPriorityQueue (DebugGraphViz)
+- (void) writeGraphVizToPath:(NSString *)path;
+@end
+#endif
+
+
 static void PutNumbersInQueue(unsigned count, OOPriorityQueue *queue);
 static void PutStringsInQueue(OOPriorityQueue *queue);
 static void DumpQueue(OOPriorityQueue *queue);
@@ -28,11 +35,17 @@ int main (int argc, const char * argv[])
 	{
 		NSLog(@"%u numbers:", i);
 		PutNumbersInQueue(i, queue);
+#ifdef DEBUG_GRAPHVIZ
+		[queue writeGraphVizToPath:[NSString stringWithFormat:@"pqtest_int_%u.dot", i]];
+#endif
 		DumpQueue(queue);
 		NSLog(@"\n");
 	}
 	
 	PutStringsInQueue(queue);
+#ifdef DEBUG_GRAPHVIZ
+	[queue writeGraphVizToPath:@"pqtest_string.dot"];
+#endif
 	DumpQueue(queue);
 	
 	TestEquality();

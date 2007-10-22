@@ -36,6 +36,7 @@
                 showLogPreferencesAction = id; 
                 toggleThisDebugFlagAction = id; 
                 toggleThisLogMessageClassAction = id; 
+                toggleWireframeModeAction = id; 
             }; 
             CLASS = OODebugController; 
             LANGUAGE = ObjC; 

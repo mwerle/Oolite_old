@@ -211,6 +211,12 @@ static OODebugController *sSingleton = nil;
 }
 
 
+- (IBAction)toggleWireframeModeAction:sender
+{
+	[UNIVERSE setWireframeGraphics:![UNIVERSE wireframeGraphics]];
+}
+
+
 - (IBAction)toggleThisLogMessageClassAction:sender
 {
 	NSString					*msgClass = nil;
@@ -358,6 +364,11 @@ static OODebugController *sSingleton = nil;
 	{
 		tag = [menuItem tag];
 		[menuItem setState:(gDebugFlags & tag) == tag];
+		return YES;
+	}
+	if (action == @selector(toggleWireframeModeAction:))
+	{
+		[menuItem setState:!![UNIVERSE wireframeGraphics]];		
 		return YES;
 	}
 	
