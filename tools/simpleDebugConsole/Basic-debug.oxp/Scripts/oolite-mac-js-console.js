@@ -251,21 +251,24 @@ this.performMacro = function(command)
 	// Split at first series of spaces
 	let macroName, parameters
 	[macroName, parameters] = command.getOneToken()
-	let expansion = macros[macroName]
-	
-	if (expansion)
+	if (macros[macroName] != undefined)
 	{
-		// Show macro expansion.
-		let displayExpansion = expansion
-		if (parameters)
-		{
-			// Substitute parameter string into display expansion, going from 'foo(PARAM)' to 'foo("parameters")'.
-			displayExpansion = displayExpansion.replace(/PARAM/g, '"' + parameters.substituteEscapeCodes() + '"');
-		}
-		ConsoleMessage("macro-expansion", "> " + displayExpansion)
+		let expansion = macros[macroName]
 		
-		// Perform macro.
-		this.evaluate(expansion, "macro", parameters)
+		if (expansion)
+		{
+			// Show macro expansion.
+			let displayExpansion = expansion
+			if (parameters)
+			{
+				// Substitute parameter string into display expansion, going from 'foo(PARAM)' to 'foo("parameters")'.
+				displayExpansion = displayExpansion.replace(/PARAM/g, '"' + parameters.substituteEscapeCodes() + '"');
+			}
+			ConsoleMessage("macro-expansion", "> " + displayExpansion)
+			
+			// Perform macro.
+			this.evaluate(expansion, "macro", parameters)
+		}
 	}
 	else
 	{
