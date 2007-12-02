@@ -49,6 +49,7 @@ SOFTWARE.
 #import "OOLogging.h"
 #import "OOFunctionAttributes.h"
 #import <stdlib.h>
+#import "NSThreadOOExtensions.h"
 
 
 /*	If nonzero, disable shaders for OpenGL versions less than 1.5. It is my
@@ -121,6 +122,7 @@ static unsigned IntegerFromString(const GLubyte **ioString);
 	{
 #if OOOPENGLEXTMGR_LOCK_SET_ACCESS
 		lock = [[NSLock alloc] init];
+		[lock ooSetName:@"OOOpenGLExtensionManager extension set lock"];
 #endif
 		
 		extensionString = [NSString stringWithUTF8String:(char *)glGetString(GL_EXTENSIONS)];

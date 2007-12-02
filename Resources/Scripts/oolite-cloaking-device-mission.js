@@ -29,10 +29,10 @@ this.name           = "oolite-cloaking-device";
 this.author         = "Jens Ayton";
 this.copyright      = "© 2007 the Oolite team.";
 this.description    = "Cloaking device mission in galaxy 5.";
-this.version        = "1.69.2";
+this.version        = "1.70";
 
 
-this.willExitWitchSpace = function()
+this.shipWillExitWitchspace = function()
 {
 	// If we're in galaxy 5...
 	if (galaxyNumber == 4)

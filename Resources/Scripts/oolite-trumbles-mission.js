@@ -29,7 +29,7 @@ this.name			= "oolite-trumbles";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2007 the Oolite team.";
 this.description	= "Random offers of trumbles.";
-this.version		= "1.69.2";
+this.version		= "1.70";
 
 
 this.startUp = this.reset = function()
@@ -47,7 +47,7 @@ this.startUp = this.reset = function()
 }
 
 
-this.didDock = function()
+this.shipDockedWithStation = function()
 {
 	/*	In the pre-JavaScript implementation, the mission variable was set to
 		OFFER_MADE while the mission screen was shown. If the player lanched
@@ -112,7 +112,7 @@ this.missionScreenEnded = function()
 }
 
 
-this.willExitWitchSpace = function()
+this.shipWillExitWitchspace = function()
 {
 	// If player has rejected a trumble offer, reset trumble mission with 2% probability per jump.
 	if (missionVariables.trumbles == "NOT_NOW" && Math.random < 0.02)

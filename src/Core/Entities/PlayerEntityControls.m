@@ -847,7 +847,7 @@ static NSTimeInterval	time_last_frame;
 						if (![UNIVERSE playCustomSound:@"[autopilot-on]"])
 							[self beep];
 						[UNIVERSE addMessage:ExpandDescriptionForCurrentSystem(@"[autopilot-on]") forCount:4.5];
-						[self doScriptEvent:@"didStartAutoPilot"];
+						[self doScriptEvent:@"playerStartedAutoPilot"];
 						
 						if (ootunes_on)
 						{
@@ -888,7 +888,7 @@ static NSTimeInterval	time_last_frame;
 						if (![UNIVERSE playCustomSound:@"[autopilot-on]"])
 							[self beep];
 						[UNIVERSE addMessage:ExpandDescriptionForCurrentSystem(@"[autopilot-on]") forCount:4.5];
-						[self doScriptEvent:@"didStartAutoPilot"];
+						[self doScriptEvent:@"playerStartedAutoPilot"];
 						
 						if (ootunes_on)
 						{
@@ -1006,7 +1006,7 @@ static NSTimeInterval	time_last_frame;
 						[UNIVERSE clearPreviousMessage];
 						[UNIVERSE addMessage:ExpandDescriptionForCurrentSystem(@"[witch-user-abort]") forCount:3.0];
 						
-						[self doScriptEvent:@"didCancelJumpCountDown"];
+						[self doScriptEvent:@"playerCancelledJumpCountdown"];
 					}
 					
 					if (jumpOK)
@@ -1051,7 +1051,7 @@ static NSTimeInterval	time_last_frame;
 						[UNIVERSE clearPreviousMessage];
 						[UNIVERSE addMessage:ExpandDescriptionForCurrentSystem(@"[witch-user-abort]") forCount:3.0];
 						
-						[self doScriptEvent:@"didCancelJumpCountDown"];
+						[self doScriptEvent:@"playerCancelledJumpCountdown"];
 					}
 					
 					if (jumpOK)
@@ -1065,7 +1065,7 @@ static NSTimeInterval	time_last_frame;
 						// say it!
 						[UNIVERSE addMessage:[NSString stringWithFormat:ExpandDescriptionForCurrentSystem(@"[witch-galactic-in-f-seconds]"), witchspaceCountdown] forCount:1.0];
 						
-						[self doScriptEvent:@"didBeginJumpCountDown" withArgument:@"galactic"];
+						[self doScriptEvent:@"playerStartedJumpCountdown" withArgument:@"galactic"];
 					}
 				}
 				galhyperspace_pressed = YES;
@@ -1525,7 +1525,11 @@ static NSTimeInterval	time_last_frame;
 				if (([gui selectedRow] == GUI_ROW_OPTIONS_LOAD)&&(!disc_operation_in_progress))
 				{
 					disc_operation_in_progress = YES;
-					[self loadPlayer];
+					if (![self loadPlayer])
+					{
+						disc_operation_in_progress = NO;
+						[self setGuiToStatusScreen];
+					}
 				}
 				
 				
@@ -1866,7 +1870,9 @@ static NSTimeInterval	time_last_frame;
 	}
 #endif
 	
-	if (([gui selectedRow] == GUI_ROW_GAMEOPTIONS_DISPLAY)&&(([gameView isDown:gvArrowKeyRight])||([gameView isDown:gvArrowKeyLeft]))&&(!switching_resolution))
+	if (!switching_resolution &&
+		[gui selectedRow] == GUI_ROW_GAMEOPTIONS_DISPLAY &&
+		([gameView isDown:gvArrowKeyRight] || [gameView isDown:gvArrowKeyLeft]))
 	{
 		int direction = ([gameView isDown:gvArrowKeyRight]) ? 1 : -1;
 		int displayModeIndex = [controller indexOfCurrentDisplayMode];
@@ -1901,8 +1907,10 @@ static NSTimeInterval	time_last_frame;
 		[gui setText:displayModeString	forRow:GUI_ROW_GAMEOPTIONS_DISPLAY  align:GUI_ALIGN_CENTER];
 		switching_resolution = YES;
 	}
-	if ((![gameView isDown:gvArrowKeyRight])&&(![gameView isDown:gvArrowKeyLeft])&&(!selectKeyPress))
+	if (switching_resolution && ![gameView isDown:gvArrowKeyRight] && ![gameView isDown:gvArrowKeyLeft] && !selectKeyPress)
+	{
 		switching_resolution = NO;
+	}
 	
 #if OOLITE_MAC_OS_X
 	if (([gui selectedRow] == GUI_ROW_GAMEOPTIONS_SPEECH)&&(([gameView isDown:gvArrowKeyRight])||([gameView isDown:gvArrowKeyLeft])))
@@ -2536,7 +2544,7 @@ static BOOL toggling_music;
 			if (![UNIVERSE playCustomSound:@"[autopilot-off]"])
 				[self beep];
 			[UNIVERSE addMessage:ExpandDescriptionForCurrentSystem(@"[autopilot-off]") forCount:4.5];
-			[self doScriptEvent:@"didAbortAutoPilot"];
+			[self doScriptEvent:@"playerCancelledAutoPilot"];
 			
 			if (ootunes_on)
 			{
@@ -2569,9 +2577,12 @@ static BOOL toggling_music;
 
 - (void) pollDockedControls:(double)delta_t
 {
+	StationEntity			*station = nil;
+	MyOpenGLView			*gameView = nil;
+	
 	if(pollControls)
 	{
-		MyOpenGLView  *gameView = [UNIVERSE gameView];
+		gameView = [UNIVERSE gameView];
 		if (([gameView isDown:gvFunctionKey1])||([gameView isDown:gvNumberKey1]))   // look for the f1 key
 		{
 			// ensure we've not left keyboard entry on
@@ -2580,9 +2591,10 @@ static BOOL toggling_music;
 			[UNIVERSE setUpUniverseFromStation]; // launch!
 			if (!dockedStation)
 				dockedStation = [UNIVERSE station];
+			station = dockedStation;	// leaveDock will clear dockedStation.
 			[self leaveDock:dockedStation];
 			[UNIVERSE setDisplayCursor:NO];
-			[self doScriptEvent:@"willLaunch"];
+			[self doScriptEvent:@"shipWillLaunchFromStation" withArgument:station];
 			[self playBreakPattern];
 		}
 	}
@@ -2618,7 +2630,10 @@ static BOOL toggling_music;
 					[self setStatus:STATUS_DOCKED];
 					[UNIVERSE removeDemoShips];
 					[gui clearBackground];
-					[self loadPlayer];
+					if (![self loadPlayer])
+					{
+						[self setGuiToIntro2Screen];
+					}
 				}
 			}
 			if (([gameView isDown:110])||([gameView isDown:78]))	//  'nN'
