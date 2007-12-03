@@ -35,7 +35,7 @@ SOFTWARE.
 
 #import "OOGraphicsResetManager.h"
 #import "OOTexture.h"
-#import "OOLogging.h"
+#import "OOLoggingExtended.h"
 #import "Universe.h"
 #import "OOOpenGL.h"
 #import "OOCacheManager.h"
