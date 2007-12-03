@@ -58,6 +58,8 @@ ifdef NARCISSUS
 DEFINES += -DNARCISSUS
 endif
 
+DEFINES += -DJS_C_STRINGS_ARE_UTF8 -UMOZILLA_1_8_BRANCH 
+
 # Look in OBJDIR to find jsautocfg.h and jsautokw.h
 INCLUDES   += -I$(OBJDIR)
 
