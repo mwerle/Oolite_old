@@ -44,7 +44,7 @@
 	show-console-on-log					= no;	// Log() or LogWithClass() called
 	
 	
-	// Macro definitions for the console macro system (implemented in oolite-mac-js-console.js)
+	// Macro definitions for the console macro system (implemented in oolite-debug-console.js)
 	macros =
 	{
 		// Manipulating macros
@@ -99,7 +99,7 @@
 	error-background-color				= { hue = 0; brightness = 1.0; saturation = 0.25; };	// Pale red
 	exception-background-color			= { hue = 320; brightness = 1.0; saturation = 0.25; };	// Pale magentaish
 	
-	// These colours are used by oolite-mac-js-console.js
+	// These colours are used by oolite-debug-console.js
 	command-result-background-color		= { hue = 120; brightness = 1.0; saturation = 0.2; };	// Pale green
 	command-error-background-color		= { hue = 0; brightness = 1.0; saturation = 0.12; };	// Very pale red
 	macro-expansion-background-color	= { hue = 240; brightness = 1.0; saturation = 0.06; };	// Very pale blue

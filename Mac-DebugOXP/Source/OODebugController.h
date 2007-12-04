@@ -38,9 +38,8 @@ message class specified in their title. Display titles (optional) are set in
 the Attributed Title property. Thus, to add a menu item to control the foo.bar
 message class, simply add an item titled foo.bar in the nib.
 
-Note on extra menu items: some esoteric (and dangerous, in the case of the
-F-Script submenu) commands are hidden by default. To show them, set the
- preference debug-show-extra-menu-items:
+Note on extra menu items: some esoteric commands are hidden by default. To
+show them, set the preference debug-show-extra-menu-items:
 
 	defaults write org.aegidian.oolite debug-show-extra-menu-items -bool YES
 

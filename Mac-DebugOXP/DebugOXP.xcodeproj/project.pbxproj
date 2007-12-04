@@ -14,9 +14,9 @@
 		1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */; };
 		1A0518D30C7CC69600BA5CCA /* OODebugController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0518D20C7CC69600BA5CCA /* OODebugController.m */; };
 		1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Copy Files to Config */ = {isa = PBXBuildFile; fileRef = 1A2DA4380CB788DB00DE6823 /* debugConfig.plist */; };
+		1A3D38220D05B5C300EBC7A6 /* oolite-debug-console.js in Copy Files to Scripts */ = {isa = PBXBuildFile; fileRef = 1A3D38200D05B5B200EBC7A6 /* oolite-debug-console.js */; };
 		1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */; };
 		1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */; };
-		1A4FB04F0C8C267E00DC8E1F /* oolite-mac-js-console.js in Copy Files to Scripts */ = {isa = PBXBuildFile; fileRef = 1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */; };
 		1A4FB2FF0C8DB89E00DC8E1F /* jspubtd.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FC0C8DB89E00DC8E1F /* jspubtd.h */; };
 		1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */; };
 		1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */; };
@@ -71,7 +71,7 @@
 			dstPath = Scripts;
 			dstSubfolderSpec = 1;
 			files = (
-				1A4FB04F0C8C267E00DC8E1F /* oolite-mac-js-console.js in Copy Files to Scripts */,
+				1A3D38220D05B5C300EBC7A6 /* oolite-debug-console.js in Copy Files to Scripts */,
 			);
 			name = "Copy Files to Scripts";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -93,9 +93,9 @@
 		1A0518D10C7CC69600BA5CCA /* OODebugController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugController.h; sourceTree = "<group>"; };
 		1A0518D20C7CC69600BA5CCA /* OODebugController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugController.m; sourceTree = "<group>"; };
 		1A2DA4380CB788DB00DE6823 /* debugConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = debugConfig.plist; sourceTree = "<group>"; };
+		1A3D38200D05B5B200EBC7A6 /* oolite-debug-console.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-debug-console.js"; sourceTree = "<group>"; };
 		1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMacDebugger.h; sourceTree = "<group>"; };
 		1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMacDebugger.m; sourceTree = "<group>"; };
-		1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-mac-js-console.js"; sourceTree = "<group>"; };
 		1A4FB2FC0C8DB89E00DC8E1F /* jspubtd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jspubtd.h; path = src/jspubtd.h; sourceTree = "<group>"; };
 		1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jstypes.h; path = src/jstypes.h; sourceTree = "<group>"; };
 		1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = src/jsapi.h; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 				1A0255330C7E1BF000F622D4 /* debugLogMessageClassesMenu.plist */,
 				1A2DA4380CB788DB00DE6823 /* debugConfig.plist */,
 				1A02553B0C7E1C3300F622D4 /* DebugOXPLocatorBeacon.magic */,
-				1A4FB04E0C8C267E00DC8E1F /* oolite-mac-js-console.js */,
+				1A3D38200D05B5B200EBC7A6 /* oolite-debug-console.js */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -315,7 +315,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n\n# Twiddle with loading of FScript.framework\ninstall_name_tool -change \"@executable_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"@loader_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"$BASE_PATH/Contents/MacOS/$EXECUTABLE_NAME\"\n";
+			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 		1A2DA56B0CB7B6B000DE6823 /* Build Basic-debug.oxp */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -339,7 +339,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-mac-js-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
+			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-debug-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
