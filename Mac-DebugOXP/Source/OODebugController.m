@@ -44,7 +44,18 @@ SOFTWARE.
 #import "OOLogOutputHandler.h"
 #import "OOJavaScriptEngine.h"
 
+#if INCLUDE_FSCRIPT_SUPPORT
 #import <FScript/FScript.h>
+#endif
+
+
+#if !INCLUDE_FSCRIPT_SUPPORT
+@interface FScriptMenuItem: NSMenuItem
+@end
+
+@implementation FScriptMenuItem: NSMenuItem
+@end
+#endif
 
 
 static OODebugController *sSingleton = nil;
@@ -134,13 +145,17 @@ static OODebugController *sSingleton = nil;
 
 - (void)awakeFromNib
 {
-	FSInterpreter				*interpreter = nil;
 	
 	[logPrefsWindow center];
 	
+#if INCLUDE_FSCRIPT_SUPPORT
+	FSInterpreter				*interpreter = nil;
 	interpreter = [[fscriptMenuItem interpreterView] interpreter];
 	[interpreter setObject:UNIVERSE forIdentifier:@"universe"];
 	[interpreter setObject:[PlayerEntity sharedPlayer] forIdentifier:@"player"];
+#else
+	[[fscriptMenuItem menu] removeItem:fscriptMenuItem];
+#endif
 }
 
 

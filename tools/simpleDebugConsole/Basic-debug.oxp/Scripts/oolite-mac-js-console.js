@@ -23,18 +23,6 @@ function consoleMessage(colorCode: string, message: string) : void
 function clearConsole() : void
 	Clear the console.
 
-function scriptStack() : array
-	Since a script may perform actions that cause other scripts to run, more
-	than one script may be “running” at a time, although only one will be
-	actively running at a given time the others are suspended until it
-	finishes. For example, if script A causes a ship to be created, and that
-	ship has a script B, B will be the active script and A will be suspended.
-	The scriptStack() method returns an array of all suspended scripts, with
-	the running script at the end. In the example, it would return [A, B] if
-	called from B.
-	Note that calling a method on an object defined by another script does not
-	affect the “script stack”.
-
 
 Oolite Debug OXP
 
@@ -61,7 +49,7 @@ SOFTWARE.
 */
 
 this.name = "oolite-mac-js-console"
-this.version = "1.69.2"
+this.version = "1.70"
 
 
 // **** Macros
@@ -360,36 +348,4 @@ function ConsoleMessage()
 {
 	// Call debugConsole.consoleMessage() with console as "this" and all the arguments passed to ConsoleMessage().
 	debugConsole.consoleMessage.apply(debugConsole, arguments)
-}
-
-
-// Make console.scriptStack() globally visible as ScriptStack()
-function ScriptStack()
-{
-	// Call debugConsole.scriptStack() with console as "this" and all the arguments passed to ScriptStack().
-	return debugConsole.scriptStack.apply(debugConsole, arguments)
-}
-
-
-// Add global convenience function to log the script stack.
-function LogScriptStack(messageClass)
-{
-	if (!messageClass)
-	{
-		messageClass = "jsDebug.scriptStack"
-	}
-	
-	let stack = ScriptStack()
-	let count = stack.length
-	let depth = count - 1
-	for (let i = 0; i < count; i++)
-	{
-		let message = stack[i].toString()
-		for (let j = 0; j < depth; j++)
-		{
-			message = "  " + message
-		}
-		LogWithClass(messageClass, message)
-		depth--
-	}
 }
