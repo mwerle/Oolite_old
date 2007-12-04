@@ -50,10 +50,14 @@ SOFTWARE.
 
 
 #if !INCLUDE_FSCRIPT_SUPPORT
+// Stub implementation of FScriptMenuItem to avoid console messages about nib loading problems.
 @interface FScriptMenuItem: NSMenuItem
 @end
 
 @implementation FScriptMenuItem: NSMenuItem
+- (IBAction)showPreferencePanel:sender {}
+- (IBAction)showConsole:sender {}
+- (IBAction)openObjectBrowser:sender {}
 @end
 #endif
 
