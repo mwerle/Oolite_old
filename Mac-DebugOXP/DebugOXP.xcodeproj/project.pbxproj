@@ -11,8 +11,6 @@
 		1A02553C0C7E1C3400F622D4 /* DebugOXPLocatorBeacon.magic in Copy Files to Wrapper */ = {isa = PBXBuildFile; fileRef = 1A02553B0C7E1C3300F622D4 /* DebugOXPLocatorBeacon.magic */; };
 		1A0256260C7F0D7100F622D4 /* OOJavaScriptConsoleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0256240C7F0D7100F622D4 /* OOJavaScriptConsoleController.m */; };
 		1A02587D0C7F36CD00F622D4 /* OODebugUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A02587B0C7F36CD00F622D4 /* OODebugUtilities.m */; };
-		1A0259B90C7F894100F622D4 /* FScript.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0259B80C7F894100F622D4 /* FScript.framework */; };
-		1A0259F60C7F8D3800F622D4 /* FScript.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0259B80C7F894100F622D4 /* FScript.framework */; };
 		1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */; };
 		1A0518D30C7CC69600BA5CCA /* OODebugController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0518D20C7CC69600BA5CCA /* OODebugController.m */; };
 		1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Copy Files to Config */ = {isa = PBXBuildFile; fileRef = 1A2DA4380CB788DB00DE6823 /* debugConfig.plist */; };
@@ -51,7 +49,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1A0259F60C7F8D3800F622D4 /* FScript.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -121,7 +118,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
-				1A0259B90C7F894100F622D4 /* FScript.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,7 +315,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n\n# Twiddle with loading of FScript.framework\ninstall_name_tool -change \"@executable_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"@loader_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"$BASE_PATH/Contents/MacOS/$EXECUTABLE_NAME\"\n";
+			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n\n# Twiddle with loading of FScript.framework\ninstall_name_tool -change \"@executable_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"@loader_path/../Frameworks/FScript.framework/Versions/A/FScript\" \"$BASE_PATH/Contents/MacOS/$EXECUTABLE_NAME\"\n";
 		};
 		1A2DA56B0CB7B6B000DE6823 /* Build Basic-debug.oxp */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -380,15 +376,22 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = XP_UNIX;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					XP_UNIX,
+					"INCLUDE_FSCRIPT_SUPPORT=1",
+				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					FScript,
+				);
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Debug;
 				SYMROOT = ../build;
 				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
-				VERSION = 1.69.2;
+				VERSION = 1.71;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -416,7 +419,10 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = XP_UNIX;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					"INCLUDE_FSCRIPT_SUPPORT=0",
+					XP_UNIX,
+				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
@@ -424,7 +430,7 @@
 				PRODUCT_NAME = Debug;
 				SYMROOT = ../build;
 				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
-				VERSION = 1.69.2;
+				VERSION = 1.70;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
