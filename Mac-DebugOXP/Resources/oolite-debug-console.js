@@ -1,6 +1,6 @@
 /*
 
-oolite-mac-js-console.js
+oolite-debug-console.js
 
 JavaScript section of JavaScript console implementation.
 
@@ -48,7 +48,7 @@ SOFTWARE.
 
 */
 
-this.name = "oolite-mac-js-console"
+this.name = "oolite-debug-console"
 this.version = "1.71"
 
 
