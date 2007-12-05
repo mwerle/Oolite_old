@@ -507,21 +507,16 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 }
 
 
-- (void)setOwner:(Entity *)ent
+- (id) rootEntity
 {
-	[super setOwner:ent];
-	if (isSubentity)
-	{
-		// Ensure shader bindings have correct target.
-		[self setShaderBindingTarget:ent];
-	}
+	if (isSubentity)  return [[self owner] rootEntity];
+	else  return self;
 }
 
 
-- (void)setShaderBindingTarget:(Entity *)ent
+- (id<OOWeakReferenceSupport>) superShaderBindingTarget
 {
-	[super setShaderBindingTarget:ent];
-	[sub_entities makeObjectsPerformSelector:@selector(setShaderBindingTarget:) withObject:ent];
+	return [self rootEntity];
 }
 
 

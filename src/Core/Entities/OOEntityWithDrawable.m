@@ -91,10 +91,4 @@ MA 02110-1301, USA.
 		GLDebugWireframeModeOff();
 }
 
-
-- (void)setShaderBindingTarget:(Entity *)ent
-{
-	[[self drawable] setBindingTarget:ent];
-}
-
 @end

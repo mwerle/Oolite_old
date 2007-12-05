@@ -346,6 +346,7 @@ static NSString *MacrosToString(NSDictionary *macros);
 						convertOptions |= kOOUniformConvertNormalize;
 					}
 					if ([definition boolForKey:@"asMatrix" defaultValue:YES])  convertOptions |= kOOUniformConvertToMatrix;
+					if (![definition boolForKey:@"bindToSubentity" defaultValue:NO])  convertOptions |= kOOUniformBindToSuperTarget;
 				}
 				else
 				{

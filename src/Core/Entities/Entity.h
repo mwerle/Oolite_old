@@ -265,6 +265,7 @@ typedef struct
 - (GLfloat)spawnTime;
 - (GLfloat)timeElapsedSinceSpawn;
 
-- (void)setShaderBindingTarget:(Entity *)ent;
+// Resolve subentity-type relationships
+- (id) rootEntity;
 
 @end
