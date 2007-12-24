@@ -854,7 +854,7 @@ static BOOL JSNewNSDictionaryValue(JSContext *context, NSDictionary *dictionary,
 	for (i = 0; i != count; ++i)
 	{
 		element = [NSString stringWithJavaScriptValue:values[i] inContext:context];
-		if (result == nil) result = [element mutableCopy];
+		if (result == nil) result = [[element mutableCopy] autorelease];
 		else
 		{
 			if (separator != nil) [result appendString:separator];

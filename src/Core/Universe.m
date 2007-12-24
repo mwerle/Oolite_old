@@ -5677,6 +5677,7 @@ static BOOL MaintainLinkedLists(Universe* uni)
 	if (overrides != nil)  [systemdata addEntriesFromDictionary:overrides];
 
 	cachedResult = [systemdata copy];
+	[systemdata release];
 	
 	return cachedResult;
 }
