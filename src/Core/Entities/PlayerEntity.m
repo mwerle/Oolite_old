@@ -756,6 +756,14 @@ static PlayerEntity *sSharedPlayer = nil;
 			missile_entity[i] = [UNIVERSE newShipWithRole:@"EQ_MISSILE"];   // retain count = 1 - should be okay as long as we keep a missile with this role
 																			// in the base package.
 	}
+	
+	// Sanity check: ensure the missiles variable holds the correct missile count.
+	missiles = 0;
+	for (i = 0; i != SHIPENTITY_MAX_MISSILES; i++)
+	{
+		if (missile_entity[i] != nil)  missiles++;
+	}
+	
 	while ((missiles > 0)&&(missile_entity[activeMissile] == nil))
 		[self selectNextMissile];
 	
