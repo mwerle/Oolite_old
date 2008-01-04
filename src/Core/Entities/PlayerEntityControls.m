@@ -2054,12 +2054,6 @@ static NSTimeInterval	time_last_frame;
 	}
 	else shaderSelectKeyPressed = NO;
 	
-	if (([gui selectedRow] == GUI_ROW_GAMEOPTIONS_BACK) && selectKeyPress)
-	{
-		[gameView clearKeys];
-		[self setGuiToLoadSaveScreen];
-	}
-	
 #if OOLITE_SDL
 	if (([gui selectedRow] == GUI_ROW_GAMEOPTIONS_DISPLAYSTYLE) && selectKeyPress)
 	{
@@ -2068,6 +2062,12 @@ static NSTimeInterval	time_last_frame;
 		[self setGuiToGameOptionsScreen];
 	}
 #endif
+	
+	if (([gui selectedRow] == GUI_ROW_GAMEOPTIONS_BACK) && selectKeyPress)
+	{
+		[gameView clearKeys];
+		[self setGuiToLoadSaveScreen];
+	}
 }
 
 
