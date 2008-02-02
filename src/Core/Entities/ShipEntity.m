@@ -797,6 +797,7 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 		[escorter release];
 		escortCount--;
 	}
+	if (escortCount == 0) escortsAreSetUp = YES;
 }
 
 
@@ -6662,7 +6663,10 @@ int w_space_seed = 1234567;
 	if (self == other_ship)  return NO;
 
 	// if not in standard ai mode reject approach
-	if ([shipAI ai_stack_depth] > 1)
+	// Note: This used to be if ([shipAI ai_stack_depth] > 1). But this would result almost
+	// consistently in escorts not being accepted. Most of the time, ai_stack_depth is 2 at
+	// this point. - Nikos
+	if ([shipAI ai_stack_depth] > 2)
 		return NO;
 	
 	if ([self canAcceptEscort:other_ship])
