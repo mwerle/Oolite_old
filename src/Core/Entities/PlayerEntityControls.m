@@ -2591,6 +2591,8 @@ static BOOL toggling_music;
 			// ensure we've not left keyboard entry on
 			[gameView allowStringInput: NO];
 			
+			if (gui_screen == GUI_SCREEN_MISSION)  [self doScriptEvent:@"missionScreenEnded"];
+			
 			[UNIVERSE setUpUniverseFromStation]; // launch!
 			if (!dockedStation)
 				dockedStation = [UNIVERSE station];
