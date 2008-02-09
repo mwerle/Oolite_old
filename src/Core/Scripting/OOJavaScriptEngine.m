@@ -299,8 +299,7 @@ static void ReportJSError(JSContext *context, const char *message, JSErrorReport
 		JS_SetOptions(context, JSOPTION_VAROBJFIX | JSOPTION_STRICT | JSOPTION_NATIVE_BRANCH_CALLBACK);
 		JS_SetVersion(context, JSVERSION_1_7);
 		JS_SetErrorReporter(context, ReportJSError);
-		CreateOOJSGlobal(context, &globalObject);
-		JS_InitStandardClasses(context, globalObject);
+		JS_SetGlobalObject(context, globalObject);
 	}
 	
 	return context;
