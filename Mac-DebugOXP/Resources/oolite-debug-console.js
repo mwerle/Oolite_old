@@ -66,7 +66,7 @@ this.macros =
 // ****  Convenience functions -- copy this script and add your own here.
 
 // List the enumerable properties of an object.
-this.dumpObjectShort = function(x)
+this.dumpObjectShort = function (x)
 {
 	ConsoleMessage("dumpObject", x.toString() + ":")
 	for (let prop in x)
@@ -77,7 +77,7 @@ this.dumpObjectShort = function(x)
 
 
 // List the enumerable properties of an object, and their values.
-this.dumpObjectLong = function(x)
+this.dumpObjectLong = function (x)
 {
 	ConsoleMessage("dumpObject", x.toString() + ":")
 	for (let prop in x)
@@ -88,7 +88,7 @@ this.dumpObjectLong = function(x)
 
 
 // Print the objects in a list on lines.
-this.printList = function(l)
+this.printList = function (l)
 {
 	let length = l.length
 	
@@ -100,11 +100,10 @@ this.printList = function(l)
 }
 
 
-this.setColorFromString = function(string, typeName)
+this.setColorFromString = function (string, typeName)
 { 
 	// Slice of the first component, where components are separated by one or more spaces.
-	let key, value
-	[key, value] = string.getOneToken()
+	let [key, value] = string.getOneToken()
 	
 	let fullKey = key + "-" + typeName + "-color"
 	
@@ -120,7 +119,7 @@ this.setColorFromString = function(string, typeName)
 
 // ****  Conosole command handler
 
-this.consolePerformJSCommand = function(command)
+this.consolePerformJSCommand = function (command)
 {
 	while (command.charAt(0) == " ")
 	{
@@ -143,11 +142,11 @@ this.consolePerformJSCommand = function(command)
 }
 
 
-this.evaluate = function(command, type, PARAM)
+this.evaluate = function (command, type, PARAM)
 {
 	let result = eval(command)
 	if (result === null)  result = "null"
-	if (result != undefined)
+	if (result !== undefined)
 	{
 		ConsoleMessage("command-result", result.toString())
 	}
@@ -156,13 +155,12 @@ this.evaluate = function(command, type, PARAM)
 
 // ****  Macro handling
 
-this.setMacro = function(parameters)
+this.setMacro = function (parameters)
 {
 	if (!parameters)  return;
 	
 	// Split at first series of spaces
-	let name, body
-	[name, body] = parameters.getOneToken()
+	let [name, body] = parameters.getOneToken()
 	
 	if (body)
 	{
@@ -178,17 +176,12 @@ this.setMacro = function(parameters)
 }
 
 
-this.deleteMacro = function(parameters)
+this.deleteMacro = function (parameters)
 {
 	if (!parameters)  return;
 	
-	let name, tail
-	[name, tail] = parameters.getOneToken()
+	let [name, ] = parameters.getOneToken()
 	
-	if (tail)
-	{
-		ConsoleMessage("macro-warning", "deleteMacro(): ignoring trailing junk.")
-	}
 	if (name.charAt(0) == ":" && name != ":")  name = name.substring(1)
 	
 	if (macros[name])
@@ -205,17 +198,12 @@ this.deleteMacro = function(parameters)
 }
 
 
-this.showMacro = function(parameters)
+this.showMacro = function (parameters)
 {
 	if (!parameters)  return;
 	
-	let name, tail
-	[name, tail] = parameters.getOneToken()
+	let [name, ] = parameters.getOneToken()
 	
-	if (tail)
-	{
-		ConsoleMessage("macro-warning", "showMacro(): ignoring trailing junk.")
-	}
 	if (name.charAt(0) == ":" && name != ":")  name = name.substring(1)
 	
 	if (macros[name])
@@ -229,7 +217,7 @@ this.showMacro = function(parameters)
 }
 
 
-this.performMacro = function(command)
+this.performMacro = function (command)
 {
 	if (!command)  return;
 	
@@ -237,9 +225,8 @@ this.performMacro = function(command)
 	command = command.substring(1)
 	
 	// Split at first series of spaces
-	let macroName, parameters
-	[macroName, parameters] = command.getOneToken()
-	if (macros[macroName] != undefined)
+	let [macroName, parameters] = command.getOneToken()
+	if (macros[macroName] !== undefined)
 	{
 		let expansion = macros[macroName]
 		
@@ -273,15 +260,15 @@ this.performMacro = function(command)
 	be the input string, and the second will be null. Leading spaces are
 	stripped. Examples:
 	
-	"x y".getOneToken() == ["x", "y"]
-	"x   y".getOneToken() == ["x", "y"]
-	"  x y".getOneToken() == ["x", "y"]
-	"xy".getOneToken() == ["xy", null]
-	" xy".getOneToken() == ["xy", null]
-	"".getOneToken() == ["", null]
-	" ".getOneToken() == ["", null]
+	"x y"   -->  ["x", "y"]
+	"x   y" -->  ["x", "y"]
+	"  x y" -->  ["x", "y"]
+	"xy"    -->  ["xy", null]
+	" xy"   -->  ["xy", null]
+	""      -->  ["", null]
+	" "     -->  ["", null]
  */
-String.prototype.getOneToken = function()
+String.prototype.getOneToken = function ()
 {
 	let matcher = /\s+/g		// Regular expression to match one or more spaces.
 	matcher.lastIndex = 0
@@ -293,13 +280,13 @@ String.prototype.getOneToken = function()
 		let tail = this.substring(matcher.lastIndex)	// Text after spaces
 		
 		if (token.length != 0)  return [token, tail]
-			else  return tail.getOneToken()  // Handle leading spaces case. This won't recurse more than once.
+		else  return tail.getOneToken()  // Handle leading spaces case. This won't recurse more than once.
 	}
-		else
-		{
-			// No spaces
-			return [this, null]
-		}
+	else
+	{
+		// No spaces
+		return [this, null]
+	}
 }
 
 
@@ -309,7 +296,7 @@ String.prototype.getOneToken = function()
 	string literal as a JavaScript literal. (Used in performMacro() to echo
 	macro expansion.)
  */
-String.prototype.substituteEscapeCodes = function()
+String.prototype.substituteEscapeCodes = function ()
 {
 	let string = this.replace(/\\/g, "\\\\")	// Convert \ to \\ -- must be first since we’ll be introducing new \s below.
 	
@@ -329,7 +316,7 @@ String.prototype.substituteEscapeCodes = function()
 // ****  Load-time set-up
 
 // Get the global object for easy reference
-this.console.global = (function(){ return this }).call()
+this.console.global = (function (){ return this }).call()
 
 // Make console globally visible as debugConsole
 this.console.global.debugConsole = this.console
