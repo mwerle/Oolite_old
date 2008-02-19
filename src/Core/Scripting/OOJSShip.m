@@ -453,8 +453,9 @@ static JSBool ShipSetProperty(JSContext *context, JSObject *this, jsval name, js
 			break;
 			
 		case kShip_bounty:
-			if (JS_ValueToInt32(context, *value, &iValue) && 0 <= iValue)
+			if (JS_ValueToInt32(context, *value, &iValue))
 			{
+				iValue = (int)OOMax_f(iValue, 0);
 				[entity setBounty:iValue];
 			}
 			break;
