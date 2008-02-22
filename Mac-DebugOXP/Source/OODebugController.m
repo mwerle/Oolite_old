@@ -99,7 +99,7 @@ static OODebugController *sSingleton = nil;
 		}
 		else
 		{
-			[NSBundle loadNibFile:nibPath externalNameTable:[NSDictionary dictionaryWithObject:self forKey:@"NSOwner"] withZone:nil];
+			[NSBundle loadNibFile:nibPath externalNameTable:[NSDictionary dictionaryWithObject:self forKey:@"NSOwner"] withZone:NULL];
 			
 			[self insertDebugMenu];
 			[self setUpLogMessageClassMenu];
@@ -405,7 +405,7 @@ static OODebugController *sSingleton = nil;
 	int							index;
 	
 	[menu setTitle:@"Debug"];
-	item = [[NSMenuItem alloc] initWithTitle:@"Debug" action:nil keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:@"Debug" action:NULL keyEquivalent:@""];
 	[item setSubmenu:menu];
 	[[NSApp mainMenu] addItem:item];
 	[item release];

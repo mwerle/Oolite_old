@@ -139,7 +139,7 @@ SOFTWARE.
 {
 	if (debugMonitor == _monitor)
 	{
-		if (message != nil)  *message = @"ERROR: attempt to reconnect already-connected debugger!";
+		if (message != NULL)  *message = @"ERROR: attempt to reconnect already-connected debugger!";
 		return NO;
 	}
 	
