@@ -261,7 +261,7 @@
 				1A025A030C7F8D5B00F622D4 /* Copy Files to Config */,
 				1A9590840C80539A00C112A9 /* Copy Files to Scripts */,
 				1A0259F00C7F8D2900F622D4 /* Copy Frameworks */,
-				1A0255AC0C7E211200F622D4 /* Run Script */,
+				1A0255AC0C7E211200F622D4 /* Generate requires.plist */,
 				1A2DA56B0CB7B6B000DE6823 /* Build Basic-debug.oxp */,
 			);
 			buildRules = (
@@ -303,19 +303,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1A0255AC0C7E211200F622D4 /* Run Script */ = {
+		1A0255AC0C7E211200F622D4 /* Generate requires.plist */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
+			name = "Generate requires.plist";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n";
+			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 		1A2DA56B0CB7B6B000DE6823 /* Build Basic-debug.oxp */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -339,7 +339,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-debug-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/Config/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
+			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-debug-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
