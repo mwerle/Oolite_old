@@ -334,7 +334,7 @@
 				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Scripts",
 				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Config",
 				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Config/debugConfig.plist",
-				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Config/requires.plist",
+				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/requires.plist",
 				"$(SRCROOT)/../tools/simpleDebugConsole/Basic-debug.oxp/Scripts/oolite-mac-js-console.js",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
