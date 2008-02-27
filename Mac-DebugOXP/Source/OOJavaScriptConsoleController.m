@@ -66,6 +66,11 @@ enum
 @end
 
 
+@interface NSLayoutManager (Leopard)
+- (void)setAllowsNonContiguousLayout:(BOOL)flag;
+@end
+
+
 @implementation OOJavaScriptConsoleController
 
 - (void)dealloc
@@ -90,6 +95,12 @@ enum
 	assert(kConsoleTrimToSize < kConsoleMaxSize);
 	
 	_consoleScrollView = [consoleTextView enclosingScrollView];
+	
+	if ([[consoleTextView layoutManager] respondsToSelector:@selector(setAllowsNonContiguousLayout:)])
+	{
+		// Free performance boost in Leopard.
+		[[consoleTextView layoutManager] setAllowsNonContiguousLayout:YES];
+	}
 	
 	// Ensure auto-scrolling will work.
 	[[_consoleScrollView verticalScroller] setFloatValue:1.0];
