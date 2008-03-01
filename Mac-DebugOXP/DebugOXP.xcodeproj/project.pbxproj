@@ -100,6 +100,7 @@
 		1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jstypes.h; path = src/jstypes.h; sourceTree = "<group>"; };
 		1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = src/jsapi.h; sourceTree = "<group>"; };
 		1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsautocfg.h; path = xcode/jsautocfg.h; sourceTree = "<group>"; };
+		1A846BAB0D79F9680081280D /* oolite-version.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-version.xcconfig"; path = "../src/Cocoa/oolite-version.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
 		1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextFieldHistoryManager.m; sourceTree = "<group>"; };
 		1AF0246D0C99931C006F7275 /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		089C166AFE841209C02AAC07 /* DebugOXP */ = {
 			isa = PBXGroup;
 			children = (
+				1A846BAB0D79F9680081280D /* oolite-version.xcconfig */,
 				1A0518D00C7CC69600BA5CCA /* Source */,
 				1A4FB2F70C8DB87100DC8E1F /* SpiderMonkey headers */,
 				089C167CFE841241C02AAC07 /* Resources */,
@@ -315,7 +317,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; max_version = \\\"${VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n";
+			shellScript = "BASE_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.oxp/\"\n\n# Generate requires.plist file tying us to corresponding version of Oolite\nREQUIRES_PLIST=\"$BASE_PATH/requires.plist\"\necho \"{ version = \\\"${OOLITE_VERSION}\\\"; max_version = \\\"${OOLITE_VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 		1A2DA56B0CB7B6B000DE6823 /* Build Basic-debug.oxp */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -339,7 +341,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-debug-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/requires.plist\"\necho \"{ version = \\\"${VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
+			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-debug-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/requires.plist\"\necho \"{ version = \\\"${OOLITE_VERSION}\\\"; }\" > $REQUIRES_PLIST\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -404,6 +406,7 @@
 		};
 		1DEB913C08733D840010E9CD /* TestRelease */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A846BAB0D79F9680081280D /* oolite-version.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					ppc,
@@ -430,7 +433,6 @@
 				PRODUCT_NAME = Debug;
 				SYMROOT = ../build;
 				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
-				VERSION = 1.70;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
