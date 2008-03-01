@@ -365,6 +365,7 @@
 /* Begin XCBuildConfiguration section */
 		1DEB913B08733D840010E9CD /* Development */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A846BAB0D79F9680081280D /* oolite-version.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = ../build/Development/OoliteDev.app/Contents/MacOS/OoliteDev;
 				COPY_PHASE_STRIP = NO;
