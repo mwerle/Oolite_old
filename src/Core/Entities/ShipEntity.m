@@ -451,7 +451,9 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	
 	if (isSubentity)
 	{
-		[[self owner] subEntityReallyDied:self];
+		//on player loading ships with subentities, the subentities are attached to the sky object!
+		if (![[self owner] isSky])
+			[[self owner] subEntityReallyDied:self];
 	}
 	
 	[shipinfoDictionary release];
@@ -3083,7 +3085,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 	
 	// check if nearing surface
 	BOOL wasNearPlanetSurface = isNearPlanetSurface;
-	isNearPlanetSurface = (d2 - cr2 < 3600000.0);
+	isNearPlanetSurface = (d2 - cr2) < (250000.0f + 1000.0f * cr); //less than 500m from the surface: (a+b)*(a+b) = a*a+b*b +2*a*b
 	if ((!wasNearPlanetSurface)&&(isNearPlanetSurface))
 		[shipAI reactToMessage:@"APPROACHING_SURFACE"];
 	if ((wasNearPlanetSurface)&&(!isNearPlanetSurface))
