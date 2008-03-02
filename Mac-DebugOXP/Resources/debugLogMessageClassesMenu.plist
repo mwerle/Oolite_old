@@ -16,6 +16,8 @@
 	"General Errors",			$error,
 	"Script Errors",			$scriptError,
 	"Script Debug",				$scriptDebug,
+	"Script Trace",				"script.trace",
+	"Script Detailed Trace",	"script.debug.trace",
 	"Shader Debug",				$shaderDebugOn,
 	"Troubleshooting Dumps",	$troubleShootingDump,
 	"Entity State",				$entityState,
