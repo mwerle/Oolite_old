@@ -79,6 +79,13 @@ this.dumpObjectShort = function (x)
 }
 
 
+this.performLegacyCommand = function (x)
+{
+	let [command, params] = x.getOneToken();
+	return player.call(command, params);
+}
+
+
 // List the enumerable properties of an object, and their values.
 this.dumpObjectLong = function (x)
 {
