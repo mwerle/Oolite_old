@@ -41,10 +41,11 @@
 	// Automatic showing of console for various types of message
 	show-console-on-warning				= yes;	// JavaScript warning
 	show-console-on-error				= yes;	// JavaScript error or exception
-	show-console-on-log					= no;	// Log() or LogWithClass() called
+	show-console-on-log					= no;	// log() called
 	
 	
-	// Macro definitions for the console macro system (implemented in oolite-debug-console.js)
+	// Macro definitions for the console macro system (implemented in oolite-debug-console.js).
+	// Note that these call simple functions in oolite-debug-console.js, not magic functions provided by Oolite.
 	macros =
 	{
 		// Manipulating macros
@@ -81,8 +82,8 @@
 		// ":spawn foo" -- create a ship with role "foo" near the station.
 		"spawn"		= "system.legacy_addSystemShips(PARAM, 1, 1)";
 		
-		// For calling old-school scripting methods (on player), as in :: gui_screen_string
-		":"			= "player.call(PARAM)";
+		// For calling old-school scripting methods (on player), as in ":: gui_screen_string", or ":: playSound: boop.ogg"
+		":"			= "performLegacyCommand(PARAM)";
 	};
 	
 	
