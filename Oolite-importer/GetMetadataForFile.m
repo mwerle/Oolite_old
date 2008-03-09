@@ -33,6 +33,7 @@ MA 02110-1301, USA.
 #define kShipModels			@"org_aegidian_oolite_shipmodels"
 #define kCombatRating		@"org_aegidian_oolite_combatrating"
 #define kMinVersion			@"org_aegidian_oolite_minversion"
+#define kMaxVersion			@"org_aegidian_oolite_maxversion"
 
 static BOOL GetMetadataForSaveFile(void* thisInterface, NSMutableDictionary *attributes, NSString *pathToFile);
 static BOOL GetMetadataForOXP(void* thisInterface, NSMutableDictionary *attributes, NSString *pathToFile);
@@ -138,6 +139,9 @@ static BOOL GetMetadataForOXP(void* thisInterface, NSMutableDictionary *attribut
 	{
 		string = [content objectForKey:@"version"];
 		if (nil != string) [attributes setObject:string forKey:kMinVersion];
+		
+		string = [content objectForKey:@"max_version"];
+		if (nil != string) [attributes setObject:string forKey:kMaxVersion];
 	}
 	
 	subPath = [pathToFile stringByAppendingString:@"/Config/shipdata.plist"];
