@@ -21,6 +21,12 @@
 		1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */; };
 		1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */; };
 		1A4FB3030C8DB8AA00DC8E1F /* jsautocfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */; };
+		1A572FFD0D84BB77003D4A26 /* OOEntityInspector.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A572FFB0D84BB77003D4A26 /* OOEntityInspector.h */; };
+		1A572FFE0D84BB77003D4A26 /* OOEntityInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A572FFC0D84BB77003D4A26 /* OOEntityInspector.m */; };
+		1A5730020D84BFBF003D4A26 /* OODebugInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A5730000D84BFBF003D4A26 /* OODebugInspector.xib */; };
+		1A57300E0D84C10F003D4A26 /* OOEntityInspectorExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A57300C0D84C10F003D4A26 /* OOEntityInspectorExtensions.h */; };
+		1A57300F0D84C10F003D4A26 /* OOEntityInspectorExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */; };
+		1A5730A10D84D0C3003D4A26 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A57309F0D84D0C3003D4A26 /* Localizable.strings */; };
 		1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */; };
 		1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */; };
 		1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF0246D0C99931C006F7275 /* RBSplitSubview.h */; };
@@ -100,6 +106,12 @@
 		1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jstypes.h; path = src/jstypes.h; sourceTree = "<group>"; };
 		1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = src/jsapi.h; sourceTree = "<group>"; };
 		1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsautocfg.h; path = xcode/jsautocfg.h; sourceTree = "<group>"; };
+		1A572FFB0D84BB77003D4A26 /* OOEntityInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOEntityInspector.h; sourceTree = "<group>"; };
+		1A572FFC0D84BB77003D4A26 /* OOEntityInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOEntityInspector.m; sourceTree = "<group>"; };
+		1A5730010D84BFBF003D4A26 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OODebugInspector.xib; sourceTree = "<group>"; };
+		1A57300C0D84C10F003D4A26 /* OOEntityInspectorExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOEntityInspectorExtensions.h; sourceTree = "<group>"; };
+		1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOEntityInspectorExtensions.m; sourceTree = "<group>"; };
+		1A5730A00D84D0C3003D4A26 /* English */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 10; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1A846BAB0D79F9680081280D /* oolite-version.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-version.xcconfig"; path = "../src/Cocoa/oolite-version.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
 		1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextFieldHistoryManager.m; sourceTree = "<group>"; };
@@ -151,8 +163,10 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1A57309F0D84D0C3003D4A26 /* Localizable.strings */,
 				1A47F7010D6729F100E0A585 /* oolite-debug-console.js */,
 				1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */,
+				1A5730000D84BFBF003D4A26 /* OODebugInspector.xib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				1A0255330C7E1BF000F622D4 /* debugLogMessageClassesMenu.plist */,
 				1A2DA4380CB788DB00DE6823 /* debugConfig.plist */,
@@ -201,6 +215,7 @@
 				1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */,
 				1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */,
 				1AF0246C0C99931C006F7275 /* RBSplitView */,
+				1A572FFA0D84BAB9003D4A26 /* Inspector */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -215,6 +230,17 @@
 			);
 			name = "SpiderMonkey headers";
 			path = "../deps/Cross-platform-deps/SpiderMonkey/js";
+			sourceTree = "<group>";
+		};
+		1A572FFA0D84BAB9003D4A26 /* Inspector */ = {
+			isa = PBXGroup;
+			children = (
+				1A572FFB0D84BB77003D4A26 /* OOEntityInspector.h */,
+				1A572FFC0D84BB77003D4A26 /* OOEntityInspector.m */,
+				1A57300C0D84C10F003D4A26 /* OOEntityInspectorExtensions.h */,
+				1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */,
+			);
+			name = Inspector;
 			sourceTree = "<group>";
 		};
 		1AF0246C0C99931C006F7275 /* RBSplitView */ = {
@@ -245,6 +271,8 @@
 				1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */,
 				1AF024740C99931C006F7275 /* RBSplitView.h in Headers */,
 				1AF024760C99931C006F7275 /* RBSplitViewPrivateDefines.h in Headers */,
+				1A572FFD0D84BB77003D4A26 /* OOEntityInspector.h in Headers */,
+				1A57300E0D84C10F003D4A26 /* OOEntityInspectorExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +327,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */,
+				1A5730020D84BFBF003D4A26 /* OODebugInspector.xib in Resources */,
+				1A5730A10D84D0C3003D4A26 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,10 +387,31 @@
 				1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */,
 				1AF024730C99931C006F7275 /* RBSplitSubview.m in Sources */,
 				1AF024750C99931C006F7275 /* RBSplitView.m in Sources */,
+				1A572FFE0D84BB77003D4A26 /* OOEntityInspector.m in Sources */,
+				1A57300F0D84C10F003D4A26 /* OOEntityInspectorExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1A5730000D84BFBF003D4A26 /* OODebugInspector.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A5730010D84BFBF003D4A26 /* English */,
+			);
+			name = OODebugInspector.xib;
+			sourceTree = "<group>";
+		};
+		1A57309F0D84D0C3003D4A26 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A5730A00D84D0C3003D4A26 /* English */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB913B08733D840010E9CD /* Development */ = {
