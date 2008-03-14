@@ -48,7 +48,7 @@ show them, set the preference debug-show-extra-menu-items:
 
 #import <Cocoa/Cocoa.h>
 
-@class OOJavaScriptConsoleController, FScriptMenuItem;
+@class OOJavaScriptConsoleController;
 
 
 @interface OODebugController: NSObject
@@ -70,51 +70,52 @@ show them, set the preference debug-show-extra-menu-items:
 	
 	IBOutlet OOJavaScriptConsoleController	*jsConsoleController;
 	
-	IBOutlet FScriptMenuItem				*fscriptMenuItem;
-	
 	NSBundle								*_bundle;
 	
 }
 
-+ (id)sharedDebugController;
++ (id) sharedDebugController;
 
-- (NSBundle *)bundle;
-- (NSString *)pathForResource:(NSString *)name ofType:(NSString *)type;
+- (NSBundle *) bundle;
+- (NSString *) pathForResource:(NSString *)name ofType:(NSString *)type;
 
 // Debug menu commands
-- (IBAction)showLogAction:sender;
-- (IBAction)graphicsResetAction:sender;
-- (IBAction)clearTextureCacheAction:sender;
-- (IBAction)resetAndClearAction:sender;
-- (IBAction)dumpEntityListAction:sender;
-- (IBAction)dumpPlayerStateAction:sender;
-- (IBAction)createShipAction:sender;
-- (IBAction)clearAllCachesAction:sender;
-- (IBAction)toggleWireframeModeAction:sender;
+- (IBAction) showLogAction:sender;
+- (IBAction) graphicsResetAction:sender;
+- (IBAction) clearTextureCacheAction:sender;
+- (IBAction) resetAndClearAction:sender;
+- (IBAction) dumpEntityListAction:sender;
+- (IBAction) dumpPlayerStateAction:sender;
+- (IBAction) createShipAction:sender;
+- (IBAction) clearAllCachesAction:sender;
+- (IBAction) toggleWireframeModeAction:sender;
+- (IBAction) inspectPlayer:sender;
+- (IBAction) inspectTarget:sender;
+- (IBAction) cleanUpInspectors:sender;
 
 // Log Message Classes submenu
-- (IBAction)toggleThisLogMessageClassAction:sender;
-- (IBAction)otherLogMessageClassAction:sender;
+- (IBAction) toggleThisLogMessageClassAction:sender;
+- (IBAction) otherLogMessageClassAction:sender;
 
 // Log Message Classes -> Other... alert
-- (IBAction)logMsgClassPanelEnableAction:sender;
-- (IBAction)logMsgClassPanelDisableAction:sender;
+- (IBAction) logMsgClassPanelEnableAction:sender;
+- (IBAction) logMsgClassPanelDisableAction:sender;
 
 // Debug Flags submenu
-- (IBAction)toggleThisDebugFlagAction:sender;
+- (IBAction) toggleThisDebugFlagAction:sender;
 
 // Log Preferences window
-- (IBAction)showLogPreferencesAction:sender;
-- (IBAction)logSetShowAppNameAction:sender;
-- (IBAction)logSetShowFunctionAction:sender;
-- (IBAction)logSetShowFileAndLineAction:sender;
-- (IBAction)logSetShowMessageClassAction:sender;
+- (IBAction) showLogPreferencesAction:sender;
+- (IBAction) logSetShowAppNameAction:sender;
+- (IBAction) logSetShowFunctionAction:sender;
+- (IBAction) logSetShowFileAndLineAction:sender;
+- (IBAction) logSetShowMessageClassAction:sender;
 
-- (IBAction)insertLogSeparatorAction:sender;
+- (IBAction) insertLogSeparatorAction:sender;
 
 // Create Ship... alert
-- (IBAction)createShipPanelOKAction:sender;
+- (IBAction) createShipPanelOKAction:sender;
 
-- (IBAction)modalPanelCancelAction:sender;
+- (IBAction) modalPanelCancelAction:sender;
 
 @end

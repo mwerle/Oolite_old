@@ -9,16 +9,31 @@
 #import "Entity.h"
 
 
+@interface NSObject (OOInspectorExtensions)
+
+- (NSString *) inspDescription;
+- (NSString *) inspBasicIdentityLine;
+
+- (BOOL) inspHasSecondaryIdentityLine;
+- (NSString *) inspSecondaryIdentityLine;
+
+- (BOOL) inspCanBecomeTarget;
+- (void) inspBecomeTarget;
+
+- (void) inspect;
+
+@end
+
+
 @interface Entity (OOEntityInspectorExtensions)
 
-- (NSString *) inspBasicIdentityLine;
-- (NSString *) inspSecondaryIdentityLine;
 - (NSString *) inspScanClassLine;
 - (NSString *) inspStatusLine;
 - (NSString *) inspPositionLine;
 - (NSString *) inspVelocityLine;
 - (NSString *) inspOrientationLine;
 - (NSString *) inspEnergyLine;
+- (NSString *) inspOwnerLine;
 - (NSString *) inspTargetLine;
 
 @end

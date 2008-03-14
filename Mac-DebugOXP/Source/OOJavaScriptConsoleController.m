@@ -128,6 +128,12 @@ enum
 
 #pragma mark -
 
+- (IBAction) clearConsole:sender
+{
+	[self clearConsole];
+}
+
+
 - (IBAction)showConsole:sender
 {
 	[[OODebugMonitor sharedDebugMonitor] showJSConsole];

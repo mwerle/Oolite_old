@@ -11,9 +11,23 @@
 		1A02553C0C7E1C3400F622D4 /* DebugOXPLocatorBeacon.magic in Copy Files to Wrapper */ = {isa = PBXBuildFile; fileRef = 1A02553B0C7E1C3300F622D4 /* DebugOXPLocatorBeacon.magic */; };
 		1A0256260C7F0D7100F622D4 /* OOJavaScriptConsoleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0256240C7F0D7100F622D4 /* OOJavaScriptConsoleController.m */; };
 		1A02587D0C7F36CD00F622D4 /* OODebugUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A02587B0C7F36CD00F622D4 /* OODebugUtilities.m */; };
-		1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */; };
 		1A0518D30C7CC69600BA5CCA /* OODebugController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0518D20C7CC69600BA5CCA /* OODebugController.m */; };
+		1A0CF1B10D89FD7700E0B568 /* OOAIDebugInspectorModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A0CF1AF0D89FD7700E0B568 /* OOAIDebugInspectorModule.h */; };
+		1A0CF1B20D89FD7700E0B568 /* OOAIDebugInspectorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0CF1B00D89FD7700E0B568 /* OOAIDebugInspectorModule.m */; };
+		1A0CF1B70D89FD9A00E0B568 /* OOAIDebugInspectorModule.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0CF1B50D89FD9A00E0B568 /* OOAIDebugInspectorModule.xib */; };
+		1A0CF2000D8A083900E0B568 /* OODebugController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0CF1FE0D8A083900E0B568 /* OODebugController.xib */; };
 		1A2DA4390CB788DB00DE6823 /* debugConfig.plist in Copy Files to Config */ = {isa = PBXBuildFile; fileRef = 1A2DA4380CB788DB00DE6823 /* debugConfig.plist */; };
+		1A2DFAF50D8925CB0055CF71 /* OOEntityDebugInspectorModule.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A2DFAF30D8925CB0055CF71 /* OOEntityDebugInspectorModule.xib */; };
+		1A2DFAFA0D8925F70055CF71 /* OODebugInspectorModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2DFAF80D8925F70055CF71 /* OODebugInspectorModule.h */; };
+		1A2DFAFB0D8925F70055CF71 /* OODebugInspectorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2DFAF90D8925F70055CF71 /* OODebugInspectorModule.m */; };
+		1A2DFAFE0D89262E0055CF71 /* OOEntityDebugInspectorModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2DFAFC0D89262E0055CF71 /* OOEntityDebugInspectorModule.h */; };
+		1A2DFAFF0D89262E0055CF71 /* OOEntityDebugInspectorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2DFAFD0D89262E0055CF71 /* OOEntityDebugInspectorModule.m */; };
+		1A2DFB0A0D8927B20055CF71 /* OOObjectDebugInspectorModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2DFB080D8927B20055CF71 /* OOObjectDebugInspectorModule.h */; };
+		1A2DFB0B0D8927B20055CF71 /* OOObjectDebugInspectorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2DFB090D8927B20055CF71 /* OOObjectDebugInspectorModule.m */; };
+		1A2DFB0F0D8927F00055CF71 /* OOObjectDebugInspectorModule.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A2DFB0D0D8927F00055CF71 /* OOObjectDebugInspectorModule.xib */; };
+		1A2DFBC80D894A100055CF71 /* OOShipDebugInspectorModule.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A2DFBC60D894A100055CF71 /* OOShipDebugInspectorModule.xib */; };
+		1A2DFBCB0D894A1D0055CF71 /* OOShipDebugInspectorModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2DFBC90D894A1D0055CF71 /* OOShipDebugInspectorModule.h */; };
+		1A2DFBCC0D894A1D0055CF71 /* OOShipDebugInspectorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2DFBCA0D894A1D0055CF71 /* OOShipDebugInspectorModule.m */; };
 		1A47F7020D6729F100E0A585 /* oolite-debug-console.js in Copy Files to Scripts */ = {isa = PBXBuildFile; fileRef = 1A47F7010D6729F100E0A585 /* oolite-debug-console.js */; };
 		1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */; };
 		1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */; };
@@ -21,8 +35,8 @@
 		1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */; };
 		1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */; };
 		1A4FB3030C8DB8AA00DC8E1F /* jsautocfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */; };
-		1A572FFD0D84BB77003D4A26 /* OOEntityInspector.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A572FFB0D84BB77003D4A26 /* OOEntityInspector.h */; };
-		1A572FFE0D84BB77003D4A26 /* OOEntityInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A572FFC0D84BB77003D4A26 /* OOEntityInspector.m */; };
+		1A572FFD0D84BB77003D4A26 /* OODebugInspector.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A572FFB0D84BB77003D4A26 /* OODebugInspector.h */; };
+		1A572FFE0D84BB77003D4A26 /* OODebugInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A572FFC0D84BB77003D4A26 /* OODebugInspector.m */; };
 		1A5730020D84BFBF003D4A26 /* OODebugInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A5730000D84BFBF003D4A26 /* OODebugInspector.xib */; };
 		1A57300E0D84C10F003D4A26 /* OOEntityInspectorExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A57300C0D84C10F003D4A26 /* OOEntityInspectorExtensions.h */; };
 		1A57300F0D84C10F003D4A26 /* OOEntityInspectorExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */; };
@@ -95,10 +109,24 @@
 		1A02587A0C7F36CD00F622D4 /* OODebugUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugUtilities.h; sourceTree = "<group>"; };
 		1A02587B0C7F36CD00F622D4 /* OODebugUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugUtilities.m; sourceTree = "<group>"; };
 		1A0259B80C7F894100F622D4 /* FScript.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FScript.framework; sourceTree = "<group>"; };
-		1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = OODebugController.nib; sourceTree = "<group>"; };
 		1A0518D10C7CC69600BA5CCA /* OODebugController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugController.h; sourceTree = "<group>"; };
 		1A0518D20C7CC69600BA5CCA /* OODebugController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugController.m; sourceTree = "<group>"; };
+		1A0CF1AF0D89FD7700E0B568 /* OOAIDebugInspectorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOAIDebugInspectorModule.h; sourceTree = "<group>"; };
+		1A0CF1B00D89FD7700E0B568 /* OOAIDebugInspectorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOAIDebugInspectorModule.m; sourceTree = "<group>"; };
+		1A0CF1B60D89FD9A00E0B568 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OOAIDebugInspectorModule.xib; sourceTree = "<group>"; };
+		1A0CF1FF0D8A083900E0B568 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OODebugController.xib; sourceTree = "<group>"; };
 		1A2DA4380CB788DB00DE6823 /* debugConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = debugConfig.plist; sourceTree = "<group>"; };
+		1A2DFAF40D8925CB0055CF71 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OOEntityDebugInspectorModule.xib; sourceTree = "<group>"; };
+		1A2DFAF80D8925F70055CF71 /* OODebugInspectorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugInspectorModule.h; sourceTree = "<group>"; };
+		1A2DFAF90D8925F70055CF71 /* OODebugInspectorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugInspectorModule.m; sourceTree = "<group>"; };
+		1A2DFAFC0D89262E0055CF71 /* OOEntityDebugInspectorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOEntityDebugInspectorModule.h; sourceTree = "<group>"; };
+		1A2DFAFD0D89262E0055CF71 /* OOEntityDebugInspectorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOEntityDebugInspectorModule.m; sourceTree = "<group>"; };
+		1A2DFB080D8927B20055CF71 /* OOObjectDebugInspectorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOObjectDebugInspectorModule.h; sourceTree = "<group>"; };
+		1A2DFB090D8927B20055CF71 /* OOObjectDebugInspectorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOObjectDebugInspectorModule.m; sourceTree = "<group>"; };
+		1A2DFB0E0D8927F00055CF71 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OOObjectDebugInspectorModule.xib; sourceTree = "<group>"; };
+		1A2DFBC70D894A100055CF71 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OOShipDebugInspectorModule.xib; sourceTree = "<group>"; };
+		1A2DFBC90D894A1D0055CF71 /* OOShipDebugInspectorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOShipDebugInspectorModule.h; sourceTree = "<group>"; };
+		1A2DFBCA0D894A1D0055CF71 /* OOShipDebugInspectorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOShipDebugInspectorModule.m; sourceTree = "<group>"; };
 		1A47F7010D6729F100E0A585 /* oolite-debug-console.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-debug-console.js"; sourceTree = "<group>"; };
 		1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMacDebugger.h; sourceTree = "<group>"; };
 		1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMacDebugger.m; sourceTree = "<group>"; };
@@ -106,8 +134,8 @@
 		1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jstypes.h; path = src/jstypes.h; sourceTree = "<group>"; };
 		1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = src/jsapi.h; sourceTree = "<group>"; };
 		1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsautocfg.h; path = xcode/jsautocfg.h; sourceTree = "<group>"; };
-		1A572FFB0D84BB77003D4A26 /* OOEntityInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOEntityInspector.h; sourceTree = "<group>"; };
-		1A572FFC0D84BB77003D4A26 /* OOEntityInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOEntityInspector.m; sourceTree = "<group>"; };
+		1A572FFB0D84BB77003D4A26 /* OODebugInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugInspector.h; sourceTree = "<group>"; };
+		1A572FFC0D84BB77003D4A26 /* OODebugInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugInspector.m; sourceTree = "<group>"; };
 		1A5730010D84BFBF003D4A26 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OODebugInspector.xib; sourceTree = "<group>"; };
 		1A57300C0D84C10F003D4A26 /* OOEntityInspectorExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOEntityInspectorExtensions.h; sourceTree = "<group>"; };
 		1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOEntityInspectorExtensions.m; sourceTree = "<group>"; };
@@ -165,8 +193,12 @@
 			children = (
 				1A57309F0D84D0C3003D4A26 /* Localizable.strings */,
 				1A47F7010D6729F100E0A585 /* oolite-debug-console.js */,
-				1A0518CA0C7CC68A00BA5CCA /* OODebugController.nib */,
+				1A0CF1FE0D8A083900E0B568 /* OODebugController.xib */,
 				1A5730000D84BFBF003D4A26 /* OODebugInspector.xib */,
+				1A2DFB0D0D8927F00055CF71 /* OOObjectDebugInspectorModule.xib */,
+				1A2DFAF30D8925CB0055CF71 /* OOEntityDebugInspectorModule.xib */,
+				1A2DFBC60D894A100055CF71 /* OOShipDebugInspectorModule.xib */,
+				1A0CF1B50D89FD9A00E0B568 /* OOAIDebugInspectorModule.xib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				1A0255330C7E1BF000F622D4 /* debugLogMessageClassesMenu.plist */,
 				1A2DA4380CB788DB00DE6823 /* debugConfig.plist */,
@@ -235,10 +267,20 @@
 		1A572FFA0D84BAB9003D4A26 /* Inspector */ = {
 			isa = PBXGroup;
 			children = (
-				1A572FFB0D84BB77003D4A26 /* OOEntityInspector.h */,
-				1A572FFC0D84BB77003D4A26 /* OOEntityInspector.m */,
+				1A572FFB0D84BB77003D4A26 /* OODebugInspector.h */,
+				1A572FFC0D84BB77003D4A26 /* OODebugInspector.m */,
 				1A57300C0D84C10F003D4A26 /* OOEntityInspectorExtensions.h */,
 				1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */,
+				1A2DFAF80D8925F70055CF71 /* OODebugInspectorModule.h */,
+				1A2DFAF90D8925F70055CF71 /* OODebugInspectorModule.m */,
+				1A2DFB080D8927B20055CF71 /* OOObjectDebugInspectorModule.h */,
+				1A2DFB090D8927B20055CF71 /* OOObjectDebugInspectorModule.m */,
+				1A2DFAFC0D89262E0055CF71 /* OOEntityDebugInspectorModule.h */,
+				1A2DFAFD0D89262E0055CF71 /* OOEntityDebugInspectorModule.m */,
+				1A2DFBC90D894A1D0055CF71 /* OOShipDebugInspectorModule.h */,
+				1A2DFBCA0D894A1D0055CF71 /* OOShipDebugInspectorModule.m */,
+				1A0CF1AF0D89FD7700E0B568 /* OOAIDebugInspectorModule.h */,
+				1A0CF1B00D89FD7700E0B568 /* OOAIDebugInspectorModule.m */,
 			);
 			name = Inspector;
 			sourceTree = "<group>";
@@ -271,8 +313,13 @@
 				1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */,
 				1AF024740C99931C006F7275 /* RBSplitView.h in Headers */,
 				1AF024760C99931C006F7275 /* RBSplitViewPrivateDefines.h in Headers */,
-				1A572FFD0D84BB77003D4A26 /* OOEntityInspector.h in Headers */,
+				1A572FFD0D84BB77003D4A26 /* OODebugInspector.h in Headers */,
 				1A57300E0D84C10F003D4A26 /* OOEntityInspectorExtensions.h in Headers */,
+				1A2DFAFA0D8925F70055CF71 /* OODebugInspectorModule.h in Headers */,
+				1A2DFAFE0D89262E0055CF71 /* OOEntityDebugInspectorModule.h in Headers */,
+				1A2DFB0A0D8927B20055CF71 /* OOObjectDebugInspectorModule.h in Headers */,
+				1A2DFBCB0D894A1D0055CF71 /* OOShipDebugInspectorModule.h in Headers */,
+				1A0CF1B10D89FD7700E0B568 /* OOAIDebugInspectorModule.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,9 +373,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A0518CB0C7CC68A00BA5CCA /* OODebugController.nib in Resources */,
 				1A5730020D84BFBF003D4A26 /* OODebugInspector.xib in Resources */,
 				1A5730A10D84D0C3003D4A26 /* Localizable.strings in Resources */,
+				1A2DFAF50D8925CB0055CF71 /* OOEntityDebugInspectorModule.xib in Resources */,
+				1A2DFB0F0D8927F00055CF71 /* OOObjectDebugInspectorModule.xib in Resources */,
+				1A2DFBC80D894A100055CF71 /* OOShipDebugInspectorModule.xib in Resources */,
+				1A0CF1B70D89FD9A00E0B568 /* OOAIDebugInspectorModule.xib in Resources */,
+				1A0CF2000D8A083900E0B568 /* OODebugController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,14 +438,59 @@
 				1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */,
 				1AF024730C99931C006F7275 /* RBSplitSubview.m in Sources */,
 				1AF024750C99931C006F7275 /* RBSplitView.m in Sources */,
-				1A572FFE0D84BB77003D4A26 /* OOEntityInspector.m in Sources */,
+				1A572FFE0D84BB77003D4A26 /* OODebugInspector.m in Sources */,
 				1A57300F0D84C10F003D4A26 /* OOEntityInspectorExtensions.m in Sources */,
+				1A2DFAFB0D8925F70055CF71 /* OODebugInspectorModule.m in Sources */,
+				1A2DFAFF0D89262E0055CF71 /* OOEntityDebugInspectorModule.m in Sources */,
+				1A2DFB0B0D8927B20055CF71 /* OOObjectDebugInspectorModule.m in Sources */,
+				1A2DFBCC0D894A1D0055CF71 /* OOShipDebugInspectorModule.m in Sources */,
+				1A0CF1B20D89FD7700E0B568 /* OOAIDebugInspectorModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		1A0CF1B50D89FD9A00E0B568 /* OOAIDebugInspectorModule.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A0CF1B60D89FD9A00E0B568 /* English */,
+			);
+			name = OOAIDebugInspectorModule.xib;
+			sourceTree = "<group>";
+		};
+		1A0CF1FE0D8A083900E0B568 /* OODebugController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A0CF1FF0D8A083900E0B568 /* English */,
+			);
+			name = OODebugController.xib;
+			sourceTree = "<group>";
+		};
+		1A2DFAF30D8925CB0055CF71 /* OOEntityDebugInspectorModule.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A2DFAF40D8925CB0055CF71 /* English */,
+			);
+			name = OOEntityDebugInspectorModule.xib;
+			sourceTree = "<group>";
+		};
+		1A2DFB0D0D8927F00055CF71 /* OOObjectDebugInspectorModule.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A2DFB0E0D8927F00055CF71 /* English */,
+			);
+			name = OOObjectDebugInspectorModule.xib;
+			sourceTree = "<group>";
+		};
+		1A2DFBC60D894A100055CF71 /* OOShipDebugInspectorModule.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A2DFBC70D894A100055CF71 /* English */,
+			);
+			name = OOShipDebugInspectorModule.xib;
+			sourceTree = "<group>";
+		};
 		1A5730000D84BFBF003D4A26 /* OODebugInspector.xib */ = {
 			isa = PBXVariantGroup;
 			children = (

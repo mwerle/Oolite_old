@@ -55,21 +55,22 @@ SOFTWARE.
 										*_bgColors;
 }
 
-- (IBAction)showConsole:sender;
-- (IBAction)toggleShowOnLog:sender;
-- (IBAction)toggleShowOnWarning:sender;
-- (IBAction)toggleShowOnError:sender;
-- (IBAction)consolePerformCommand:sender;
+- (IBAction) clearConsole:sender;
+- (IBAction) showConsole:sender;
+- (IBAction) toggleShowOnLog:sender;
+- (IBAction) toggleShowOnWarning:sender;
+- (IBAction) toggleShowOnError:sender;
+- (IBAction) consolePerformCommand:sender;
 
-- (void)appendMessage:(NSString *)string
-			 colorKey:(NSString *)colorKey
-		emphasisRange:(NSRange)emphasisRange;
+- (void) appendMessage:(NSString *)string
+			  colorKey:(NSString *)colorKey
+		 emphasisRange:(NSRange)emphasisRange;
 
-- (void)clearConsole;
+- (void) clearConsole;
 - (void) doShowConsole;	// Show the debug console window. -showConsole: dispatches to the active debugger via the debug monitor, -doShowConsole shows the actual Mac console.
 
-- (void)noteConfigurationChanged:(NSString *)key;
+- (void) noteConfigurationChanged:(NSString *)key;
 
-- (void)setDebugger:(OOMacDebugger *)debugger;
+- (void) setDebugger:(OOMacDebugger *)debugger;
 
 @end

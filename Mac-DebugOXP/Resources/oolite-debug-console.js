@@ -16,12 +16,15 @@ The following properties are predefined for the script object:
 
 The console object has the following methods:
 
-function consoleMessage(colorCode: string, message: string) : void
+function consoleMessage(colorCode : String, message : String)
 	Similar to Log(), but takes a colour code which is looked up in
 	jsConsoleConfig.plist. null is equivalent to "general".
 
-function clearConsole() : void
+function clearConsole()
 	Clear the console.
+
+function inspectEntity(entity : Entity)
+	Show inspector palette for entity (Mac OS X only).
 
 
 Oolite Debug OXP
@@ -352,4 +355,11 @@ function ConsoleMessage()
 {
 	debugConsole.consoleMessage("warning", "Warning: ConsoleMessage() is deprecated. Use consoleMessage() instead.", 0, 8);
 	debugConsole.consoleMessage.apply(debugConsole, arguments);
+}
+
+
+// Add inspect() method to all entities, to show inspector palette (Mac OS X only; no effect on other platforms).
+Entity.__proto__.inspect = function ()
+{
+	debugConsole.inspectEntity(this);
 }

@@ -9,15 +9,65 @@
 #import "OOEntityInspectorExtensions.h"
 #import "OOConstToString.h"
 #import "PlayerEntity.h"
-#import "OOEntityInspector.h"
+#import "OODebugInspector.h"
+
+
+@implementation NSObject (OOInspectorExtensions)
+
+- (NSString *) inspDescription
+{
+	NSString *desc = [self shortDescriptionComponents];
+	if (desc == nil)  return [self className];
+	else  return [NSString stringWithFormat:@"%@ %@", [self className], desc];
+}
+
+
+- (NSString *) inspBasicIdentityLine
+{
+	return [self inspDescription];
+}
+
+
+- (BOOL) inspHasSecondaryIdentityLine
+{
+	return NO;
+}
+
+
+- (NSString *) inspSecondaryIdentityLine
+{
+	return nil;
+}
+
+- (BOOL) inspCanBecomeTarget
+{
+	return NO;
+}
+
+
+- (void) inspBecomeTarget
+{
+	
+}
+
+
+// Callable via JS Entity.inspect()
+- (void) inspect
+{
+	if ([self conformsToProtocol:@protocol(OOWeakReferenceSupport)])
+	{
+		[[OODebugInspector inspectorForObject:(id <OOWeakReferenceSupport>)self] bringToFront];
+	}
+}
+
+@end
 
 
 @implementation Entity (OOEntityInspectorExtensions)
 
-// Callable via JS Ship.call("inspect")
-- (void) inspect
+- (NSString *) inspDescription
 {
-	[OOEntityInspector inspect:self];
+	return [NSString stringWithFormat:@"%@ ID %u", [self class], [self universalID]];
 }
 
 
@@ -33,12 +83,6 @@
 	{
 		return [self className];
 	}
-}
-
-
-- (NSString *) inspSecondaryIdentityLine
-{
-	return nil;
 }
 
 
@@ -81,6 +125,13 @@
 }
 
 
+- (NSString *) inspOwnerLine
+{
+	if ([self owner] == self)  return @"Self";
+	return [[self owner] inspDescription];
+}
+
+
 - (NSString *) inspTargetLine
 {
 	return nil;
@@ -91,27 +142,39 @@
 
 @implementation ShipEntity (OOEntityInspectorExtensions)
 
+- (BOOL) inspHasSecondaryIdentityLine
+{
+	return YES;
+}
+
+
 - (NSString *) inspSecondaryIdentityLine
 {
 	return [self displayName];
 }
 
 
+- (NSString *) inspDescription
+{
+	return [NSString stringWithFormat:@"%@ ID %u", [self displayName], [self universalID]];
+}
+
+
 - (NSString *) inspTargetLine
 {
-	Entity *target = [self primaryTarget];
-	if ([target isKindOfClass:[PlayerEntity class]])
-	{
-		return [NSString stringWithFormat:@"Player"];
-	}
-	else if ([target isKindOfClass:[ShipEntity class]])
-	{
-		return [NSString stringWithFormat:@"%@ ID %u", [(ShipEntity *)target displayName], [target universalID]];
-	}
-	else
-	{
-		return [target shortDescription];
-	}
+	return [[self primaryTarget] inspDescription];
+}
+
+
+- (BOOL) inspCanBecomeTarget
+{
+	return ![self isSubEntity];
+}
+
+
+- (void) inspBecomeTarget
+{
+	if ([self inspCanBecomeTarget])  [[PlayerEntity sharedPlayer] addTarget:self];
 }
 
 @end
@@ -122,6 +185,18 @@
 - (NSString *) inspSecondaryIdentityLine
 {
 	return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"\"%@\", %@", nil, [NSBundle bundleForClass:[self class]], @""), player_name, [self displayName]];
+}
+
+
+- (BOOL) inspCanBecomeTarget
+{
+	return NO;
+}
+
+
+- (NSString *) inspDescription
+{
+	return @"Player";
 }
 
 @end

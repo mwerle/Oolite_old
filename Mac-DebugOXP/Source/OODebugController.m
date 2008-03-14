@@ -43,23 +43,8 @@ SOFTWARE.
 #import "OOCollectionExtractors.h"
 #import "OOLogOutputHandler.h"
 #import "OOJavaScriptEngine.h"
-
-#if INCLUDE_FSCRIPT_SUPPORT
-#import <FScript/FScript.h>
-#endif
-
-
-#if !INCLUDE_FSCRIPT_SUPPORT
-// Stub implementation of FScriptMenuItem to avoid console messages about nib loading problems.
-@interface FScriptMenuItem: NSMenuItem
-@end
-
-@implementation FScriptMenuItem: NSMenuItem
-- (IBAction)showPreferencePanel:sender {}
-- (IBAction)showConsole:sender {}
-- (IBAction)openObjectBrowser:sender {}
-@end
-#endif
+#import "OODebugInspector.h"
+#import "OOEntityInspectorExtensions.h"
 
 
 static OODebugController *sSingleton = nil;
@@ -151,15 +136,6 @@ static OODebugController *sSingleton = nil;
 {
 	
 	[logPrefsWindow center];
-	
-#if INCLUDE_FSCRIPT_SUPPORT
-	FSInterpreter				*interpreter = nil;
-	interpreter = [[fscriptMenuItem interpreterView] interpreter];
-	[interpreter setObject:UNIVERSE forIdentifier:@"universe"];
-	[interpreter setObject:[PlayerEntity sharedPlayer] forIdentifier:@"player"];
-#else
-	[[fscriptMenuItem menu] removeItem:fscriptMenuItem];
-#endif
 }
 
 
@@ -233,6 +209,24 @@ static OODebugController *sSingleton = nil;
 - (IBAction)toggleWireframeModeAction:sender
 {
 	[UNIVERSE setWireframeGraphics:![UNIVERSE wireframeGraphics]];
+}
+
+
+- (IBAction) inspectPlayer:sender
+{
+	[[PlayerEntity sharedPlayer] inspect];
+}
+
+
+- (IBAction) inspectTarget:sender
+{
+	[[[PlayerEntity sharedPlayer] primaryTarget] inspect];
+}
+
+
+- (IBAction) cleanUpInspectors:sender
+{
+	[OODebugInspector cleanUpInspectors];
 }
 
 
@@ -389,6 +383,10 @@ static OODebugController *sSingleton = nil;
 	{
 		[menuItem setState:!![UNIVERSE wireframeGraphics]];		
 		return YES;
+	}
+	if (action == @selector(inspectTarget:))
+	{
+		return [[PlayerEntity sharedPlayer] primaryTarget] != nil;
 	}
 	
 	return [self respondsToSelector:action];
