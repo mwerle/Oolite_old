@@ -55,6 +55,7 @@
 	{
 		[_AIField setStringValue:placeholder];
 	}
+	[_brainField setStringValue:[[object brain] shortDescription] ?: placeholder];
 	[_behaviourField setStringValue:object ? BehaviourToString([object behaviour]) : placeholder];
 	[_scriptField setStringValue:[[object script] name] ?: placeholder];
 	if (object != nil)
@@ -90,6 +91,12 @@
 - (IBAction) inspectAI:sender
 {
 	[[[self object] getAI] inspect];
+}
+
+
+- (IBAction) inspectBrain:sender
+{
+	[[[self object] brain] inspect];
 }
 
 @end
