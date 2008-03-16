@@ -15,7 +15,7 @@
 	IBOutlet NSTextField		*_otherRolesField;
 	IBOutlet NSTextField		*_targetField;
 	IBOutlet NSTextField		*_AIField;
-	IBOutlet NSTextField		*_brainField;
+	IBOutlet NSButton			*_reportAIMessagesCheckBox;
 	IBOutlet NSTextField		*_behaviourField;
 	IBOutlet NSTextField		*_scriptField;
 	IBOutlet NSTextField		*_laserTempField;
@@ -28,6 +28,6 @@
 
 - (IBAction) inspectTarget:sender;
 - (IBAction) inspectAI:sender;
-- (IBAction) inspectBrain:sender;
+- (IBAction) takeReportAIMessagesFrom:sender;
 
 @end

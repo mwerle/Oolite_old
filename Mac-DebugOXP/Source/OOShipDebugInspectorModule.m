@@ -55,7 +55,7 @@
 	{
 		[_AIField setStringValue:placeholder];
 	}
-	[_brainField setStringValue:[[object brain] shortDescription] ?: placeholder];
+	[_reportAIMessagesCheckBox setState:[object reportAIMessages]];
 	[_behaviourField setStringValue:object ? BehaviourToString([object behaviour]) : placeholder];
 	[_scriptField setStringValue:[[object script] name] ?: placeholder];
 	if (object != nil)
@@ -94,9 +94,9 @@
 }
 
 
-- (IBAction) inspectBrain:sender
+- (IBAction) takeReportAIMessagesFrom:sender
 {
-	[[[self object] brain] inspect];
+	[[self object] setReportAIMessages:[sender state]];
 }
 
 @end
