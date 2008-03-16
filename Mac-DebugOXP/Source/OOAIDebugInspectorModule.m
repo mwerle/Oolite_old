@@ -32,7 +32,6 @@
 		[_stackDepthField setStringValue:placeholder];
 		[_timeToThinkField setStringValue:placeholder];
 	}
-	[_instinctField setStringValue:[[object rulingInstinct] shortDescription] ?: placeholder];
 }
 
 

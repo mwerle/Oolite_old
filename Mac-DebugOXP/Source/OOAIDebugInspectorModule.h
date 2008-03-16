@@ -15,7 +15,6 @@
 	IBOutlet NSTextField		*_stateField;
 	IBOutlet NSTextField		*_stackDepthField;
 	IBOutlet NSTextField		*_timeToThinkField;
-	IBOutlet NSTextField		*_instinctField;
 }
 
 - (IBAction) thinkNow:sender;
