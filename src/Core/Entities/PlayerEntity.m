@@ -4331,10 +4331,10 @@ double scoopSoundPlayTime = 0.0;
 			int growl_min_priority = 3;
 			if ([prefs objectForKey:@"groolite-min-priority"])
 				growl_min_priority = [prefs integerForKey:@"groolite-min-priority"];
-			if ((growl_min_priority < -2)||(growl_min_priority > 3))
+			if ((growl_min_priority < kGroolitePriorityMinimum)||(growl_min_priority > kGroolitePriorityMaximum))
 			{
-				growl_min_priority = 3;
-				[prefs setInteger:3 forKey:@"groolite-min-priority"];
+				growl_min_priority = kGroolitePriorityMaximum;
+				[prefs setInteger:kGroolitePriorityMaximum forKey:@"groolite-min-priority"];
 			}
 			growl_priority_desc = [Groolite priorityDescription:growl_min_priority];
 			[gui setText:[NSString stringWithFormat:DESC(@"gameoptions-show-growl-messages-@"), growl_priority_desc]
@@ -4348,9 +4348,7 @@ double scoopSoundPlayTime = 0.0;
 		else
 			[gui setText:DESC(@"gameoptions-spoken-messages-no") forRow:GUI_ROW_GAMEOPTIONS_SPEECH align:GUI_ALIGN_CENTER];
 		[gui setKey:GUI_KEY_OK forRow:GUI_ROW_GAMEOPTIONS_SPEECH];
-
 #else
-
 		// window/fullscreen
 		if([gameView inFullScreenMode])
 		{

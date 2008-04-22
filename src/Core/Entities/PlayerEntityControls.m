@@ -1975,10 +1975,10 @@ static NSTimeInterval	time_last_frame;
 				new_priority--;
 			if (leftKeyDown)
 				new_priority++;
-			if (new_priority < -2)	// sanity check values -2 .. 3
-				new_priority = -2;
-			if (new_priority > 3)
-				new_priority = 3;
+			if (new_priority < kGroolitePriorityMinimum)	// sanity check values -2 .. 3
+				new_priority = kGroolitePriorityMinimum;
+			if (new_priority > kGroolitePriorityMaximum)
+				new_priority = kGroolitePriorityMaximum;
 			if (new_priority != growl_min_priority)
 			{
 				growl_min_priority = new_priority;
