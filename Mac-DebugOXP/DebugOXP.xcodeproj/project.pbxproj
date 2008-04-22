@@ -541,7 +541,6 @@
 				PRODUCT_NAME = Debug;
 				SYMROOT = ../build;
 				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
-				VERSION = 1.71;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
