@@ -32,6 +32,7 @@ MA 02110-1301, USA.
 #define kShipRoles			@"org_aegidian_oolite_shiproles"
 #define kShipModels			@"org_aegidian_oolite_shipmodels"
 #define kCombatRating		@"org_aegidian_oolite_combatrating"
+#define kSystemName			@"org_aegidian_oolite_systemname"
 #define kMinVersion			@"org_aegidian_oolite_minversion"
 #define kMaxVersion			@"org_aegidian_oolite_maxversion"
 
@@ -91,6 +92,9 @@ static BOOL GetMetadataForSaveFile(void* thisInterface, NSMutableDictionary *att
 		
 		value = [content objectForKey:@"ship_name"];
 		if (nil != value)  [attributes setObject:[NSArray arrayWithObject:value] forKey:kShipClassNames];
+		
+		value = [content objectForKey:@"current_system_name"];
+		if (nil != value)  [attributes setObject:value forKey:kSystemName];
 		
 		value = [content objectForKey:@"comm_log"];
 		if (0 != [value count])  [attributes setObject:[value componentsJoinedByString:@"\n"] forKey:(NSString *)kMDItemTextContent];
