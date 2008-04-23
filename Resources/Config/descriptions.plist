@@ -571,7 +571,7 @@
 		"%H Station does NOT welcome fugitives!"
 	);
 	// /station
-	"fined" =
+	"fined-llu" =
 	(
 		"You have been fined %llu credits.",
 		"You have been fined %llu credits, and made to pick up litter in the main hangar deck.",

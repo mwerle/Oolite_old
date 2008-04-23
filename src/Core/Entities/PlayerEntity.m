@@ -5740,7 +5740,7 @@ OOSound* burnersound;
 		credits -= fine;
 	}
 	fine /= 10;	// divide by ten for display
-	NSString* fined_message = [NSString stringWithFormat:ExpandDescriptionForCurrentSystem(@"[fined]"), (unsigned long long)fine];
+	NSString* fined_message = [NSString stringWithFormat:ExpandDescriptionForCurrentSystem(@"[fined-llu]"), (unsigned long long)fine];
 	[UNIVERSE addMessage:fined_message forCount:6];
 	ship_clock_adjust = 24 * 3600;	// take up a day
 	if (gui_screen != GUI_SCREEN_STATUS)
