@@ -34,6 +34,6 @@ this.version		= "1.71.1";
 
 this.shipDied = function ()
 {
-	this.spawn("cloaking-device");
+	this.ship.spawn("cloaking-device");
 	missionVariables.cloak = "COMPLETE";
 }
