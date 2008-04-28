@@ -217,6 +217,10 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	
 	isShip = YES;
 	
+	// In order for default values to work and float values to not be junk,
+	// replace nil with empty dictionary. -- Ahruman 2008-04-28
+	if (shipDict == nil)  shipDict = [NSDictionary dictionary];
+	
 	// FIXME: like_ships should have been resolved before getting here. Replace with assert for no like_ship after 1.71 release. -- Ahruman 2008-04-19
 	// check if this is based upon a different ship
 	for (;;)
