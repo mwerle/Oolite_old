@@ -996,8 +996,8 @@
 	// delivery reports
 	"arrival-report-title"			= "%H Arrival Report";
 	
-	"passenger-delivered-okay-@-llu-@" = "%@ thanks you, and pays you %lld ₢ for delivering them to %@.";
-	"passenger-delivered-late-@-llu-@" = "%@ pays you %lld ₢ for eventually delivering them to %@.";
+	"passenger-delivered-okay-@-llu-@" = "%@ thanks you, and pays you %llu ₢ for delivering them to %@.";
+	"passenger-delivered-late-@-llu-@" = "%@ pays you %llu ₢ for eventually delivering them to %@.";
 	"passenger-failed-@"			= "%@ leaves your ship, annoyed that you have wasted so much of their time.";
 	
 	"cargo-delivered-okay-@-f"		= "Droids unload the %@ and you are paid %.1f ₢.";
