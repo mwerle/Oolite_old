@@ -6,6 +6,7 @@
 
 static OOProbabilitySet *SetUpTestSet1(void);
 static OOProbabilitySet *SetUpTestSet2(void);
+static OOProbabilitySet *SetUpTestSet3(void);
 static void PresentHistogram(NSCountedSet *histogram);
 
 
@@ -46,6 +47,10 @@ int main (int argc, const char * argv[])
 		[histogram addObject:object];
 	}
 	
+	// Test non-empty all-zero set
+	pset = SetUpTestSet3();
+	NSLog(@"Random item from set with all-zero weights: %@", [pset randomObject]);
+	
 	PresentHistogram(histogram);
 	
 	return 0;
@@ -77,7 +82,7 @@ static OOProbabilitySet *SetUpTestSet2(void)
 	id plist = [@"{ objects = (Five, One, Three, Zero, \"Also one\" ); weights = (5, 1, 3, 0, 1); }" propertyList];
 	return [OOProbabilitySet probabilitySetWithPropertyListRepresentation:plist];
 #else
-	OOMutableProbabilitySet *pset = [[OOMutableProbabilitySet alloc] init];
+	OOMutableProbabilitySet *pset = [OOMutableProbabilitySet probabilitySet];
 	[pset setWeight:5 forObject:@"Five"];
 	[pset setWeight:5 forObject:@"Three"];	// To test replacement
 	[pset setWeight:3 forObject:@"Three"];
@@ -87,6 +92,16 @@ static OOProbabilitySet *SetUpTestSet2(void)
 	
 	return pset;
 #endif
+}
+
+
+static OOProbabilitySet *SetUpTestSet3(void)
+{
+	OOMutableProbabilitySet *pset = [OOMutableProbabilitySet probabilitySet];
+	[pset setWeight:0 forObject:@"A"];
+	[pset setWeight:0 forObject:@"B"];
+	[pset setWeight:0 forObject:@"C"];
+	return [pset copy];
 }
 
 
