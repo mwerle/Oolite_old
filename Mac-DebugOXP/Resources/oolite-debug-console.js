@@ -14,7 +14,7 @@ add debugger commands using a customized version of this script.
 The following properties are predefined for the script object:
 	console: the console object.
 
-The console object has the following methods:
+The console object has the following properties and methods:
 
 function consoleMessage(colorCode : String, message : String)
 	Similar to Log(), but takes a colour code which is looked up in
@@ -25,6 +25,30 @@ function clearConsole()
 
 function inspectEntity(entity : Entity)
 	Show inspector palette for entity (Mac OS X only).
+
+debugFlags
+	An integer bit mask specifying various debug options. The flags vary
+	between builds, but at the time of writing they are:
+		DEBUG_LINKED_LISTS:		0x1
+		DEBUG_ENTITIES:			0x2
+		DEBUG_COLLISIONS:		0x4
+		DEBUG_DOCKING:			0x8
+		DEBUG_OCTREE:			0x10
+		DEBUG_OCTREE_TEXT:		0x20
+		DEBUG_BOUNDING_BOXES:	0x40
+		DEBUG_OCTREE_DRAW:		0x80
+		DEBUG_DRAW_NORMALS:		0x100
+		DEBUG_HIDDEN_SUN:		0x200
+		The current flags can be seen in Universe.h in the Oolite source code,
+		for instance at:
+		http://svn.berlios.de/svnroot/repos/oolite-linux/trunk/src/Core/Universe.h
+	For example, to enable rendering of bounding boxes and surface normals,
+	you might use:
+		console.debugFlags ^= 0x40
+		console.debugFlags ^= 0x100
+	Explaining bitwise operations is beyond the scope of this comment, but
+	the ^= operator (XOR assign) can be thought of as a “toggle option”
+	command.
 
 
 Oolite Debug OXP

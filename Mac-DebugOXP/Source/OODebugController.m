@@ -273,7 +273,9 @@ static OODebugController *sSingleton = nil;
 
 - (IBAction)toggleThisDebugFlagAction:sender
 {
-	gDebugFlags ^= [sender tag];
+//	gDebugFlags ^= [sender tag];
+	NSString *command = [NSString stringWithFormat:@"console.debugFlags ^= 0x%.X", [sender tag]];
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
 }
 
 
