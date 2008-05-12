@@ -3253,6 +3253,7 @@ double scoopSoundPlayTime = 0.0;
 - (void) markAsOffender:(int)offence_value
 {
 	legalStatus |= offence_value;
+	bounty = legalStatus;
 }
 
 
@@ -6144,6 +6145,7 @@ OOSound* burnersound;
 			if (potential_target->zero_distance < SCANNER_MAX_RANGE2)
 			{
 				[super addTarget:potential_target];
+				if (missile_status == MISSILE_STATUS_SAFE) ident_engaged = YES;
 				missile_status = MISSILE_STATUS_TARGET_LOCKED;
 				[self printIdentLockedOnForMissile:!ident_engaged];
 				[self playTargetSwitched];
