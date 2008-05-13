@@ -2726,12 +2726,25 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 }
 
 
-- (NSArray *) planets
+- (NSMutableArray *) planets
 {
 	return [self findEntitiesMatchingPredicate:IsPlanetPredicate
 									 parameter:NULL
 									   inRange:-1
 									  ofEntity:nil];
+}
+
+
+- (NSMutableArray *) planetsAndSun
+{
+	NSMutableArray *result = [self planets];
+	PlanetEntity *theSun = [self sun];
+	if (theSun != nil)
+	{
+		if (result != nil)  [result addObject:theSun];
+		else  result = [NSMutableArray arrayWithObject:theSun];
+	}
+	return result;
 }
 
 

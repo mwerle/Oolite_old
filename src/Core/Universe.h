@@ -311,7 +311,8 @@ enum
 - (StationEntity *) station;
 - (PlanetEntity *) planet;
 - (PlanetEntity *) sun;
-- (NSArray *) planets;	// Note: does not include sun.
+- (NSMutableArray *) planets;	// Note: does not include sun.
+- (NSMutableArray *) planetsAndSun;
 
 // Turn main station into just another station, for blowUpStation.
 - (void) unMagicMainStation;
