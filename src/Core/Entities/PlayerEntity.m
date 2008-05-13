@@ -3253,7 +3253,6 @@ double scoopSoundPlayTime = 0.0;
 - (void) markAsOffender:(int)offence_value
 {
 	legalStatus |= offence_value;
-	bounty = legalStatus;
 }
 
 
