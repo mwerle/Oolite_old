@@ -3504,7 +3504,10 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 		}
 	}
 	
-	if (d2 < cr2 * 9.0f) // to 3x radius of planet
+	d2 = magnitude2(vector_subtract([[UNIVERSE planet] position], [self position]));
+	cr2 = [[UNIVERSE planet] collisionRadius];
+	cr2 *= cr2;
+	if (d2 < cr2 * 9.0f) // to 3x radius of main planet
 	{
 		result = AEGIS_CLOSE_TO_PLANET;
 	}
