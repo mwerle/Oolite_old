@@ -26,6 +26,9 @@ function clearConsole()
 function inspectEntity(entity : Entity)
 	Show inspector palette for entity (Mac OS X only).
 
+function __callObjCMethod()
+	Implements call() for entities.
+
 debugFlags
 	An integer bit mask specifying various debug options. The flags vary
 	between builds, but at the time of writing they are:
@@ -386,3 +389,7 @@ Entity.__proto__.inspect = function ()
 {
 	debugConsole.inspectEntity(this);
 }
+
+
+// Add call() method to all entities (calls an Objective-C method directly), now only available with debug OXP to avoid abuse.
+Entity.__proto__.call = debugConsole.__callObjCMethod;
