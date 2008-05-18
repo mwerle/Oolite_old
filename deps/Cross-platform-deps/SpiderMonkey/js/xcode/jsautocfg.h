@@ -4,9 +4,6 @@
 /*	Based on an auto-generated file, but modified for Universal Mac OS X builds. */
 
 
-#define MOZILLA_1_8_BRANCH
-
-
 #if __BIG_ENDIAN__
 	#undef  IS_LITTLE_ENDIAN
 	#define IS_BIG_ENDIAN 1
