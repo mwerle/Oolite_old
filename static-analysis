@@ -1,0 +1,9 @@
+#! /bin/sh
+
+#if [ -e Analysis ]
+#then
+#	rm -rf Analysis
+#fi
+
+xcodebuild clean -project Oolite.xcodeproj -configuration Development -target "Build All"
+scan-build -k -o Analysis xcodebuild -project Oolite.xcodeproj -configuration Development -target "Build All" > Analysis.log
