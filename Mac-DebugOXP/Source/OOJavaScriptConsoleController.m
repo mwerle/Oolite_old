@@ -275,7 +275,7 @@ enum
 
 #pragma mark -
 
-- (BOOL)validateMenuItem:(id <NSMenuItem>)menuItem
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
 	SEL							action = NULL;
 	OODebugMonitor				*monitor = nil;

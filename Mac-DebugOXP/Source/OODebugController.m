@@ -361,7 +361,7 @@ static OODebugController *sSingleton = nil;
 
 #pragma mark -
 
-- (BOOL)validateMenuItem:(id <NSMenuItem>)menuItem
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
 	SEL							action = NULL;
 	NSString					*msgClass = nil;
