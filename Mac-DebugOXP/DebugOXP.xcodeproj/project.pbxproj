@@ -525,7 +525,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
-				BUNDLE_LOADER = ../build/Development/OoliteDev.app/Contents/MacOS/OoliteDev;
+				BUNDLE_LOADER = "../build/Debug GCC 4.2/Leopard/OoliteDev.app/Contents/MacOS/OoliteDev";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = (
