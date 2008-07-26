@@ -523,6 +523,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1A846BAB0D79F9680081280D /* oolite-version.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
 				BUNDLE_LOADER = ../build/Development/OoliteDev.app/Contents/MacOS/OoliteDev;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -560,7 +562,7 @@
 			};
 			name = "Debug GCC 4.2/Leopard";
 		};
-		1DEB913B08733D840010E9CD /* Development */ = {
+		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1A846BAB0D79F9680081280D /* oolite-version.xcconfig */;
 			buildSettings = {
@@ -599,7 +601,7 @@
 				);
 				WRAPPER_EXTENSION = oxp;
 			};
-			name = Development;
+			name = Debug;
 		};
 		1DEB913C08733D840010E9CD /* TestRelease */ = {
 			isa = XCBuildConfiguration;
@@ -640,7 +642,7 @@
 			};
 			name = TestRelease;
 		};
-		1DEB913F08733D840010E9CD /* Development */ = {
+		1DEB913F08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -648,7 +650,7 @@
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = Development;
+			name = Debug;
 		};
 		1DEB914008733D840010E9CD /* TestRelease */ = {
 			isa = XCBuildConfiguration;
@@ -666,7 +668,7 @@
 		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "DebugOXP" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB913B08733D840010E9CD /* Development */,
+				1DEB913B08733D840010E9CD /* Debug */,
 				1A581F830E311D5C007594C1 /* Debug GCC 4.2/Leopard */,
 				1DEB913C08733D840010E9CD /* TestRelease */,
 			);
@@ -676,7 +678,7 @@
 		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "DebugOXP" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB913F08733D840010E9CD /* Development */,
+				1DEB913F08733D840010E9CD /* Debug */,
 				1A581F820E311D5C007594C1 /* Debug GCC 4.2/Leopard */,
 				1DEB914008733D840010E9CD /* TestRelease */,
 			);

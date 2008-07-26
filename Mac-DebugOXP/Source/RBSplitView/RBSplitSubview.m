@@ -635,7 +635,7 @@ static animationData* currentAnimation = NULL;
 - (animationData*)RB___animationData:(BOOL)start resize:(BOOL)resize {
 	if (currentAnimation&&(currentAnimation->owner!=self)) {
 // There already is an animation in progress on some other subview.
-		return nil;
+		return NULL;
 	}
 	if (start) {
 // We want to start (or restart) an animation.

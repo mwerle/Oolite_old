@@ -480,7 +480,7 @@ static OODebugController *sSingleton = nil;
 }
 
 
-- (unsigned)retainCount
+- (OOUInteger)retainCount
 {
 	return UINT_MAX;
 }

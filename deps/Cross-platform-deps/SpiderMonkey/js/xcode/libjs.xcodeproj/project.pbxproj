@@ -299,7 +299,19 @@
 			};
 			name = TestRelease;
 		};
-		1DEB91EC08733DB70010E9CD /* Development */ = {
+		1AD6B24A0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				GCC_VERSION = 4.2;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+			};
+			name = "Debug GCC 4.2/Leopard";
+		};
+		1AD6B24B0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALL_CONFIG_MACROS = "JS_HAVE_LONG_LONG XP_UNIX JS_C_STRINGS_ARE_UTF8 NAME_ALL_GC_ROOTS";
@@ -319,7 +331,29 @@
 				PRODUCT_NAME = js;
 				SYMROOT = ../../../../../build;
 			};
-			name = Development;
+			name = "Debug GCC 4.2/Leopard";
+		};
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALL_CONFIG_MACROS = "JS_HAVE_LONG_LONG XP_UNIX JS_C_STRINGS_ARE_UTF8 NAME_ALL_GC_ROOTS";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					$ALL_CONFIG_MACROS,
+					DEBUG,
+					DEBUG_brendan,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = js;
+				SYMROOT = ../../../../../build;
+			};
+			name = Debug;
 		};
 		1DEB91ED08733DB70010E9CD /* Deployment */ = {
 			isa = XCBuildConfiguration;
@@ -342,7 +376,7 @@
 			};
 			name = Deployment;
 		};
-		1DEB91F008733DB70010E9CD /* Development */ = {
+		1DEB91F008733DB70010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -350,7 +384,7 @@
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = Development;
+			name = Debug;
 		};
 		1DEB91F108733DB70010E9CD /* Deployment */ = {
 			isa = XCBuildConfiguration;
@@ -368,7 +402,8 @@
 		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libjs" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB91EC08733DB70010E9CD /* Development */,
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1AD6B24B0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */,
 				1DEB91ED08733DB70010E9CD /* Deployment */,
 				1A6B50330C8B42130035DFCC /* TestRelease */,
 			);
@@ -378,7 +413,8 @@
 		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "libjs" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB91F008733DB70010E9CD /* Development */,
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1AD6B24A0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */,
 				1DEB91F108733DB70010E9CD /* Deployment */,
 				1A6B50340C8B42130035DFCC /* TestRelease */,
 			);

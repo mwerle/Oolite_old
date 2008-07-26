@@ -7,7 +7,7 @@
 //	Some Rights Reserved under the Creative Commons Attribution License, version 2.5, and/or the MIT License.
 //
 
-#import <Cocoa/Cocoa.h>
+#import "OOCocoa.h"
 
 @class RBSplitView;
 
@@ -35,7 +35,7 @@ typedef enum {
 	NSRect previous;				// Holds the frame rect for the last delegate notification.
 	NSSize savedSize;				// This holds the size the subview had before it was resized beyond
 									// its minimum or maximum limits. Valid if notInLimits is YES.
-	unsigned int actDivider;		// This is set temporarily while an alternate drag view is being dragged.
+	OOUInteger actDivider;			// This is set temporarily while an alternate drag view is being dragged.
 	BOOL canDragWindow;				// This is set temporarily during a mouseDown on a non-opaque subview.
 	BOOL canCollapse;				// YES if the subview can be collapsed.
 	BOOL notInLimits;				// YES if the subview's dimensions are outside the set limits.
