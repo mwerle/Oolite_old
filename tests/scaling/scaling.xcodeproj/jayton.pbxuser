@@ -1,19 +1,13 @@
 // !$*UTF8*$!
 {
-	1A08338E0C2F279700E3AE25 /* XCBreakpointsBucket */ = {
-		isa = XCBreakpointsBucket;
-		name = scaling;
-		objects = (
-		);
-	};
 	1A45B0790BD8E22C0078EA87 /* scaling */ = {
 		isa = PBXExecutable;
-		activeArgIndex = 2147483647;
 		activeArgIndices = (
 		);
 		argumentStrings = (
 		);
 		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
 		configStateDict = {
 		};
 		customDataFormattersEnabled = 1;
@@ -69,8 +63,9 @@
 	};
 	1A45B0A70BD8E30F0078EA87 /* OOTextureLoader.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 1792}}";
-			sepNavSelRange = "{2563, 24}";
+			sepNavIntBoundsRect = "{{0, 0}, {1087, 1716}}";
+			sepNavSelRange = "{3738, 18}";
+			sepNavVisRange = "{1844, 2036}";
 			sepNavVisRect = "{{0, 955}, {1184, 836}}";
 		};
 	};
@@ -104,9 +99,17 @@
 	};
 	1A45B0E80BD8E3EA0078EA87 /* OOLogging.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 2272}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1087, 2535}}";
 			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{1848, 2860}";
 			sepNavVisRect = "{{0, 0}, {1184, 836}}";
+		};
+	};
+	1A45B1B40BD8EB410078EA87 /* OOCollectionExtractors.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1087, 6279}}";
+			sepNavSelRange = "{2660, 0}";
+			sepNavVisRange = "{953, 4059}";
 		};
 	};
 	1A45B2AA0BD930550078EA87 /* logcontrol.plist */ = {
@@ -125,7 +128,6 @@
 		);
 		breakpoints = (
 		);
-		breakpointsGroup = 1A08338E0C2F279700E3AE25 /* XCBreakpointsBucket */;
 		codeSenseManager = 1A45B0850BD8E23F0078EA87 /* Code sense */;
 		executables = (
 			1A45B0790BD8E22C0078EA87 /* scaling */,
@@ -170,8 +172,8 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					200,
-					68,
+					208,
+					60,
 					20,
 					48,
 					43,
@@ -187,8 +189,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 207337981;
-			PBXWorkspaceStateSaveDate = 207337981;
+			PBXPerProjectTemplateStateSaveDate = 238867597;
+			PBXWorkspaceStateSaveDate = 238867597;
 		};
 		sourceControlManager = 1A45B0840BD8E23F0078EA87 /* Source Control */;
 		userBuildSettings = {
@@ -196,15 +198,17 @@
 	};
 	29B97316FDCFA39411CA2CEA /* main.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {946, 3120}}";
-			sepNavSelRange = "{3891, 126}";
+			sepNavIntBoundsRect = "{{0, 0}, {1087, 3237}}";
+			sepNavSelRange = "{4477, 0}";
+			sepNavVisRange = "{3069, 2359}";
 			sepNavVisRect = "{{0, 2283}, {946, 836}}";
 		};
 	};
 	32CA4F630368D1EE00C91783 /* scaling_Prefix.pch */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1242, 837}}";
-			sepNavSelRange = "{145, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {1087, 1117}}";
+			sepNavSelRange = "{138, 0}";
+			sepNavVisRange = "{0, 138}";
 			sepNavVisRect = "{{0, 0}, {1242, 836}}";
 		};
 	};

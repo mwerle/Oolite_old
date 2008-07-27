@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -29,12 +29,16 @@
 		1A45B0DA0BD8E3670078EA87 /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C50BD8E3670078EA87 /* pngerror.c */; };
 		1A45B0DB0BD8E3670078EA87 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C80BD8E3670078EA87 /* png.c */; };
 		1A45B0DC0BD8E3670078EA87 /* example.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C90BD8E3670078EA87 /* example.c */; };
-		1A45B0E90BD8E3EA0078EA87 /* OOLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0E70BD8E3EA0078EA87 /* OOLogging.m */; };
 		1A45B0EB0BD8E3FB0078EA87 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A45B0EA0BD8E3FB0078EA87 /* libz.dylib */; };
 		1A45B1610BD8E71C0078EA87 /* grey256x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A45B1600BD8E71C0078EA87 /* grey256x200.png */; };
 		1A45B1B50BD8EB410078EA87 /* OOCollectionExtractors.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B1B30BD8EB410078EA87 /* OOCollectionExtractors.m */; };
 		1A45B2490BD8F6DA0078EA87 /* rgb256x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A45B2480BD8F6DA0078EA87 /* rgb256x200.png */; };
 		1A45B2AB0BD930550078EA87 /* logcontrol.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A45B2AA0BD930550078EA87 /* logcontrol.plist */; };
+		1A5824B60E3CCCF300AF2757 /* OOLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0E70BD8E3EA0078EA87 /* OOLogging.m */; };
+		1A5824BB0E3CCCFF00AF2757 /* OOAsyncQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824B90E3CCCFF00AF2757 /* OOAsyncQueue.m */; };
+		1A5824BE0E3CCD0A00AF2757 /* OOLogOutputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824BD0E3CCD0A00AF2757 /* OOLogOutputHandler.m */; };
+		1A5824C20E3CCD2200AF2757 /* OOLogHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824C10E3CCD2200AF2757 /* OOLogHeader.m */; };
+		1A5824CD0E3CCD6700AF2757 /* NSThreadOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824CC0E3CCD6700AF2757 /* NSThreadOOExtensions.m */; };
 		1A7D7B9A0C3BEEFD00E4A5F5 /* edgecase-test.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A7D7B990C3BEEFD00E4A5F5 /* edgecase-test.png */; };
 		1AC4D2AA0BF747E90029D6A7 /* grey256x300.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AC4D2A90BF747E90029D6A7 /* grey256x300.png */; };
 		1AC4D2F20BF74EB60029D6A7 /* rgb256x300.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AC4D2F10BF74EB60029D6A7 /* rgb256x300.png */; };
@@ -92,6 +96,14 @@
 		1A45B1B40BD8EB410078EA87 /* OOCollectionExtractors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOCollectionExtractors.h; sourceTree = "<group>"; };
 		1A45B2480BD8F6DA0078EA87 /* rgb256x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rgb256x200.png; sourceTree = "<group>"; };
 		1A45B2AA0BD930550078EA87 /* logcontrol.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = logcontrol.plist; sourceTree = "<group>"; };
+		1A5824B90E3CCCFF00AF2757 /* OOAsyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOAsyncQueue.m; sourceTree = "<group>"; };
+		1A5824BA0E3CCCFF00AF2757 /* OOAsyncQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOAsyncQueue.h; sourceTree = "<group>"; };
+		1A5824BC0E3CCD0A00AF2757 /* OOLogOutputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOLogOutputHandler.h; path = ../../src/Cocoa/OOLogOutputHandler.h; sourceTree = SOURCE_ROOT; };
+		1A5824BD0E3CCD0A00AF2757 /* OOLogOutputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOLogOutputHandler.m; path = ../../src/Cocoa/OOLogOutputHandler.m; sourceTree = SOURCE_ROOT; };
+		1A5824C00E3CCD2200AF2757 /* OOLogHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLogHeader.h; sourceTree = "<group>"; };
+		1A5824C10E3CCD2200AF2757 /* OOLogHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLogHeader.m; sourceTree = "<group>"; };
+		1A5824CB0E3CCD6700AF2757 /* NSThreadOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSThreadOOExtensions.h; sourceTree = "<group>"; };
+		1A5824CC0E3CCD6700AF2757 /* NSThreadOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSThreadOOExtensions.m; sourceTree = "<group>"; };
 		1A7D7B990C3BEEFD00E4A5F5 /* edgecase-test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edgecase-test.png"; sourceTree = "<group>"; };
 		1AC4D2A90BF747E90029D6A7 /* grey256x300.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey256x300.png; sourceTree = "<group>"; };
 		1AC4D2F10BF74EB60029D6A7 /* rgb256x300.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rgb256x300.png; sourceTree = "<group>"; };
@@ -202,6 +214,14 @@
 				1A45B1B30BD8EB410078EA87 /* OOCollectionExtractors.m */,
 				1A45B1B40BD8EB410078EA87 /* OOCollectionExtractors.h */,
 				1A45B0B40BD8E3540078EA87 /* pngusr.h */,
+				1A5824B90E3CCCFF00AF2757 /* OOAsyncQueue.m */,
+				1A5824BA0E3CCCFF00AF2757 /* OOAsyncQueue.h */,
+				1A5824BC0E3CCD0A00AF2757 /* OOLogOutputHandler.h */,
+				1A5824BD0E3CCD0A00AF2757 /* OOLogOutputHandler.m */,
+				1A5824C00E3CCD2200AF2757 /* OOLogHeader.h */,
+				1A5824C10E3CCD2200AF2757 /* OOLogHeader.m */,
+				1A5824CB0E3CCD6700AF2757 /* NSThreadOOExtensions.h */,
+				1A5824CC0E3CCD6700AF2757 /* NSThreadOOExtensions.m */,
 			);
 			name = Support;
 			sourceTree = "<group>";
@@ -290,9 +310,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "scaling" */;
+			compatibilityVersion = "Xcode 3.0";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* scaling */;
 			projectDirPath = "";
+			projectRoot = ../..;
 			targets = (
 				8D1107260486CEB800E47090 /* scaling */,
 			);
@@ -352,8 +374,12 @@
 				1A45B0DA0BD8E3670078EA87 /* pngerror.c in Sources */,
 				1A45B0DB0BD8E3670078EA87 /* png.c in Sources */,
 				1A45B0DC0BD8E3670078EA87 /* example.c in Sources */,
-				1A45B0E90BD8E3EA0078EA87 /* OOLogging.m in Sources */,
 				1A45B1B50BD8EB410078EA87 /* OOCollectionExtractors.m in Sources */,
+				1A5824B60E3CCCF300AF2757 /* OOLogging.m in Sources */,
+				1A5824BB0E3CCCFF00AF2757 /* OOAsyncQueue.m in Sources */,
+				1A5824BE0E3CCD0A00AF2757 /* OOLogOutputHandler.m in Sources */,
+				1A5824C20E3CCD2200AF2757 /* OOLogHeader.m in Sources */,
+				1A5824CD0E3CCD6700AF2757 /* NSThreadOOExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,6 +400,8 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -383,10 +411,12 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = Source/scaling_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					OOCOLLECTIONEXTRACTORS_SIMPLE,
 					PNG_USER_CONFIG,
 					"$(GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1 = "APPNAME=\"@\\\"scaling-test\\\"\"";
+				HEADER_SEARCH_PATHS = ../../src/Cocoa/;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = scaling;
@@ -397,20 +427,20 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREFIX_HEADER = Source/scaling_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					OOCOLLECTIONEXTRACTORS_SIMPLE,
 					PNG_USER_CONFIG,
 					"$(GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1)",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS_QUOTED_1 = "APPNAME=\"@\\\"scaling-test\\\"\"";
+				HEADER_SEARCH_PATHS = ../../src/Cocoa/;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = scaling;
@@ -424,7 +454,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Debug;
 		};
@@ -434,7 +464,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Release;
 		};

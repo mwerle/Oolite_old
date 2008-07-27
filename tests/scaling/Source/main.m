@@ -37,6 +37,8 @@ static NSString *sOutDirectory = nil;
 
 static OOTextureLoader *GetTexture(NSString *name);
 static void DumpTexture(OOTextureLoader *loader, NSString *name);
+static NSData *TIFFFromTexture(void *data, OOTextureDataFormat format, uint32_t width, uint32_t height);
+static void ByteSwapData(void *data, unsigned count);
 
 
 int main(int argc, char *argv[])
@@ -143,13 +145,78 @@ static void DumpTexture(OOTextureLoader *loader, NSString *name)
 	NSString				*dumpPath = nil;
 	NSData					*dumpData = nil;
 	
-	dumpName = [NSString stringWithFormat:@"%@ %ux%u@%u.raw", name, width, height, planes];
+	dumpName = [NSString stringWithFormat:@"%@ %ux%u@%u.tiff", name, width, height, planes];
 	dumpPath = [sOutDirectory stringByAppendingPathComponent:dumpName];
-	dumpData = [NSData dataWithBytesNoCopy:data length:width * planes * height freeWhenDone:YES];
-	[dumpData writeToFile:dumpPath atomically:NO];
-	
-	OOLog(@"dumpTexture.dump", @"Dumped %@.png to %@", name, dumpName);
+	dumpData = TIFFFromTexture(data, format, width, height);
+	if (dumpData != nil)
+	{
+		[dumpData writeToFile:dumpPath atomically:NO];	
+		OOLog(@"dumpTexture.dump", @"Dumped %@.png to %@", name, dumpName);
+	}
 #endif
+}
+
+
+static NSData *TIFFFromTexture(void *data, OOTextureDataFormat format, uint32_t width, uint32_t height)
+{
+	NSBitmapImageRep		*rep = nil;
+	BOOL					hasAlpha;
+	NSString				*colorSpaceName = nil;
+	NSBitmapFormat			bmFormat;
+	unsigned				planes = OOTexturePlanesForFormat(format);
+	NSData					*result = nil;
+	
+	switch (format)
+	{
+		case kOOTextureDataRGBA:
+			hasAlpha = YES;
+			colorSpaceName = NSCalibratedRGBColorSpace;
+			bmFormat = NSAlphaNonpremultipliedBitmapFormat;
+			ByteSwapData(data, width * height);
+			break;
+			
+		case kOOTextureDataGrayscale:
+			hasAlpha = NO;
+			colorSpaceName = NSCalibratedWhiteColorSpace;
+			bmFormat = 0;
+			break;
+		
+		default:
+			OOLog(@"dumpTexture.unknownFormat", @"**** Unknown texture format %u.", format);
+			return nil;
+	}
+	
+	rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:(unsigned char **)&data
+												  pixelsWide:width
+												  pixelsHigh:height
+											   bitsPerSample:8
+											 samplesPerPixel:planes
+													hasAlpha:hasAlpha
+													isPlanar:NO
+											  colorSpaceName:colorSpaceName
+												bitmapFormat:bmFormat
+												 bytesPerRow:planes * width
+												bitsPerPixel:planes * 8];
+	
+	if (rep == nil)
+	{
+		OOLog(@"dumpTexture.conversionFailed", @"**** Failed to convert texture to NSBitmapImageRep.");
+	}
+	
+	result = [rep TIFFRepresentation];
+	[rep release];
+	return result;
+}
+
+
+static void ByteSwapData(void *data, unsigned count)
+{
+	uint32_t *words = (uint32_t *)data;
+	while (count--)
+	{
+		*words = OSSwapInt32(*words);
+		++words;
+	}
 }
 
 
