@@ -166,7 +166,6 @@ enum
 	command = [consoleInputField stringValue];
 	[consoleInputField setStringValue:@""];
 	[consoleWindow makeFirstResponder:consoleInputField];	// Is unset if an empty string is entered otherwise.
-	if ([command length] == 0)  return;
 	
 	[inputHistoryManager addToHistory:command];
 	

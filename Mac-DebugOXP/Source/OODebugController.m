@@ -343,7 +343,7 @@ static OODebugController *sSingleton = nil;
 	
 	if ([[OODebugMonitor sharedDebugMonitor] debuggerConnected])
 	{
-		command = [NSString stringWithFormat:@"system.legacy_addSystemShips(\"%@\", 1, 1)", [shipRole escapedForJavaScriptLiteral]];
+		command = [NSString stringWithFormat:@"system.legacy_addShipsWithinRadius('%@', 1, 'abs', player.ship.position, 10000)", [shipRole escapedForJavaScriptLiteral]];
 		[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
 	}
 	else

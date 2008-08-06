@@ -80,7 +80,7 @@
 		"rmBgColor"	= "void delete console.settings[PARAM + '-background-color']";
 		
 		// ":spawn foo" -- create a ship with role "foo" near the station.
-		"spawn"		= "system.legacy_addSystemShips(PARAM, 1, 1)";
+		"spawn"		= "system.legacy_addShipsWithinRadius(PARAM, 1, 'abs', player.ship.position, 10000)";
 		
 		// For calling old-school scripting methods (on player), as in ":: gui_screen_string", or ":: playSound: boop.ogg"
 		":"			= "performLegacyCommand(PARAM)";

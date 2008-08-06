@@ -84,6 +84,9 @@ this.description	= "Debug console script.";
 this.version		= "1.72";
 
 
+this.inputBuffer	= "";
+
+
 // **** Macros
 
 // Normally, these will be overwritten with macros from the config plist.
@@ -111,7 +114,7 @@ this.dumpObjectShort = function (x)
 this.performLegacyCommand = function (x)
 {
 	let [command, params] = x.getOneToken();
-	return player.call(command, params);
+	return player.ship.call(command, params);
 }
 
 
@@ -159,6 +162,7 @@ this.setColorFromString = function (string, typeName)
 
 this.consolePerformJSCommand = function (command)
 {
+	let originalCommand = command;
 	while (command.charAt(0) == " ")
 	{
 		command = command.substring(1);
@@ -170,7 +174,14 @@ this.consolePerformJSCommand = function (command)
 	if (command.charAt(0) != ":")
 	{
 		// No colon prefix, just JavaScript code.
-		this.evaluate(command, "command");
+		// Append to buffer, then run if runnable or empty line.
+		this.inputBuffer += "\n" + originalCommand;
+		if (command == "" || debugConsole.isExecutableJavaScript(debugConsole, this.inputBuffer))
+		{
+			command = this.inputBuffer;
+			this.inputBuffer = "";
+			this.evaluate(command, "command");
+		}
 	}
 	else
 	{
@@ -362,8 +373,9 @@ debugConsole.script = this;
 
 if (debugConsole.settings["macros"])  this.macros = debugConsole.settings["macros"];
 
-// As a convenience, make player, system and missionVariables available to console commands as single-letter variables:
+// As a convenience, make player, player.ship, system and missionVariables available to console commands as single-letter variables:
 this.P = player;
+this.PS = player.ship;
 this.S = system;
 this.M = missionVariables;
 
