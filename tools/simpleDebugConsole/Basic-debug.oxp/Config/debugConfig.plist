@@ -79,6 +79,18 @@
 		"rmFgColor"	= "void delete console.settings[PARAM + '-foreground-color']";
 		"rmBgColor"	= "void delete console.settings[PARAM + '-background-color']";
 		
+		// ":nearest role" -- find nearest ship with specified role.
+		// ":tnearest role" -- target nearest ship with specified role.
+		"nearest"	= "this.result = system.shipsWithRole(PARAM, player.ship)[0]";
+		"tnearest"	= "player.ship.target = system.shipsWithRole(PARAM, player.ship)[0]";
+		
+		// ":find expr" -- find entities matching expr; for example, ":find entity.isShip" to find all ships.
+		// ":findS expr" -- find ships matching expr; for example, ":find ship.scanClass == 'CLASS_BUOY'".
+		// ":target expr" -- target closest ship matching expr.
+		"find"		= "this.result = system.filteredEntities(player.ship, function(entity) { return eval(PARAM); })";
+		"findS"		= "this.result = system.filteredEntities(player.ship, function(ship) { return ship.isShip && eval(PARAM); })";
+		"target"	= "player.ship.target = system.filteredEntities(player.ship, function(ship) { return ship.isShip && eval(PARAM); }, player.ship)[0]";
+		
 		// ":spawn foo" -- create a ship with role "foo" near the station.
 		"spawn"		= "system.legacy_addShipsWithinRadius(PARAM, 1, 'abs', player.ship.position, 10000)";
 		
