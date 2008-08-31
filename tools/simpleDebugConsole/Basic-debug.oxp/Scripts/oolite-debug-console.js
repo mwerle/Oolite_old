@@ -168,9 +168,6 @@ this.consolePerformJSCommand = function (command)
 		command = command.substring(1);
 	}
 	
-	// Echo input to console, emphasising the command itself.
-	consoleMessage("command", "> " + command, 2, command.length);
-	
 	if (command.charAt(0) != ":")
 	{
 		// No colon prefix, just JavaScript code.
@@ -178,13 +175,24 @@ this.consolePerformJSCommand = function (command)
 		this.inputBuffer += "\n" + originalCommand;
 		if (command == "" || debugConsole.isExecutableJavaScript(debugConsole, this.inputBuffer))
 		{
+			// Echo input to console, emphasising the command itself.
+			consoleMessage("command", "> " + command, 2, command.length);
+			
 			command = this.inputBuffer;
 			this.inputBuffer = "";
 			this.evaluate(command, "command");
 		}
+		else
+		{
+			// Echo input to console, emphasising the command itself.
+			consoleMessage("command", "_ " + command, 2, command.length);
+		}
 	}
 	else
 	{
+		// Echo input to console, emphasising the command itself.
+		consoleMessage("command", "> " + command, 2, command.length);
+		
 		// Colon prefix, this is a macro.
 		this.performMacro(command);
 	}
