@@ -35,11 +35,11 @@
 		1A3C39D10E6C12930057293D /* assassins-1.3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "assassins-1.3.plist"; sourceTree = "<group>"; };
 		1A3C39D20E6C12930057293D /* asteroid-storm-3.46.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "asteroid-storm-3.46.plist"; sourceTree = "<group>"; };
 		1A3C3A660E6C2D400057293D /* anarchies-1.0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "anarchies-1.0.plist"; sourceTree = "<group>"; };
+		1A3C3AC30E6C6B1E0057293D /* oolite-1.70.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "oolite-1.70.plist"; sourceTree = "<group>"; };
 		1A626A320E69C14C00CC2450 /* OOLegacyScriptToJavaScriptConverterCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLegacyScriptToJavaScriptConverterCore.h; sourceTree = "<group>"; };
 		1A626A330E69C14C00CC2450 /* OOLegacyScriptToJavaScriptConverterCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLegacyScriptToJavaScriptConverterCore.m; sourceTree = "<group>"; };
 		1A626A770E69C46800CC2450 /* NSScannerOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScannerOOExtensions.h; sourceTree = "<group>"; };
 		1A626A780E69C46800CC2450 /* NSScannerOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScannerOOExtensions.m; sourceTree = "<group>"; };
-		1A626B1B0E69E4D200CC2450 /* oolite-legacy-script.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = "oolite-legacy-script.plist"; path = "../oolite-legacy-script.plist"; sourceTree = "<group>"; };
 		1A73CDF30CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLegacyScriptToJavaScriptConverter.h; sourceTree = "<group>"; };
 		1A73CDF40CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLegacyScriptToJavaScriptConverter.m; sourceTree = "<group>"; };
 		1A73CE0D0CF7B5A500D21D5D /* OOProblemReportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOProblemReportManager.h; sourceTree = "<group>"; };
@@ -104,7 +104,7 @@
 				1A3C39D20E6C12930057293D /* asteroid-storm-3.46.plist */,
 				1A3C39A20E6C0A8C0057293D /* ionics-1.2.1.plist */,
 				1A3C39A30E6C0A8C0057293D /* oolite-1.65.plist */,
-				1A626B1B0E69E4D200CC2450 /* oolite-legacy-script.plist */,
+				1A3C3AC30E6C6B1E0057293D /* oolite-1.70.plist */,
 			);
 			path = "test-scripts";
 			sourceTree = "<group>";
