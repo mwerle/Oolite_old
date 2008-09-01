@@ -30,11 +30,16 @@
 /* Begin PBXFileReference section */
 		08FB7796FE84155DC02AAC07 /* ScriptConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptConverter.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		1A3C39A20E6C0A8C0057293D /* ionics-1.2.1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "ionics-1.2.1.plist"; sourceTree = "<group>"; };
+		1A3C39A30E6C0A8C0057293D /* oolite-1.65.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "oolite-1.65.plist"; sourceTree = "<group>"; };
+		1A3C39D10E6C12930057293D /* assassins-1.3.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "assassins-1.3.plist"; sourceTree = "<group>"; };
+		1A3C39D20E6C12930057293D /* asteroid-storm-3.46.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "asteroid-storm-3.46.plist"; sourceTree = "<group>"; };
+		1A3C3A660E6C2D400057293D /* anarchies-1.0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "anarchies-1.0.plist"; sourceTree = "<group>"; };
 		1A626A320E69C14C00CC2450 /* OOLegacyScriptToJavaScriptConverterCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLegacyScriptToJavaScriptConverterCore.h; sourceTree = "<group>"; };
 		1A626A330E69C14C00CC2450 /* OOLegacyScriptToJavaScriptConverterCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLegacyScriptToJavaScriptConverterCore.m; sourceTree = "<group>"; };
 		1A626A770E69C46800CC2450 /* NSScannerOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScannerOOExtensions.h; sourceTree = "<group>"; };
 		1A626A780E69C46800CC2450 /* NSScannerOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScannerOOExtensions.m; sourceTree = "<group>"; };
-		1A626B1B0E69E4D200CC2450 /* oolite-legacy-script.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "oolite-legacy-script.plist"; sourceTree = "<group>"; };
+		1A626B1B0E69E4D200CC2450 /* oolite-legacy-script.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = "oolite-legacy-script.plist"; path = "../oolite-legacy-script.plist"; sourceTree = "<group>"; };
 		1A73CDF30CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLegacyScriptToJavaScriptConverter.h; sourceTree = "<group>"; };
 		1A73CDF40CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLegacyScriptToJavaScriptConverter.m; sourceTree = "<group>"; };
 		1A73CE0D0CF7B5A500D21D5D /* OOProblemReportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOProblemReportManager.h; sourceTree = "<group>"; };
@@ -59,7 +64,7 @@
 		08FB7794FE84155DC02AAC07 /* ScriptConverter */ = {
 			isa = PBXGroup;
 			children = (
-				1A626B1B0E69E4D200CC2450 /* oolite-legacy-script.plist */,
+				1A3C39A10E6C0A8C0057293D /* test-scripts */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859EA2029092E104C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
@@ -89,6 +94,19 @@
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 			);
 			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		1A3C39A10E6C0A8C0057293D /* test-scripts */ = {
+			isa = PBXGroup;
+			children = (
+				1A3C3A660E6C2D400057293D /* anarchies-1.0.plist */,
+				1A3C39D10E6C12930057293D /* assassins-1.3.plist */,
+				1A3C39D20E6C12930057293D /* asteroid-storm-3.46.plist */,
+				1A3C39A20E6C0A8C0057293D /* ionics-1.2.1.plist */,
+				1A3C39A30E6C0A8C0057293D /* oolite-1.65.plist */,
+				1A626B1B0E69E4D200CC2450 /* oolite-legacy-script.plist */,
+			);
+			path = "test-scripts";
 			sourceTree = "<group>";
 		};
 		1A73CE120CF7BB1100D21D5D /* Oolite */ = {

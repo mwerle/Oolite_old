@@ -37,6 +37,17 @@
 - (void) setInitializer:(NSString *)initializerStatement forKey:(NSString *)key;
 - (void) setHelperFunction:(NSString *)function forKey:(NSString *)key;
 
+// Helpers to emulate -intValue and -doubleValue. They produce zero instead of NaN when given non-numerical strings.
+- (void) setParseFloatOrZeroHelper;
+- (void) setParseIntOrZeroHelper;
+
+- (void) addIssueWithSeverity:(OOProblemSeverity)severity key:(NSString *)key format:(NSString *)format args:(va_list)args;
+- (void) addNoteIssueWithKey:(NSString *)key format:(NSString *)format, ...;
+- (void) addWarningIssueWithKey:(NSString *)key format:(NSString *)format, ...;
+- (void) addUnknownSelectorIssueWithKey:(NSString *)key format:(NSString *)format, ...;
+- (void) addStopIssueWithKey:(NSString *)key format:(NSString *)format, ...;
+- (void) addBugIssueWithKey:(NSString *)key format:(NSString *)format, ...;
+
 @end
 
 

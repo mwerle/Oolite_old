@@ -24,10 +24,10 @@ static NSString *IndentPrefixForLevel(unsigned level);
 static NSCharacterSet *NewlineCharSet(void);
 static NSCharacterSet *NumberCharSet(void);
 static NSCharacterSet *IdentifierCharSet(void);
+static NSString *LegalizeIdentifier(NSString *identifier, BOOL willBePrefixed);
 
 
 static BOOL StringContainsEscapes(NSString *string);
-static BOOL IsNumberLiteral(NSString *string);
 static BOOL IsIdentifier(NSString *string);
 
 
@@ -57,9 +57,10 @@ static BOOL IsIdentifier(NSString *string);
 		
 		result = [converter convertScript:scriptActions];
 	NS_HANDLER
-		[problemReporter addBugIssueWithKey:@"exception"
-									 format:@"Script conversion could not be completed, because an exception of type %@ occurred (%@).",
-											[localException name], [localException reason]];
+		[problemReporter addIssueWithSeverity:kOOProblemSeverityBug
+										  key:@"exception"
+								  description:[NSString stringWithFormat:@"Script conversion could not be completed, because an exception of type %@ occurred (%@).",
+																		 [localException name], [localException reason]]];
 	NS_ENDHANDLER
 	
 	[result retain];
@@ -108,7 +109,7 @@ static BOOL IsIdentifier(NSString *string);
 		legacyScript = [scripts arrayForKey:name];
 		if (legacyScript != nil)
 		{
-			mutableDict = [metadata mutableCopy];
+			mutableDict = (metadata != nil) ? [metadata mutableCopy] : [NSMutableDictionary dictionary];
 			[mutableDict setObject:name forKey:kOOScriptMetadataKeyName];
 			jsScript = [self convertScript:legacyScript
 								  metadata:[mutableDict autorelease]
@@ -176,7 +177,10 @@ static BOOL IsIdentifier(NSString *string);
 	
 	if ([actions count] > 0)
 	{
-		[self append:@"this.tickle = function tickle ()\n{\n"];
+		NSString *name = [_metadata objectForKey:kOOScriptMetadataKeyName];
+		if (name != nil)  name = [@"tickle_" stringByAppendingString:LegalizeIdentifier(name, YES)];
+		else  name = @"tickle";
+		[self appendWithFormat:@"this.tickle = function %@ ()\n{\n", name];
 		[self indent];
 		[self convertActions:actions];
 		[self outdent];
@@ -338,48 +342,6 @@ static BOOL IsIdentifier(NSString *string);
 }
 
 
-- (NSString *) legalizeIdentifier:(NSString *)identifier
-{
-	OOUInteger				i, count;
-	unichar					curr;
-	BOOL					lastIsUnderscore = NO;
-	unsigned				rCount = 0;
-	unichar					result[64];
-	
-	count = [identifier length];
-	
-	// If first char is digit, prefix with underscore
-	if (count > 0)
-	{
-		curr = [identifier characterAtIndex:0];
-		if (curr >= '0' && curr <= '9')  identifier = [@"_" stringByAppendingString:identifier];
-	}
-	
-	for (i = 0; i != count && rCount < 64; ++i)
-	{
-		curr = [identifier characterAtIndex:i];
-		if (curr == '_')  lastIsUnderscore = NO;
-		if (curr != '_' &&
-			!(curr >= 'A' && curr <= 'Z') &&
-			!(curr >= 'a' && curr <= 'z') &&
-			!(curr >= '0' && curr <= '9' && i != 0))
-		{
-			curr = '_';
-		}
-		
-		if (!lastIsUnderscore || curr != '_')
-		{
-			result[rCount++] = curr;
-		}
-		lastIsUnderscore = (curr == '_');
-	}
-	
-	if (rCount == 0)  return @"";
-	
-	return [NSString stringWithCharacters:result length:rCount];
-}
-
-
 - (NSString *) legalizedVariableName:(NSString *)rawName
 {
 	NSString				*result = nil;
@@ -404,7 +366,7 @@ static BOOL IsIdentifier(NSString *string);
 	}
 	else if ([rawName hasPrefix:@"local_"])
 	{
-		baseName = [@"this.local_" stringByAppendingString:[self legalizeIdentifier:[rawName substringFromIndex:6]]];
+		baseName = [@"this.local_" stringByAppendingString:LegalizeIdentifier([rawName substringFromIndex:6], NO)];
 		result = baseName;
 		while ([_usedLocalVariableNames containsObject:result])
 		{
@@ -417,8 +379,8 @@ static BOOL IsIdentifier(NSString *string);
 	}
 	else
 	{
-		[_problemReporter addStopIssueWithKey:@"bad-variable-name"
-									   format:@"Expected mission_variable or local_variable, got \"%@\".", rawName];
+		[self addStopIssueWithKey:@"bad-variable-name"
+						   format:@"Expected mission_variable or local_variable, got \"%@\".", rawName];
 		return nil;
 	}
 	
@@ -431,36 +393,37 @@ static BOOL IsIdentifier(NSString *string);
 - (NSString *) expandStringWithLocalVariables:(NSString *)string
 {
 	/*	Strings with [local_foo] substitutions are handled by splitting
-	 at the first [local_foo], inserting the releveant local, then
-	 recursively calling expandString: for the prefix and suffix.
-	 
-	 Example:
-		 "foo [local_a] bar %R [local_b] baz" is split as:
-			 prefix: "foo "
-			 localName: local_a
-			 suffix: " bar %R [local_b] baz"
-	 
-	 Recursive processing should result in the JS expression:
+		at the first [local_foo], inserting the releveant local, then
+		recursively calling expandString: for the prefix and suffix.
+		
+		Example:
+			"foo [local_a] bar %R [local_b] baz" is split as:
+				prefix: "foo "
+				localName: local_a
+				suffix: " bar %R [local_b] baz"
+		
+		Recursive processing should result in the JS expression:
 		"foo " + this.local_a + expandDescription(" bar %R ") + this.local_b + " baz"
 	*/
 	
-	NSRange					localStart, localEnd;
+	NSRange					varStart, varEnd;
 	OOUInteger				length, endOfTag;
 	NSString				*prefix = nil, *suffix = nil;
-	NSString				*localName = nil;
+	NSString				*varName = nil;
+	NSString				*result = nil;
 	
 	length = [string length];
 	
-	localStart = [string rangeOfString:@"[local_"];
-	assert(localStart.location != NSNotFound);
+	varStart = [string rangeOfString:@"[local_"];
+	assert(varStart.location != NSNotFound);
 	
-	endOfTag = localStart.location + localStart.length;
-	localEnd = [string rangeOfString:@"]" options:0 range:NSMakeRange(endOfTag, length - endOfTag)];
-	if (localEnd.location == NSNotFound)
+	endOfTag = varStart.location + varStart.length;
+	varEnd = [string rangeOfString:@"]" options:0 range:NSMakeRange(endOfTag, length - endOfTag)];
+	if (varEnd.location == NSNotFound)
 	{
 		/*	[local_ without closing ], not a substitution. To avoid infinite
-		 recursion, we split this into two parts after local and before _.
-		 */
+			recursion, we split this into two parts after local and before _.
+		*/
 		
 		prefix = [string substringToIndex:endOfTag - 1];
 		suffix = [string substringFromIndex:endOfTag - 1];
@@ -468,11 +431,76 @@ static BOOL IsIdentifier(NSString *string);
 		return [NSString stringWithFormat:@"%@ + %@", [self expandString:prefix], [self expandString:suffix]];
 	}
 	
-	prefix = [string substringToIndex:localStart.location];
-	suffix = [string substringFromIndex:localEnd.location + localEnd.length];
-	localName = [string substringWithRange:NSMakeRange(localStart.location + 1, localEnd.location - localStart.location - 1)];
+	prefix = [string substringToIndex:varStart.location];
+	suffix = [string substringFromIndex:varEnd.location + varEnd.length];
+	varName = [string substringWithRange:NSMakeRange(varStart.location + 1, varEnd.location - varStart.location - 1)];
 	
-	return [NSString stringWithFormat:@"%@ + %@ + %@", [self expandString:prefix], [self legalizedVariableName:localName], [self expandString:suffix]];
+	result = [self legalizedVariableName:varName];
+	
+	if ([prefix length] > 0)
+	{
+		prefix = [self expandString:prefix];
+		result = [NSString stringWithFormat:@"%@ + %@", prefix, result];
+	}
+	
+	if ([suffix length] > 0)
+	{
+		suffix = [self expandString:suffix];
+		result = [NSString stringWithFormat:@"%@ + %@", suffix, result];
+	}
+	
+	return result;
+}
+
+
+- (NSString *) expandStringWithMissionVariables:(NSString *)string
+{
+	//	Same as above, but for mission variables.
+	
+	NSRange					varStart, varEnd;
+	OOUInteger				length, endOfTag;
+	NSString				*prefix = nil, *suffix = nil;
+	NSString				*varName = nil;
+	NSString				*result = nil;
+	
+	length = [string length];
+	
+	varStart = [string rangeOfString:@"[mission_"];
+	assert(varStart.location != NSNotFound);
+	
+	endOfTag = varStart.location + varStart.length;
+	varEnd = [string rangeOfString:@"]" options:0 range:NSMakeRange(endOfTag, length - endOfTag)];
+	if (varEnd.location == NSNotFound)
+	{
+		/*	[mission_ without closing ], not a substitution. To avoid infinite
+			recursion, we split this into two parts after mission and before _.
+		*/
+		
+		prefix = [string substringToIndex:endOfTag - 1];
+		suffix = [string substringFromIndex:endOfTag - 1];
+		
+		return [NSString stringWithFormat:@"%@ + %@", [self expandString:prefix], [self expandString:suffix]];
+	}
+	
+	prefix = [string substringToIndex:varStart.location];
+	suffix = [string substringFromIndex:varEnd.location + varEnd.length];
+	varName = [string substringWithRange:NSMakeRange(varStart.location + 1, varEnd.location - varStart.location - 1)];
+	
+	result = [self legalizedVariableName:varName];
+	
+	if ([prefix length] > 0)
+	{
+		prefix = [self expandString:prefix];
+		result = [NSString stringWithFormat:@"%@ + %@", prefix, result];
+	}
+	
+	if ([suffix length] > 0)
+	{
+		suffix = [self expandString:suffix];
+		result = [NSString stringWithFormat:@"%@ + %@", suffix, result];
+	}
+	
+	return result;
 }
 
 
@@ -480,39 +508,68 @@ static BOOL IsIdentifier(NSString *string);
 {
 	if (!StringContainsEscapes(string))
 	{
-		// Simple case: just a literal string
+		// Simple case: just a literal string.
 		return [NSString stringWithFormat:@"\"%@\"", [string escapedForJavaScriptLiteral]];
 	}
 	
-	if ([string rangeOfString:@"[local_"].location == NSNotFound)
+	/*	Kludge: handle some common cases to make output code look less stupid.
+		A better way might be to expand all brackets instead. A problem there
+		is that in principle, descriptions.plist entries can override method
+		call substitutions (but not local or mission variables), although it
+		would be reasonable to consider tha a bug.
+	*/
+	static NSDictionary *specialCases = nil;
+	if (specialCases == nil)
 	{
-		// Simplish case: no [local_foo] substitutions
-		return [NSString stringWithFormat:@"expandDescription(\"%@\")", [string escapedForJavaScriptLiteral]];
+		specialCases = [[@"{"
+			"\"[credits_number]\" = \"player.credits\";"
+			"\"[score_number]\" = \"player.score\";"
+			"\"-[credits_number]\" = \"-player.credits\";"
+			"\"[legalStatus_number]\" = \"player.bounty\";"
+			"\"[commanderLegalStatus_number]\" = \"player.bounty\";"
+			"\"[commander_legal_status]\" = \"player.bounty\";"
+			"\"[d100_number]\" = \"system.psuedoRandom100\";"
+			"\"[d256_number]\" = \"system.psuedoRandom256\";"
+		"}" propertyList] retain];
+	}
+	NSString *special = [specialCases objectForKey:string];
+	if (special != nil)  return special;
+	
+	if ([string rangeOfString:@"[local_"].location != NSNotFound)
+	{
+		return [self expandStringWithLocalVariables:string];
+	}
+	else if ([string rangeOfString:@"[mission_"].location != NSNotFound)
+	{
+		return [self expandStringWithMissionVariables:string];
 	}
 	
-	// Complicated case: [local_foo] substitutions
-	return [self expandStringWithLocalVariables:string];
+	return [NSString stringWithFormat:@"expandDescription(\"%@\")", [string escapedForJavaScriptLiteral]];
 }
 
 
 - (NSString *) expandStringOrNumber:(NSString *)string;
 {
-	if (IsNumberLiteral(string))  return string;
+	if (OOScriptConverterIsNumberLiteral(string))  return string;
 	else  return [self expandString:string];
 }
 
 
 - (NSString *) expandIntegerExpression:(NSString *)string
 {
-	if (IsNumberLiteral(string))  return string;
-	else  return [NSString stringWithFormat:@"parseInt(%@)", [self expandString:string]];
+	if (OOScriptConverterIsNumberLiteral(string))  return string;
+	
+	[self setParseIntOrZeroHelper];
+	return [NSString stringWithFormat:@"this.parseIntOrZero(%@)", [self expandString:string]];
 }
 
 
 - (NSString *) expandFloatExpression:(NSString *)string
 {
-	if (IsNumberLiteral(string))  return string;
-	else  return [NSString stringWithFormat:@"parseFloat(%@)", [self expandString:string]];
+	if (OOScriptConverterIsNumberLiteral(string))  return string;
+	
+	[self setParseFloatOrZeroHelper];
+	return [NSString stringWithFormat:@"this.parseFloatOrZero(%@)", [self expandString:string]];
 }
 
 
@@ -541,7 +598,91 @@ static BOOL IsIdentifier(NSString *string);
 	
 	if (_helperFunctions == nil)  _helperFunctions = [[NSMutableDictionary alloc] init];
 	
-	[_helperFunctions setObject:function forKey:key];
+	[_helperFunctions setObject:[NSString stringWithFormat:@"this.%@ = %@", key, function] forKey:key];
+}
+
+
+- (void) setParseFloatOrZeroHelper
+{
+	[self setHelperFunction:
+			@"function (string)\n{\n"
+			"\tlet value = parseFloat(string);\n"
+			"\tif (isNaN(value))  return 0;\n"
+			"\telse  return value;\n}"
+		forKey:@"parseFloatOrZero"];
+}
+
+
+- (void) setParseIntOrZeroHelper
+{
+	[self setHelperFunction:
+			@"function (string)\n{\n"
+			"\tlet value = parseInt(string);\n"
+			"\tif (isNaN(value))  return 0;\n"
+			"\telse  return value;\n}"
+		forKey:@"parseIntOrZero"];
+}
+
+
+- (void) addIssueWithSeverity:(OOProblemSeverity)severity key:(NSString *)key format:(NSString *)format args:(va_list)args
+{
+	NSString			*description = nil;
+	
+	description = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+	[_problemReporter addIssueWithSeverity:severity key:key description:description];
+}
+
+
+- (void) addNoteIssueWithKey:(NSString *)key format:(NSString *)format, ...
+{
+	va_list				args;
+	
+	va_start(args, format);
+	[self addIssueWithSeverity:kOOProblemSeverityNote key:key format:format args:args];
+	va_end(args);
+}
+
+
+- (void) addWarningIssueWithKey:(NSString *)key format:(NSString *)format, ...
+{
+	va_list				args;
+	
+	va_start(args, format);
+	[self addIssueWithSeverity:kOOProblemSeverityWarning key:key format:format args:args];
+	va_end(args);
+}
+
+
+- (void) addUnknownSelectorIssueWithKey:(NSString *)key format:(NSString *)format, ...
+{
+	va_list				args;
+	
+	_validConversion = NO;
+	va_start(args, format);
+	[self addIssueWithSeverity:kOOProblemSeverityUnknownSelector key:key format:format args:args];
+	va_end(args);
+}
+
+
+- (void) addStopIssueWithKey:(NSString *)key format:(NSString *)format, ...
+{
+	va_list				args;
+	
+	_validConversion = NO;
+	va_start(args, format);
+	[self addIssueWithSeverity:kOOProblemSeverityStop key:key format:format args:args];
+	va_end(args);
+}
+
+
+- (void) addBugIssueWithKey:(NSString *)key format:(NSString *)format, ...
+{
+	va_list				args;
+	
+	_validConversion = NO;
+	va_start(args, format);
+	[self addIssueWithSeverity:kOOProblemSeverityBug key:key format:format args:args];
+	va_end(args);
 }
 
 @end
@@ -683,7 +824,7 @@ static inline BOOL IsSpaceOrTab(int value)
 }
 
 
-static BOOL IsNumberLiteral(NSString *string)
+BOOL OOScriptConverterIsNumberLiteral(NSString *string)
 {
 	// Not a perfect test, but good enough. Note that relying on convertability
 	// to number isn't sufficient, since strings like "2HRS_TO_ZERO" are
@@ -712,4 +853,49 @@ static BOOL IsIdentifier(NSString *string)
 	if (first >= '0' && first <= '9')  return NO;
 	
 	return YES;
+}
+
+
+static NSString *LegalizeIdentifier(NSString *identifier, BOOL willBePrefixed)
+{
+	OOUInteger				i, count;
+	unichar					curr;
+	BOOL					lastIsUnderscore = NO;
+	unsigned				rCount = 0;
+	unichar					result[64];
+	
+	count = [identifier length];
+	
+	if (!willBePrefixed)
+	{
+		// If first char is digit, prefix with underscore
+		if (count > 0)
+		{
+			curr = [identifier characterAtIndex:0];
+			if (curr >= '0' && curr <= '9')  identifier = [@"_" stringByAppendingString:identifier];
+		}
+	}
+	
+	for (i = 0; i != count && rCount < 64; ++i)
+	{
+		curr = [identifier characterAtIndex:i];
+		if (curr == '_')  lastIsUnderscore = NO;
+		if (curr != '_' &&
+			!(curr >= 'A' && curr <= 'Z') &&
+			!(curr >= 'a' && curr <= 'z') &&
+			!(curr >= '0' && curr <= '9' && i != 0))
+		{
+			curr = '_';
+		}
+		
+		if (!lastIsUnderscore || curr != '_')
+		{
+			result[rCount++] = curr;
+		}
+		lastIsUnderscore = (curr == '_');
+	}
+	
+	if (rCount == 0)  return @"";
+	
+	return [NSString stringWithCharacters:result length:rCount];
 }

@@ -59,65 +59,16 @@ int main (int argc, const char * argv[])
 
 @implementation SimpleProblemReporter
 
-- (void) addNoteIssueWithKey:(NSString *)key format:(NSString *)format, ...
+- (void) addIssueWithSeverity:(OOProblemSeverity)severity key:(NSString *)key description:(NSString *)description
 {
-	NSString			*message = nil;
-	va_list				args;
+	if (_highest < severity)  _highest = severity;
 	
-	va_start(args, format);
-	message = [[NSString alloc] initWithFormat:format arguments:args];
-	va_end(args);
+	static const char * const prefixes[] = { "Note", "Note", "Warning", "Unknown selector", "Error", "Bug" };
+	if (severity > kOOProblemSeverityBug)  severity = kOOProblemSeverityBug;
+	const char *prefix = prefixes[severity];
 	
-	if (_highest < kOOProblemSeverityNote)  _highest = kOOProblemSeverityNote;
-	printf("Note: %s\n", [message UTF8String]);
-	[message release];
+	printf("%s: %s\n", prefix, [description UTF8String]);
 }
-
-
-- (void) addWarningIssueWithKey:(NSString *)key format:(NSString *)format, ...
-{
-	NSString			*message = nil;
-	va_list				args;
-	
-	va_start(args, format);
-	message = [[NSString alloc] initWithFormat:format arguments:args];
-	va_end(args);
-	
-	if (_highest < kOOProblemSeverityWarning)  _highest = kOOProblemSeverityWarning;
-	printf("Warning: %s\n", [message UTF8String]);
-	[message release];
-}
-
-
-- (void) addStopIssueWithKey:(NSString *)key format:(NSString *)format, ...
-{
-	NSString			*message = nil;
-	va_list				args;
-	
-	va_start(args, format);
-	message = [[NSString alloc] initWithFormat:format arguments:args];
-	va_end(args);
-	
-	if (_highest < kOOProblemSeverityStop)  _highest = kOOProblemSeverityStop;
-	printf("Error: %s\n", [message UTF8String]);
-	[message release];
-}
-
-
-- (void) addBugIssueWithKey:(NSString *)key format:(NSString *)format, ...
-{
-	NSString			*message = nil;
-	va_list				args;
-	
-	va_start(args, format);
-	message = [[NSString alloc] initWithFormat:format arguments:args];
-	va_end(args);
-	
-	if (_highest < kOOProblemSeverityBug)  _highest = kOOProblemSeverityBug;
-	printf("Bug: %s\n", [message UTF8String]);
-	[message release];
-}
-
 
 - (OOProblemSeverity) highestSeverity
 {

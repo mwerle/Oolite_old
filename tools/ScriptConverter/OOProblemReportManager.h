@@ -14,6 +14,7 @@ typedef enum
 	kOOProblemSeverityNone,
 	kOOProblemSeverityNote,
 	kOOProblemSeverityWarning,
+	kOOProblemSeverityUnknownSelector,
 	kOOProblemSeverityStop,
 	kOOProblemSeverityBug
 } OOProblemSeverity;
@@ -21,11 +22,7 @@ typedef enum
 
 @protocol OOProblemReportManager <NSObject>
 
-- (void) addNoteIssueWithKey:(NSString *)key format:(NSString *)format, ...;
-- (void) addWarningIssueWithKey:(NSString *)key format:(NSString *)format, ...;
-- (void) addStopIssueWithKey:(NSString *)key format:(NSString *)format, ...;
-- (void) addBugIssueWithKey:(NSString *)key format:(NSString *)format, ...;
-
+- (void) addIssueWithSeverity:(OOProblemSeverity)severity key:(NSString *)key description:(NSString *)description;
 - (OOProblemSeverity) highestSeverity;
 
 @end

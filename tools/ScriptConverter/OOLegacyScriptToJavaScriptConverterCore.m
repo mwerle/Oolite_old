@@ -45,9 +45,9 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 
 - (NSString *) convertOneCondition:(NSString *)condition;
 - (NSString *) convertQuery:(NSString *)query gettingType:(OOOperandType *)outType;
-- (NSString *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs;
-- (NSString *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs;
-- (NSString *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs;
+- (NSString *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition;
+- (NSString *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition;
+- (NSString *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition;
 
 - (NSString *) stringifyBooleanExpression:(NSString *)expr;
 
@@ -60,29 +60,39 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 {
 	OOUInteger				i, count;
 	id						action;
+	NSAutoreleasePool		*pool = nil;
 	
 	count = [actions count];
 	
-	for (i = 0; i != count; ++i)
-	{
-		action = [actions objectAtIndex:i];
-		
-		if ([action isKindOfClass:[NSString class]])
+	NS_DURING
+		for (i = 0; i != count; ++i)
 		{
-			[self convertOneAction:action];
+			pool = [[NSAutoreleasePool alloc] init];
+			
+			action = [actions objectAtIndex:i];
+			
+			if ([action isKindOfClass:[NSString class]])
+			{
+				[self convertOneAction:action];
+			}
+			else if ([action isKindOfClass:[NSDictionary class]])
+			{
+				[self convertConditional:action];
+			}
+			else
+			{
+				[self addStopIssueWithKey:@"invalid-type"
+								   format:@"Expected string (action) or dictionary (conditional), but found %@.", [action class]];
+				[self appendWithFormat:@"<** Invalid object of class %@ **>", [action class]];
+			}
+			
+			[pool release];
+			pool = nil;
 		}
-		else if ([action isKindOfClass:[NSDictionary class]])
-		{
-			[self convertConditional:action];
-		}
-		else
-		{
-			[_problemReporter addStopIssueWithKey:@"invalid-type"
-										   format:@"Expected string (action) or dictionary (conditional), but found %@.", [action class]];
-			[self appendWithFormat:@"<** Invalid object of class %@ **>", [action class]];
-			_validConversion = NO;
-		}
-	}
+	NS_HANDLER
+		[pool release];
+		[localException raise];
+	NS_ENDHANDLER
 }
 
 @end
@@ -105,8 +115,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	
 	if (ifTrue == nil && ifFalse == nil)
 	{
-		[_problemReporter addWarningIssueWithKey:@"empty-conditional-action"
-										  format:@"Conditional expression with neither \"do\" clause nor \"else\" clause, ignoring."];
+		[self addWarningIssueWithKey:@"empty-conditional-action"
+							  format:@"Conditional expression with neither \"do\" clause nor \"else\" clause, ignoring."];
 		return;
 	}
 	
@@ -120,8 +130,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	count = [conditions count];
 	if (count == 0)
 	{
-		[_problemReporter addWarningIssueWithKey:@"empty-conditions"
-										  format:@"Empty or invalid conditions array, treating as always true."];
+		[self addWarningIssueWithKey:@"empty-conditions"
+							  format:@"Empty or invalid conditions array, treating as always true."];
 		ifFalse = nil;
 		// Treat as always-true for backwards-compatibility
 	}
@@ -143,9 +153,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 			{
 				if (_validConversion)
 				{
-					[_problemReporter addBugIssueWithKey:@"unreported-error"
-												  format:@"An error occurred while converting a condition, but no appropriate message was generated."];
-					_validConversion = NO;
+					[self addBugIssueWithKey:@"unreported-error"
+									  format:@"An error occurred while converting a condition, but no appropriate message was generated."];
 				}
 				cond = @"<** invalid **>";
 			}
@@ -190,9 +199,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	if (tokenCount < 1)
 	{
 		// This is a hard error in the interpreter, so it's a failure here.
-		[_problemReporter addStopIssueWithKey:@"no-tokens"
-									   format:@"Invalid or empty script action \"%@\"", action];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"no-tokens"
+						   format:@"Invalid or empty script action \"%@\"", action];
 	}
 	
 	selectorString = [tokens objectAtIndex:0];
@@ -220,12 +228,14 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 			converted = [self performSelector:selector];
 		}
 		
-		if (converted == nil && _validConversion)
+		if (converted == nil)
 		{
-			[_problemReporter addBugIssueWithKey:@"unreported-error"
-										  format:@"An error occurred while converting an action, but no appropriate message was generated (selector: \"%@\").", selectorString];
-			_validConversion = NO;
-			converted = @"<** unknown error **>";
+			if (_validConversion)
+			{
+				[self addBugIssueWithKey:@"unreported-error"
+								  format:@"An error occurred while converting an action, but no appropriate message was generated (selector: \"%@\").", selectorString];
+			}
+			converted = [NSString stringWithFormat:@"<** bad %@ **>", selectorString];
 		}
 		
 #if COMMENT_SELECTOR
@@ -235,12 +245,11 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	else
 	{
 		converted = [NSString stringWithFormat:@"<%@>\t\t// *** UNKNOWN ***", action];
-		[_problemReporter addStopIssueWithKey:@"unknown-selector"
-									   format:@"Could not convert unknown action selector \"%@\".", selectorString];
-		_validConversion = NO;
+		[self addUnknownSelectorIssueWithKey:@"unknown-selector"
+									  format:@"Could not convert unknown action selector \"%@\".", selectorString];
 	}
 	
-	[self appendWithFormat:@"%@\n", converted];
+	if ([converted length] > 0)  [self appendWithFormat:@"%@\n", converted];
 }
 
 
@@ -258,9 +267,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	
 	if (![condition isKindOfClass:[NSString class]])
 	{
-		[_problemReporter addStopIssueWithKey:@"invalid-condition"
-									   format:@"Condition should be string, but found %@.", [condition class]];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"invalid-condition"
+						   format:@"Condition should be string, but found %@.", [condition class]];
 		return [NSString stringWithFormat:@"<** Invalid object of class %@ **>", [condition class]];
 	}
 	
@@ -269,9 +277,9 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	if (tokenCount == 0)
 	{
 		// This is a hard error in the interpreter, so it's a failure here.
-		[_problemReporter addStopIssueWithKey:@"no-tokens"
-									   format:@"Invalid or empty script condition \"%@\"", condition];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"no-tokens"
+						   format:@"Invalid or empty script condition \"%@\"", condition];
+		return @"<** invalid/empty condition **>";
 	}
 	
 	lhs = [self convertQuery:[tokens objectAtIndex:0] gettingType:&lhsType];
@@ -289,32 +297,33 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 		else if ([comparisonString isEqualToString:@"undefined"])  comparator = kComparisonUndefined;
 		else
 		{
-			[_problemReporter addStopIssueWithKey:@"invalid-comparator"
-										   format:@"Unknown comparison operator \"%@\".", comparisonString];
-			_validConversion = NO;
-			return @"<** unknown comparison operator **>";
+			[self addStopIssueWithKey:@"invalid-comparator"
+							   format:@"Unknown comparison operator \"%@\" in condition \"%@\".", comparisonString, condition];
+			return [NSString stringWithFormat:@"<** unknown comparison operator \"%@\" **>", comparisonString];
 		}
 	}
 	
-	if (tokenCount == 3)
+	if (tokenCount > 2)
 	{
-		rhs = [self expandStringOrNumber:[tokens objectAtIndex:2]];
-	}
-	else if (tokenCount > 3)
-	{
-		rhs = @"<?\?>";
+		rhs = [[tokens subarrayWithRange:NSMakeRange(2, tokenCount - 2)] componentsJoinedByString:@" "];
+		rhs = [self expandStringOrNumber:rhs];
 	}
 	
-	if (lhsType == kTypeString)  result = [self convertStringCondition:comparator comparatorString:comparisonString lhs:lhs rhs:rhs];
-	else if (lhsType == kTypeNumber)  result = [self convertNumberCondition:comparator comparatorString:comparisonString lhs:lhs rhs:rhs];
-	else if (lhsType == kTypeBool)  result = [self convertBoolCondition:comparator comparatorString:comparisonString lhs:lhs rhs:rhs];
+	if (lhsType == kTypeString)  result = [self convertStringCondition:comparator comparatorString:comparisonString lhs:lhs rhs:rhs rawCondition:condition];
+	else if (lhsType == kTypeNumber)  result = [self convertNumberCondition:comparator comparatorString:comparisonString lhs:lhs rhs:rhs rawCondition:condition];
+	else if (lhsType == kTypeBool)  result = [self convertBoolCondition:comparator comparatorString:comparisonString lhs:lhs rhs:rhs rawCondition:condition];
 	
-	if (result == nil)  result = [NSString stringWithFormat:@"<%@ ?\?>", lhs];
+	if (result == nil)
+	{
+		[self addBugIssueWithKey:@"condition-conversion-failed"
+						  format:@"Conversion of condition \"%@\" failed for unknown reasons.", condition];
+		return @"<** condition conversion failed **>";
+	}
 	return result;
 }
 
 
-- (NSString *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs
+- (NSString *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition
 {
 	switch (comparator)
 	{
@@ -325,26 +334,24 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 			return [NSString stringWithFormat:@"%@ != %@", lhs, rhs];
 			
 		case kComparisonLessThan:
-			[self setHelperFunction:
-					@"this.parseFloatOrZero = function (string)\n{\n"
-					"\tlet value = parseFloat(string);\n"
-					"\tif (isNaN(value))  return 0;\n"
-					"\telse  return value;\n}"
-				forKey:@"parseFloatOrZero"];
-			return [NSString stringWithFormat:@"this.parseFloatOrZero(%@) < this.parseFloatOrZero(%@)", lhs, rhs];
+			[self setParseFloatOrZeroHelper];
+			if (!OOScriptConverterIsNumberLiteral(rhs))
+			{
+				rhs = [NSString stringWithFormat:@"this.parseFloatOrZero(%@)", rhs];
+			}
+			return [NSString stringWithFormat:@"this.parseFloatOrZero(%@) < %@", lhs, rhs];
 			
 		case kComparisonGreaterThan:
-			[self setHelperFunction:
-					@"this.parseFloatOrZero = function (string)\n{\n"
-					"\tlet value = parseFloat(string);\n"
-					"\tif (isNaN(value))  return 0;\n"
-					"\telse  return value;\n}"
-				forKey:@"parseFloatOrZero"];
-			return [NSString stringWithFormat:@"this.parseFloatOrZero(%@) > this.parseFloatOrZero(%@)", lhs, rhs];
+			[self setParseFloatOrZeroHelper];
+			if (!OOScriptConverterIsNumberLiteral(rhs))
+			{
+				rhs = [NSString stringWithFormat:@"this.parseFloatOrZero(%@)", rhs];
+			}
+			return [NSString stringWithFormat:@"this.parseFloatOrZero(%@) > %@", lhs, rhs];
 			
 		case kComparisonOneOf:
 			[self setHelperFunction:
-					@"this.oneOf = function (string, list)\n{\n"
+					@"function (string, list)\n{\n"
 					"\tlet items = list.split(\",\");\n"
 					"\treturn items.indexOf(string) != -1;\n}"
 				forKey:@"oneOf"];
@@ -352,24 +359,18 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 			
 		case kComparisonUndefined:
 			[self setHelperFunction:
-					@"this.isUndefined = function (value)\n{\n"
+					@"function (value)\n{\n"
 					"\treturn value == undefined || value == null;\n}"
 				forKey:@"isUndefined"];
 			return [NSString stringWithFormat:@"this.isUndefined(%@)", lhs];
 	}
 	
-	[_problemReporter addBugIssueWithKey:@"unhandled-comparator"
-								  format:@"Don't know how to convert operator %@.", comparatorString];
-	_validConversion = NO;
-	return @"<** unhandled operator **>";
+	return nil;
 }
 
 
-- (NSString *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs
+- (NSString *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition
 {
-	const NSString *kOps[] = { @"==", @"!=", @"<", @">", @"oneOf", @"undefined" };
-	
-	
 	switch (comparator)
 	{
 		case kComparisonEqual:
@@ -385,14 +386,9 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 			return [NSString stringWithFormat:@"%@ > %@", lhs, rhs];
 			
 		case kComparisonOneOf:
+			[self setParseFloatOrZeroHelper];
 			[self setHelperFunction:
-					@"this.parseFloatOrZero = function (string)\n{\n"
-					"\tlet value = parseFloat(string);\n"
-					"\tif (isNaN(value))  return 0;\n"
-					"\telse  return value;\n}"
-				forKey:@"parseFloatOrZero"];
-			[self setHelperFunction:
-					 @"this.oneOfNumber = function (number, list)\n{\n"
+					 @"function (number, list)\n{\n"
 					 "\tlet items = list.split(\",\");\n"
 					 "\tfor (let i = 0; i < items.length; ++i)  if (number == parseFloatOrZero(list[i]))  return true;\n"
 					 "\treturn false;\n}"
@@ -400,15 +396,16 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 			return [NSString stringWithFormat:@"this.oneOfNumber(%@, %@)", lhs, rhs];
 			
 		case kComparisonUndefined:
-			[_problemReporter addBugIssueWithKey:@"invalid-comparator"
-										  format:@"Operator %@ is not valid for number expressions.", comparatorString];
+			[self addBugIssueWithKey:@"invalid-comparator"
+							  format:@"Operator %@ is not valid for number expressions (condition: %@).", comparatorString, rawCondition];
+			return [NSString stringWithFormat:@"<** invalid operator %@ **>", comparatorString];
 	}
 	
-	return [NSString stringWithFormat:@"<%@ %@ %@>", lhs, kOps[comparator], rhs];
+	return nil;
 }
 
 
-- (NSString *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs
+- (NSString *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition
 {
 	switch (comparator)
 	{
@@ -426,14 +423,12 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 		case kComparisonGreaterThan:
 		case kComparisonOneOf:
 		case kComparisonUndefined:
-			[_problemReporter addBugIssueWithKey:@"invalid-comparator"
-										  format:@"Operator %@ is not valid for boolean expressions.", comparatorString];
+			[self addBugIssueWithKey:@"invalid-comparator"
+							  format:@"Operator %@ is not valid for boolean expressions (condition: %@).", comparatorString, rawCondition];
+			return [NSString stringWithFormat:@"<** invalid operator %@ **>", comparatorString];
 	}
 	
-	[_problemReporter addBugIssueWithKey:@"unhandled-comparator"
-								  format:@"Don't know how to convert operator %@.", comparatorString];
-	_validConversion = NO;
-	return @"<** unhandled operator **>";
+	return nil;
 }
 
 
@@ -464,18 +459,16 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 		{
 			if (_validConversion)
 			{
-				[_problemReporter addBugIssueWithKey:@"unreported-error"
-											  format:@"An error occurred while converting a condition, but no appropriate message was generated (selector: \"%@\").", query];
-				_validConversion = NO;
+				[self addBugIssueWithKey:@"unreported-error"
+								  format:@"An error occurred while converting a condition, but no appropriate message was generated (selector: \"%@\").", query];
 			}
 			converted = @"<** unknown error **>";
 		}
 	}
 	else	
 	{
-		[_problemReporter addStopIssueWithKey:@"unknown-selector"
-									   format:@"Could not convert unknown conditional selector \"%@\".", query];
-		_validConversion = NO;
+		[self addUnknownSelectorIssueWithKey:@"unknown-selector"
+									  format:@"Could not convert unknown conditional selector \"%@\".", query];
 		converted = [NSString stringWithFormat:@"<** %@ **>", query];
 	}
 	
@@ -486,7 +479,7 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 - (NSString *) stringifyBooleanExpression:(NSString *)expr
 {
 	[self setHelperFunction:
-			@"this.boolToString = function (flag)\n{\n"
+			@"function (flag)\n{\n"
 			"\t// Convert booleans to YES/NO for comparisons.\n"
 			"\treturn flag ? \"YES\" : \"NO\";\n}"
 		forKey:@"boolToString"];
@@ -506,9 +499,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	
 	if ([tokens count] < 2)
 	{
-		[_problemReporter addStopIssueWithKey:@"set-syntax-error"
-									   format:@"Bad syntax for set: -- expected mission_variable or local_variable followed by value expression, got \"%@\".", params];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"set-syntax-error"
+						   format:@"Bad syntax for set: -- expected mission_variable or local_variable followed by value expression, got \"%@\".", params];
 		return nil;
 	}
 	
@@ -522,9 +514,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	}
 	else
 	{
-		[_problemReporter addStopIssueWithKey:@"set-syntax-error"
-									   format:@"Bad syntax for set: -- expected mission_variable or local_variable, got \"%@\".", missionVariableString];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"set-syntax-error"
+						   format:@"Bad syntax for set: -- expected mission_variable or local_variable, got \"%@\".", missionVariableString];
 		return nil;
 	}
 }
@@ -536,6 +527,90 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	if (legalized == nil)  return nil;
 	
 	return [NSString stringWithFormat:@"%@ = null;", legalized];
+}
+
+
+- (NSString *) convertAction_add:(NSString *)params
+{
+	NSMutableArray		*tokens = nil;
+	NSString			*missionVariableString = nil;
+	NSString			*valueString = nil;
+	
+	tokens = ScanTokensFromString(params);
+	
+	if ([tokens count] < 2)
+	{
+		[self addStopIssueWithKey:@"add-syntax-error"
+						   format:@"Bad syntax for add: -- expected mission_variable or local_variable followed by value expression, got \"%@\".", params];
+		return nil;
+	}
+	
+	missionVariableString = [tokens objectAtIndex:0];
+	[tokens removeObjectAtIndex:0];
+	valueString = [tokens componentsJoinedByString:@" "];
+	
+	if ([missionVariableString hasPrefix:@"mission_"] || [missionVariableString hasPrefix:@"local_"])
+	{
+		[self setParseFloatOrZeroHelper];
+		missionVariableString = [self legalizedVariableName:missionVariableString];
+		return [NSString stringWithFormat:@"%@ = this.parseFloatOrZero(%@) + %@;", missionVariableString, missionVariableString, [self expandFloatExpression:valueString]];
+	}
+	else
+	{
+		[self addStopIssueWithKey:@"add-syntax-error"
+						   format:@"Bad syntax for add: -- expected mission_variable or local_variable, got \"%@\".", missionVariableString];
+		return nil;
+	}
+}
+
+
+- (NSString *) convertAction_subtract:(NSString *)params
+{
+	NSMutableArray		*tokens = nil;
+	NSString			*missionVariableString = nil;
+	NSString			*valueString = nil;
+	
+	tokens = ScanTokensFromString(params);
+	
+	if ([tokens count] < 2)
+	{
+		[self addStopIssueWithKey:@"subtract-syntax-error"
+						   format:@"Bad syntax for subtract: -- expected mission_variable or local_variable followed by value expression, got \"%@\".", params];
+		return nil;
+	}
+	
+	missionVariableString = [tokens objectAtIndex:0];
+	[tokens removeObjectAtIndex:0];
+	valueString = [tokens componentsJoinedByString:@" "];
+	
+	if ([missionVariableString hasPrefix:@"mission_"] || [missionVariableString hasPrefix:@"local_"])
+	{
+		[self setParseFloatOrZeroHelper];
+		missionVariableString = [self legalizedVariableName:missionVariableString];
+		return [NSString stringWithFormat:@"%@ = this.parseFloatOrZero(%@) - %@;", missionVariableString, missionVariableString, [self expandFloatExpression:valueString]];
+	}
+	else
+	{
+		[self addStopIssueWithKey:@"subtract-syntax-error"
+						   format:@"Bad syntax for subtract: -- expected mission_variable or local_variable, got \"%@\".", missionVariableString];
+		return nil;
+	}
+}
+
+
+- (NSString *) convertAction_increment:(NSString *)string
+{
+	[self setParseIntOrZeroHelper];
+	NSString *varStr = [self legalizedVariableName:string];
+	return [NSString stringWithFormat:@"%@ = this.parseIntOrZero(%@) + 1;", varStr, varStr];
+}
+
+
+- (NSString *) convertAction_decrement:(NSString *)string
+{
+	[self setParseIntOrZeroHelper];
+	NSString *varStr = [self legalizedVariableName:string];
+	return [NSString stringWithFormat:@"%@ = this.parseIntOrZero(%@) - 1;", varStr, varStr];
 }
 
 
@@ -560,7 +635,7 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 - (NSString *) convertAction_checkForShips:(NSString *)string
 {
 	[self setInitializer:@"this.shipsFound = 0;" forKey:@"shipsFound"];
-	return [NSString stringWithFormat:@"this.shipsFound = system.shipsWithPrimaryRole(%@).length;", [self expandString:string]];
+	return [NSString stringWithFormat:@"this.shipsFound = system.countShipsWithPrimaryRole(%@);", [self expandString:string]];
 }
 
 
@@ -573,6 +648,12 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 - (NSString *) convertAction_awardShipKills:(NSString *)string
 {
 	return [NSString stringWithFormat:@"player.score += %@;", [self expandIntegerExpression:string]];
+}
+
+
+- (NSString *) convertAction_awardFuel:(NSString *)string
+{
+	return [NSString stringWithFormat:@"player.ship.fuel += %@;", [self expandFloatExpression:string]];
 }
 
 
@@ -631,42 +712,6 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 }
 
 
-- (NSString *) convertAction_increment:(NSString *)string
-{
-	/*	A helper function is used to ensure correct (i.e. backwards-compatible)
-		semantics when incrementing a variable which happens to be a string.
-	*/
-	[self setHelperFunction:
-			@"this.increment = function (n)\n{\n"
-			"\t// This handles the case where increment: is used on a variable that's currently a string.\n"
-			"\tn = parseInt(n);\n"
-			"\tif(isNaN(n))  n = 0;\n"
-			"\treturn n + 1;\n}"
-		forKey:@"increment"];
-	
-	NSString *varStr = [self legalizedVariableName:string];
-	return [NSString stringWithFormat:@"%@ = this.increment(%@);", varStr, varStr];
-}
-
-
-- (NSString *) convertAction_decrement:(NSString *)string
-{
-	/*	A helper function is used to ensure correct (i.e. backwards-compatible)
-		semantics when incrementing a variable which happens to be a string.
-	*/
-	[self setHelperFunction:
-			@"this.decrement = function (n)\n{\n"
-			"\t// This handles the case where increment: is used on a variable that's currently a string.\n"
-			"\tn = parseInt(n);\n"
-			"\tif(isNaN(n))  n = 0;\n"
-			"\treturn n - 1;\n}"
-		forKey:@"decrement"];
-	
-	NSString *varStr = [self legalizedVariableName:string];
-	return [NSString stringWithFormat:@"%@ = this.decrement(%@);", varStr, varStr];
-}
-
-
 - (NSString *) convertAction_setFuelLeak:(NSString *)string
 {
 	return [NSString stringWithFormat:@"player.ship.fuelLeakRate = %@;", [self expandFloatExpression:string]];
@@ -679,25 +724,64 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 }
 
 
+- (NSString *) convertAction_setMissionDescription:(NSString *)string
+{
+	return [NSString stringWithFormat:@"mission.setInstructionsKey(%@);", [self expandString:string]];
+}
+
+
+- (NSString *) convertAction_clearMissionDescription
+{
+	return [NSString stringWithFormat:@"mission.setInstructionsKey(null);"];
+}
+
+
+- (NSString *) convertAction_setMissionMusic:(NSString *)string
+{
+	return [NSString stringWithFormat:@"mission.setMusic(%@);", [self expandString:string]];
+}
+
+
+- (NSString *) convertAction_addMissionDestination:(NSString *)string
+{
+	/*	expandStringOrNumber: is used because more than one destination can be
+		specified, as a space-separated list. mission.markSystem() supports
+		this format, as well as comma-separated lists.
+	*/
+	return [NSString stringWithFormat:@"mission.markSystem(%@);", [self expandStringOrNumber:string]];
+}
+
+
+- (NSString *) convertAction_removeMissionDestination:(NSString *)string
+{
+	/*	expandStringOrNumber: is used because more than one destination can be
+		specified, as a space-separated list. mission.unmarkSystem() supports
+		this format, as well as comma-separated lists.
+	*/
+	return [NSString stringWithFormat:@"mission.unmarkSystem(%@);", [self expandStringOrNumber:string]];
+}
+
+
 - (NSString *) convertAction_addShips:(NSString *)params
 {
 	NSMutableArray		*tokens = nil;
 	NSString			*roleString = nil;
-	NSString			*numberString = nil;
+	NSString			*countString = nil;
 	
 	tokens = ScanTokensFromString(params);
 	if ([tokens count] != 2)
 	{
-		[_problemReporter addStopIssueWithKey:@"addShips-syntax-error"
-									   format:@"Bad syntax for addShips: -- expected role followed by count, got \"%@\".", params];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"addShips-syntax-error"
+						   format:@"Bad syntax for addShips: -- expected role followed by count, got \"%@\".", params];
 		return nil;
 	}
 	
 	roleString = [tokens objectAtIndex:0];
-	numberString = [tokens objectAtIndex:1];
+	countString = [tokens objectAtIndex:1];
 	
-	return [NSString stringWithFormat:@"system.legacy_addShips(%@, %@);", [self expandString:roleString], [self expandIntegerExpression:numberString]];
+	return [NSString stringWithFormat:@"system.legacy_addShips(%@, %@);",
+			[self expandString:roleString],
+			[self expandIntegerExpression:countString]];
 }
 
 
@@ -705,23 +789,133 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 {
 	NSMutableArray		*tokens = nil;
 	NSString			*roleString = nil;
-	NSString			*numberString = nil;
+	NSString			*countString = nil;
 	NSString			*positionString = nil;
 	
 	tokens = ScanTokensFromString(params);
 	if ([tokens count] != 3)
 	{
-		[_problemReporter addStopIssueWithKey:@"addSystemShips-syntax-error"
-									   format:@"Bad syntax for addSystemShips: -- expected role followed by count and position, got \"%@\".", params];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"addSystemShips-syntax-error"
+						   format:@"Bad syntax for addSystemShips: -- expected <role> <count> <position>, got \"%@\".", params];
 		return nil;
 	}
 	
 	roleString = [tokens objectAtIndex:0];
-	numberString = [tokens objectAtIndex:1];
+	countString = [tokens objectAtIndex:1];
 	positionString = [tokens objectAtIndex:2];
 	
-	return [NSString stringWithFormat:@"system.legacy_addSystemShips(%@, %@, %@);", [self expandString:roleString], [self expandIntegerExpression:numberString], [self expandFloatExpression:positionString]];
+	return [NSString stringWithFormat:@"system.legacy_addSystemShips(%@, %@, %@);",
+			[self expandString:roleString],
+			[self expandIntegerExpression:countString],
+			[self expandFloatExpression:positionString]];
+}
+
+
+- (NSString *) convertAction_addShipsAt:(NSString *)params
+{
+	NSMutableArray		*tokens = nil;
+	NSString			*roleString = nil;
+	NSString			*countString = nil;
+	NSString			*systemString = nil;
+	NSString			*xString = nil;
+	NSString			*yString = nil;
+	NSString			*zString = nil;
+	
+	tokens = ScanTokensFromString(params);
+	if ([tokens count] != 6)
+	{
+		[self addStopIssueWithKey:@"addShipsAt-syntax-error"
+						   format:@"Bad syntax for addShipsAt: -- expected <role> <count> <coordinate-system> <x> <y> <z>, got \"%@\".", params];
+		return nil;
+	}
+	
+	roleString = [tokens objectAtIndex:0];
+	countString = [tokens objectAtIndex:1];
+	systemString = [tokens objectAtIndex:2];
+	xString = [tokens objectAtIndex:3];
+	yString = [tokens objectAtIndex:4];
+	zString = [tokens objectAtIndex:5];
+	
+	return [NSString stringWithFormat:@"system.legacy_addShipsAt(%@, %@, %@, [%@, %@, %@]);",
+			[self expandString:roleString],
+			[self expandIntegerExpression:countString],
+			[self expandString:systemString],
+			[self expandFloatExpression:xString],
+			[self expandFloatExpression:yString],
+			[self expandFloatExpression:zString]];
+}
+
+
+- (NSString *) convertAction_addShipsAtPrecisely:(NSString *)params
+{
+	NSMutableArray		*tokens = nil;
+	NSString			*roleString = nil;
+	NSString			*countString = nil;
+	NSString			*systemString = nil;
+	NSString			*xString = nil;
+	NSString			*yString = nil;
+	NSString			*zString = nil;
+	
+	tokens = ScanTokensFromString(params);
+	if ([tokens count] != 6)
+	{
+		[self addStopIssueWithKey:@"addShipsAtPrecisely-syntax-error"
+						   format:@"Bad syntax for addShipsAtPrecisely: -- expected <role> <count> <coordinate-system> <x> <y> <z>, got \"%@\".", params];
+		return nil;
+	}
+	
+	roleString = [tokens objectAtIndex:0];
+	countString = [tokens objectAtIndex:1];
+	systemString = [tokens objectAtIndex:2];
+	xString = [tokens objectAtIndex:3];
+	yString = [tokens objectAtIndex:4];
+	zString = [tokens objectAtIndex:5];
+	
+	return [NSString stringWithFormat:@"system.legacy_addShipsAtPrecisely(%@, %@, %@, [%@, %@, %@]);",
+			[self expandString:roleString],
+			[self expandIntegerExpression:countString],
+			[self expandString:systemString],
+			[self expandFloatExpression:xString],
+			[self expandFloatExpression:yString],
+			[self expandFloatExpression:zString]];
+}
+
+
+- (NSString *) convertAction_addShipsWithinRadius:(NSString *)params
+{
+	NSMutableArray		*tokens = nil;
+	NSString			*roleString = nil;
+	NSString			*countString = nil;
+	NSString			*systemString = nil;
+	NSString			*xString = nil;
+	NSString			*yString = nil;
+	NSString			*zString = nil;
+	NSString			*radiusString = nil;
+	
+	tokens = ScanTokensFromString(params);
+	if ([tokens count] != 7)
+	{
+		[self addStopIssueWithKey:@"addShipsWithinRadius-syntax-error"
+						   format:@"Bad syntax for addShipsWithinRadius: -- expected <role> <count> <coordinate-system> <x> <y> <z> <radius>, got \"%@\".", params];
+		return nil;
+	}
+	
+	roleString = [tokens objectAtIndex:0];
+	countString = [tokens objectAtIndex:1];
+	systemString = [tokens objectAtIndex:2];
+	xString = [tokens objectAtIndex:3];
+	yString = [tokens objectAtIndex:4];
+	zString = [tokens objectAtIndex:5];
+	radiusString = [tokens objectAtIndex:6];
+	
+	return [NSString stringWithFormat:@"system.legacy_addShipsWithinRadius(%@, %@, %@, [%@, %@, %@], %@);",
+			[self expandString:roleString],
+			[self expandIntegerExpression:countString],
+			[self expandString:systemString],
+			[self expandFloatExpression:xString],
+			[self expandFloatExpression:yString],
+			[self expandFloatExpression:zString],
+			[self expandFloatExpression:radiusString]];
 }
 
 
@@ -734,9 +928,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	tokens = ScanTokensFromString(params);
 	if ([tokens count] != 2)
 	{
-		[_problemReporter addStopIssueWithKey:@"awardCargo-syntax-error"
-									   format:@"Bad syntax for awardCargo: -- expected count followed by type, got \"%@\".", params];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"awardCargo-syntax-error"
+						   format:@"Bad syntax for awardCargo: -- expected count followed by type, got \"%@\".", params];
 		return nil;
 	}
 	
@@ -763,9 +956,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	tokens = [params componentsSeparatedByString:@"="];
 	if ([tokens count] != 2)
 	{
-		[_problemReporter addStopIssueWithKey:@"setPlanetinfo-syntax-error"
-									   format:@"Bad syntax for setPlanetinfo: -- expected key=value, got \"%@\".", params];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"setPlanetinfo-syntax-error"
+						   format:@"Bad syntax for setPlanetinfo: -- expected key=value, got \"%@\".", params];
 		return nil;
 	}
 	
@@ -787,9 +979,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	tokens = [params componentsSeparatedByString:@"="];
 	if ([tokens count] != 4)
 	{
-		[_problemReporter addStopIssueWithKey:@"setPlanetinfo-syntax-error"
-									   format:@"Bad syntax for setPlanetinfo: -- expected galaxy=system=key=value, got \"%@\".", params];
-		_validConversion = NO;
+		[self addStopIssueWithKey:@"setPlanetinfo-syntax-error"
+						   format:@"Bad syntax for setSpecificPlanetInfo: -- expected galaxy=system=key=value, got \"%@\".", params];
 		return nil;
 	}
 	
@@ -835,6 +1026,31 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 - (NSString *) convertAction_setGuiToMissionScreen
 {
 	return @"mission.showMissionScreen();";
+}
+
+
+- (NSString *) convertAction_resetMissionChoice
+{
+	return @"mission.choice = null;";
+}
+
+
+- (NSString *) convertAction_setGuiToStatusScreen
+{
+	// FIXME: is this OK in general?
+	return @"";
+}
+
+
+- (NSString *) convertAction_debugOn
+{
+	return @"if (debugConsole)  debugConsole.setDisplayMessagesInClass(\"$scriptDebugOn\", true);";
+}
+
+
+- (NSString *) convertAction_debugOff
+{
+	return @"if (debugConsole)  debugConsole.setDisplayMessagesInClass(\"$scriptDebugOn\", false);";
 }
 
 
@@ -917,6 +1133,147 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 - (NSString *) convertQuery_scriptTimer_number
 {
 	return @"clock.legacy_scriptTimer";
+}
+
+
+- (NSString *) convertQuery_gui_screen_string
+{
+	return @"guiScreen";
+}
+
+
+- (NSString *) convertQuery_credits_number
+{
+	return @"player.credits";
+}
+
+
+- (NSString *) convertQuery_dockedStationName_string
+{
+	/*
+		this.dockedStationName = function ()
+		{
+			if (player.ship.docked)
+			{
+				var result = player.ship.dockedStation.name;
+				if (!result)  result = "UNKNOWN";
+					
+			}
+			else
+			{
+				var result = "NONE";
+			}
+			return result;
+		}
+	*/
+	[self setHelperFunction:
+			@"function ()\n{\n"
+			"\tif (player.ship.docked)\n\t{\n"
+			"\t\tvar result = player.ship.dockedStation.name;\n"
+			"\t\tif (!result)  result = \"UNKNOWN\";\n"
+			"\t}\n\telse\n\t{\n"
+			"\t\tvar result = \"NONE\";\n\t}\n"
+			"\treturn result;\n}"
+		forKey:@"dockedStationName"];
+	
+	return @"this.dockedStationName()";
+}
+
+
+- (NSString *) convertQuery_systemGovernment_string
+{
+	return @"system.governmentDescription";
+}
+
+
+- (NSString *) convertQuery_systemGovernment_number
+{
+	return @"system.government";
+}
+
+
+- (NSString *) convertQuery_systemEconomy_string
+{
+	return @"system.economyDescription";
+}
+
+
+- (NSString *) convertQuery_systemEconomy_number
+{
+	return @"system.economy";
+}
+
+
+- (NSString *) convertQuery_systemTechLevel_number
+{
+	return @"system.techLevel";
+}
+
+
+- (NSString *) convertQuery_systemPopulation_number
+{
+	return @"system.population";
+}
+
+
+- (NSString *) convertQuery_systemProductivity_number
+{
+	return @"system.productivity";
+}
+
+
+- (NSString *) convertQuery_commanderName_string
+{
+	return @"player.name";
+}
+
+
+- (NSString *) convertQuery_commanderRank_string
+{
+	return @"player.rank";
+}
+
+
+- (NSString *) convertQuery_commanderShip_string
+{
+	return @"player.ship.name";
+}
+
+
+- (NSString *) convertQuery_commanderShipDisplayName_string
+{
+	return @"player.ship.displayName";
+}
+
+
+
+- (NSString *) convertQuery_commanderLegalStatus_string
+{
+	return @"player.legalStatus";
+}
+
+
+- (NSString *) convertQuery_commanderLegalStatus_number
+{
+	return @"player.bounty";
+}
+
+
+- (NSString *) convertQuery_legalStatus_number
+{
+	return @"player.bounty";
+}
+
+
+- (NSString *) convertQuery_pseudoFixedD100_number
+{
+	return @"system.psuedoRandom100";
+}
+
+
+- (NSString *) convertQuery_pseudoFixedD256_number
+{
+	return @"system.psuedoRandom256";
 }
 
 @end

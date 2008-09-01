@@ -55,3 +55,6 @@ extern NSString * const kOOScriptMetadataKeyLicense;
 - (NSString *)escapedForJavaScriptBlockComment;
 
 @end
+
+
+BOOL OOScriptConverterIsNumberLiteral(NSString *string);

@@ -29,6 +29,15 @@ function inspectEntity(entity : Entity)
 function __callObjCMethod()
 	Implements call() for entities.
 
+function displayMessagesInClass(class : String) : Boolean
+	Returns true if the specified log message class is enabled, false otherwise.
+
+function setDisplayMessagesInClass(class : String, flag : Boolean)
+	Enable or disable logging of the specified log message class. For example,
+	the equivalent of the legacy command debugOn is:
+		debugConsole.setDisplayMessagesInClass("$scriptDebugOn", true);
+	Metaclasses and inheritance work as in logcontrol.plist.
+
 debugFlags
 	An integer bit mask specifying various debug options. The flags vary
 	between builds, but at the time of writing they are:
@@ -166,6 +175,10 @@ this.consolePerformJSCommand = function (command)
 	while (command.charAt(0) == " ")
 	{
 		command = command.substring(1);
+	}
+	while (command.length > 1 && command.charAt(command.length - 1) == "\n")
+	{
+		command = command.substring(0, command.length - 1);
 	}
 	
 	if (command.charAt(0) != ":")
@@ -381,7 +394,9 @@ debugConsole.script = this;
 
 if (debugConsole.settings["macros"])  this.macros = debugConsole.settings["macros"];
 
-// As a convenience, make player, player.ship, system and missionVariables available to console commands as single-letter variables:
+/*	As a convenience, make player, player.ship, system and missionVariables
+	available to console commands as short variables:
+*/
 this.P = player;
 this.PS = player.ship;
 this.S = system;
@@ -392,14 +407,6 @@ this.M = missionVariables;
 function consoleMessage()
 {
 	// Call debugConsole.consoleMessage() with console as "this" and all the arguments passed to consoleMessage().
-	debugConsole.consoleMessage.apply(debugConsole, arguments);
-}
-
-
-// Also make console.consoleMessage() globally visible as ConsoleMessage() for backwards-compatibility. this will be removed before next stable.
-function ConsoleMessage()
-{
-	debugConsole.consoleMessage("warning", "Warning: ConsoleMessage() is deprecated. Use consoleMessage() instead.", 0, 8);
 	debugConsole.consoleMessage.apply(debugConsole, arguments);
 }
 
