@@ -193,6 +193,13 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	SEL					selector = NULL;
 	NSString			*converted = nil;
 	
+	// Work around one of Eric's evil hacks
+	if ([action hasPrefix:@"/*"] && [action hasSuffix:@"*/"])
+	{
+		[self append:[action stringByAppendingString:@"\n"]];
+		return;
+	}
+	
 	tokens = ScanTokensFromString(action);
 	
 	tokenCount = [tokens count];
@@ -244,7 +251,7 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	}
 	else
 	{
-		converted = [NSString stringWithFormat:@"<%@>\t\t// *** UNKNOWN ***", action];
+		converted = [NSString stringWithFormat:@"<** %@ **>\t\t// *** UNKNOWN ***", action];
 		[self addUnknownSelectorIssueWithKey:@"unknown-selector"
 									  format:@"Could not convert unknown action selector \"%@\".", selectorString];
 	}
@@ -652,6 +659,12 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 
 
 - (NSString *) convertAction_awardFuel:(NSString *)string
+{
+	return [NSString stringWithFormat:@"player.ship.fuel += %@;", [self expandFloatExpression:string]];
+}
+
+
+- (NSString *) convertAction_addFuel:(NSString *)string
 {
 	return [NSString stringWithFormat:@"player.ship.fuel += %@;", [self expandFloatExpression:string]];
 }
