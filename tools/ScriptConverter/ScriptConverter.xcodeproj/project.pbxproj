@@ -48,6 +48,7 @@
 		1ACFA0710E6CA0690015068D /* ups-courier-1.3.5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "ups-courier-1.3.5.plist"; sourceTree = "<group>"; };
 		1ACFA0800E6CA67D0015068D /* galactic-navy-v4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "galactic-navy-v4.plist"; sourceTree = "<group>"; };
 		1ACFA0840E6CAD5B0015068D /* trident-down-1.0.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "trident-down-1.0.plist"; sourceTree = "<group>"; };
+		1AD4118C0E6D9AAC00CA8C31 /* random-hits-1.2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "random-hits-1.2.plist"; sourceTree = "<group>"; };
 		32A70AAB03705E1F00C91783 /* ScriptConverter_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptConverter_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* ScriptConverter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ScriptConverter; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -109,6 +110,7 @@
 				1A3C39A20E6C0A8C0057293D /* ionics-1.2.1.plist */,
 				1A3C39A30E6C0A8C0057293D /* oolite-1.65.plist */,
 				1A3C3AC30E6C6B1E0057293D /* oolite-1.70.plist */,
+				1AD4118C0E6D9AAC00CA8C31 /* random-hits-1.2.plist */,
 				1ACFA0840E6CAD5B0015068D /* trident-down-1.0.plist */,
 				1ACFA0710E6CA0690015068D /* ups-courier-1.3.5.plist */,
 			);

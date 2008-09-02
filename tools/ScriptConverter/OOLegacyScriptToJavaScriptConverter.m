@@ -826,9 +826,10 @@ static inline BOOL IsSpaceOrTab(int value)
 
 BOOL OOScriptConverterIsNumberLiteral(NSString *string)
 {
-	// Not a perfect test, but good enough. Note that relying on convertability
+	// Not a perfect test. Note that relying on convertability
 	// to number isn't sufficient, since strings like "2HRS_TO_ZERO" are
 	// allowed and used.
+	// FIXME: must only allow leading and trailing spaces - "1 2 3" is not a number literal.
 	return [string rangeOfCharacterFromSet:[NumberCharSet() invertedSet]].location == NSNotFound;
 }
 
