@@ -322,6 +322,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = jsautocfg.h;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					$ALL_CONFIG_MACROS,
 					DEBUG,
@@ -330,6 +331,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = js;
 				SYMROOT = ../../../../../build;
+				USER_HEADER_SEARCH_PATHS = "\"$PROJECT_DIR\" \"$PROJECT_DIR/../src/\"";
 			};
 			name = "Debug GCC 4.2/Leopard";
 		};
