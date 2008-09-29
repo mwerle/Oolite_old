@@ -11,5 +11,7 @@ then
 		mkdir "$BIN_DIR"
 	fi
 	
-	/usr/bin/gcc -o "$BIN_DIR/SCRDynamicShim.dylib" -L/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/darwin/default "$SHIM_DIR/../Smart Crash Reports SDK/SmartCrashReportsInstall.o" -exported_symbols_list "$SHIM_DIR/ExportList.txt" -framework Carbon -framework Security -lz -arch ppc -Wl,-single_module -compatibility_version 1 -current_version 1 -install_name /usr/local/lib/SCRDynamicShim.dylib -Wl,-Y,1455 -dynamiclib -mmacosx-version-min=10.4 -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk
+	LIB_DIR="$SHIM_DIR/../Smart Crash Reports SDK/For Compiling on 10.4"
+	
+	/usr/bin/gcc -o "$BIN_DIR/SCRDynamicShim.dylib" -L/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/darwin/default "$LIB_DIR/SmartCrashReportsInstall.o" -exported_symbols_list "$SHIM_DIR/ExportList.txt" -framework Carbon -framework Security -lz -arch ppc -Wl,-single_module -compatibility_version 1 -current_version 1 -install_name /usr/local/lib/SCRDynamicShim.dylib -Wl,-Y,1455 -dynamiclib -mmacosx-version-min=10.4 -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk
 fi
