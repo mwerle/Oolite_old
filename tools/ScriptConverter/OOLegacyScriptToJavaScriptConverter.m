@@ -8,6 +8,7 @@
 
 #import "OOLegacyScriptToJavaScriptConverterCore.h"
 #import "OOCollectionExtractors.h"
+#import "OOIsNumberLiteral.h"
 
 
 NSString * const kOOScriptMetadataKeyName			= @"name";
@@ -22,7 +23,6 @@ NSString * const kOOScriptConverterVersion			= @"0.1";
 
 static NSString *IndentPrefixForLevel(unsigned level);
 static NSCharacterSet *NewlineCharSet(void);
-static NSCharacterSet *NumberCharSet(void);
 static NSCharacterSet *IdentifierCharSet(void);
 static NSString *LegalizeIdentifier(NSString *identifier, BOOL willBePrefixed);
 
@@ -792,26 +792,6 @@ static NSCharacterSet *NewlineCharSet(void)
 }
 
 
-static NSCharacterSet *NumberCharSet(void)
-{
-	const unichar numberSet[] =
-	{
-		' ', '-', '+', '.',
-		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-		' ', '\t',
-		0x000A,		// LF
-		0x000C,		// FF
-		0x000D,		// CR
-		0x0085,		// NEL
-		0x2028,		// LS
-		0x2029		// PS
-	};
-	const size_t count = sizeof numberSet / sizeof numberSet[0];
-	
-	return [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithCharacters:numberSet length:count]];
-}
-
-
 static NSCharacterSet *IdentifierCharSet(void)
 {
 	return [NSCharacterSet characterSetWithCharactersInString:@"_0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"];
@@ -826,11 +806,7 @@ static inline BOOL IsSpaceOrTab(int value)
 
 BOOL OOScriptConverterIsNumberLiteral(NSString *string)
 {
-	// Not a perfect test. Note that relying on convertability
-	// to number isn't sufficient, since strings like "2HRS_TO_ZERO" are
-	// allowed and used.
-	// FIXME: must only allow leading and trailing spaces - "1 2 3" is not a number literal.
-	return [string rangeOfCharacterFromSet:[NumberCharSet() invertedSet]].location == NSNotFound;
+	return OOIsNumberLiteral(string, NO);
 }
 
 
