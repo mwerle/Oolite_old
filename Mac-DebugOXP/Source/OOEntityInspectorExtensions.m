@@ -98,6 +98,12 @@
 }
 
 
+- (NSString *) inspRetainCountLine
+{
+	return [NSString stringWithFormat:@"%u", [self retainCount]];
+}
+
+
 - (NSString *) inspPositionLine
 {
 	Vector v = [self position];

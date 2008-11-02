@@ -14,6 +14,7 @@
 {
 	IBOutlet NSTextField		*_scanClassField;
 	IBOutlet NSTextField		*_statusField;
+	IBOutlet NSTextField		*_retainCountField;
 	IBOutlet NSTextField		*_positionField;
 	IBOutlet NSTextField		*_velocityField;
 	IBOutlet NSTextField		*_orientationField;

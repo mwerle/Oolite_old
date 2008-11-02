@@ -27,6 +27,7 @@
 	
 	[_scanClassField setStringValue:[object inspScanClassLine] ?: placeholder];
 	[_statusField setStringValue:[object inspStatusLine] ?: placeholder];
+	[_retainCountField setStringValue:[object inspRetainCountLine] ?: @"0"];
 	[_positionField setStringValue:[object inspPositionLine] ?: placeholder];
 	[_velocityField setStringValue:[object inspVelocityLine] ?: placeholder];
 	[_orientationField setStringValue:[object inspOrientationLine] ?: placeholder];

@@ -29,6 +29,7 @@
 
 - (NSString *) inspScanClassLine;
 - (NSString *) inspStatusLine;
+- (NSString *) inspRetainCountLine;
 - (NSString *) inspPositionLine;
 - (NSString *) inspVelocityLine;
 - (NSString *) inspOrientationLine;
