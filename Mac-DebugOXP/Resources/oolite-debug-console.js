@@ -61,6 +61,10 @@ debugFlags
 	the ^= operator (XOR assign) can be thought of as a “toggle option”
 	command.
 
+isExecutableJavaScript(code : String) : Boolean
+	Used to test whether code is runnable as-is. Returns false if the code has
+	unbalanced braces or parentheses. (Used in consolePerformJSCommand() below.)
+
 
 Oolite Debug OXP
 
