@@ -608,7 +608,7 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 			OOLog(@"ship.subentity.sanityCheck.failed.details", @"Attempt to set subentity taking damage of %@ to %@, which is not a subentity.", [self shortDescription], sub);
 			sub = nil;
 		}
-		if (![sub isShip])
+		else if (![sub isShip])
 		{
 			OOLog(@"ship.subentity.sanityCheck.failed", @"Attempt to set subentity taking damage of %@ to %@, which is not a ship.", [self shortDescription], sub);
 			sub = nil;
