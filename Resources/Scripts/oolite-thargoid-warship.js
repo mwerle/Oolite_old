@@ -34,5 +34,5 @@ this.version		= "1.72.1";
 
 this.shipDied = function ()
 {
-	player.commsMessage(expandDescription("[thargoid_curses]"));
+	this.ship.commsMessage(expandDescription("[thargoid_curses]"));
 }
