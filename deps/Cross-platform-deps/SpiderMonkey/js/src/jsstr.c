@@ -2968,7 +2968,7 @@ js_InflateStringToBuffer(JSContext *cx, const char *src, size_t srclen,
                 if ((src[j] & 0xC0) != 0x80)
                     goto badCharacter;
             }
-            v = Utf8ToOneUcs4Char((uint8 *)src, n);
+            v = Utf8ToOneUcs4Char(src, n);
             if (v >= 0x10000) {
                 v -= 0x10000;
                 if (v > 0xFFFFF || dstlen < 2) {

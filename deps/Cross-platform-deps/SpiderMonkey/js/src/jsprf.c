@@ -949,7 +949,7 @@ static int dosprintf(SprintfState *ss, const char *fmt, va_list ap)
                 /* Treat %hc as %c if JS_C_STRINGS_ARE_UTF8 is undefined. */
 #ifdef JS_C_STRINGS_ARE_UTF8
                 u.wch = va_arg(ap, int);
-                utf8len = js_OneUcs4ToUtf8Char ((uint8 *)utf8buf, u.wch);
+                utf8len = js_OneUcs4ToUtf8Char (utf8buf, u.wch);
                 rv = (*ss->stuff)(ss, utf8buf, utf8len);
                 break;
 #endif
