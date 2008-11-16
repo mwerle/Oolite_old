@@ -8,7 +8,6 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="106"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -777,7 +776,7 @@
 							<object class="NSTextFieldCell" key="NSCell" id="349280234">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">272629760</int>
-								<string key="NSContents">Note: the ship will appear near the station.</string>
+								<string key="NSContents">Note: the ship will appear near the player.</string>
 								<reference key="NSSupport" ref="109516790"/>
 								<reference key="NSControlView" ref="113956282"/>
 								<reference key="NSBackgroundColor" ref="95148043"/>
@@ -785,7 +784,7 @@
 							</object>
 						</object>
 					</object>
-					<string key="NSFrame">{{1, 1}, {457, 147}}</string>
+					<string key="NSFrameSize">{457, 147}</string>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -2561,7 +2560,9 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string>59.ImportedFromIB2</string>
 					<string>6.IBPluginDependency</string>
 					<string>6.ImportedFromIB2</string>
+					<string>61.IBEditorWindowLastContentRect</string>
 					<string>61.IBPluginDependency</string>
+					<string>61.IBWindowTemplateEditedContentRect</string>
 					<string>61.ImportedFromIB2</string>
 					<string>61.windowTemplate.hasMaxSize</string>
 					<string>61.windowTemplate.hasMinSize</string>
@@ -2735,7 +2736,9 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{0, 998}, {457, 147}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>{{0, 998}, {457, 147}}</string>
 					<reference ref="9"/>
 					<reference ref="6"/>
 					<reference ref="9"/>
