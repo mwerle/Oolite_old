@@ -215,11 +215,13 @@ enum
 		OK = (noErr == MPCreateQueue(&sFeederQueue)) && (sFeederQueue != kInvalidID);
 	}
 	
-	if (OK && !sFeederThreadActive) [NSThread detachNewThreadSelector:@selector(feederThread:) toTarget:[OOCAStreamingSound class] withObject:nil];
-	
-	[self retain];	// Will be released by fillBuffers... when stopped is true and pendingCount is 0.
-	++context->pendingCount;
-	[self fillBuffersWithContext:context];
+	if (OK)
+	{
+		if (!sFeederThreadActive) [NSThread detachNewThreadSelector:@selector(feederThread:) toTarget:[OOCAStreamingSound class] withObject:nil];
+		[self retain];	// Will be released by fillBuffers... when stopped is true and pendingCount is 0.
+		++context->pendingCount;
+		[self fillBuffersWithContext:context];
+	}
 	
 	return OK;
 }

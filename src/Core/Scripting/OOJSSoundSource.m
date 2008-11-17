@@ -217,6 +217,7 @@ static JSBool SoundSourcePlay(JSContext *context, JSObject *this, uintN argc, js
 	if (argc > 0 && !JS_ValueToInt32(context, argv[0], &count))
 	{
 		OOReportJSBadArguments(context, @"SoundSource", @"play", argc, argv, @"Invalid arguments", @"integer count or no argument");
+		return NO;
 	}
 	
 	if (count > 0)
@@ -268,7 +269,7 @@ static JSBool SoundSourcePlaySound(JSContext *context, JSObject *this, uintN arg
 		return NO;
 	}
 	
-	if (argc > 1 || !JS_ValueToInt32(context, argv[1], &count))
+	if (argc > 1 && !JS_ValueToInt32(context, argv[1], &count))
 	{
 		OOReportJSBadArguments(context, @"SoundSource", @"playSound", argc, argv, @"Invalid arguments", @"sound or sound name and optional integer count");
 		return NO;
