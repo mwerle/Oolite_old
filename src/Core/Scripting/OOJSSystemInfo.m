@@ -105,6 +105,7 @@ static JSExtendedClass sSystemInfoClass =
 		_galaxy = galaxy;
 		_system = system;
 		_planetKey = [NSString stringWithFormat:@"%u %i", galaxy, system];
+		[_planetKey retain];
 	}
 	return self;
 }
