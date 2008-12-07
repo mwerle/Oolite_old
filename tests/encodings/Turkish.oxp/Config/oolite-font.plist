@@ -28,7 +28,7 @@
 		<string></string>
 	</dict>
 	<key>texture</key>
-	<string>oolite-font.png</string>
+	<string>oolite-font-tu.png</string>
 	<key>widths</key>
 	<array>
 		<real>8</real>

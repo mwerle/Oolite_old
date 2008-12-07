@@ -1,6 +1,6 @@
 {
 	encoding = "windows-latin-2";
-	texture = "oolite-font-l2.png";
+	texture = "oolite-font-cy.png";
 	
 	substitutions =
 	{
