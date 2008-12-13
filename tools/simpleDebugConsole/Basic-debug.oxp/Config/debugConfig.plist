@@ -99,6 +99,9 @@
 		// ":spawn foo" -- create a ship with role "foo" near the station.
 		"spawn"		= "system.legacy_addShipsWithinRadius(PARAM, 1, 'abs', player.ship.position, 10000)";
 		
+		// ":qotd" -- quote of the day. Or the moment, anyway.
+		"qotd"		= "expandDescription('[thargoid_curses]')";
+		
 		// For calling old-school scripting methods (on player), as in ":: gui_screen_string", or ":: playSound: boop.ogg"
 		":"			= "performLegacyCommand(PARAM)";
 	};
