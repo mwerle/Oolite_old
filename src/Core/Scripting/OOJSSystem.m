@@ -209,11 +209,18 @@ static JSBool SystemGetProperty(JSContext *context, JSObject *this, jsval name, 
 	id							result = nil;
 	PlayerEntity				*player = nil;
 	NSDictionary				*systemData = nil;
+	static Random_Seed 			sCurrentSystem = {0};
 	
 	if (!JSVAL_IS_INT(name))  return YES;
 	
 	player = OOPlayerForScripting();
-	systemData = [UNIVERSE currentSystemData];
+	
+	if (!equal_seeds(sCurrentSystem, player->system_seed))
+	{
+		sCurrentSystem = player->system_seed;
+	}
+	
+	systemData = [UNIVERSE generateSystemData:sCurrentSystem];
 	
 	switch (JSVAL_TO_INT(name))
 	{
