@@ -30,7 +30,7 @@ this.name           = "oolite-cloaking-device";
 this.author         = "Jens Ayton";
 this.copyright      = "© 2007-2008 the Oolite team.";
 this.description    = "Cloaking device mission in galaxy 5.";
-this.version        = "1.72.1";
+this.version        = "1.72.2";
 
 
 this.shipWillExitWitchspace = function ()
