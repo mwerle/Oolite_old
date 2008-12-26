@@ -5316,10 +5316,18 @@ static int last_outfitting_index;
 	
 	if ([eq_key isEqual:@"EQ_FUEL"])
 	{
-		credits -= ([self fuelCapacity] - [self fuel]) * price_per_unit;
-		fuel = [self fuelCapacity];
-		[self setGuiToEquipShipScreen:-1:-1];
-		return YES;
+		OOCreditsQuantity creditsForRefuel = ([self fuelCapacity] - [self fuel]) * price_per_unit;
+		if (credits >= creditsForRefuel)	// Ensure we don't overflow
+		{
+			credits -= creditsForRefuel;
+			fuel = [self fuelCapacity];
+			[self setGuiToEquipShipScreen:-1:-1];
+			return YES;
+		}
+		else
+		{
+			return NO;
+		}
 	}
 	
 	// check energy unit replacement

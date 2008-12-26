@@ -1853,11 +1853,13 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	ship = [self newShipWithRole:desc];   // retain count = 1
 	
 	// Deal with scripted cargopods and ensure they are filled with something.
-	if (ship && [ship hasPrimaryRole:@"cargopod"])
+	if (ship && [ship hasRole:@"cargopod"])
 	{		
 		NSArray *theCargopod = [self getContainersOfGoods:1 scarce:NO];
 		[ship release]; // We are about to pass to cargopod an already generated object.	
 		ship = [theCargopod objectAtIndex:0];
+		// Generating a cargopod gives it the primary role "cargopod", so we need to change it back to what was intended.
+		[ship setPrimaryRole:desc];
 	}
 	
 	if (ship)
@@ -1875,7 +1877,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 		
 		[ship setStatus:STATUS_IN_FLIGHT];	// or ships that were 'demo' ships become invisible!
 		
-		if (![ship hasPrimaryRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
+		if (![ship hasRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
 		{
 			[ship release];
 		}
@@ -2151,11 +2153,13 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	ship = [self newShipWithRole:desc];   // retain count = 1
 	
 	// Deal with scripted cargopods and ensure they are filled with something.
-	if (ship && [ship hasPrimaryRole:@"cargopod"])
+	if (ship && [ship hasRole:@"cargopod"])
 	{		
 		NSArray *theCargopod = [self getContainersOfGoods:1 scarce:NO];
 		[ship release]; // We are about to pass to cargopod an already generated object.	
 		ship = [theCargopod objectAtIndex:0];
+		// Generating a cargopod gives it the primary role "cargopod", so we need to change it back to what was intended.
+		[ship setPrimaryRole:desc];
 	}
 	
 	if (ship)
@@ -2171,7 +2175,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 		[self addEntity:ship];
 		[[ship getAI] setState:@"GLOBAL"];	// must happen after adding to the universe!
 		[ship setStatus:STATUS_IN_FLIGHT];	// or ships that were 'demo' ships become invisible!
-		if (![ship hasPrimaryRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
+		if (![ship hasRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
 		{
 			[ship release];
 		}
@@ -2202,13 +2206,15 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 			return NO;
 			
 		// Deal with scripted cargopods and ensure they are filled with something.
-		if (ship && [ship hasPrimaryRole:@"cargopod"])
+		if (ship && [ship hasRole:@"cargopod"])
 		{		
 			NSArray *theCargopod = [self getContainersOfGoods:1 scarce:NO];
 			[ship release];
 			ship = [theCargopod objectAtIndex:0];
 			if (!ship)
 				return NO;
+			// Generating a cargopod gives it the primary role "cargopod", so we need to change it back to what was intended.
+			[ship setPrimaryRole:desc];
 		}
 			
 		if (![ship crew] && ![ship isUnpiloted] && !(ship->scanClass == CLASS_CARGO || ship->scanClass == CLASS_ROCK))
@@ -2269,7 +2275,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 		[self addEntity:ship];
 		[[ship getAI] setState:@"GLOBAL"];	// must happen after adding to the universe!
 		[ship setStatus:STATUS_IN_FLIGHT];	// or ships that were 'demo' ships become invisible!
-		if (![ship hasPrimaryRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
+		if (![ship hasRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
 		{
 			[ship release];
 		}
@@ -2369,11 +2375,13 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	ship = [self newShipWithRole:desc];   // retain count = 1
 	
 	// Deal with scripted cargopods and ensure they are filled with something.
-	if (ship && [ship hasPrimaryRole:@"cargopod"])
+	if (ship && [ship hasRole:@"cargopod"])
 	{		
 		NSArray *theCargopod = [self getContainersOfGoods:1 scarce:NO];
 		[ship release]; // We are about to pass to cargopod an already generated object.	
 		ship = [theCargopod objectAtIndex:0];
+		// Generating a cargopod gives it the primary role "cargopod", so we need to change it back to what was intended.
+		[ship setPrimaryRole:desc];
 	}
 	
 	if (ship)
@@ -2389,7 +2397,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 		[self addEntity:ship];
 		[[ship getAI] setState:@"GLOBAL"];	// must happen after adding to the universe!
 		[ship setStatus:STATUS_IN_FLIGHT];	// or ships that were 'demo' ships become invisible!
-		if (![ship hasPrimaryRole:@"cargopod"]) // cargopod does not require release due to the way it is created.
+		if (![ship hasRole:@"cargopod"]) // cargopod does not require release due to the way it is created.
 		{
 			[ship release];
 		}
@@ -2463,11 +2471,13 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	ship = [self newShipWithRole:role];   // retain count = 1
 	
 	// Deal with scripted cargopods and ensure they are filled with something.
-	if (ship && [ship hasPrimaryRole:@"cargopod"])
+	if (ship && [ship hasRole:@"cargopod"])
 	{		
 		NSArray *theCargopod = [self getContainersOfGoods:1 scarce:NO];
 		[ship release]; // We are about to pass to cargopod an already generated object.	
 		ship = [theCargopod objectAtIndex:0];
+		// Generating a cargopod gives it the primary role "cargopod", so we need to change it back to what was intended.
+		[ship setPrimaryRole:role];
 	}
 	
 	if (ship)
@@ -2496,7 +2506,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 		[[ship getAI] setState:@"GLOBAL"];	// must happen after adding to the universe!
 		[ship setStatus:STATUS_IN_FLIGHT];	// or ships may not werk rite d'uh!
 
-		if (![ship hasPrimaryRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
+		if (![ship hasRole:@"cargopod"])	// cargopod does not require release due to the way it is created.
 		{
 			[ship release];
 		}
@@ -2520,11 +2530,13 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	ship = [self newShipWithRole:desc];   // retain count = 1
 	
 	// Deal with scripted cargopods and ensure they are filled with something.
-	if ([ship hasPrimaryRole:@"cargopod"])
+	if ([ship hasRole:@"cargopod"])
 	{		
 		NSArray *theCargopod = [self getContainersOfGoods:1 scarce:NO];
 		[ship release]; // We are about to pass to cargopod an already generated object.	
 		ship = [[theCargopod objectAtIndex:0] retain];
+		// Generating a cargopod gives it the primary role "cargopod", so we need to change it back to what was intended.
+		[ship setPrimaryRole:desc];
 	}
 	
 	if (ship != nil)
