@@ -5688,6 +5688,7 @@ static int last_outfitting_index;
 	// check the market's not flooded
 	if (market_quantity >= 127)  return NO;
 	
+	current_cargo--;
 	manifest_quantity--;
 	market_quantity++;
 	credits += price_per_unit;
