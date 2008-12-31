@@ -2728,7 +2728,7 @@
 				1A1504490C12C50D0032F3E8 /* OOSkyDrawable.h */,
 				1A15044A0C12C50D0032F3E8 /* OOSkyDrawable.m */,
 			);
-			name = Drawables;
+			path = Drawables;
 			sourceTree = "<group>";
 		};
 		1AEAAC6C0BA457C3000705D0 /* SpiderMonkey */ = {
@@ -3436,7 +3436,7 @@
 				PRODUCT_NAME = OoliteDev;
 				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
 				SECTORDER_FLAGS = "";
-				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/src/Core/\" \"$(SRCROOT)/src/Core/Entites/\" \"$(SRCROOT)/src/Core/Materials/\" \"$(SRCROOT)/src/BSDCompat/\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/src/Core/\" \"$(SRCROOT)/src/Core/Entites/\" \"$(SRCROOT)/src/Core/Materials/\" \"$(SRCROOT)/src/BSDCompat/\" \"$(SRCROOT)/src/Core/Drawables/\"";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
