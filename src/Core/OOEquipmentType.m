@@ -380,6 +380,15 @@ static NSDictionary		*sEquipmentTypesByIdentifier = nil;
 	return _conditions;
 }
 
+
+#if STATIC_ANALYSIS
+- (JSObject *) jsSelf
+{
+	// Placate clang static analyzer. (_jsSelf is otherwise only used in categories.)
+	return _jsSelf;
+}
+#endif
+
 @end
 
 

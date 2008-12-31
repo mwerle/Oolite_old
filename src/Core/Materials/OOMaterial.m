@@ -185,7 +185,7 @@ static void AddTexture(NSMutableDictionary *uniforms, NSMutableArray *textures, 
 	specular = [OOColor colorWithDescription:[configuration objectForKey:@"specular"]];
 	emission = [OOColor colorWithDescription:[configuration objectForKey:@"emission"]];
 	shininess = [configuration intForKey:@"shininess" defaultValue:-1];
-	diffuseMap = [configuration stringForKey:@"diffuse_map"];
+	diffuseMap = [configuration stringForKey:@"diffuse_map" defaultValue:name];
 	specularMap = [configuration stringForKey:@"specular_map"];
 	emissionMap = [configuration stringForKey:@"emission_map"];
 	emissionAndIlluminationMap = [configuration stringForKey:@"emission_and_illumination_map"];
@@ -194,8 +194,6 @@ static void AddTexture(NSMutableDictionary *uniforms, NSMutableArray *textures, 
 	normalAndParallaxMap = [configuration stringForKey:@"normal_and_parallax_map"];
 	parallaxScale = [configuration floatForKey:@"parallax_scale" defaultValue:0.01];
 	parallaxBias = [configuration floatForKey:@"parallax_bias" defaultValue:0.00];
-	
-	if (diffuseMap == nil)  diffuseMap = name;
 	
 	if (diffuse == nil)  diffuse = [OOColor whiteColor];
 	if (emissionAndIlluminationMap != nil && illuminationMap != nil)

@@ -517,6 +517,17 @@
 		1A94D5B60D65A6B40072C805 /* OOCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A94D5B40D65A6B40072C805 /* OOCamera.m */; };
 		1A95338B0C02089E004EBB58 /* material-defaults.plist in Copy Config */ = {isa = PBXBuildFile; fileRef = 1A9533890C02089E004EBB58 /* material-defaults.plist */; };
 		1A95338C0C02089E004EBB58 /* planetinfo.plist in Copy Config */ = {isa = PBXBuildFile; fileRef = 1A95338A0C02089E004EBB58 /* planetinfo.plist */; };
+		1AA324120F0B909F00B410D7 /* OOMeshBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324110F0B909F00B410D7 /* OOMeshBuilder.h */; };
+		1AA324150F0B90A400B410D7 /* OOConcreteMeshBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA324130F0B90A400B410D7 /* OOConcreteMeshBuilder.m */; };
+		1AA324160F0B90A400B410D7 /* OOConcreteMeshBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324140F0B90A400B410D7 /* OOConcreteMeshBuilder.h */; };
+		1AA324180F0B90AF00B410D7 /* OOMeshData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324170F0B90AF00B410D7 /* OOMeshData.h */; };
+		1AA3241B0F0B90B500B410D7 /* OOMeshLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA324190F0B90B500B410D7 /* OOMeshLoader.m */; };
+		1AA3241C0F0B90B500B410D7 /* OOMeshLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA3241A0F0B90B500B410D7 /* OOMeshLoader.h */; };
+		1AA3241F0F0B90B900B410D7 /* OODATMeshLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA3241D0F0B90B900B410D7 /* OODATMeshLoader.h */; };
+		1AA324200F0B90B900B410D7 /* OODATMeshLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA3241E0F0B90B900B410D7 /* OODATMeshLoader.m */; };
+		1AA324260F0B911600B410D7 /* OOModelLoadingController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324250F0B911600B410D7 /* OOModelLoadingController.h */; };
+		1AA324460F0B92E200B410D7 /* OOStandardModelLoadingController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324440F0B92E200B410D7 /* OOStandardModelLoadingController.h */; };
+		1AA324470F0B92E200B410D7 /* OOStandardModelLoadingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA324450F0B92E200B410D7 /* OOStandardModelLoadingController.m */; };
 		1AA82C8A0CC10E700023B797 /* OOJSWorldScripts.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA82C820CC10E3D0023B797 /* OOJSWorldScripts.m */; };
 		1AAB9A980D779F4500A9F424 /* OOCocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB9A960D779F3C00A9F424 /* OOCocoa.m */; };
 		1AB01ABE0BB15AED00F1B949 /* OOTextureScaling.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AB01ABC0BB15AED00F1B949 /* OOTextureScaling.h */; };
@@ -1552,6 +1563,17 @@
 		1A94D5B40D65A6B40072C805 /* OOCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOCamera.m; sourceTree = "<group>"; };
 		1A9533890C02089E004EBB58 /* material-defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "material-defaults.plist"; sourceTree = "<group>"; };
 		1A95338A0C02089E004EBB58 /* planetinfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = planetinfo.plist; sourceTree = "<group>"; };
+		1AA324110F0B909F00B410D7 /* OOMeshBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMeshBuilder.h; sourceTree = "<group>"; };
+		1AA324130F0B90A400B410D7 /* OOConcreteMeshBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOConcreteMeshBuilder.m; sourceTree = "<group>"; };
+		1AA324140F0B90A400B410D7 /* OOConcreteMeshBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOConcreteMeshBuilder.h; sourceTree = "<group>"; };
+		1AA324170F0B90AF00B410D7 /* OOMeshData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMeshData.h; sourceTree = "<group>"; };
+		1AA324190F0B90B500B410D7 /* OOMeshLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMeshLoader.m; sourceTree = "<group>"; };
+		1AA3241A0F0B90B500B410D7 /* OOMeshLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMeshLoader.h; sourceTree = "<group>"; };
+		1AA3241D0F0B90B900B410D7 /* OODATMeshLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODATMeshLoader.h; sourceTree = "<group>"; };
+		1AA3241E0F0B90B900B410D7 /* OODATMeshLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODATMeshLoader.m; sourceTree = "<group>"; };
+		1AA324250F0B911600B410D7 /* OOModelLoadingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOModelLoadingController.h; path = "../../../../Dry Dock Redux/Dependencies/Oolite/Core/Drawables/OOModelLoadingController.h"; sourceTree = SOURCE_ROOT; };
+		1AA324440F0B92E200B410D7 /* OOStandardModelLoadingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOStandardModelLoadingController.h; sourceTree = "<group>"; };
+		1AA324450F0B92E200B410D7 /* OOStandardModelLoadingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOStandardModelLoadingController.m; sourceTree = "<group>"; };
 		1AA82C810CC10E3D0023B797 /* OOJSWorldScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSWorldScripts.h; sourceTree = "<group>"; };
 		1AA82C820CC10E3D0023B797 /* OOJSWorldScripts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSWorldScripts.m; sourceTree = "<group>"; };
 		1AAB9A960D779F3C00A9F424 /* OOCocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOCocoa.m; sourceTree = "<group>"; };
@@ -2640,6 +2662,26 @@
 			name = Groolite;
 			sourceTree = "<group>";
 		};
+		1AA324100F0B909000B410D7 /* OOMesh */ = {
+			isa = PBXGroup;
+			children = (
+				1AA324250F0B911600B410D7 /* OOModelLoadingController.h */,
+				1AA324440F0B92E200B410D7 /* OOStandardModelLoadingController.h */,
+				1AA324450F0B92E200B410D7 /* OOStandardModelLoadingController.m */,
+				1A2A1CA80BD2914F00152975 /* OOMesh.h */,
+				1A2A1CA90BD2914F00152975 /* OOMesh.m */,
+				1AA324170F0B90AF00B410D7 /* OOMeshData.h */,
+				1AA324110F0B909F00B410D7 /* OOMeshBuilder.h */,
+				1AA324140F0B90A400B410D7 /* OOConcreteMeshBuilder.h */,
+				1AA324130F0B90A400B410D7 /* OOConcreteMeshBuilder.m */,
+				1AA3241A0F0B90B500B410D7 /* OOMeshLoader.h */,
+				1AA324190F0B90B500B410D7 /* OOMeshLoader.m */,
+				1AA3241D0F0B90B900B410D7 /* OODATMeshLoader.h */,
+				1AA3241E0F0B90B900B410D7 /* OODATMeshLoader.m */,
+			);
+			name = OOMesh;
+			sourceTree = "<group>";
+		};
 		1AB2AAE70C4CDF890008CF4E /* OXP Verification */ = {
 			isa = PBXGroup;
 			children = (
@@ -2723,10 +2765,9 @@
 			children = (
 				1A2A1B120BD2774300152975 /* OODrawable.h */,
 				1A2A1B130BD2774300152975 /* OODrawable.m */,
-				1A2A1CA80BD2914F00152975 /* OOMesh.h */,
-				1A2A1CA90BD2914F00152975 /* OOMesh.m */,
 				1A1504490C12C50D0032F3E8 /* OOSkyDrawable.h */,
 				1A15044A0C12C50D0032F3E8 /* OOSkyDrawable.m */,
+				1AA324100F0B909000B410D7 /* OOMesh */,
 			);
 			path = Drawables;
 			sourceTree = "<group>";
@@ -2959,6 +3000,13 @@
 				1A0729D90EF56D1200B0F925 /* OOConvertSystemDescriptions.h in Headers */,
 				1A0729FE0EF5796500B0F925 /* OldSchoolPropertyListWriting.h in Headers */,
 				1ABC03ED0EF86110003B740A /* OOCrosshairs.h in Headers */,
+				1AA324120F0B909F00B410D7 /* OOMeshBuilder.h in Headers */,
+				1AA324160F0B90A400B410D7 /* OOConcreteMeshBuilder.h in Headers */,
+				1AA324180F0B90AF00B410D7 /* OOMeshData.h in Headers */,
+				1AA3241C0F0B90B500B410D7 /* OOMeshLoader.h in Headers */,
+				1AA3241F0F0B90B900B410D7 /* OODATMeshLoader.h in Headers */,
+				1AA324260F0B911600B410D7 /* OOModelLoadingController.h in Headers */,
+				1AA324460F0B92E200B410D7 /* OOStandardModelLoadingController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3318,6 +3366,10 @@
 				1A0729DA0EF56D1200B0F925 /* OOConvertSystemDescriptions.m in Sources */,
 				1A0729FF0EF5796500B0F925 /* OldSchoolPropertyListWriting.m in Sources */,
 				1ABC03EE0EF86110003B740A /* OOCrosshairs.m in Sources */,
+				1AA324150F0B90A400B410D7 /* OOConcreteMeshBuilder.m in Sources */,
+				1AA3241B0F0B90B500B410D7 /* OOMeshLoader.m in Sources */,
+				1AA324200F0B90B900B410D7 /* OODATMeshLoader.m in Sources */,
+				1AA324470F0B92E200B410D7 /* OOStandardModelLoadingController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3515,6 +3567,7 @@
 		08B31CB108FE63D70038D42F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIG_MACROS = "";
 				HEADER_SEARCH_PATHS = "$(HEADER_SEARCH_PATHS_QUOTED_1)";
 				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS_QUOTED_1)";
@@ -3534,6 +3587,7 @@
 					ppc,
 					i386,
 				);
+				CONFIG_MACROS = "";
 				HEADER_SEARCH_PATHS = "$(HEADER_SEARCH_PATHS_QUOTED_1)";
 				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS_QUOTED_1)";
@@ -3639,6 +3693,7 @@
 					ppc,
 					i386,
 				);
+				CONFIG_MACROS = "";
 				HEADER_SEARCH_PATHS = "$(HEADER_SEARCH_PATHS_QUOTED_1)";
 				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
@@ -3654,6 +3709,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				CONFIG_MACROS = "";
 				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = "$(HEADER_SEARCH_PATHS_QUOTED_1)";
 				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
@@ -3815,6 +3871,126 @@
 			};
 			name = Deployment;
 		};
+		1AA324E30F0BB27F00B410D7 /* Static analysis */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIG_MACROS = "STATIC_ANALYSIS=1 OOLOG_SHORT_CIRCUIT=0";
+				HEADER_SEARCH_PATHS = "$(HEADER_SEARCH_PATHS_QUOTED_1)";
+				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
+				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS_QUOTED_1)";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Cocoa-deps/Ogg Vorbis\"";
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
+				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
+				OTHER_CFLAGS = "-DLOADSAVEGUI";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.3.9.sdk";
+			};
+			name = "Static analysis";
+		};
+		1AA324E40F0BB27F00B410D7 /* Static analysis */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Build All";
+			};
+			name = "Static analysis";
+		};
+		1AA324E50F0BB27F00B410D7 /* Static analysis */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A846BA90D79F9570081280D /* oolite-version.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				COPY_SCHEMATA = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				EXPORTED_SYMBOLS_FILE = "src/Cocoa/debug-exports.exp";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/deps/Cocoa-deps/\"";
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = XP_UNIX;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					$CONFIG_MACROS,
+					ALLOW_PROCEDURAL_PLANETS,
+					DOCKING_CLEARANCE_ENABLED,
+					OO_DEBUG,
+					DEBUG_GRAPHVIZ,
+					DEBUG,
+				);
+				GCC_REUSE_STRINGS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(HEADER_SEARCH_PATHS_QUOTED_1)",
+					"$(HEADER_SEARCH_PATHS_QUOTED_2)",
+					"$(HEADER_SEARCH_PATHS_QUOTED_3)",
+					"$(HEADER_SEARCH_PATHS_QUOTED_4)",
+					"$(HEADER_SEARCH_PATHS_QUOTED_5)",
+					"$(HEADER_SEARCH_PATHS_QUOTED_6)",
+				);
+				HEADER_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/deps/Cocoa-deps/Ogg Vorbis\"";
+				HEADER_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/src/Core/\"";
+				HEADER_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/src/Core/Entites/\"";
+				HEADER_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/src/Core/Materials/\"";
+				HEADER_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/deps/Cross-platform-deps/SpiderMonkey/js/src\"";
+				HEADER_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/deps/Cross-platform-deps/SpiderMonkey/js/xcode\"";
+				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
+				INFOPLIST_FILE = "src/Cocoa/Info-OoliteDev.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/deps/Cocoa-deps/SCRDynamicShim/bin\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				OGGVORBISROOT = "$(SRCROOT)/deps/Cocoa-deps/Ogg\\ Vorbis";
+				OTHER_CFLAGS = "-DLOADSAVEGUIXX";
+				OTHER_LDFLAGS = (
+					"$(OTHER_LDFLAGS_QUOTED_FOR_TARGET_1)",
+					"$(OTHER_LDFLAGS_QUOTED_FOR_TARGET_2)",
+				);
+				OTHER_LDFLAGS_QUOTED_FOR_TARGET_1 = "\"$(OGGVORBISROOT)/libOgg.a\"";
+				OTHER_LDFLAGS_QUOTED_FOR_TARGET_2 = "\"$(OGGVORBISROOT)/libVorbisAll.a\"";
+				PRODUCT_NAME = OoliteDev;
+				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
+				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/src/Core/\" \"$(SRCROOT)/src/Core/Entites/\" \"$(SRCROOT)/src/Core/Materials/\" \"$(SRCROOT)/src/BSDCompat/\" \"$(SRCROOT)/src/Core/Drawables/\"";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+					"-Wno-missing-field-initializers",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = "Static analysis";
+		};
+		1AA324E60F0BB27F00B410D7 /* Static analysis */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = PNG_USER_CONFIG;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/src/Core/Materials/\"";
+				INSTALL_PATH = /usr/local/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				PREBINDING = NO;
+				PRODUCT_NAME = png;
+				SDKROOT_i386 = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				ZERO_LINK = NO;
+			};
+			name = "Static analysis";
+		};
 		1AD267690C8305A200B4BFD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3851,6 +4027,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				08B31CAD08FE63D70038D42F /* Debug */,
+				1AA324E50F0BB27F00B410D7 /* Static analysis */,
 				1A581F5E0E311A59007594C1 /* Debug GCC 4.2/Leopard */,
 				08B31CAE08FE63D70038D42F /* Deployment */,
 				1A0832D70C2F105000E3AE25 /* TestRelease */,
@@ -3862,6 +4039,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				08B31CB108FE63D70038D42F /* Debug */,
+				1AA324E30F0BB27F00B410D7 /* Static analysis */,
 				1A581F5C0E311A59007594C1 /* Debug GCC 4.2/Leopard */,
 				08B31CB208FE63D70038D42F /* Deployment */,
 				1A0832D80C2F105000E3AE25 /* TestRelease */,
@@ -3873,6 +4051,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A71E6FD0BCE345800CD5C13 /* Debug */,
+				1AA324E60F0BB27F00B410D7 /* Static analysis */,
 				1A581F5F0E311A59007594C1 /* Debug GCC 4.2/Leopard */,
 				1A71E6FE0BCE345800CD5C13 /* Deployment */,
 				1A0832D60C2F105000E3AE25 /* TestRelease */,
@@ -3884,6 +4063,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1AD267690C8305A200B4BFD1 /* Debug */,
+				1AA324E40F0BB27F00B410D7 /* Static analysis */,
 				1A581F5D0E311A59007594C1 /* Debug GCC 4.2/Leopard */,
 				1AD2676A0C8305A200B4BFD1 /* Deployment */,
 				1AD2676B0C8305A200B4BFD1 /* TestRelease */,

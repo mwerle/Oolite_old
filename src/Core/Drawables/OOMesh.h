@@ -15,7 +15,7 @@ retarget bindings each frame. -- Ahruman
 
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -37,120 +37,65 @@ MA 02110-1301, USA.
 #import "OODrawable.h"
 #import "OOOpenGL.h"
 #import "OOWeakReference.h"
+#import "OOModelLoadingController.h"
+#import "OOMeshData.h"
 
-@class OOMaterial, Octree;
-
-
-enum
-{
-	kOOMeshMaxMaterials			= 8,
-	kOOMeshMaxVertsPerFace		= 16,
-	
-	kOOMeshVARCount				= 16
-};
-
-
-typedef uint8_t				OOMeshSmoothGroup;
-typedef uint8_t				OOMeshMaterialIndex, OOMeshMaterialCount;
-typedef uint16_t			OOMeshVertexCount;
-typedef uint16_t			OOMeshFaceCount;
-typedef uint8_t				OOMeshFaceVertexCount;
-
-
-typedef struct
-{
-	OOMeshSmoothGroup		smoothGroup;
-	OOMeshMaterialIndex		materialIndex;
-	OOMeshFaceVertexCount	n_verts;
-	GLint					vertex[kOOMeshMaxVertsPerFace];
-	
-	Vector					normal;
-	Vector					tangent;
-	GLfloat					s[kOOMeshMaxVertsPerFace];
-	GLfloat					t[kOOMeshMaxVertsPerFace];
-} OOMeshFace;
-
-
-typedef struct
-{
-	GLint					*indexArray;
-	GLfloat					*textureUVArray;
-	Vector					*vertexArray;
-	Vector					*normalArray;
-	Vector					*tangentArray;
-	
-	GLuint					count;
-} OOMeshDisplayLists;
+@class OOMaterial, Octree, OOMeshLoader;
 
 
 @interface OOMesh: OODrawable <NSCopying>
 {
 @private
-	uint8_t					isSmoothShaded: 1,
-							brokenInRender: 1,
-							listsReady: 1;
+	NSString				*_baseFile;
 	
-	OOMeshMaterialCount		materialCount;
-	OOMeshVertexCount		vertexCount;
-	OOMeshFaceCount			faceCount;
+	OOMeshData				_meshData;
 	
-	NSString				*baseFile;
+	GLuint					_displayList0;
 	
-	Vector					*_vertices;
-	Vector					*_normals;
-	Vector					*_tangents;
-	OOMeshFace				*_faces;
+	GLfloat					_collisionRadius;
+	GLfloat					_maxDrawDistance;
+	BoundingBox				_boundingBox;
 	
-	// Redundancy! Needs fixing.
-	OOMeshDisplayLists		_displayLists;
+	Octree					*_octree;
 	
-	NSRange					triangle_range[kOOMeshMaxMaterials];
-	NSString				*materialKeys[kOOMeshMaxMaterials];
-	OOMaterial				*materials[kOOMeshMaxMaterials];
-	GLuint					displayList0;
+	NSMutableArray			*_retainedObjects;
 	
-	GLfloat					collisionRadius;
-	GLfloat					maxDrawDistance;
-	BoundingBox				boundingBox;
-	
-	Octree					*octree;
-	
-	NSMutableDictionary		*_retainedObjects;
+	uint8_t					_brokenInRender: 1,
+							_listsReady: 1;
 }
 
-+ (id)meshWithName:(NSString *)name
-materialDictionary:(NSDictionary *)materialDict
- shadersDictionary:(NSDictionary *)shadersDict
-			smooth:(BOOL)smooth
-	  shaderMacros:(NSDictionary *)macros
-shaderBindingTarget:(id<OOWeakReferenceSupport>)object;
+- (id) initWithLoadingController:(id<OOModelLoadingController>)controller
+						fileName:(NSString *)fileName;
+- (id) initWithLoadingController:(id<OOModelLoadingController>)controller
+						  loader:(OOMeshLoader *)loader;
 
-+ (OOMaterial *)placeholderMaterial;
++ (OOMaterial *) placeholderMaterial;
 
 - (NSString *) modelName;
 
-- (size_t)vertexCount;
-- (size_t)faceCount;
+- (OOUInteger) vertexCount;
+- (OOUInteger) faceCount;
 
-- (Octree *)octree;
+- (Octree *) octree;
 
 // This needs a better name.
 - (BoundingBox) findBoundingBoxRelativeToPosition:(Vector)opv
 											basis:(Vector)ri :(Vector)rj :(Vector)rk
 									 selfPosition:(Vector)position
 										selfBasis:(Vector)si :(Vector)sj :(Vector)sk;
-- (BoundingBox)findSubentityBoundingBoxWithPosition:(Vector)position rotMatrix:(OOMatrix)rotMatrix;
+- (BoundingBox) findSubentityBoundingBoxWithPosition:(Vector)position rotMatrix:(OOMatrix)rotMatrix;
 
-- (OOMesh *)meshRescaledBy:(GLfloat)scaleFactor;
-- (OOMesh *)meshRescaledByX:(GLfloat)scaleX y:(GLfloat)scaleY z:(GLfloat)scaleZ;
+- (OOMesh *) meshRescaledBy:(GLfloat)scaleFactor;
+- (OOMesh *) meshRescaledByX:(GLfloat)scaleX y:(GLfloat)scaleY z:(GLfloat)scaleZ;
 
 @end
 
 
 #import "OOCacheManager.h"
+
 @interface OOCacheManager (Octree)
 
-+ (Octree *)octreeForModel:(NSString *)inKey;
-+ (void)setOctree:(Octree *)inOctree forModel:(NSString *)inKey;
++ (Octree *) octreeForModel:(NSString *)inKey;
++ (void) setOctree:(Octree *)inOctree forModel:(NSString *)inKey;
 
 @end

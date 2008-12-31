@@ -413,6 +413,9 @@ void OOLogWithFunctionFileAndLineAndArguments(NSString *inMessageClass, const ch
 	NSAutoreleasePool	*pool = nil;
 	NSString			*formattedMessage = nil;
 	unsigned			indentLevel;
+	BOOL				showFileAndLine = sShowFileAndLine && inFile != NULL;
+	BOOL				showFunction = sShowFunction && inFile != NULL;
+	BOOL				showClass = sShowClass && inMessageClass != NULL;
 	
 	if (inFormat == nil)  return;
 	
@@ -427,9 +430,9 @@ void OOLogWithFunctionFileAndLineAndArguments(NSString *inMessageClass, const ch
 		
 		// Apply various prefix options
 	#ifndef OOLOG_NO_FILE_NAME
-		if (sShowFileAndLine && inFile != NULL)
+		if (showFileAndLine)
 		{
-			if (sShowFunction)
+			if (showFunction)
 			{
 				formattedMessage = [NSString stringWithFormat:@"%s (%@:%u): %@", inFunction, AbbreviatedFileName(inFile), inLine, formattedMessage];
 			}
@@ -441,15 +444,15 @@ void OOLogWithFunctionFileAndLineAndArguments(NSString *inMessageClass, const ch
 		else
 	#endif
 		{
-			if (sShowFunction)
+			if (showFunction)
 			{
 				formattedMessage = [NSString stringWithFormat:@"%s: %@", inFunction, formattedMessage];
 			}
 		}
 		
-		if (sShowClass)
+		if (showClass)
 		{
-			if (sShowFunction || sShowFileAndLine)
+			if (showFunction || showFileAndLine)
 			{
 				formattedMessage = [NSString stringWithFormat:@"[%@] %@", inMessageClass, formattedMessage];
 			}
@@ -461,11 +464,11 @@ void OOLogWithFunctionFileAndLineAndArguments(NSString *inMessageClass, const ch
 		
 		if (sShowApplication)
 		{
-			if (sShowClass)
+			if (showClass)
 			{
 				formattedMessage = [NSString stringWithFormat:@"%@ %@", APPNAME, formattedMessage];
 			}
-			else if (sShowFunction || sShowFileAndLine)
+			else if (showFunction || showFileAndLine)
 			{
 				formattedMessage = [NSString stringWithFormat:@"%@ - %@", APPNAME, formattedMessage];
 			}

@@ -58,6 +58,9 @@ SOFTWARE.
 #import "GameController.h"
 
 
+#define PRELOAD 0
+
+
 static OOShipRegistry	*sSingleton = nil;
 
 static NSString * const	kShipRegistryCacheName = @"ship registry";
@@ -80,7 +83,10 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 - (BOOL) loadAndApplyShipDataOverrides:(NSMutableDictionary *)ioData;
 - (BOOL) tagSubEntities:(NSMutableDictionary *)ioData;
 - (BOOL) removeUnusableEntries:(NSMutableDictionary *)ioData;
+
+#if PRELOAD
 - (BOOL) preloadShipMeshes:(NSMutableDictionary *)ioData;
+#endif
 
 - (NSDictionary *) mergeShip:(NSDictionary *)child withParent:(NSDictionary *)parent;
 - (void) mergeShipRoles:(NSString *)roles forShipKey:(NSString *)shipKey intoProbabilityMap:(NSMutableDictionary *)probabilitySets;
@@ -268,7 +274,7 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 	// Add shipyard entries into shipdata entries.
 	if (![self loadAndMergeShipyard:result])  return;
 	
-#if 0
+#if PRELOAD
 	// Preload and cache meshes.
 	if (![self preloadShipMeshes:result])  return;
 #endif
@@ -600,6 +606,8 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 	BOOL					remove;
 	NSMutableSet			*badSubEntities = nil;
 	NSString				*badSubEntitiesList = nil;
+	BOOL					isFlasher;
+	NSMutableArray			*okSubEntities = nil;
 	
 	// Add _oo_is_subentity=YES to all entries used as subentities.
 	// Iterate over all ships. (Iterates over a copy of keys since it mutates the dictionary.)
@@ -611,34 +619,65 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 		
 		// Iterate over each subentity declaration of each ship
 		subEntityDeclarations = [shipEntry arrayForKey:@"subentities"];
-		for (subEntityEnum = [subEntityDeclarations objectEnumerator]; (subEntityKey = [subEntityEnum nextObject]); )
+		if (subEntityDeclarations != nil)
 		{
-			subEntityDef = ScanTokensFromString(subEntityKey);
-			
-			// While we're at it, do basic sanity checking on subentity defs.
-			if ([subEntityDef count] != 8)
+			okSubEntities = [NSMutableArray arrayWithCapacity:[subEntityDeclarations count]];
+			for (subEntityEnum = [subEntityDeclarations objectEnumerator]; (subEntityKey = [subEntityEnum nextObject]); )
 			{
-				OOLog(@"shipData.load.error", @"***** ERROR: the shipdata.plist entry \"%@\" has a broken subentity definition \"%@\" (should have 8 tokens, has %u).", shipKey, subEntityKey, [subEntityDef count]);
-				remove = YES;
-			}
-			else
-			{
-				subEntityKey = [subEntityDef stringAtIndex:0];
-				if (![subEntityKey isEqualToString:@"*FLASHER*"])
+				subEntityDef = ScanTokensFromString(subEntityKey);
+				if([subEntityDef count] != 0)  subEntityKey = [subEntityDef stringAtIndex:0];
+				else  subEntityKey = nil;
+				isFlasher = [subEntityKey isEqualToString:@"*FLASHER*"];
+				
+				// While we're at it, do basic sanity checking on subentity defs.
+				if ([subEntityDef count] != 8)
 				{
-					subEntityShipEntry = [ioData objectForKey:subEntityKey];
-					if (subEntityShipEntry == nil)
+					if (!isFlasher)
 					{
-						// Oops, reference to non-existent subent
-						if (badSubEntities == nil)  badSubEntities = [NSMutableSet set];
-						[badSubEntities addObject:subEntityKey];
+						OOLog(@"shipData.load.error.badSubEntity", @"***** ERROR: the shipdata.plist entry \"%@\" has a broken subentity definition \"%@\" (should have 8 tokens, has %u).", shipKey, subEntityKey, [subEntityDef count]);
+						if (![shipEntry boolForKey:@"frangible"])  remove = YES;
 					}
-					else if (![subEntityShipEntry boolForKey:@"_oo_is_subentity"])
+					else
 					{
-						// Subent exists, add _oo_is_subentity so roles aren't required
-						subEntityShipEntry = [subEntityShipEntry dictionaryByAddingObject:[NSNumber numberWithBool:YES] forKey:@"_oo_is_subentity"];
-						[ioData setObject:subEntityShipEntry forKey:subEntityKey];
+						OOLog(@"shipData.load.error.badFlasher", @"----- WARNING: the shipdata.plist entry \"%@\" has a broken flasher definition \"%@\" (should have 8 tokens, has %u). This flasher will be ignored.", shipKey, subEntityKey, [subEntityDef count]);
 					}
+				}
+				else
+				{
+					[okSubEntities addObject:subEntityKey];
+					
+					if (!isFlasher)
+					{
+						subEntityShipEntry = [ioData objectForKey:subEntityKey];
+						if (subEntityShipEntry == nil)
+						{
+							// Oops, reference to non-existent subent
+							if (badSubEntities == nil)  badSubEntities = [NSMutableSet set];
+							[badSubEntities addObject:subEntityKey];
+						}
+						else if (![subEntityShipEntry boolForKey:@"_oo_is_subentity"])
+						{
+							// Subent exists, add _oo_is_subentity so roles aren't required
+							subEntityShipEntry = [subEntityShipEntry dictionaryByAddingObject:[NSNumber numberWithBool:YES] forKey:@"_oo_is_subentity"];
+							[ioData setObject:subEntityShipEntry forKey:subEntityKey];
+						}
+					}
+				}
+			}
+			
+			// If subentities have been excluded (i.e. there are bad flashers,
+			// or there are bad subentities but the ship is frangible), copy
+			// in new shortened list.
+			if ([okSubEntities count] != [subEntityDeclarations count] && !remove)
+			{
+				shipEntry = [[shipEntry mutableCopy] autorelease];
+				if ([okSubEntities count] == 0)
+				{
+					[(NSMutableDictionary *)shipEntry removeObjectForKey:@"subentities"];
+				}
+				else
+				{
+					[(NSMutableDictionary *)shipEntry setObject:[[okSubEntities copy] autorelease] forKey:@"subentities"];
 				}
 			}
 		}
@@ -706,6 +745,7 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 }
 
 
+#if PRELOAD
 - (BOOL) preloadShipMeshes:(NSMutableDictionary *)ioData
 {
 	NSEnumerator			*shipKeyEnum = nil;
@@ -751,6 +791,7 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 	
 	return YES;
 }
+#endif
 
 
 - (void) mergeShipRoles:(NSString *)roles

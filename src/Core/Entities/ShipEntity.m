@@ -61,6 +61,7 @@ MA 02110-1301, USA.
 #import "HeadUpDisplay.h"
 #import "OOEntityFilterPredicate.h"
 #import "OOEquipmentType.h"
+#import "OOStandardModelLoadingController.h"
 
 #import "OODebugGLDrawing.h"
 

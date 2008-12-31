@@ -58,6 +58,7 @@ MA 02110-1301, USA.
 #import "OOShipRegistry.h"
 #import "OOEquipmentType.h"
 #import "OOCamera.h"
+#import "OOStandardModelLoadingController.h"
 
 #import "OOScript.h"
 #import "OOScriptTimer.h"

@@ -8,15 +8,13 @@ of NSDatas, which are tracked using the _retainedObjects dictionary. This
 simplifies the implementation of -dealloc, but more importantly, it means
 bytes are refcounted. This means bytes read from the cache don't need to be
 copied, we just need to retain the relevant NSData object (by sticking it in
-_retainedObjects).
-
-Since _retainedObjects is a dictionary its members can be replaced,
-potentially allowing mutable meshes, although we have no use for this at
-present.
+_retainedObjects). As this mechanism is in place, it's convenient to also use
+it for other objects, such as _meshData.materialKeys and the entries in
+_meshData.materials.
 
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -50,6 +48,12 @@ MA 02110-1301, USA.
 #import "OOShaderMaterial.h"
 #import "OOMacroOpenGL.h"
 
+#import "OOConcreteMeshBuilder.h"
+#import "OODATMeshLoader.h"
+
+
+NSString * const kOOPlaceholderMaterialName = @"_oo_placeholder_material\n";
+
 
 // If set, collision octree depth varies depending on the size of the mesh. This seems to cause collision handling glitches at present.
 #define ADAPTIVE_OCTREE_DEPTH		0
@@ -73,31 +77,27 @@ static NSString * const kOOLogMeshTooManyFaces				= @"mesh.load.failed.tooManyFa
 static NSString * const kOOLogMeshTooManyMaterials			= @"mesh.load.failed.tooManyMaterials";
 
 
+// Cache entry keys
+#define kModelDataKeyElementCount		@"element count"
+#define kModelDataKeyIndexCount			@"index count"
+#define kModelDataKeyMaterialCount		@"material count"
+#define kModelDataKeyIndexType			@"index type"
+#define kModelDataKeyIndices			@"indices"
+#define kModelDataKeyVertices			@"vertices"
+#define kModelDataKeyNormals			@"normals"
+#define kModelDataKeyTangents			@"tangents"
+#define kModelDataKeyTextureCoordinates	@"texture coordinates"
+#define kModelDataKeyMaterialOffsets	@"material offsets"
+#define kModelDataKeyMaterialCounts		@"material counts"
+#define kModelDataKeyMaterialKeys		@"material keys"
+
+
 @interface OOMesh (Private) <NSMutableCopying, OOGraphicsResetClient>
 
-- (id)initWithName:(NSString *)name
-materialDictionary:(NSDictionary *)materialDict
- shadersDictionary:(NSDictionary *)shadersDict
-			smooth:(BOOL)smooth
-	  shaderMacros:(NSDictionary *)macros
-shaderBindingTarget:(id<OOWeakReferenceSupport>)object;
-
-- (void)setUpMaterialsWithMaterialsDictionary:(NSDictionary *)materialDict
-							shadersDictionary:(NSDictionary *)shadersDict
-								 shaderMacros:(NSDictionary *)macros
-						  shaderBindingTarget:(id<OOWeakReferenceSupport>)target;
-
-- (BOOL) loadData:(NSString *)filename;
-- (void) checkNormalsAndAdjustWinding;
-- (void) generateFaceTangents;
-- (void) calculateVertexNormals;
-
 - (NSDictionary*) modelData;
-- (BOOL) setModelFromModelData:(NSDictionary*) dict;
-
-- (void) getNormal:(Vector *)outNormal andTangent:(Vector *)outTangent forVertex:(int) v_index inSmoothGroup:(OOMeshSmoothGroup)smoothGroup;
-
-- (BOOL) setUpVertexArrays;
+- (BOOL) setModelFromModelData:(NSDictionary *)dict
+			 loadingController:(id<OOModelLoadingController>)controller
+			   controllerState:(id)controllerState;
 
 - (void) calculateBoundingVolumes;
 
@@ -108,13 +108,10 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object;
 #endif
 
 // Manage set of objects we need to hang on to, particularly NSDatas owning buffers.
-- (void) setRetainedObject:(id)object forKey:(NSString *)key;
-- (void *) allocateBytesWithSize:(size_t)size count:(OOUInteger)count key:(NSString *)key;
+- (void) addRetainedObject:(id)object;
+- (void *) allocateBytesWithSize:(size_t)size count:(OOUInteger)count;
 
-// Allocate all per-vertex/per-face buffers.
-- (BOOL) allocateVertexBuffersWithCount:(OOUInteger)count;
-- (BOOL) allocateFaceBuffersWithCount:(OOUInteger)count;
-- (BOOL) allocateVertexArrayBuffersWithCount:(OOUInteger)count;
+- (void) clearGLCaches;
 
 @end
 
@@ -129,19 +126,77 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object;
 
 @implementation OOMesh
 
-+ (id)meshWithName:(NSString *)name
-materialDictionary:(NSDictionary *)materialDict
- shadersDictionary:(NSDictionary *)shadersDict
-			smooth:(BOOL)smooth
-	  shaderMacros:(NSDictionary *)macros
-shaderBindingTarget:(id<OOWeakReferenceSupport>)object
+- (id) initWithLoadingController:(id<OOModelLoadingController>)controller
+						fileName:(NSString *)fileName
 {
-	return [[[self alloc] initWithName:name
-					materialDictionary:materialDict
-					 shadersDictionary:shadersDict
-								smooth:smooth
-						  shaderMacros:macros
-				   shaderBindingTarget:object] autorelease];
+	Class				loaderClass = Nil;
+	NSString			*extension = nil;
+	OOMeshLoader		*loader = nil;
+	NSString			*path = nil;
+	
+	// FIXME: look in cache first
+	
+	// Select loader class
+	extension = [[fileName pathExtension] lowercaseString];
+	if ([extension isEqualToString:@"dat"])  loaderClass = [OODATMeshLoader class];
+	
+	if (loaderClass == Nil)
+	{
+		[controller reportProblemWithKey:@"mesh.unknownType"
+								   fatal:YES
+								  format:@"The mesh file \"%@\" is of an unknown type."];
+		[self release];
+		return nil;
+	}
+	
+	// Instantiate loader
+	path = [controller pathForMeshNamed:fileName];
+	loader = [[loaderClass alloc] initWithController:controller path:path];
+	if (loader == nil)
+	{
+		[self release];
+		return nil;
+	}
+	
+	return [self initWithLoadingController:controller loader:loader];
+}
+
+
+- (id) initWithLoadingController:(id<OOModelLoadingController>)controller
+						  loader:(OOMeshLoader *)loader
+{
+	OOConcreteMeshBuilder	*builder = nil;
+	BOOL					OK = YES;
+	
+	if (controller == nil || loader == nil)  OK = NO;
+	
+	if (OK)
+	{
+		self = [super init];
+		if (self == nil)  OK = NO;
+	}
+	
+	if (OK)
+	{
+		_baseFile = [[loader fileName] copy];
+		
+		builder = [[OOConcreteMeshBuilder alloc] initWithMeshLoader:loader];
+		OK = [builder loadDataGettingMeshData:&_meshData retainedObjects:&_retainedObjects];
+		[builder release];
+	}
+	
+	if (OK)
+	{
+		[_retainedObjects retain];
+		[self calculateBoundingVolumes];
+	}
+	else
+	{
+		[self release];
+		self = nil;
+	}
+	
+	return self;
 }
 
 
@@ -166,7 +221,7 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 	self = [super init];
 	if (self == nil)  return nil;
 	
-	baseFile = @"No Model";
+	_baseFile = @"No Model";
 	
 	return self;
 }
@@ -174,18 +229,10 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 
 - (void) dealloc
 {
-	unsigned				i;
-	
-	[baseFile release];
-	[octree autorelease];
+	[_baseFile release];
+	[_octree autorelease];
 	
 	[self resetGraphicsState];
-	
-	for (i = 0; i != kOOMeshMaxMaterials; ++i)
-	{
-		[materials[i] release];
-		[materialKeys[i] release];
-	}
 	
 	[[OOGraphicsResetManager sharedManager] unregisterClient:self];
 	
@@ -195,9 +242,9 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 }
 
 
-- (NSString *)description
+- (NSString *) descriptionComponents
 {
-	return [NSString stringWithFormat:@"<%@ %p>{\"%@\", %u vertices, %u faces, radius: %g m smooth: %s}", [self class], self, [self modelName], [self vertexCount], [self faceCount], [self collisionRadius], isSmoothShaded ? "YES" : "NO"];
+	return [NSString stringWithFormat:@"\"%@\", %u vertices, %u faces, radius: %g m", [self class], self, [self modelName], [self vertexCount], [self faceCount], [self collisionRadius]];
 }
 
 
@@ -210,97 +257,108 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 
 - (NSString *) modelName
 {
-	return baseFile;
+	return _baseFile;
 }
 
 
-- (size_t)vertexCount
+- (OOUInteger) vertexCount
 {
-	return vertexCount;
+	return _meshData.indexCount;
 }
 
 
-- (size_t)faceCount
+- (OOUInteger) faceCount
 {
-	return faceCount;
+	return _meshData.elementCount;
 }
 
 
 - (void)renderOpaqueParts
 {
-	if (EXPECT_NOT(baseFile == nil))
+	if (EXPECT_NOT(_baseFile == nil))
 	{
-		OOLog(kOOLogFileNotLoaded, @"***** ERROR no baseFile for entity %@", self);
+		OOLog(kOOLogFileNotLoaded, @"***** ERROR no _baseFile for entity %@", self);
 		return;
 	}
 	
 	OO_ENTER_OPENGL();
 	
-	int			ti;
-	
 	glPushAttrib(GL_ENABLE_BIT);
 	
-	if (isSmoothShaded)  glShadeModel(GL_SMOOTH);
-	else  glShadeModel(GL_FLAT);
-	
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_INDEX_ARRAY);
-	glDisableClientState(GL_EDGE_FLAG_ARRAY);
+	glShadeModel(GL_SMOOTH);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	glVertexPointer(3, GL_FLOAT, 0, _displayLists.vertexArray);
-	glNormalPointer(GL_FLOAT, 0, _displayLists.normalArray);
-	glTexCoordPointer(2, GL_FLOAT, 0, _displayLists.textureUVArray);
+	glVertexPointer(3, GL_FLOAT, 0, _meshData.vertexArray);
+	glNormalPointer(GL_FLOAT, 0, _meshData.normalArray);
+	glTexCoordPointer(2, GL_FLOAT, 0, _meshData.textureUVArray);
 	if ([[OOOpenGLExtensionManager sharedManager] shadersSupported])
 	{
 		glEnableVertexAttribArrayARB(kTangentAttributeIndex);
-		glVertexAttribPointerARB(kTangentAttributeIndex, 3, GL_FLOAT, GL_FALSE, 0, _displayLists.tangentArray);
+		glVertexAttribPointerARB(kTangentAttributeIndex, 3, GL_FLOAT, GL_FALSE, 0, _meshData.tangentArray);
 	}
 	
 	glDisable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	
 	NS_DURING
-		if (!listsReady)
+	{
+		OOUInteger i;
+		
+		if (!_listsReady)
 		{
-			displayList0 = glGenLists(materialCount);
+			_displayList0 = glGenLists(_meshData.materialCount);
 			
 			// Ensure all textures are loaded
-			for (ti = 0; ti < materialCount; ti++)
+			for (i = 0; i < _meshData.materialCount; i++)
 			{
-				[materials[ti] ensureFinishedLoading];
+				[_meshData.materials[i] ensureFinishedLoading];
 			}
 		}
 		
-		for (ti = 0; ti < materialCount; ti++)
+		size_t size = 0;
+		switch (_meshData.indexType)
 		{
-			[materials[ti] apply];
-#if 0
-			if (listsReady)
+			case GL_UNSIGNED_BYTE:
+				size = sizeof (GLubyte);
+				break;
+			case GL_UNSIGNED_SHORT:
+				size = sizeof (GLushort);
+				break;
+			case GL_UNSIGNED_INT:
+				size = sizeof (GLuint);
+				break;
+				
+			default:
+				if (!_brokenInRender)
+				{
+					OOLog(@"mesh.meshData.badFormat", @"Data for %@ has invalid indexType (%u).", self, _meshData.indexType);
+					_brokenInRender = YES;
+				}
+		}
+		if (!_brokenInRender)
+		{
+			for (i = 0; i < _meshData.materialCount; i++)
 			{
-				glCallList(displayList0 + ti);
+				char *start = _meshData.indexArray;
+				start += size * _meshData.materialIndexOffsets[i];
+				OOUInteger count = _meshData.materialIndexCounts[i];
+				[_meshData.materials[i] apply];
+				
+				glDrawElements(GL_TRIANGLES, count, _meshData.indexType, start);
 			}
-			else
-			{
-				glNewList(displayList0 + ti, GL_COMPILE_AND_EXECUTE);
-				glDrawArrays(GL_TRIANGLES, triangle_range[ti].location, triangle_range[ti].length);
-				glEndList();
-			}
-#else
-			glDrawArrays(GL_TRIANGLES, triangle_range[ti].location, triangle_range[ti].length);
-#endif
 		}
 		
-		listsReady = YES;
-		brokenInRender = NO;
+		_listsReady = YES;
+		_brokenInRender = NO;
+	}
 	NS_HANDLER
-		if (!brokenInRender)
+		if (!_brokenInRender)
 		{
 			OOLog(kOOLogException, @"***** %s for %@ encountered exception: %@ : %@ *****", __FUNCTION__, self, [localException name], [localException reason]);
-			brokenInRender = YES;
+			_brokenInRender = YES;
 		}
 		if ([[localException name] hasPrefix:@"Oolite"])  [UNIVERSE handleOoliteException:localException];	// handle these ourself
 		else  [localException raise];	// pass these on
@@ -310,13 +368,7 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 	if (gDebugFlags & DEBUG_DRAW_NORMALS)  [self debugDrawNormals];
 #endif
 	
-	if ([[OOOpenGLExtensionManager sharedManager] shadersSupported])
-	{
-		glDisableVertexAttribArrayARB(kTangentAttributeIndex);
-	}
-	
 	[OOMaterial applyNone];
-	CheckOpenGLErrors(@"OOMesh after drawing %@", self);
 	
 #ifndef NDEBUG
 	if (gDebugFlags & DEBUG_OCTREE_DRAW)  [[self octree] drawOctree];
@@ -326,33 +378,36 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 }
 
 
-- (BOOL)hasOpaqueParts
+- (BOOL) hasOpaqueParts
 {
 	return YES;
 }
 
-- (GLfloat)collisionRadius
+- (GLfloat) collisionRadius
 {
-	return collisionRadius;
+	return _collisionRadius;
 }
 
 
-- (GLfloat)maxDrawDistance
+- (GLfloat) maxDrawDistance
 {
-	return maxDrawDistance;
+	return _maxDrawDistance;
 }
 
 
-- (Geometry *)geometry
+- (Geometry *) geometry
 {
+	OOUInteger		i, j, faceCount = _meshData.indexCount / 3;
+	
 	Geometry *result = [[Geometry alloc] initWithCapacity:faceCount];
-	int i;
+	
 	for (i = 0; i < faceCount; i++)
 	{
 		Triangle tri;
-		tri.v[0] = _vertices[_faces[i].vertex[0]];
-		tri.v[1] = _vertices[_faces[i].vertex[1]];
-		tri.v[2] = _vertices[_faces[i].vertex[2]];
+		for (j = 0; j < 3; ++j)
+		{
+			OOMeshDataGetVertex(&_meshData, i * 3 + j, &tri.v[j]);
+		}
 		[result addTriangle:tri];
 	}
 	return [result autorelease];
@@ -366,7 +421,7 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 	unsigned			result = kBaseOctreeDepth;
 	GLfloat				xs, ys, zs, t, size;
 	
-	bounding_box_get_dimensions(boundingBox, &xs, &ys, &zs);
+	bounding_box_get_dimensions(_boundingBox, &xs, &ys, &zs);
 	// Shuffle dimensions around so zs is smallest
 	if (xs < zs)  { t = zs; zs = xs; xs = t; }
 	if (ys < zs)  { t = zs; zs = ys; ys = t; }
@@ -381,7 +436,7 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 		result++;
 	}
 	
-	OOLog(@"mesh.load.octree.size", @"Selected octree depth %u for size %g for %@", result, size, baseFile);
+	OOLog(@"mesh.load.octree.size", @"Selected octree depth %u for size %g for %@", result, size, _baseFile);
 	return result;
 }
 #else
@@ -392,23 +447,99 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 #endif
 
 
-- (Octree *)octree
+- (Octree *) octree
 {
-	if (octree == nil)
+	if (_octree == nil)
 	{
-		octree = [OOCacheManager octreeForModel:baseFile];
-		if (octree == nil)
+		_octree = [OOCacheManager octreeForModel:_baseFile];
+		if (_octree == nil)
 		{
-			octree = [[self geometry] findOctreeToDepth:[self octreeDepth]];
-			[OOCacheManager setOctree:octree forModel:baseFile];
+			_octree = [[self geometry] findOctreeToDepth:[self octreeDepth]];
+			[OOCacheManager setOctree:_octree forModel:_baseFile];
 		}
-		[octree retain];
+		[_octree retain];
 	}
 	
-	return octree;
+	return _octree;
 }
 
 
+
+static void TransformOneVector(OOMeshData *data, GLuint index, Vector rpos, Vector si, Vector sj, Vector sk, Vector ri, Vector rj, Vector rk, Vector *outRV)
+{
+	assert(data != NULL && outRV != NULL && index < data->indexCount);
+	
+	Vector pos, pv;
+	OOMeshDataGetVertex(data, index, &pos);
+	
+	// FIXME: rewrite with matrices.
+	pv.x = rpos.x + si.x * pos.x + sj.x * pos.y + sk.x * pos.z;
+	pv.y = rpos.y + si.y * pos.x + sj.y * pos.y + sk.y * pos.z;
+	pv.z = rpos.z + si.x * pos.x + sj.z * pos.y + sk.z * pos.z;
+	
+	outRV->x = dot_product(ri, pv);
+	outRV->y = dot_product(rj, pv);
+	outRV->z = dot_product(rk, pv);
+}
+
+
+- (BoundingBox) findBoundingBoxRelativeToPosition:(Vector)opv
+											basis:(Vector)ri :(Vector)rj :(Vector)rk
+									 selfPosition:(Vector)position
+										selfBasis:(Vector)si :(Vector)sj :(Vector)sk
+{
+	BoundingBox				result;
+	Vector					rpos, rv;
+	GLuint					i;
+	
+	rpos = vector_subtract(position, opv);	// Model origin relative to opv
+	
+	rv.x = dot_product(ri, rpos);
+	rv.y = dot_product(ri, rpos);
+	rv.z = dot_product(ri, rpos);	// model origin relative to opv in ijk
+	
+	if (EXPECT_NOT(_meshData.indexCount == 0))
+	{
+		bounding_box_reset_to_vector(&result, rv);
+	}
+	else
+	{
+		TransformOneVector(&_meshData, 0, rpos, si, sj, sk, ri, rj, rk, &rv);
+		bounding_box_reset_to_vector(&result, rv);
+		for (i = 1; i < _meshData.indexCount; i++)
+		{
+			TransformOneVector(&_meshData, 0, rpos, si, sj, sk, ri, rj, rk, &rv);
+			bounding_box_add_vector(&result, rv);
+		}
+	}
+	
+	return result;
+}
+
+
+- (BoundingBox)findSubentityBoundingBoxWithPosition:(Vector)position rotMatrix:(OOMatrix)rotMatrix
+{
+	// HACK! Should work out what the various bounding box things do and make it neat and consistent.
+	BoundingBox				result;
+	Vector					v;
+	GLuint					i;
+	
+	OOMeshDataGetVertex(&_meshData, 0, &v);
+	v = vector_add(position, OOVectorMultiplyMatrix(v, rotMatrix));
+	bounding_box_reset_to_vector(&result,v);
+	
+	for (i = 1; i < _meshData.indexCount; i++)
+	{
+		OOMeshDataGetVertex(&_meshData, i, &v);
+		v = vector_add(position, OOVectorMultiplyMatrix(v, rotMatrix));
+		bounding_box_add_vector(&result,v);
+	}
+	
+	return result;
+}
+
+
+#if 0
 - (BoundingBox) findBoundingBoxRelativeToPosition:(Vector)opv
 											basis:(Vector)ri :(Vector)rj :(Vector)rk
 									 selfPosition:(Vector)position
@@ -426,7 +557,7 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 	rv.y = dot_product(rj,rpos);
 	rv.z = dot_product(rk,rpos);	// model origin rel to opv in ijk
 	
-	if (EXPECT_NOT(vertexCount < 1))
+	if (EXPECT_NOT(_vertexCount < 1))
 	{
 		bounding_box_reset_to_vector(&result, rv);
 	}
@@ -473,6 +604,7 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 	
 	return result;
 }
+#endif
 
 
 - (OOMesh *)meshRescaledBy:(GLfloat)scaleFactor
@@ -495,9 +627,9 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 {
 	unsigned				i;
 	
-	for (i = 0; i != kOOMeshMaxMaterials; ++i)
+	for (i = 0; i != _meshData.materialCount; ++i)
 	{
-		[materials[i] setBindingTarget:target];
+		[_meshData.materials[i] setBindingTarget:target];
 	}
 }
 
@@ -510,14 +642,21 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 	
 	[super dumpSelfState];
 	
-	if (baseFile != nil)  OOLog(@"dumpState.mesh", @"Model file: %@", baseFile);
-	OOLog(@"dumpState.mesh", @"Vertex count: %u, face count: %u", vertexCount, faceCount);
+	if (_baseFile != nil)  OOLog(@"dumpState.mesh", @"Model file: %@", _baseFile);
+	OOLog(@"dumpState.mesh", @"Vertex count: %u, face count: %u", [self vertexCount], [self faceCount]);
 	
 	flags = [NSMutableArray array];
 	#define ADD_FLAG_IF_SET(x)		if (x) { [flags addObject:@#x]; }
-	ADD_FLAG_IF_SET(isSmoothShaded);
 	flagsString = [flags count] ? [flags componentsJoinedByString:@", "] : (NSString *)@"none";
 	OOLog(@"dumpState.mesh", @"Flags: %@", flagsString);
+}
+#endif
+
+#if STATIC_ANALYSIS
+- (BoundingBox) boundingBox
+{
+	// Placate clang static analyzer. (_boundingBox is otherwise only used in categories.)
+	return _boundingBox;
 }
 #endif
 
@@ -526,99 +665,26 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)object
 
 @implementation OOMesh (Private)
 
-- (id)initWithName:(NSString *)name
-materialDictionary:(NSDictionary *)materialDict
- shadersDictionary:(NSDictionary *)shadersDict
-			smooth:(BOOL)smooth
-	  shaderMacros:(NSDictionary *)macros
-shaderBindingTarget:(id<OOWeakReferenceSupport>)target
-{
-	self = [super init];
-	if (self == nil)  return nil;
-	
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	isSmoothShaded = smooth != NO;
-	
-	if ([self loadData:name])
-	{
-		[self checkNormalsAndAdjustWinding];
-		[self calculateBoundingVolumes];
-		baseFile = [name copy];
-		[self setUpMaterialsWithMaterialsDictionary:materialDict shadersDictionary:shadersDict shaderMacros:macros shaderBindingTarget:target];
-		[[OOGraphicsResetManager sharedManager] registerClient:self];
-	}
-	else
-	{
-		[self release];
-		self = nil;
-	}
-	
-	[pool release];
-	return self;
-}
-
-
-- (void)setUpMaterialsWithMaterialsDictionary:(NSDictionary *)materialDict
-							shadersDictionary:(NSDictionary *)shadersDict
-								 shaderMacros:(NSDictionary *)macros
-						  shaderBindingTarget:(id<OOWeakReferenceSupport>)target
-{
-	OOMeshMaterialCount		i;
-	OOMaterial				*material = nil;
-	
-	if (materialCount != 0)
-	{
-		for (i = 0; i != materialCount; ++i)
-		{
-			if (![materialKeys[i] isEqualToString:@"_oo_placeholder_material"])
-			{
-				material = [OOMaterial materialWithName:materialKeys[i]
-										  forModelNamed:baseFile
-									 materialDictionary:materialDict
-									  shadersDictionary:shadersDict
-												 macros:macros
-										  bindingTarget:target
-										forSmoothedMesh:isSmoothShaded];
-			}
-			else
-			{
-				material = nil;
-			}
-			
-			if (material != nil)
-			{
-				materials[i] = [material retain];
-			}
-			else
-			{
-				materials[i] = [[OOMesh placeholderMaterial] retain];
-			}
-		}
-	}
-}
-
-
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
 	OOMesh				*result = nil;
-	OOMeshMaterialCount	i;
 	
-	result = (OOMesh *)NSCopyObject(self, 0, zone);
+	result = [[OOMesh allocWithZone:zone] init];
 	
 	if (result != nil)
 	{
-		[result->baseFile retain];
-		[result->octree retain];
-		[result->_retainedObjects retain];
+		result->_baseFile = [_baseFile copyWithZone:zone];
+		result->_octree = [_octree retain];
 		
-		for (i = 0; i != kOOMeshMaxMaterials; ++i)
+		if (!OOMeshDataDeepCopy(&_meshData, &result->_meshData, &result->_retainedObjects))
 		{
-			[result->materialKeys[i] retain];
-			[result->materials[i] retain];
+			[result release];
+			return nil;
 		}
 		
-		// Reset unsharable GL state
-		result->listsReady = NO;
+		result->_collisionRadius = _collisionRadius;
+		result->_collisionRadius = _collisionRadius;
+		result->_boundingBox = _boundingBox;
 		
 		[[OOGraphicsResetManager sharedManager] registerClient:result];
 	}
@@ -629,785 +695,230 @@ shaderBindingTarget:(id<OOWeakReferenceSupport>)target
 
 - (void) resetGraphicsState
 {
-	if (listsReady)
+	if (_listsReady)
 	{
 		OO_ENTER_OPENGL();
 		
-		glDeleteLists(displayList0, materialCount);
-		listsReady = NO;
+		glDeleteLists(_displayList0, _meshData.materialCount);
+		_listsReady = NO;
 	}
 }
 
 
-- (NSDictionary *)modelData
+- (NSDictionary *) modelData
 {
-	NSNumber			*vertCnt = nil,
-						*faceCnt = nil;
-	NSData				*vertData = nil,
-						*normData = nil,
-						*tanData = nil,
-						*faceData = nil;
-	NSArray				*mtlKeys = nil;
-	NSNumber			*smooth = nil;
+	NSNumber *elementCount	= [NSNumber numberWithUnsignedLong:_meshData.elementCount];
+	NSNumber *indexCount	= [NSNumber numberWithUnsignedLong:_meshData.indexCount];
+	NSNumber *materialCount	= [NSNumber numberWithUnsignedLong:_meshData.materialCount];
+	NSNumber *indexType		= [NSNumber numberWithUnsignedInt:_meshData.indexType];
 	
-	// Prepare cache data elements.
-	vertCnt = [NSNumber numberWithUnsignedInt:vertexCount];
-	faceCnt = [NSNumber numberWithUnsignedInt:faceCount];
+	NSData *indexData		= [NSData dataWithBytes:_meshData.indexArray
+										length:OOMeshDataIndexSize(_meshData.indexType) * _meshData.indexCount];
+	NSData *vertexData		= [NSData dataWithBytes:_meshData.vertexArray
+										 length:sizeof (Vector) * _meshData.elementCount];
+	NSData *normalData		= [NSData dataWithBytes:_meshData.normalArray
+										 length:sizeof (Vector) * _meshData.elementCount];
+	NSData *tangentData		= [NSData dataWithBytes:_meshData.tangentArray
+										  length:sizeof (Vector) * _meshData.elementCount];
+	NSData *textureUVData	= [NSData dataWithBytes:_meshData.textureUVArray
+										   length:sizeof (GLfloat) * 2 * _meshData.elementCount];
+	NSData *matlOffsetData	= [NSData dataWithBytes:_meshData.materialIndexOffsets
+										   length:sizeof (GLuint) * _meshData.materialCount];
+	NSData *matlCountData	= [NSData dataWithBytes:_meshData.materialIndexCounts
+										   length:sizeof (GLuint) * _meshData.materialCount];
 	
-#if 0
-	vertData = [NSData dataWithBytes:_vertices length:sizeof *_vertices * vertexCount];
-	normData = [NSData dataWithBytes:_normals length:sizeof *_normals * vertexCount];
-	tanData = [NSData dataWithBytes:_tangents length:sizeof *_tangents * vertexCount];
-	faceData = [NSData dataWithBytes:_faces length:sizeof *_faces * faceCount];
-#else
-	vertData = [_retainedObjects objectForKey:@"vertices"];
-	normData = [_retainedObjects objectForKey:@"normals"];
-	tanData = [_retainedObjects objectForKey:@"tangents"];
-	faceData = [_retainedObjects objectForKey:@"faces"];
-#endif
-	
-	if (materialCount != 0)
-	{
-		mtlKeys = [NSArray arrayWithObjects:materialKeys count:materialCount];
-	}
-	else
-	{
-		mtlKeys = [NSArray array];
-	}
-	smooth = [NSNumber numberWithBool:isSmoothShaded];
-	
-	// Ensure we have all the required data elements.
-	if (vertCnt == nil ||
-		faceCnt == nil ||
-		vertData == nil ||
-		normData == nil ||
-		tanData == nil ||
-		faceData == nil ||
-		mtlKeys == nil ||
-		smooth == nil)
+	// Ensure nothing went wrong
+	if (elementCount == nil ||
+		indexCount == nil ||
+		materialCount == nil ||
+		indexType == nil ||
+		indexData == nil ||
+		vertexData == nil ||
+		normalData == nil ||
+		tangentData == nil ||
+		textureUVData == nil ||
+		matlOffsetData == nil ||
+		matlCountData == nil ||
+		_meshData.materialKeys == nil ||
+		OOMeshDataIndexSize(_meshData.indexType) == 0)
 	{
 		return nil;
 	}
 	
-	// All OK; stick 'em in a dictionary.
 	return [NSDictionary dictionaryWithObjectsAndKeys:
-						vertCnt, @"vertex count",
-						vertData, @"vertex data",
-						normData, @"normal data",
-						tanData, @"tangent data",
-						faceCnt, @"face count",
-						faceData, @"face data",
-						mtlKeys, @"material keys",
-						smooth, @"smooth",
-						nil];
+			elementCount, kModelDataKeyElementCount,
+			indexCount, kModelDataKeyIndexCount,
+			materialCount, kModelDataKeyMaterialCount,
+			indexType, kModelDataKeyIndexType,
+			indexData, kModelDataKeyIndices,
+			vertexData, kModelDataKeyVertices,
+			normalData, kModelDataKeyNormals,
+			tangentData, kModelDataKeyTangents,
+			textureUVData, kModelDataKeyTextureCoordinates,
+			matlOffsetData, kModelDataKeyMaterialOffsets,
+			matlCountData, kModelDataKeyMaterialCounts,
+			_meshData.materialKeys, kModelDataKeyMaterialKeys,
+			nil];
 }
 
 
-- (BOOL)setModelFromModelData:(NSDictionary *)dict
+- (BOOL) setModelFromModelData:(NSDictionary *)dict
+			 loadingController:(id<OOModelLoadingController>)controller
+			   controllerState:(id)controllerState
 {
-	NSData				*vertData = nil,
-						*normData = nil,
-						*tanData = nil,
-						*faceData = nil;
-	NSArray				*mtlKeys = nil;
-	NSString			*key = nil;
-	unsigned			i;
+	OOUInteger elementCount	= [dict unsignedLongForKey:kModelDataKeyElementCount];
+	OOUInteger indexCount	= [dict unsignedLongForKey:kModelDataKeyIndexCount];
+	OOUInteger materialCount= [dict unsignedLongForKey:kModelDataKeyMaterialCount];
+	GLenum indexType		= [dict unsignedIntForKey:kModelDataKeyIndexType];
 	
-	if (dict == nil || ![dict isKindOfClass:[NSDictionary class]])  return NO;
-	
-	vertexCount = [dict unsignedIntForKey:@"vertex count"];
-	faceCount = [dict unsignedIntForKey:@"face count"];
-	
-	if (vertexCount == 0 || faceCount == 0)  return NO;
-	
-	// Read data elements from dictionary.
-	vertData = [dict dataForKey:@"vertex data"];
-	normData = [dict dataForKey:@"normal data"];
-	tanData = [dict dataForKey:@"tangent data"];
-	faceData = [dict dataForKey:@"face data"];
-	
-	mtlKeys = [dict arrayForKey:@"material keys"];
-	isSmoothShaded = [dict boolForKey:@"smooth"];
-	
-	// Ensure we have all the required data elements.
-	if (vertData == nil ||
-		normData == nil ||
-		tanData == nil ||
-		faceData == nil ||
-		mtlKeys == nil)
+	// Sanity check.
+	if (elementCount == 0 ||
+		indexCount == 0 ||
+		materialCount == 0 ||
+		OOMeshDataIndexSize(indexType) == 0)
 	{
 		return NO;
 	}
 	
-	// Ensure data objects are of correct size.
-	if ([vertData length] != sizeof *_vertices * vertexCount)  return NO;
-	if ([normData length] != sizeof *_normals * vertexCount)  return NO;
-	if ([tanData length] != sizeof *_tangents * vertexCount)  return NO;
-	if ([faceData length] != sizeof *_faces * faceCount)  return NO;
+	NSData *indexData		= [dict dataForKey:kModelDataKeyIndices];
+	NSData *vertexData		= [dict dataForKey:kModelDataKeyVertices];
+	NSData *normalData		= [dict dataForKey:kModelDataKeyNormals];
+	NSData *tangentData		= [dict dataForKey:kModelDataKeyTangents];
+	NSData *textureUVData	= [dict dataForKey:kModelDataKeyTextureCoordinates];
+	NSData *matlOffsetData	= [dict dataForKey:kModelDataKeyMaterialOffsets];
+	NSData *matlCountData	= [dict dataForKey:kModelDataKeyMaterialCounts];
+	NSArray *materialKeys	= [dict arrayForKey:kModelDataKeyMaterialKeys];
+	
+	// Sanity check some more.
+	if ([indexData length] != OOMeshDataIndexSize(indexType) * indexCount ||
+		[vertexData length] != sizeof (Vector) * elementCount ||
+		[normalData length] != sizeof (Vector) * elementCount ||
+		[tangentData length] != sizeof (Vector) * elementCount ||
+		[textureUVData length] != sizeof (GLfloat) * 2 * elementCount ||
+		[matlOffsetData length] != sizeof (GLuint) * materialCount ||
+		[matlCountData length] != sizeof (GLuint) * materialCount ||
+		[materialKeys count] != materialCount)
+	{
+		return NO;
+	}
 	
 	// Retain data.
-	_vertices = (Vector *)[vertData bytes];
-	[self setRetainedObject:vertData forKey:@"vertices"];
-	_normals = (Vector *)[normData bytes];
-	[self setRetainedObject:normData forKey:@"normals"];
-	_tangents = (Vector *)[tanData bytes];
-	[self setRetainedObject:tanData forKey:@"tangents"];
-	_faces = (OOMeshFace *)[faceData bytes];
-	[self setRetainedObject:faceData forKey:@"faces"];
+	[self addRetainedObject:indexData];
+	[self addRetainedObject:vertexData];
+	[self addRetainedObject:normalData];
+	[self addRetainedObject:tangentData];
+	[self addRetainedObject:textureUVData];
+	[self addRetainedObject:matlOffsetData];
+	[self addRetainedObject:matlCountData];
+	[self addRetainedObject:materialKeys];
 	
-	// Copy material keys.
-	materialCount = [mtlKeys count];
+	/*	Pack into _meshData.
+		Note that this casts away constness. Editing a mesh created this way
+		will corrupt other meshes loaded from the same cache. Use -mutableCopy
+		to get a deep copy of the data.
+	*/
+	_meshData.elementCount = elementCount;
+	_meshData.indexCount = indexCount;
+	_meshData.materialCount = materialCount;
+	_meshData.indexType = indexType;
+	_meshData.indexArray = (void *)[indexData bytes];
+	_meshData.vertexArray = (void *)[vertexData bytes];
+	_meshData.normalArray = (void *)[normalData bytes];
+	_meshData.tangentArray = (void *)[tangentData bytes];
+	_meshData.textureUVArray = (void *)[textureUVData bytes];
+	_meshData.materialIndexOffsets = (void *)[matlOffsetData bytes];
+	_meshData.materialIndexCounts = (void *)[matlCountData bytes];
+	_meshData.materialKeys = materialKeys;
+	
+	// Reify materials.
+	_meshData.materials = [self allocateBytesWithSize:sizeof (OOMaterial *) count:materialCount];
+	OOUInteger i;
 	for (i = 0; i != materialCount; ++i)
 	{
-		key = [mtlKeys stringAtIndex:i];
-		if (key != nil)  materialKeys[i] = [key retain];
-		else  return NO;
+		_meshData.materials[i] = [controller loadMaterialWithKey:[materialKeys objectAtIndex:i]];
+		if (_meshData.materials[i] == nil)  return NO;
 	}
 	
-	return YES;
-}
-
-
-- (BOOL)loadData:(NSString *)filename
-{
-	NSScanner			*scanner;
-	NSDictionary		*cacheData = nil;
-	NSString			*data = nil;
-	NSMutableArray		*lines;
-	BOOL				failFlag = NO;
-	NSString			*failString = @"***** ";
-	unsigned			i, j;
-	NSMutableDictionary	*texFileName2Idx = nil;
-	
-	BOOL using_preloaded = NO;
-	
-	cacheData = [OOCacheManager meshDataForName:filename];
-	if (cacheData != nil)
-	{
-		if ([self setModelFromModelData:cacheData]) using_preloaded = YES;
-	}
-	
-	if (!using_preloaded)
-	{
-		texFileName2Idx = [NSMutableDictionary dictionary];
-		
-		data = [ResourceManager stringFromFilesNamed:filename inFolder:@"Models"];
-		if (data == nil)
-		{
-			// Model not found
-			OOLog(kOOLogMeshDataNotFound, @"ERROR - could not find %@", filename);
-			return NO;
-		}
-
-		// strip out comments and commas between values
-		//
-		lines = [NSMutableArray arrayWithArray:[data componentsSeparatedByString:@"\n"]];
-		for (i = 0; i < [lines count]; i++)
-		{
-			NSString *line = [lines objectAtIndex:i];
-			NSArray *parts;
-			//
-			// comments
-			//
-			parts = [line componentsSeparatedByString:@"#"];
-			line = [parts objectAtIndex:0];
-			parts = [line componentsSeparatedByString:@"//"];
-			line = [parts objectAtIndex:0];
-			//
-			// commas
-			//
-			line = [[line componentsSeparatedByString:@","] componentsJoinedByString:@" "];
-			//
-			[lines replaceObjectAtIndex:i withObject:line];
-		}
-		data = [lines componentsJoinedByString:@"\n"];
-
-		scanner = [NSScanner scannerWithString:data];
-
-		// get number of vertices
-		//
-		[scanner setScanLocation:0];	//reset
-		if ([scanner scanString:@"NVERTS" intoString:NULL])
-		{
-			int n_v;
-			if ([scanner scanInt:&n_v])
-				vertexCount = n_v;
-			else
-			{
-				failFlag = YES;
-				failString = [NSString stringWithFormat:@"%@Failed to read value of NVERTS\n",failString];
-			}
-		}
-		else
-		{
-			failFlag = YES;
-			failString = [NSString stringWithFormat:@"%@Failed to read NVERTS\n",failString];
-		}
-		
-		if (![self allocateVertexBuffersWithCount:vertexCount])
-		{
-			OOLog(kOOLogAllocationFailure, @"ERROR - failed to allocate memory for model %@ (%u vertices).", filename, vertexCount);
-			return NO;
-		}
-		
-		// get number of faces
-		if ([scanner scanString:@"NFACES" intoString:NULL])
-		{
-			int n_f;
-			if ([scanner scanInt:&n_f])
-			{
-				faceCount = n_f;
-			}
-			else
-			{
-				failFlag = YES;
-				failString = [NSString stringWithFormat:@"%@Failed to read value of NFACES\n",failString];
-			}
-		}
-		else
-		{
-			failFlag = YES;
-			failString = [NSString stringWithFormat:@"%@Failed to read NFACES\n",failString];
-		}
-		
-		if (![self allocateFaceBuffersWithCount:faceCount])
-		{
-			OOLog(kOOLogAllocationFailure, @"ERROR - failed to allocate memory for model %@ (%u vertices, %u faces).", filename, vertexCount, faceCount);
-			return NO;
-		}
-		
-		// get vertex data
-		//
-		//[scanner setScanLocation:0];	//reset
-		if ([scanner scanString:@"VERTEX" intoString:NULL])
-		{
-			for (j = 0; j < vertexCount; j++)
-			{
-				float x, y, z;
-				if (!failFlag)
-				{
-					if (![scanner scanFloat:&x])  failFlag = YES;
-					if (![scanner scanFloat:&y])  failFlag = YES;
-					if (![scanner scanFloat:&z])  failFlag = YES;
-					if (!failFlag)
-					{
-						_vertices[j].x = x;
-						_vertices[j].y = y;
-						_vertices[j].z = z;
-					}
-					else
-					{
-						failString = [NSString stringWithFormat:@"%@Failed to read a value for vertex[%d] in VERTEX\n", failString, j];
-					}
-				}
-			}
-		}
-		else
-		{
-			failFlag = YES;
-			failString = [NSString stringWithFormat:@"%@Failed to find VERTEX data\n",failString];
-		}
-
-		// get face data
-		//
-		if ([scanner scanString:@"FACES" intoString:NULL])
-		{
-			for (j = 0; j < faceCount; j++)
-			{
-				int r, g, b;
-				float nx, ny, nz;
-				int n_v;
-				if (!failFlag)
-				{
-					// colors
-					if (![scanner scanInt:&r])  failFlag = YES;
-					if (![scanner scanInt:&g])  failFlag = YES;
-					if (![scanner scanInt:&b])  failFlag = YES;
-					if (!failFlag)
-					{
-						_faces[j].smoothGroup = r;
-					}
-					else
-					{
-						failString = [NSString stringWithFormat:@"%@Failed to read a color for face[%d] in FACES\n", failString, j];
-					}
-
-					// normal
-					if (![scanner scanFloat:&nx])  failFlag = YES;
-					if (![scanner scanFloat:&ny])  failFlag = YES;
-					if (![scanner scanFloat:&nz])  failFlag = YES;
-					if (!failFlag)
-					{
-						_faces[j].normal = make_vector(nx, ny, nz);
-					}
-					else
-					{
-						failString = [NSString stringWithFormat:@"%@Failed to read a normal for face[%d] in FACES\n", failString, j];
-					}
-
-					// vertices
-					if ([scanner scanInt:&n_v])
-					{
-						_faces[j].n_verts = n_v;
-					}
-					else
-					{
-						failFlag = YES;
-						failString = [NSString stringWithFormat:@"%@Failed to read number of vertices for face[%d] in FACES\n", failString, j];
-					}
-					//
-					if (!failFlag)
-					{
-						int vi;
-						for (i = 0; (int)i < n_v; i++)
-						{
-							if ([scanner scanInt:&vi])
-							{
-								_faces[j].vertex[i] = vi;
-							}
-							else
-							{
-								failFlag = YES;
-								failString = [NSString stringWithFormat:@"%@Failed to read vertex[%d] for face[%d] in FACES\n", failString, i, j];
-							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			failFlag = YES;
-			failString = [NSString stringWithFormat:@"%@Failed to find FACES data\n",failString];
-		}
-
-		// get textures data
-		//
-		if ([scanner scanString:@"TEXTURES" intoString:NULL])
-		{
-			for (j = 0; j < faceCount; j++)
-			{
-				NSString	*materialKey;
-				float	max_x, max_y;
-				float	s, t;
-				if (!failFlag)
-				{
-					// materialKey
-					//
-					[scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
-					if (![scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&materialKey])
-					{
-						failFlag = YES;
-						failString = [NSString stringWithFormat:@"%@Failed to read texture filename for face[%d] in TEXTURES\n", failString, j];
-					}
-					else
-					{
-						NSNumber *index = [texFileName2Idx objectForKey:materialKey];
-						if (index != nil)
-						{
-							_faces[j].materialIndex = [index unsignedIntValue];
-						}
-						else
-						{
-							if (materialCount == kOOMeshMaxMaterials)
-							{
-								OOLog(kOOLogMeshTooManyMaterials, @"ERROR - model %@ has too many materials (maximum is %d)", filename, kOOMeshMaxMaterials);
-								return NO;
-							}
-							_faces[j].materialIndex = materialCount;
-							materialKeys[materialCount] = [materialKey retain];
-							index = [NSNumber numberWithUnsignedInt:materialCount];
-							[texFileName2Idx setObject:index forKey:materialKey];
-							++materialCount;
-						}
-					}
-
-					// texture size
-					//
-				   if (!failFlag)
-					{
-						if (![scanner scanFloat:&max_x])  failFlag = YES;
-						if (![scanner scanFloat:&max_y])  failFlag = YES;
-						if (failFlag)
-							failString = [NSString stringWithFormat:@"%@Failed to read texture size for max_x and max_y in face[%d] in TEXTURES\n", failString, j];
-					}
-
-					// vertices
-					//
-					if (!failFlag)
-					{
-						for (i = 0; i < _faces[j].n_verts; i++)
-						{
-							if (![scanner scanFloat:&s])  failFlag = YES;
-							if (![scanner scanFloat:&t])  failFlag = YES;
-							if (!failFlag)
-							{
-								_faces[j].s[i] = s / max_x;
-								_faces[j].t[i] = t / max_y;
-							}
-							else
-								failString = [NSString stringWithFormat:@"%@Failed to read s t coordinates for vertex[%d] in face[%d] in TEXTURES\n", failString, i, j];
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			failFlag = YES;
-			failString = [NSString stringWithFormat:@"%@Failed to find TEXTURES data (will use placeholder material)\n",failString];
-			materialKeys[0] = @"_oo_placeholder_material";
-			materialCount = 1;
-			
-			for (j = 0; j < faceCount; j++)
-			{
-				_faces[j].materialIndex = 0;
-			}
-		}
-		
-		[self checkNormalsAndAdjustWinding];
-		[self generateFaceTangents];
-		
-		if (failFlag)
-		{
-			OOLog(@"mesh.error", @"%@ ..... from %@ %@", failString, filename, (using_preloaded)? @"(from preloaded data)" :@"(from file)");
-		}
-
-		// check for smooth shading and recalculate normals
-		if (isSmoothShaded)  [self calculateVertexNormals];
-		
-		// save the resulting data for possible reuse
-		[OOCacheManager setMeshData:[self modelData] forName:filename];
-	}
-	
-	[self calculateBoundingVolumes];
-	
-	// set up vertex arrays for drawing
-	if (![self setUpVertexArrays])  return NO;
-	
-	return YES;
-}
-
-
-// FIXME: this isn't working, we're getting smoothed models with inside-out winding. --Ahruman
-- (void) checkNormalsAndAdjustWinding
-{
-	Vector		calculatedNormal;
-	int			i, j;
-	for (i = 0; i < faceCount; i++)
-	{
-		Vector v0, v1, v2, norm;
-		v0 = _vertices[_faces[i].vertex[0]];
-		v1 = _vertices[_faces[i].vertex[1]];
-		v2 = _vertices[_faces[i].vertex[2]];
-		norm = _faces[i].normal;
-		calculatedNormal = normal_to_surface(v2, v1, v0);
-		if (vector_equal(norm, kZeroVector))
-		{
-			_faces[i].normal = normal_to_surface(v0, v1, v2);
-			norm = normal_to_surface (v0, v1, v2);
-		}
-		if (norm.x*calculatedNormal.x < 0 || norm.y*calculatedNormal.y < 0 || norm.z*calculatedNormal.z < 0)
-		{
-			// normal lies in the WRONG direction!
-			// reverse the winding
-			int			v[_faces[i].n_verts];
-			GLfloat		s[_faces[i].n_verts];
-			GLfloat		t[_faces[i].n_verts];
-			
-			for (j = 0; j < _faces[i].n_verts; j++)
-			{
-				v[j] = _faces[i].vertex[_faces[i].n_verts - 1 - j];
-				s[j] = _faces[i].s[_faces[i].n_verts - 1 - j];
-				t[j] = _faces[i].t[_faces[i].n_verts - 1 - j];
-			}
-			for (j = 0; j < _faces[i].n_verts; j++)
-			{
-				_faces[i].vertex[j] = v[j];
-				_faces[i].s[j] = s[j];
-				_faces[i].t[j] = t[j];
-			}
-		}
-	}
-}
-
-
-- (void) generateFaceTangents
-{
-	int i;
-	for (i = 0; i < faceCount; i++)
-	{
-		OOMeshFace *face = _faces + i;
-		
-		/*	Generate tangents, i.e. vectors that run in the direction of the s
-			texture coordinate. Based on code I found in a forum somewhere and
-			then lost track of. Sorry to whomever I should be crediting.
-			-- Ahruman 2008-11-23
-		*/
-		Vector vAB = vector_subtract(_vertices[face->vertex[1]], _vertices[face->vertex[0]]);
-		Vector vAC = vector_subtract(_vertices[face->vertex[2]], _vertices[face->vertex[0]]);
-		Vector nA = face->normal;
-		
-		// projAB = aB - (nA . vAB) * nA
-		Vector vProjAB = vector_subtract(vAB, vector_multiply_scalar(nA, dot_product(nA, vAB)));
-		Vector vProjAC = vector_subtract(vAC, vector_multiply_scalar(nA, dot_product(nA, vAC)));
-		
-		// delta s/t
-		GLfloat dsAB = face->s[1] - face->s[0];
-		GLfloat dsAC = face->s[2] - face->s[0];
-		GLfloat dtAB = face->t[1] - face->t[0];
-		GLfloat dtAC = face->t[2] - face->t[0];
-		
-		if (dsAC * dtAB > dsAB * dtAC)
-		{
-			dsAB = -dsAB;
-			dsAC = -dsAC;
-		}
-		
-		Vector tangent = vector_subtract(vector_multiply_scalar(vProjAB, dsAC), vector_multiply_scalar(vProjAC, dsAB));
-		face->tangent = cross_product(face->normal, tangent);	// Rotate 90 degrees. Done this way because I'm too lazy to grok the code above.
-	}
-}
-
-
-static float FaceArea(GLint *vertIndices, Vector *vertices)
-{
-	// calculate areas using Herons formula
-	// in the form Area = sqrt(2*(a2*b2+b2*c2+c2*a2)-(a4+b4+c4))/4
-	float	a2 = distance2(vertices[vertIndices[0]], vertices[vertIndices[1]]);
-	float	b2 = distance2(vertices[vertIndices[1]], vertices[vertIndices[2]]);
-	float	c2 = distance2(vertices[vertIndices[2]], vertices[vertIndices[0]]);
-	return sqrtf(2.0 * (a2 * b2 + b2 * c2 + c2 * a2) - 0.25 * (a2 * a2 + b2 * b2 +c2 * c2));
-}
-
-
-- (void) calculateVertexNormals
-{
-	int i,j;
-	float	triangle_area[faceCount];
-	for (i = 0 ; i < faceCount; i++)
-	{
-		triangle_area[i] = FaceArea(_faces[i].vertex, _vertices);
-	}
-	for (i = 0; i < vertexCount; i++)
-	{
-		Vector normal_sum = kZeroVector;
-		Vector tangent_sum = kZeroVector;
-		
-		for (j = 0; j < faceCount; j++)
-		{
-			BOOL is_shared = ((_faces[j].vertex[0] == i)||(_faces[j].vertex[1] == i)||(_faces[j].vertex[2] == i));
-			if (is_shared)
-			{
-				float t = triangle_area[j]; // weight sum by area
-				normal_sum = vector_add(normal_sum, vector_multiply_scalar(_faces[j].normal, t));
-				tangent_sum = vector_add(tangent_sum, vector_multiply_scalar(_faces[j].tangent, t));
-			}
-		}
-		
-		normal_sum = vector_normal_or_fallback(normal_sum, kBasisZVector);
-		tangent_sum = vector_normal_or_fallback(tangent_sum, kBasisXVector);
-		
-		_normals[i] = normal_sum;
-		_tangents[i] = tangent_sum;
-	}
-}
-
-
-- (void) getNormal:(Vector *)outNormal andTangent:(Vector *)outTangent forVertex:(int) v_index inSmoothGroup:(OOMeshSmoothGroup)smoothGroup
-{
-	assert(outNormal != NULL && outTangent != NULL);
-	
-	int j;
-	Vector normal_sum = kZeroVector;
-	Vector tangent_sum = kZeroVector;
-	for (j = 0; j < faceCount; j++)
-	{
-		if (_faces[j].smoothGroup == smoothGroup)
-		{
-			if ((_faces[j].vertex[0] == v_index)||(_faces[j].vertex[1] == v_index)||(_faces[j].vertex[2] == v_index))
-			{
-				float area = FaceArea(_faces[j].vertex, _vertices);
-				normal_sum = vector_add(normal_sum, vector_multiply_scalar(_faces[j].normal, area));
-				tangent_sum = vector_add(tangent_sum, vector_multiply_scalar(_faces[j].tangent, area));
-			}
-		}
-	}
-	
-	*outNormal = vector_normal_or_fallback(normal_sum, kBasisZVector);
-	*outTangent = vector_normal_or_fallback(tangent_sum, kBasisXVector);
-}
-
-
-- (BOOL) setUpVertexArrays
-{
-	int fi, vi, mi;
-	
-	if (![self allocateVertexArrayBuffersWithCount:faceCount])  return NO;
-	
-	// if isSmoothShaded find any vertices that are between faces of different
-	// smoothing groups and mark them as being on an edge and therefore NOT
-	// smooth shaded
-	BOOL is_edge_vertex[vertexCount];
-	GLfloat smoothGroup[vertexCount];
-	for (vi = 0; vi < vertexCount; vi++)
-	{
-		is_edge_vertex[vi] = NO;
-		smoothGroup[vi] = -1;
-	}
-	if (isSmoothShaded)
-	{
-		for (fi = 0; fi < faceCount; fi++)
-		{
-			GLfloat rv = _faces[fi].smoothGroup;
-			int i;
-			for (i = 0; i < 3; i++)
-			{
-				vi = _faces[fi].vertex[i];
-				if (smoothGroup[vi] < 0.0)	// unassigned
-					smoothGroup[vi] = rv;
-				else if (smoothGroup[vi] != rv)	// a different colour
-					is_edge_vertex[vi] = YES;
-			}
-		}
-	}
-
-
-	// base model, flat or smooth shaded, all triangles
-	int tri_index = 0;
-	int uv_index = 0;
-	int vertex_index = 0;
-	
-	// Iterate over material names
-	for (mi = 0; mi != materialCount; ++mi)
-	{
-		triangle_range[mi].location = tri_index;
-		
-		for (fi = 0; fi < faceCount; fi++)
-		{
-			Vector normal, tangent;
-			
-			if (_faces[fi].materialIndex == mi)
-			{
-				for (vi = 0; vi < 3; vi++)
-				{
-					int v = _faces[fi].vertex[vi];
-					if (isSmoothShaded)
-					{
-						if (is_edge_vertex[v])
-						{
-							[self getNormal:&normal	andTangent:&tangent forVertex:v inSmoothGroup:_faces[fi].smoothGroup];
-						}
-						else
-						{
-							normal = _normals[v];
-							tangent = _tangents[v];
-						}
-					}
-					else
-					{
-						normal = _faces[fi].normal;
-						tangent = _faces[fi].tangent;
-					}
-					
-					// FIXME: avoid redundant vertices so index array is actually useful.
-					_displayLists.indexArray[tri_index++] = vertex_index;
-					_displayLists.normalArray[vertex_index] = normal;
-					_displayLists.tangentArray[vertex_index] = tangent;
-					_displayLists.vertexArray[vertex_index++] = _vertices[v];
-					_displayLists.textureUVArray[uv_index++] = _faces[fi].s[vi];
-					_displayLists.textureUVArray[uv_index++] = _faces[fi].t[vi];
-				}
-			}
-		}
-		triangle_range[mi].length = tri_index - triangle_range[mi].location;
-	}
-	
-	_displayLists.count = tri_index;	// total number of triangle vertices
 	return YES;
 }
 
 
 - (void) calculateBoundingVolumes
 {
-	int i;
-	double d_squared, length_longest_axis, length_shortest_axis;
-	GLfloat result;
+	OOUInteger			i, count;
+	GLfloat				d_squared, length_longest_axis, length_shortest_axis;
+	GLfloat				result = 0.0f;
 	
-	result = 0.0f;
-	if (vertexCount)  bounding_box_reset_to_vector(&boundingBox, _vertices[0]);
-	else  bounding_box_reset(&boundingBox);
+	count = _meshData.elementCount;
+	if (count != 0)  bounding_box_reset_to_vector(&_boundingBox, _meshData.vertexArray[0]);
+	else  bounding_box_reset(&_boundingBox);
 
-	for (i = 0; i < vertexCount; i++)
+	for (i = 0; i < count; i++)
 	{
-		d_squared = magnitude2(_vertices[i]);
+		d_squared = magnitude2(_meshData.vertexArray[i]);
 		if (d_squared > result)  result = d_squared;
-		bounding_box_add_vector(&boundingBox, _vertices[i]);
+		bounding_box_add_vector(&_boundingBox, _meshData.vertexArray[i]);
 	}
-
-	length_longest_axis = boundingBox.max.x - boundingBox.min.x;
-	if (boundingBox.max.y - boundingBox.min.y > length_longest_axis)
-		length_longest_axis = boundingBox.max.y - boundingBox.min.y;
-	if (boundingBox.max.z - boundingBox.min.z > length_longest_axis)
-		length_longest_axis = boundingBox.max.z - boundingBox.min.z;
-
-	length_shortest_axis = boundingBox.max.x - boundingBox.min.x;
-	if (boundingBox.max.y - boundingBox.min.y < length_shortest_axis)
-		length_shortest_axis = boundingBox.max.y - boundingBox.min.y;
-	if (boundingBox.max.z - boundingBox.min.z < length_shortest_axis)
-		length_shortest_axis = boundingBox.max.z - boundingBox.min.z;
-
-	d_squared = (length_longest_axis + length_shortest_axis) * (length_longest_axis + length_shortest_axis) * 0.25; // square of average length
-	maxDrawDistance = d_squared * NO_DRAW_DISTANCE_FACTOR * NO_DRAW_DISTANCE_FACTOR;	// no longer based on the collision radius
 	
-	collisionRadius = sqrt(result);
+	length_longest_axis = OOMax_f(OOMax_f(_boundingBox.max.x - _boundingBox.min.x, _boundingBox.max.y - _boundingBox.min.y), _boundingBox.max.z - _boundingBox.min.z);
+	length_shortest_axis = OOMin_f(OOMin_f(_boundingBox.max.x - _boundingBox.min.x, _boundingBox.max.y - _boundingBox.min.y), _boundingBox.max.z - _boundingBox.min.z);
+	
+	d_squared = (length_longest_axis + length_shortest_axis) * (length_longest_axis + length_shortest_axis) * 0.25; // square of average length
+	_maxDrawDistance = d_squared * NO_DRAW_DISTANCE_FACTOR * NO_DRAW_DISTANCE_FACTOR;
+	
+	_collisionRadius = sqrtf(result);
 }
 
 
 - (void)rescaleByX:(GLfloat)scaleX y:(GLfloat)scaleY z:(GLfloat)scaleZ
 {
 	
-	OOMeshVertexCount	i;
+	OOUInteger			i;
 	BOOL				isotropic;
-	Vector				*vertex = NULL, *normal = NULL;
+	Vector				*v = NULL;
 	
 	isotropic = (scaleX == scaleY && scaleY == scaleZ);
 	
-	for (i = 0; i != vertexCount; ++i)
+	for (i = 0; i != _meshData.elementCount; ++i)
 	{
-		vertex = &_vertices[i];
+		v = &_meshData.vertexArray[i];
 		
-		vertex->x *= scaleX;
-		vertex->y *= scaleY;
-		vertex->z *= scaleZ;
+		v->x *= scaleX;
+		v->y *= scaleY;
+		v->z *= scaleZ;
 		
 		if (!isotropic)
 		{
-			normal = &_normals[i];
-			// For efficiency freaks: let's assume some sort of adaptive branch prediction.
-			normal->x *= scaleX;
-			normal->y *= scaleY;
-			normal->z *= scaleZ;
-			*normal = vector_normal(*normal);
+			v = &_meshData.normalArray[i];
+			v->x *= scaleX;
+			v->y *= scaleY;
+			v->z *= scaleZ;
+			*v = vector_normal(*v);
+			
+			v = &_meshData.tangentArray[i];
+			v->x *= scaleX;
+			v->y *= scaleY;
+			v->z *= scaleZ;
+			*v = vector_normal(*v);
 		}
 	}
 	
 	[self calculateBoundingVolumes];
-	[octree release];
-	octree = nil;
+	[_octree release];
+	_octree = nil;
 }
 
 
-- (BoundingBox)boundingBox
+- (BoundingBox)_boundingBox
 {
-	return boundingBox;
+	return _boundingBox;
 }
 
 
 #ifndef NDEBUG
 - (void)debugDrawNormals
 {
-	GLuint				i;
+	GLuint				i, count, elem;
 	Vector				v, n, t, b;
 	float				length, blend;
 	GLfloat				color[3];
@@ -1419,11 +930,14 @@ static float FaceArea(GLint *vertIndices, Vector *vertices)
 	
 	// Draw
 	glBegin(GL_LINES);
-	for (i = 0; i < _displayLists.count; ++i)
+	count = _meshData.elementCount / 3;
+	for (i = 0; i < count; ++i)
 	{
-		v = _displayLists.vertexArray[i];
-		n = _displayLists.normalArray[i];
-		t = _displayLists.tangentArray[i];
+		if (!OOMeshDataGetElementIndex(&_meshData, i, &elem))  break;
+		
+		v = _meshData.vertexArray[elem];
+		n = _meshData.normalArray[elem];
+		t = _meshData.tangentArray[elem];
 		b = true_cross_product(n, t);
 		
 		// Draw normal
@@ -1458,64 +972,39 @@ static float FaceArea(GLint *vertIndices, Vector *vertices)
 #endif
 
 
-- (void) setRetainedObject:(id)object forKey:(NSString *)key
+- (void) clearGLCaches
 {
-	assert(key != nil);
+	OO_ENTER_OPENGL();
 	
-	if (object != nil)
+	if (_listsReady)
 	{
-		if (_retainedObjects == nil)  _retainedObjects = [[NSMutableDictionary alloc] init];
-		[_retainedObjects setObject:object forKey:key];
+		glDeleteLists(_displayList0, _meshData.materialCount);
+		_listsReady = NO;
+		_displayList0 = 0;
 	}
 }
 
 
-- (void *) allocateBytesWithSize:(size_t)size count:(OOUInteger)count key:(NSString *)key
+- (void) addRetainedObject:(id)object
+{
+	if (object != nil)
+	{
+		if (_retainedObjects == nil)  _retainedObjects = [[NSMutableDictionary alloc] init];
+		[_retainedObjects addObject:object];
+	}
+}
+
+
+- (void *) allocateBytesWithSize:(size_t)size count:(OOUInteger)count
 {
 	size *= count;
 	void *bytes = malloc(size);
 	if (bytes != NULL)
 	{
 		NSData *holder = [NSData dataWithBytesNoCopy:bytes length:size freeWhenDone:YES];
-		[self setRetainedObject:holder forKey:key];
+		[self addRetainedObject:holder];
 	}
 	return bytes;
-}
-
-
-- (BOOL) allocateVertexBuffersWithCount:(OOUInteger)count
-{
-	_vertices = [self allocateBytesWithSize:sizeof *_vertices count:vertexCount key:@"vertices"];
-	_normals = [self allocateBytesWithSize:sizeof *_normals count:vertexCount key:@"normals"];
-	_tangents = [self allocateBytesWithSize:sizeof *_tangents count:vertexCount key:@"tangents"];
-	
-	return	_vertices != NULL &&
-			_normals != NULL &&
-			_tangents != NULL;
-}
-
-
-- (BOOL) allocateFaceBuffersWithCount:(OOUInteger)count
-{
-	_faces = [self allocateBytesWithSize:sizeof *_faces count:faceCount key:@"faces"];
-	return	_faces != NULL;
-}
-
-
-- (BOOL) allocateVertexArrayBuffersWithCount:(OOUInteger)count
-{
-	_displayLists.indexArray = [self allocateBytesWithSize:sizeof *_displayLists.indexArray count:count * 3 key:@"indexArray"];
-	_displayLists.textureUVArray = [self allocateBytesWithSize:sizeof *_displayLists.textureUVArray count:count * 6 key:@"textureUVArray"];
-	_displayLists.vertexArray = [self allocateBytesWithSize:sizeof *_displayLists.vertexArray count:count * 3 key:@"vertexArray"];
-	_displayLists.normalArray = [self allocateBytesWithSize:sizeof *_displayLists.normalArray count:count * 3 key:@"normalArray"];
-	_displayLists.tangentArray = [self allocateBytesWithSize:sizeof *_displayLists.tangentArray count:count * 3 key:@"tangentArray"];
-	
-	return	_faces != NULL &&
-			_displayLists.indexArray != NULL &&
-			_displayLists.textureUVArray != NULL &&
-			_displayLists.vertexArray != NULL &&
-			_displayLists.normalArray != NULL &&
-			_displayLists.tangentArray != NULL;
 }
 
 @end
@@ -1546,7 +1035,7 @@ static NSString * const kOOCacheOctrees = @"octrees";
 
 @implementation OOCacheManager (Octree)
 
-+ (Octree *)octreeForModel:(NSString *)inKey
++ (Octree *) octreeForModel:(NSString *)inKey
 {
 	NSDictionary		*dict = nil;
 	Octree				*result = nil;
@@ -1571,3 +1060,108 @@ static NSString * const kOOCacheOctrees = @"octrees";
 }
 
 @end
+
+
+size_t OOMeshDataIndexSize(GLenum indexType)
+{
+	switch (indexType)
+	{
+		case GL_UNSIGNED_BYTE:
+			return sizeof (GLubyte);
+			
+		case GL_UNSIGNED_SHORT:
+			return sizeof (GLushort);
+			
+		case GL_UNSIGNED_INT:
+			return sizeof (GLuint);
+	}
+	
+	return 0;
+}
+
+
+BOOL OOMeshDataGetElementIndex(OOMeshData *meshData, GLuint index, GLuint *outElement)
+{
+	assert (meshData != NULL && outElement != NULL);
+	if (index >= meshData->indexCount)  return NO;
+	
+	switch (meshData->indexType)
+	{
+		case GL_UNSIGNED_BYTE:
+			*outElement = ((GLubyte *)meshData->indexArray)[index];
+			return YES;
+			
+		case GL_UNSIGNED_SHORT:
+			*outElement = ((GLushort *)meshData->indexArray)[index];
+			return YES;
+			
+		case GL_UNSIGNED_INT:
+			*outElement = ((GLuint *)meshData->indexArray)[index];
+			return YES;
+		
+		default:
+			OOLog(@"mesh.meshData.badFormat", @"OOMeshData has invalid indexType (%u).", meshData->indexType);
+			return NO;
+	}
+}
+
+
+BOOL OOMeshDataDeepCopy(OOMeshData *inData, OOMeshData *outData, NSMutableArray **outRetainedObjects)
+{
+	if (outData == NULL)  return NO;
+	memset(outData, 0, sizeof *outData);
+	if (inData == NULL || outRetainedObjects == NULL)  return NO;
+	
+	NSData *indexData		= [NSData dataWithBytes:inData->indexArray length:OOMeshDataIndexSize(inData->indexType) * inData->indexCount];
+	NSData *vertexData		= [NSData dataWithBytes:inData->vertexArray length:sizeof (Vector) * inData->elementCount];
+	NSData *normalData		= [NSData dataWithBytes:inData->normalArray length:sizeof (Vector) * inData->elementCount];
+	NSData *tangentData		= [NSData dataWithBytes:inData->tangentArray length:sizeof (Vector) * inData->elementCount];
+	NSData *textureUVData	= [NSData dataWithBytes:inData->textureUVArray length:sizeof (GLfloat) * inData->elementCount * 2];
+	NSData *matlOffsetData	= [NSData dataWithBytes:inData->materialIndexOffsets length:sizeof (GLuint) * inData->materialCount];
+	NSData *matlCountData	= [NSData dataWithBytes:inData->materialIndexCounts length:sizeof (GLuint) * inData->materialCount];
+	NSData *materials		= [NSData dataWithBytes:inData->materials length:sizeof (OOMaterial *) * inData->materialCount];
+	
+	if (indexData == nil ||
+		vertexData == nil ||
+		normalData == nil ||
+		tangentData == nil ||
+		textureUVData == nil ||
+		matlOffsetData == nil ||
+		matlCountData == nil ||
+		materials == nil)
+	{
+		return NO;
+	}
+	
+	NSMutableArray *holder = [NSMutableArray arrayWithObjects:
+							  indexData, vertexData, normalData, tangentData,
+							  textureUVData, matlOffsetData, matlCountData, nil];
+	if (holder == nil)  return NO;
+	
+	/*	All bytes copied, set up structure.
+		Note that we're casting away constness here; see note in -modelData.
+	*/
+	outData->elementCount	= inData->elementCount;
+	outData->indexCount		= inData->indexCount;
+	outData->materialCount	= inData->materialCount;
+	outData->indexType		= inData->indexType;
+	outData->indexArray		= (void *)[indexData bytes];
+	outData->vertexArray	= (void *)[vertexData bytes];
+	outData->normalArray	= (void *)[normalData bytes];
+	outData->tangentArray	= (void *)[tangentData bytes];
+	outData->textureUVArray	= (void *)[textureUVData bytes];
+	outData->materialIndexOffsets	= (void *)[matlOffsetData bytes];
+	outData->materialIndexCounts	= (void *)[matlCountData bytes];
+	outData->materials				= (void *)[materials bytes];
+	outData->materialKeys	= [inData->materialKeys retain];
+	
+	GLuint i;
+	for (i = 0; i < outData->materialCount; i++)
+	{
+		[holder addObject:outData->materials[i]];
+	}
+	
+	*outRetainedObjects = holder;
+	
+	return YES;
+}

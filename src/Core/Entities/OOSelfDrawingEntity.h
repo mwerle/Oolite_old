@@ -26,7 +26,6 @@ MA 02110-1301, USA.
 */
 
 #import "Entity.h"
-#import "OOMesh.h" // Currently, we're sharing structures and constants with OOMesh
 
 
 enum
@@ -77,9 +76,9 @@ typedef struct
 {
 	uint8_t					isSmoothShaded: 1;
 	
-	OOMeshMaterialCount		textureCount;
-	OOMeshVertexCount		vertexCount;
-	OOMeshFaceCount			faceCount;
+	uint8_t					textureCount;
+	uint16_t				vertexCount;
+	uint16_t				faceCount;
 	
 	NSString				*basefile;
 	
