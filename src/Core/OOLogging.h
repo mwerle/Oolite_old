@@ -169,3 +169,18 @@ extern NSString * const kOOLogOpenGLError;					// @"rendering.opengl.error"
 
 // Don't use. However, #defining it as @"unclassified.module" can be used as a stepping stone to OOLog support.
 extern NSString * const kOOLogUnconvertedNSLog;				// @"unclassified"
+
+
+// Temporary function to help find double releases in a very verbose way.
+#if 0
+#define OOLogAlloc(obj) OOLogAlloc_(obj, #obj, __FILE__, __LINE__)
+static inline void OOLogAlloc_(id obj, char *name, char *file, unsigned line)
+{
+	if (obj != nil)
+	{
+		OOLog(@"alloc", @"Allocated %@ %p \"%s\" at %s:%u", [obj class], obj, name, file, line);
+	}
+}
+#else
+#define OOLogAlloc(obj) do{}while(0)
+#endif

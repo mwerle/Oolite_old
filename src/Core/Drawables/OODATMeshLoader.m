@@ -96,6 +96,7 @@ static NSScanner *LoadDataScanner(NSString *path, NSString *displayName);
 	}
 	
 	_materialKeys = [[NSMutableArray alloc] init];
+	OOLogAlloc(_materialKeys);
 	
 	// get number of vertices
 	if ([scanner scanString:@"NVERTS" intoString:NULL] && [scanner scanInt:&intValue])

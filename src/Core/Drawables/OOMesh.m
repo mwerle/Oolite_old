@@ -685,6 +685,7 @@ static void TransformOneVector(OOMeshData *data, GLuint index, Vector rpos, Vect
 		result->_collisionRadius = _collisionRadius;
 		result->_collisionRadius = _collisionRadius;
 		result->_boundingBox = _boundingBox;
+		[result->_retainedObjects retain];
 		
 		[[OOGraphicsResetManager sharedManager] registerClient:result];
 	}
@@ -1136,6 +1137,7 @@ BOOL OOMeshDataDeepCopy(OOMeshData *inData, OOMeshData *outData, NSMutableArray 
 	NSMutableArray *holder = [NSMutableArray arrayWithObjects:
 							  indexData, vertexData, normalData, tangentData,
 							  textureUVData, matlOffsetData, matlCountData, nil];
+	OOLogAlloc(holder);
 	if (holder == nil)  return NO;
 	
 	/*	All bytes copied, set up structure.

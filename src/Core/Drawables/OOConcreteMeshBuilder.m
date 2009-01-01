@@ -118,8 +118,11 @@ static void SynthesizeTangents(Vector *vertices, Vector *normals, float *texture
 		
 		_dataByMaterial = [[NSMutableDictionary alloc] init];
 		_allMaterialKeys = [[NSMutableArray alloc] init];
+		OOLogAlloc(_allMaterialKeys);
 		_allVertices = [[NSMutableArray alloc] init];
+		OOLogAlloc(_allVertices);
 		_allIndices = [[NSMutableArray alloc] init];
+		OOLogAlloc(_allIndices);
 		_verticesToIndices = [[NSMutableDictionary alloc] init];
 	}
 	
@@ -394,6 +397,7 @@ static void SynthesizeTangents(Vector *vertices, Vector *normals, float *texture
 	outData->materialCount = [_allMaterialKeys count];
 	
 	_retainedObjects = [[NSMutableArray alloc] initWithCapacity:9 + outData->materialCount];
+	OOLogAlloc(_retainedObjects);
 	
 	if (outData->indexCount < 0xFF)  outData->indexType = GL_UNSIGNED_BYTE;
 	else if (outData->indexCount < 0xFFFF)  outData->indexType = GL_UNSIGNED_SHORT;
