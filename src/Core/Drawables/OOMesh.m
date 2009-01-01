@@ -469,7 +469,7 @@ static void TransformOneVector(OOMeshData *data, GLuint index, Vector rpos, Vect
 {
 	assert(data != NULL && outRV != NULL && index < data->indexCount);
 	
-	Vector pos, pv;
+	Vector pos = kZeroVector, pv;
 	OOMeshDataGetVertex(data, index, &pos);
 	
 	// FIXME: rewrite with matrices.

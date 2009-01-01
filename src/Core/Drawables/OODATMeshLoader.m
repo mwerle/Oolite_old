@@ -586,6 +586,6 @@ static NSScanner *LoadDataScanner(NSString *path, NSString *displayName)
 	}
 	
 	[scanner retain];
-	[pool drain];
+	[pool release];
 	return [scanner autorelease];
 }
