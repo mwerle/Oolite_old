@@ -331,6 +331,7 @@
 		1A2A8E040BC67CCC001E00FB /* OOWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2A8E020BC67CCC001E00FB /* OOWeakReference.m */; };
 		1A2A91520BC6BC66001E00FB /* OOJSQuaternion.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2A91500BC6BC66001E00FB /* OOJSQuaternion.h */; };
 		1A2A91530BC6BC66001E00FB /* OOJSQuaternion.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2A91510BC6BC66001E00FB /* OOJSQuaternion.m */; };
+		1A2B1FCF0F0CE6530068250F /* OOModelLoadingController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2B1FCE0F0CE6530068250F /* OOModelLoadingController.h */; };
 		1A2DA2AB0CB4CB5C00DE6823 /* OODebugTCPConsoleProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2DA2A40CB4CB5C00DE6823 /* OODebugTCPConsoleProtocol.h */; };
 		1A2DA2AE0CB4CB5C00DE6823 /* OODebugTCPConsoleClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2DA2A70CB4CB5C00DE6823 /* OODebugTCPConsoleClient.h */; };
 		1A2DA2AF0CB4CB5C00DE6823 /* OOTCPStreamDecoderAbstractionLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2DA2A80CB4CB5C00DE6823 /* OOTCPStreamDecoderAbstractionLayer.h */; };
@@ -525,7 +526,6 @@
 		1AA3241C0F0B90B500B410D7 /* OOMeshLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA3241A0F0B90B500B410D7 /* OOMeshLoader.h */; };
 		1AA3241F0F0B90B900B410D7 /* OODATMeshLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA3241D0F0B90B900B410D7 /* OODATMeshLoader.h */; };
 		1AA324200F0B90B900B410D7 /* OODATMeshLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA3241E0F0B90B900B410D7 /* OODATMeshLoader.m */; };
-		1AA324260F0B911600B410D7 /* OOModelLoadingController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324250F0B911600B410D7 /* OOModelLoadingController.h */; };
 		1AA324460F0B92E200B410D7 /* OOStandardModelLoadingController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324440F0B92E200B410D7 /* OOStandardModelLoadingController.h */; };
 		1AA324470F0B92E200B410D7 /* OOStandardModelLoadingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA324450F0B92E200B410D7 /* OOStandardModelLoadingController.m */; };
 		1AA82C8A0CC10E700023B797 /* OOJSWorldScripts.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA82C820CC10E3D0023B797 /* OOJSWorldScripts.m */; };
@@ -1369,6 +1369,7 @@
 		1A2A8E020BC67CCC001E00FB /* OOWeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOWeakReference.m; sourceTree = "<group>"; };
 		1A2A91500BC6BC66001E00FB /* OOJSQuaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSQuaternion.h; sourceTree = "<group>"; };
 		1A2A91510BC6BC66001E00FB /* OOJSQuaternion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSQuaternion.m; sourceTree = "<group>"; };
+		1A2B1FCE0F0CE6530068250F /* OOModelLoadingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOModelLoadingController.h; sourceTree = "<group>"; };
 		1A2DA2A40CB4CB5C00DE6823 /* OODebugTCPConsoleProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugTCPConsoleProtocol.h; sourceTree = "<group>"; };
 		1A2DA2A50CB4CB5C00DE6823 /* OODebugTCPConsoleClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugTCPConsoleClient.m; sourceTree = "<group>"; };
 		1A2DA2A60CB4CB5C00DE6823 /* OOTCPStreamDecoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OOTCPStreamDecoder.c; sourceTree = "<group>"; };
@@ -1571,7 +1572,6 @@
 		1AA3241A0F0B90B500B410D7 /* OOMeshLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMeshLoader.h; sourceTree = "<group>"; };
 		1AA3241D0F0B90B900B410D7 /* OODATMeshLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODATMeshLoader.h; sourceTree = "<group>"; };
 		1AA3241E0F0B90B900B410D7 /* OODATMeshLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODATMeshLoader.m; sourceTree = "<group>"; };
-		1AA324250F0B911600B410D7 /* OOModelLoadingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOModelLoadingController.h; path = "../../../../Dry Dock Redux/Dependencies/Oolite/Core/Drawables/OOModelLoadingController.h"; sourceTree = SOURCE_ROOT; };
 		1AA324440F0B92E200B410D7 /* OOStandardModelLoadingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOStandardModelLoadingController.h; sourceTree = "<group>"; };
 		1AA324450F0B92E200B410D7 /* OOStandardModelLoadingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOStandardModelLoadingController.m; sourceTree = "<group>"; };
 		1AA82C810CC10E3D0023B797 /* OOJSWorldScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSWorldScripts.h; sourceTree = "<group>"; };
@@ -2665,7 +2665,7 @@
 		1AA324100F0B909000B410D7 /* OOMesh */ = {
 			isa = PBXGroup;
 			children = (
-				1AA324250F0B911600B410D7 /* OOModelLoadingController.h */,
+				1A2B1FCE0F0CE6530068250F /* OOModelLoadingController.h */,
 				1AA324440F0B92E200B410D7 /* OOStandardModelLoadingController.h */,
 				1AA324450F0B92E200B410D7 /* OOStandardModelLoadingController.m */,
 				1A2A1CA80BD2914F00152975 /* OOMesh.h */,
@@ -3005,8 +3005,8 @@
 				1AA324180F0B90AF00B410D7 /* OOMeshData.h in Headers */,
 				1AA3241C0F0B90B500B410D7 /* OOMeshLoader.h in Headers */,
 				1AA3241F0F0B90B900B410D7 /* OODATMeshLoader.h in Headers */,
-				1AA324260F0B911600B410D7 /* OOModelLoadingController.h in Headers */,
 				1AA324460F0B92E200B410D7 /* OOStandardModelLoadingController.h in Headers */,
+				1A2B1FCF0F0CE6530068250F /* OOModelLoadingController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
