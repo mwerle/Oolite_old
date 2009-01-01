@@ -70,7 +70,7 @@ SOFTWARE.
 
 - (OOMaterial *) loadMaterialWithKey:(NSString *)key;
 
-// Only applies to model formats with no direct representation of vertices.
+// Only applies to model formats with no direct representation of normals.
 - (BOOL) shouldUseSmoothShading;
 
 @end
