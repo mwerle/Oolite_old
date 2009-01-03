@@ -204,6 +204,7 @@ OOINLINE void GLColorWithOverallAlpha(GLfloat *color, GLfloat alpha)
 {
 	[legendArray release];
 	[dialArray release];
+	[_crosshairColor release];
 
 	[super dealloc];
 }

@@ -58,7 +58,12 @@ SOFTWARE.
 #import "GameController.h"
 
 
-#define PRELOAD 0
+#define PRELOAD 1
+
+#if PRELOAD
+// FIXME: use custom loading controller for this.
+#import "OOShipPreloader.h"
+#endif
 
 
 static OOShipRegistry	*sSingleton = nil;
@@ -751,45 +756,66 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 	NSEnumerator			*shipKeyEnum = nil;
 	NSString				*shipKey = nil;
 	NSDictionary			*shipEntry = nil;
-	BOOL					remove;
 	NSString				*modelName = nil;
-	OOMesh					*mesh = nil;
 	NSAutoreleasePool		*pool = nil;
-	OOUInteger				i = 0, count;
+	OOShipPreloader			*preloader = nil;
+	NSSet					*badMeshNames = nil;
+	NSEnumerator			*badMeshEnum = nil;
+	NSString				*badMesh = nil;
+	NSArray					*allShipKeys = nil;
 	
-	count = [ioData count];
+	preloader = [[[OOShipPreloader alloc] initWithExpectedMeshCount:[ioData count]] autorelease];
+	[preloader setDelegate:self];
 	
-	// Preload ship meshes. (Iterates over a copy of keys since it mutates the dictionary.)
-	for (shipKeyEnum = [[ioData allKeys] objectEnumerator]; (shipKey = [shipKeyEnum nextObject]); )
+	// Preload ship meshes.
+	for (shipKeyEnum = [ioData keyEnumerator]; (shipKey = [shipKeyEnum nextObject]); )
 	{
 		pool = [[NSAutoreleasePool alloc] init];
 		
-		[[GameController sharedController] setProgressBarValue:(float)i++ / (float)count];
-		
 		shipEntry = [ioData objectForKey:shipKey];
-		remove = NO;
 		
 		modelName = [shipEntry stringForKey:@"model"];
-		mesh = [OOMesh meshWithName:modelName
-				 materialDictionary:nil
-				  shadersDictionary:nil
-							 smooth:[shipEntry boolForKey:@"smooth"]
-					   shaderMacros:nil
-				shaderBindingTarget:nil];
+		[preloader preloadMeshNamed:modelName smoothed:[shipEntry boolForKey:@"smooth"]];
 		
-		[pool release];	// NOTE: mesh is now invalid, but pointer nil check is OK.
+		[pool release];
+	}
+	
+	[preloader waitUntilDone];
+	
+	badMeshNames = [preloader badMeshNames];
+	if ([badMeshNames count] != 0)
+	{
+		allShipKeys = [ioData allKeys];
 		
-		if (mesh == nil)
+		// Eliminate ships with bad meshes.
+		// This is inefficient, but optimized for the case where there are no bad ships.
+		
+		// For each bad mesh name...
+		for (badMeshEnum = [badMeshNames objectEnumerator]; (badMesh = [badMeshEnum nextObject]); )
 		{
-			// FIXME: what if it's a subentity? Need to rearrange things.
-			OOLog(@"shipData.load.error", @"***** ERROR: model \"%@\" could not be loaded for ship \"%@\", removing.", modelName, shipKey);
-			[ioData removeObjectForKey:shipKey];
+			// ...check each ship for use.
+			// Note that one mesh may be used by multiple ships.
+			for (shipKeyEnum = [allShipKeys objectEnumerator]; (shipKey = [shipKeyEnum nextObject]); )
+			{
+				shipEntry = [ioData objectForKey:shipKey];
+				if ([[shipEntry stringForKey:@"model"] isEqualToString:badMesh])
+				{
+					OOLog(@"shipData.load.error", @"***** ERROR: ignoring ship \"%@\" because it uses invalid model \"%@\".", shipKey, badMesh);
+					[ioData removeObjectForKey:shipKey];
+				}
+			}
 		}
 	}
 	
 	[[GameController sharedController] setProgressBarValue:-1.0f];
 	
 	return YES;
+}
+
+
+- (void) shipPreloader:(OOShipPreloader *)preloader processedCount:(OOUInteger)count ofTotal:(OOUInteger)total
+{
+	[[GameController sharedController] setProgressBarValue:(double)count++ / (double)total];
 }
 #endif
 

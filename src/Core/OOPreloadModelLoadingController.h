@@ -1,11 +1,9 @@
 /*
 
-OOModelLoadingController.h
+OOPreloadModelLoadingController.h
 
-Protocol for objects that manage the process of loading a model (OOMesh +
-associated materials). This abstraction allows different host applications to
-customize the loading process - in particular, it wraps differences between
-Oolite and Dry Dock.
+Implementation of OOModelLoadingController protocol for use in mesh preloading.
+Works in conjunction with OOShipPreloader.
  
 
 Oolite
@@ -51,32 +49,24 @@ SOFTWARE.
 
 */
 
-#import "OOCocoa.h"
+#import "OOModelLoadingController.h"
+#import "OOMesh.h"
 
-@class OOMaterial;
 
+@interface OOPreloadModelLoadingController: NSObject <OOModelLoadingController>
+{
+@private
+	NSString				*_fileName;
+	NSString				*_path;
+	BOOL					_smooth;
+	BOOL					_failed;
+	NSMutableArray			*_diagnostics;
+	OOMaterial				*_material;
+}
 
-@protocol OOModelLoadingController <NSObject>
+- (void) startFileNamed:(NSString *)fileName path:(NSString *)path smooth:(BOOL)smooth;
 
-- (void) reportProblemWithKey:(NSString *)key
-						fatal:(BOOL)isFatal
-					   format:(NSString *)format, ...;
-- (void) reportProblemWithKey:(NSString *)key
-						fatal:(BOOL)isFatal
-					   format:(NSString *)format
-					arguments:(va_list)args;
-
-- (NSString *) pathForMeshNamed:(NSString *)name;
-
-- (OOMaterial *) loadMaterialWithKey:(NSString *)key;
-
-// Only applies to model formats with no direct representation of normals.
-- (BOOL) shouldUseSmoothShading;
-
-- (BOOL) permitCacheRead;
-- (BOOL) permitCacheWrite;
+- (BOOL) failed;
+- (NSArray *) diagnostics;	// Warnings and errors; each entry is an array with a key and a message.
 
 @end
-
-
-extern NSString * const kOOPlaceholderMaterialName;

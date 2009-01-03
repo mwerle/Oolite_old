@@ -39,6 +39,32 @@ MA 02110-1301, USA.
 #endif
 
 
+/*	Nasty macros to lock and unlock in an exception-safe way.
+	This is basically equivalent to:
+	@try
+	{
+		[_lock lock];
+		// do stuff
+	}
+	@finally
+	{
+		[_lock unlock];
+	}
+	
+	...but without requiring native exception syntax.
+*/
+#define LOCK \
+		NS_DURING \
+			[_lock lock];
+
+#define UNLOCK \
+		NS_HANDLER \
+			[_lock unlock]; \
+			[localException raise]; \
+		NS_ENDHANDLER \
+			[_lock unlock];
+
+
 static NSString * const kOOLogDataCacheFound				= @"dataCache.found";
 static NSString * const kOOLogDataCacheNotFound				= @"dataCache.notFound";
 static NSString * const kOOLogDataCacheRebuild				= @"dataCache.rebuild";
@@ -106,6 +132,7 @@ static OOCacheManager *sSingleton = nil;
 	self = [super init];
 	if (self != nil)
 	{
+		_lock = [[NSLock alloc] init];	// Ideally this would be a read-write lock.
 		_permitWrites = YES;
 		[self deleteOldCache];
 		[self loadCache];
@@ -152,6 +179,8 @@ static OOCacheManager *sSingleton = nil;
 		return nil;
 	}
 	
+	LOCK
+
 	cache = [_caches objectForKey:inCacheKey];
 	if (cache != nil)
 	{
@@ -170,6 +199,8 @@ static OOCacheManager *sSingleton = nil;
 		OOLog(kOOLogDataCacheRetrieveFailed, @"Failed to retreive\"%@\" cache object %@ -- no such cache.", inCacheKey, inKey);
 	}
 	
+	UNLOCK
+	
 	return result;
 }
 
@@ -180,9 +211,15 @@ static OOCacheManager *sSingleton = nil;
 	OOCache					*cache = nil;
 	
 	// Sanity check
-	if (inObject == nil || inCacheKey == nil || inKey == nil)  OOLog(kOOLogDataCacheParamError, @"Bad parameters -- nil object, key or cacheKey.");
+	if (inObject == nil || inCacheKey == nil || inKey == nil)
+	{
+		OOLog(kOOLogDataCacheParamError, @"Bad parameters -- nil object, key or cacheKey.");
+		return;
+	}
 	
 	if (_caches == nil)  return;
+	
+	LOCK
 	
 	cache = [_caches objectForKey:inCacheKey];
 	if (cache == nil)
@@ -191,15 +228,22 @@ static OOCacheManager *sSingleton = nil;
 		if (cache == nil)
 		{
 			OOLog(kOOLogDataCacheSetFailed, @"Failed to create cache for key \"%@\".", inCacheKey);
-			return;
 		}
-		[cache setName:inCacheKey];
-		[cache setAutoPrune:AUTO_PRUNE];
-		[_caches setObject:cache forKey:inCacheKey];
+		else
+		{
+			[cache setName:inCacheKey];
+			[cache setAutoPrune:AUTO_PRUNE];
+			[_caches setObject:cache forKey:inCacheKey];
+		}
 	}
 	
-	[cache setObject:inObject forKey:inKey];
-	OOLog(kOOLogDataCacheSetSuccess, @"Updated entry %@ in cache \"%@\".", inKey, inCacheKey);
+	if (cache != nil)
+	{
+		[cache setObject:inObject forKey:inKey];
+		OOLog(kOOLogDataCacheSetSuccess, @"Updated entry %@ in cache \"%@\".", inKey, inCacheKey);
+	}
+	
+	UNLOCK
 }
 
 
@@ -208,7 +252,13 @@ static OOCacheManager *sSingleton = nil;
 	OOCache					*cache = nil;
 	
 	// Sanity check
-	if (inCacheKey == nil || inKey == nil)  OOLog(kOOLogDataCacheParamError, @"Bad parameters -- nil key or cacheKey.");
+	if (inCacheKey == nil || inKey == nil)
+	{
+		OOLog(kOOLogDataCacheParamError, @"Bad parameters -- nil key or cacheKey.");
+		return;
+	}
+	
+	LOCK
 	
 	cache = [_caches objectForKey:inCacheKey];
 	if (cache != nil)
@@ -227,13 +277,21 @@ static OOCacheManager *sSingleton = nil;
 	{
 		OOLog(kOOLogDataCacheRemoveSuccess, @"No need to remove entry keyed %@ from non-existent cache \"%@\".", inKey, inCacheKey);
 	}
+	
+	UNLOCK
 }
 
 
 - (void)clearCache:(NSString *)inCacheKey
 {
 	// Sanity check
-	if (inCacheKey == nil)  OOLog(kOOLogDataCacheParamError, @"Bad parameter -- nil cacheKey.");
+	if (inCacheKey == nil)
+	{
+		OOLog(kOOLogDataCacheParamError, @"Bad parameter -- nil cacheKey.");
+		return;
+	}
+	
+	LOCK
 	
 	if (nil != [_caches objectForKey:inCacheKey])
 	{
@@ -244,13 +302,19 @@ static OOCacheManager *sSingleton = nil;
 	{
 		OOLog(kOOLogDataCacheClearSuccess, @"No need to clear non-existent cache \"%@\".", inCacheKey);
 	}
+	
+	UNLOCK
 }
 
 
 - (void)clearAllCaches
 {
+	LOCK
+	
 	[_caches release];
 	_caches = [[NSMutableDictionary alloc] init];
+	
+	UNLOCK
 }
 
 
@@ -258,31 +322,45 @@ static OOCacheManager *sSingleton = nil;
 {
 	OOCache				*cache = nil;
 	
+	LOCK
+	
 	cache = [_caches objectForKey:inCacheKey];
 	if (cache != nil)
 	{
 		[cache setPruneThreshold:inThreshold];
 	}
+	
+	UNLOCK
 }
 
 
 - (unsigned)pruneThresholdForCache:(NSString *)inCacheKey
 {
 	OOCache				*cache = nil;
+	unsigned			result = kOOCacheDefaultPruneThreshold;
+	
+	LOCK
 	
 	cache = [_caches objectForKey:inCacheKey];
-	if (cache != nil)  return [cache pruneThreshold];
-	else  return kOOCacheDefaultPruneThreshold;
+	if (cache != nil)  result = [cache pruneThreshold];
+	
+	UNLOCK
+	
+	return result;
 }
 
 
 - (void)flush
 {
+	LOCK
+	
 	if (_permitWrites && [self dirty])
 	{
 		[self write];
 		[self markClean];
 	}
+	
+	UNLOCK
 }
 
 

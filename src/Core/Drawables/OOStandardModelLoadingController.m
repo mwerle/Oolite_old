@@ -139,6 +139,18 @@ SOFTWARE.
 	return _smooth;
 }
 
+
+- (BOOL) permitCacheRead
+{
+	return YES;
+}
+
+
+- (BOOL) permitCacheWrite
+{
+	return YES;
+}
+
 @end
 
 

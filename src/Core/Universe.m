@@ -525,11 +525,13 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	cachedStation = nil;
 	
 	if (player == nil)
+	{
 		player = [[PlayerEntity alloc] init];
+	}
 	else
 	{
-		[player set_up:NO];
-		delayedReset=YES;
+		[player setUp];
+		delayedReset = YES;
 	}
 	[self addEntity:player];
 	
@@ -5184,20 +5186,22 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 						quaternion_rotate_about_y(&q2,M_PI);
 						
 						#define DEMO2_VANISHING_DISTANCE	400.0
-						#define DEMO2_FLY_IN_STAGE_TIME	1.5
+						#define DEMO2_FLY_IN_STAGE_TIME		0.5 /*1.5*/
+						#define DEMO2_FLY_OUT_STAGE_TIME	DEMO2_FLY_IN_STAGE_TIME
+						#define DEMO2_LINGER_STAGE_TIME		0.5 /*6.0*/
 						
 						switch (demo_stage)
 						{
 							case DEMO_FLY_IN:
 								[demo_ship setPosition:[demo_ship destination]];	// ideal position
 								demo_stage = DEMO_SHOW_THING;
-								demo_stage_time = universal_time + 6.0;
+								demo_stage_time = universal_time + DEMO2_LINGER_STAGE_TIME;
 								break;
 							case DEMO_SHOW_THING:
 								vel = make_vector(0, 0, DEMO2_VANISHING_DISTANCE * demo_ship->collision_radius);
 								[demo_ship setVelocity:vel];
 								demo_stage = DEMO_FLY_OUT;
-								demo_stage_time = universal_time + 1.5;
+								demo_stage_time = universal_time + DEMO2_FLY_OUT_STAGE_TIME;
 								break;
 							case DEMO_FLY_OUT:
 								// change the demo_ship here

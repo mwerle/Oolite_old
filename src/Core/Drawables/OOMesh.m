@@ -94,10 +94,14 @@ static NSString * const kOOLogMeshTooManyMaterials			= @"mesh.load.failed.tooMan
 
 @interface OOMesh (Private) <NSMutableCopying, OOGraphicsResetClient>
 
+// Designated initializer
+- (id) initWithLoadingController:(id<OOModelLoadingController>)controller
+			cachedRepresentation:(NSDictionary *)cachedRepresentation
+						  loader:(OOMeshLoader *)loader;
+
 - (NSDictionary*) modelData;
 - (BOOL) setModelFromModelData:(NSDictionary *)dict
-			 loadingController:(id<OOModelLoadingController>)controller
-			   controllerState:(id)controllerState;
+			 loadingController:(id<OOModelLoadingController>)controller;
 
 - (void) calculateBoundingVolumes;
 
@@ -118,8 +122,8 @@ static NSString * const kOOLogMeshTooManyMaterials			= @"mesh.load.failed.tooMan
 
 @interface OOCacheManager (OOMesh)
 
-+ (NSDictionary *)meshDataForName:(NSString *)inShipName;
-+ (void)setMeshData:(NSDictionary *)inData forName:(NSString *)inShipName;
++ (NSDictionary *) meshDataForName:(NSString *)inShipName;
++ (void) setMeshData:(NSDictionary *)inData forName:(NSString *)inShipName;
 
 @end
 
@@ -133,8 +137,12 @@ static NSString * const kOOLogMeshTooManyMaterials			= @"mesh.load.failed.tooMan
 	NSString			*extension = nil;
 	OOMeshLoader		*loader = nil;
 	NSString			*path = nil;
+	NSDictionary		*cachedRepresentation = nil;
 	
-	// FIXME: look in cache first
+	if ([controller permitCacheRead])
+	{
+		cachedRepresentation = [OOCacheManager meshDataForName:fileName];
+	}
 	
 	// Select loader class
 	extension = [[fileName pathExtension] lowercaseString];
@@ -152,51 +160,25 @@ static NSString * const kOOLogMeshTooManyMaterials			= @"mesh.load.failed.tooMan
 	// Instantiate loader
 	path = [controller pathForMeshNamed:fileName];
 	loader = [[loaderClass alloc] initWithController:controller path:path];
+	//[loader autorelease];
 	if (loader == nil)
 	{
 		[self release];
 		return nil;
 	}
 	
-	return [self initWithLoadingController:controller loader:loader];
+	id result = [self initWithLoadingController:controller
+					  cachedRepresentation:cachedRepresentation
+									loader:loader];
+	[loader release];
+	return result;
 }
 
 
 - (id) initWithLoadingController:(id<OOModelLoadingController>)controller
 						  loader:(OOMeshLoader *)loader
 {
-	OOConcreteMeshBuilder	*builder = nil;
-	BOOL					OK = YES;
-	
-	if (controller == nil || loader == nil)  OK = NO;
-	
-	if (OK)
-	{
-		self = [super init];
-		if (self == nil)  OK = NO;
-	}
-	
-	if (OK)
-	{
-		_baseFile = [[loader fileName] copy];
-		
-		builder = [[OOConcreteMeshBuilder alloc] initWithMeshLoader:loader];
-		OK = [builder loadDataGettingMeshData:&_meshData retainedObjects:&_retainedObjects];
-		[builder release];
-	}
-	
-	if (OK)
-	{
-		[_retainedObjects retain];
-		[self calculateBoundingVolumes];
-	}
-	else
-	{
-		[self release];
-		self = nil;
-	}
-	
-	return self;
+	return [self initWithLoadingController:controller cachedRepresentation:nil loader:loader];
 }
 
 
@@ -665,6 +647,54 @@ static void TransformOneVector(OOMeshData *data, GLuint index, Vector rpos, Vect
 
 @implementation OOMesh (Private)
 
+- (id) initWithLoadingController:(id<OOModelLoadingController>)controller
+			cachedRepresentation:(NSDictionary *)cachedRepresentation
+						  loader:(OOMeshLoader *)loader
+{
+	OOConcreteMeshBuilder	*builder = nil;
+	BOOL					OK = YES;
+	
+	if (controller == nil || loader == nil)  OK = NO;
+	
+	if (OK)
+	{
+		self = [super init];
+		if (self == nil)  OK = NO;
+	}
+	
+	if (OK)
+	{
+		_baseFile = [[loader fileName] copy];
+		
+		if (!cachedRepresentation || ![self setModelFromModelData:cachedRepresentation loadingController:controller])
+		{
+			builder = [[OOConcreteMeshBuilder alloc] initWithMeshLoader:loader];
+			OK = [builder loadDataGettingMeshData:&_meshData retainedObjects:&_retainedObjects];
+			[builder release];
+			[_retainedObjects retain];
+			
+			if (OK && [controller permitCacheWrite])
+			{
+				// Cache for future reuse
+				[OOCacheManager setMeshData:[self modelData] forName:_baseFile];
+			}
+		}
+	}
+	
+	if (OK)
+	{
+		[self calculateBoundingVolumes];
+	}
+	else
+	{
+		[self release];
+		self = nil;
+	}
+	
+	return self;
+}
+
+
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
 	OOMesh				*result = nil;
@@ -765,7 +795,6 @@ static void TransformOneVector(OOMeshData *data, GLuint index, Vector rpos, Vect
 
 - (BOOL) setModelFromModelData:(NSDictionary *)dict
 			 loadingController:(id<OOModelLoadingController>)controller
-			   controllerState:(id)controllerState
 {
 	OOUInteger elementCount	= [dict unsignedLongForKey:kModelDataKeyElementCount];
 	OOUInteger indexCount	= [dict unsignedLongForKey:kModelDataKeyIndexCount];
@@ -836,8 +865,10 @@ static void TransformOneVector(OOMeshData *data, GLuint index, Vector rpos, Vect
 	OOUInteger i;
 	for (i = 0; i != materialCount; ++i)
 	{
-		_meshData.materials[i] = [controller loadMaterialWithKey:[materialKeys objectAtIndex:i]];
-		if (_meshData.materials[i] == nil)  return NO;
+		OOMaterial *material = [controller loadMaterialWithKey:[materialKeys objectAtIndex:i]];
+		if (material == nil)  return NO;
+		[self addRetainedObject:material];
+		_meshData.materials[i] = material;
 	}
 	
 	return YES;
@@ -990,7 +1021,7 @@ static void TransformOneVector(OOMeshData *data, GLuint index, Vector rpos, Vect
 {
 	if (object != nil)
 	{
-		if (_retainedObjects == nil)  _retainedObjects = [[NSMutableDictionary alloc] init];
+		if (_retainedObjects == nil)  _retainedObjects = [[NSMutableArray alloc] init];
 		[_retainedObjects addObject:object];
 	}
 }
@@ -1015,13 +1046,13 @@ static NSString * const kOOCacheMeshes = @"OOMesh";
 
 @implementation OOCacheManager (OOMesh)
 
-+ (NSDictionary *)meshDataForName:(NSString *)inShipName
++ (NSDictionary *) meshDataForName:(NSString *)inShipName
 {
 	return [[self sharedCache] objectForKey:inShipName inCache:kOOCacheMeshes];
 }
 
 
-+ (void)setMeshData:(NSDictionary *)inData forName:(NSString *)inShipName
++ (void) setMeshData:(NSDictionary *)inData forName:(NSString *)inShipName
 {
 	if (inData != nil && inShipName != nil)
 	{
@@ -1161,6 +1192,7 @@ BOOL OOMeshDataDeepCopy(OOMeshData *inData, OOMeshData *outData, NSMutableArray 
 	for (i = 0; i < outData->materialCount; i++)
 	{
 		[holder addObject:outData->materials[i]];
+		OOLog(@"temp.trackMaterial", @"Copied material %p", outData->materials[i]);
 	}
 	
 	*outRetainedObjects = holder;

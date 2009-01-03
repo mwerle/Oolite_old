@@ -154,7 +154,7 @@ MA 02110-1301, USA.
 
 - (void) beginSplashScreen;
 - (void) logProgress:(NSString*) message;
-- (void) setProgressBarValue:(float)value;	// Negative for hidden
+- (void) setProgressBarValue:(double)value;	// Negative for hidden
 - (void) endSplashScreen;
 
 - (void) startAnimationTimer;

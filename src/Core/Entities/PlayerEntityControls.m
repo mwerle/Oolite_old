@@ -2259,7 +2259,7 @@ static NSTimeInterval	time_last_frame;
 	{
 		virtualStick=[stickHandler getRollPitchAxis];
 		if((virtualStick.x == STICK_AXISUNASSIGNED ||
-		   virtualStick.y == STICK_AXISUNASSIGNED) ||
+			virtualStick.y == STICK_AXISUNASSIGNED) ||
 		   (virtualStick.x > -STICK_DEADZONE && virtualStick.x < STICK_DEADZONE &&
 		    virtualStick.y > -STICK_DEADZONE && virtualStick.y < STICK_DEADZONE))
 		{

@@ -716,8 +716,11 @@ static PlayerEntity *sSharedPlayer = nil;
 	
 	int i;
 	for (i = 0; i < SHIPENTITY_MAX_MISSILES; i++)
+	{
 		missile_entity[i] = nil;
-	[self set_up];
+	}
+	[self setUp];
+	[self doScriptEvent:@"reset"];
 	
 	isPlayer = YES;
 	
@@ -739,13 +742,7 @@ static PlayerEntity *sSharedPlayer = nil;
 }
 
 
-- (void) set_up
-{
-	[self set_up:YES];
-}
-
-
-- (void) set_up:(BOOL) andReset;
+- (void) setUp
 {
 	unsigned i;
 	Random_Seed gal_seed = {0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7};
@@ -936,7 +933,6 @@ static PlayerEntity *sSharedPlayer = nil;
 	
 	[[OOMusicController sharedController] stop];
 	[OOScriptTimer noteGameReset];
-	if (andReset) [self doScriptEvent:@"reset"];
 }
 
 

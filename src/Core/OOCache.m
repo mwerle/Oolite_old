@@ -87,13 +87,13 @@ MA 02110-1301, USA.
 	{
 		PRUNING is batched, handling 20% of the cache at once. This is primarily
 		because deletion somewhat pessimizes the tree (see "Self-optimization"
-		below). It also provides a bit of code coherency. To reduce pruning
+		above). It also provides a bit of code coherency. To reduce pruning
 		batches while in flight, pruning is also performed before serialization
 		(which in turn is done, if the cache has changed, whenever the user
 		docks). This has the effect that the number of items in the cache on disk
 		never exceeds 80% of the prune threshold. This is probably not actually
-		poinful, since pruning should be a very small portion of the per-frame run
-		time in any case. Premature optimization and all that jazz.
+		pointful, since pruning should be a very small portion of the per-frame
+		run time in any case. Premature optimization and all that jazz.
 		Pruning performs at most 0.2n deletions, and is thus O(n log n).
 	}
 	else
@@ -113,7 +113,11 @@ MA 02110-1301, USA.
 
 
 #ifndef OOCACHE_PERFORM_INTEGRITY_CHECKS
+#if OO_DEBUG
+#define OOCACHE_PERFORM_INTEGRITY_CHECKS	1
+#else
 #define OOCACHE_PERFORM_INTEGRITY_CHECKS	0
+#endif
 #endif
 
 
@@ -829,7 +833,7 @@ static OOCacheNode *TreeCheckIntegrity(OOCacheImpl *cache, OOCacheNode *node, OO
 		{
 			OOLog(kOOLogCacheIntegrityCheck, @"Integrity check (%@ for \"%@\"): node %@'s left child %@ is not correctly ordered. Deleting subtree.", context, cache->name, CacheNodeGetDescription(node), CacheNodeGetDescription(node->leftChild));
 			CacheNodeFree(cache, node->leftChild);
-			node->leftChild = nil;
+			node->leftChild = NULL;
 			cache->count = kCountUnknown;
 		}
 		else
@@ -844,7 +848,7 @@ static OOCacheNode *TreeCheckIntegrity(OOCacheImpl *cache, OOCacheNode *node, OO
 		{
 			OOLog(kOOLogCacheIntegrityCheck, @"Integrity check (%@ for \"%@\"): node \"%@\"'s right child \"%@\" is not correctly ordered. Deleting subtree.", context, cache->name, CacheNodeGetDescription(node), CacheNodeGetDescription(node->rightChild));
 			CacheNodeFree(cache, node->rightChild);
-			node->rightChild = nil;
+			node->rightChild = NULL;
 			cache->count = kCountUnknown;
 		}
 		else
@@ -916,7 +920,7 @@ static void AgeListCheckIntegrity(OOCacheImpl *cache, NSString *context)
 	{
 		next = node->older;
 		++seenCount;
-		if (next == nil) break;
+		if (next == NULL) break;
 		
 		if (next->younger != node)
 		{

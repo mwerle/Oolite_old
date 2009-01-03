@@ -822,10 +822,9 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 }
 
 
-- (void) setProgressBarValue:(float)value
+- (void) setProgressBarValue:(double)value
 {
 	[progressBar setDoubleValue:value];
-	[progressBar display];
 }
 
 

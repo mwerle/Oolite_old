@@ -34,6 +34,7 @@ SOFTWARE.
 {
 @private
 	double						_value;
+	NSTimeInterval				_lastUpdate;
 }
 
 // Meaningful values range from 0 to 1. Negative values hide the view. Default is -1.

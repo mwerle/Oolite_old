@@ -296,7 +296,7 @@ static NSScanner *LoadDataScanner(NSString *path, NSString *displayName);
 	}
 	else
 	{
-		[self reportProblemWithKey:@"mesh.load.failed.badFormat"
+		[self reportProblemWithKey:@"mesh.load.noTextures"
 							 fatal:NO
 							format:@"Mesh \"%@\" has no TEXTURES section, using placeholder material.", [self fileName]];
 		
@@ -539,7 +539,9 @@ static float FaceArea(GLuint *vertIndices, Vector *vertices)
 @end
 
 
-// TODO: this would benefit significantly from using a simple custom tokenizer instead of NSScanner.
+/*	TODO: this would benefit significantly from using a simple custom
+	tokenizer instead of NSScanner.
+*/
 static NSString *CleanData(NSString *data)
 {
 	// strip out comments and commas between values

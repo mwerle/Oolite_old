@@ -112,7 +112,7 @@ static void SynthesizeTangents(Vector *vertices, Vector *normals, float *texture
 	
 	if ((self = [super init]))
 	{
-		_loader = loader;
+		_loader = [loader retain];
 		_loadingController = [loader loadingController];
 		[loader setMeshBuilder:self];
 		
@@ -493,6 +493,7 @@ static void SynthesizeTangents(Vector *vertices, Vector *normals, float *texture
 	{
 		data->materials[i] = [_loadingController loadMaterialWithKey:[data->materialKeys objectAtIndex:i]];
 		if (data->materials[i] == nil)  return NO;
+	//	OOLog(@"temp.trackMaterial", @"Loaded material %p", data->materials[i]);
 		
 		[_retainedObjects addObject:data->materials[i]];
 	}
@@ -567,6 +568,7 @@ static Vector CleanVector(Vector v)
 
 - (BOOL) isEqual:(id)other
 {
+	return NO;
 	if (![other isKindOfClass:[OOMeshBuilderVertex class]])  return NO;
 	
 	OOMeshBuilderVertex *otherV = other;
@@ -665,17 +667,17 @@ static inline void HashVector(OOUInteger *ioHash, Vector vector)
 static void SynthesizeTangents(Vector *vertices, Vector *normals, float *textureUVs, Vector *tangents, GLuint count)
 {
 	/*	Calculate tangent for a face. Despite the name, this generates one
-	 tangent and uses it for all vertices.
-	 TODO: does this make sense for more than three vertices? Possibly
-	 the face should be triangulated before tangent generation. As it is,
-	 it's treating vertex 0, 1 and 2 as a triangle and ignoring the rest.
-	 On top of that, using normals[0] doesn't make much sense for non-flat
-	 faces. Basically, this is bogus. Bah.
-	 
-	 Based on code I found in a forum somewhere and
-	 then lost track of. Sorry to whomever I should be crediting.
-	 -- Ahruman 2008-11-23
-	 */
+		tangent and uses it for all vertices.
+		TODO: does this make sense for more than three vertices? Possibly
+		the face should be triangulated before tangent generation. As it is,
+		it's treating vertex 0, 1 and 2 as a triangle and ignoring the rest.
+		On top of that, using normals[0] doesn't make much sense for non-flat
+		faces. Basically, this is bogus. Bah.
+
+		Based on code I found in a forum somewhere and
+		then lost track of. Sorry to whomever I should be crediting.
+		-- Ahruman 2008-11-23
+	*/
 	
 	Vector vAB = vector_subtract(vertices[1], vertices[0]);
 	Vector vAC = vector_subtract(vertices[2], vertices[0]);

@@ -1,11 +1,8 @@
 /*
 
-OOModelLoadingController.h
+OOShipPreloader.h
 
-Protocol for objects that manage the process of loading a model (OOMesh +
-associated materials). This abstraction allows different host applications to
-customize the loading process - in particular, it wraps differences between
-Oolite and Dry Dock.
+Class to manage asynchronous preloading of ship meshes.
  
 
 Oolite
@@ -53,30 +50,38 @@ SOFTWARE.
 
 #import "OOCocoa.h"
 
-@class OOMaterial;
+@class OOAsyncQueue;
 
 
-@protocol OOModelLoadingController <NSObject>
+@interface OOShipPreloader: NSObject
+{
+@private
+	NSMutableSet			*_uniquedEntries;
+	OOAsyncQueue			*_workQueue;
+	OOAsyncQueue			*_completionQueue;
+	OOUInteger				_inFlightCount;
+	OOUInteger				_threadCount;
+	OOUInteger				_totalCount;
+	OOUInteger				_doneCount;
+	BOOL					_killFlag;
+	NSMutableSet			*_badNames;
+	id						_delegate;
+}
 
-- (void) reportProblemWithKey:(NSString *)key
-						fatal:(BOOL)isFatal
-					   format:(NSString *)format, ...;
-- (void) reportProblemWithKey:(NSString *)key
-						fatal:(BOOL)isFatal
-					   format:(NSString *)format
-					arguments:(va_list)args;
+- (id) initWithExpectedMeshCount:(OOUInteger)count;
 
-- (NSString *) pathForMeshNamed:(NSString *)name;
+- (void) setDelegate:(id)delegate;
 
-- (OOMaterial *) loadMaterialWithKey:(NSString *)key;
+- (void) preloadMeshNamed:(NSString *)name smoothed:(BOOL)smoothed;
+- (void) waitUntilDone;
 
-// Only applies to model formats with no direct representation of normals.
-- (BOOL) shouldUseSmoothShading;
-
-- (BOOL) permitCacheRead;
-- (BOOL) permitCacheWrite;
+- (NSSet *) badMeshNames;
 
 @end
 
 
-extern NSString * const kOOPlaceholderMaterialName;
+@interface NSObject (OOShipPreloaderDelegate)
+
+- (void) shipPreloader:(OOShipPreloader *)preloader processedCount:(OOUInteger)count ofTotal:(OOUInteger)total;
+
+@end

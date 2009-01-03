@@ -9,6 +9,11 @@ The cache manager stores arbitrary property lists in separate namespaces
 different verison of Oolite, or if it was created on a system with a different
 byte sex.
 
+OOCacheManager serializes cache access through a single shadred lock, and is
+thus thread-safe, except that it must be set up (by calling +sharedCache) on
+a single thread before being used on any other.
+
+
 Oolite
 Copyright (C) 2004-2008 Giles C Williams and contributors
 
@@ -45,6 +50,7 @@ enum
 {
 @private
 	NSMutableDictionary		*_caches;
+	NSLock					*_lock;
 	BOOL					_permitWrites;
 }
 

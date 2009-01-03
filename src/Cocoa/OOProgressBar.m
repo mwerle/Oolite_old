@@ -26,6 +26,7 @@ SOFTWARE.
 */
 
 #import "OOProgressBar.h"
+#import "OOMaths.h"
 
 
 @implementation OOProgressBar
@@ -67,7 +68,17 @@ SOFTWARE.
 
 - (void) setDoubleValue:(double)value
 {
+	value = fmin(value, 1.0);
+	if (value == _value)  return;
+	
 	_value = value;
+	
+	NSTimeInterval now = [[NSDate date] timeIntervalSinceReferenceDate];
+	if ((now - _lastUpdate) >= 0.1 || value == 1.0 || value < 0.0)
+	{
+		[self display];
+		_lastUpdate = now;
+	}
 }
 
 @end

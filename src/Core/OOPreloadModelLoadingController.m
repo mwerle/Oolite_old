@@ -1,11 +1,6 @@
 /*
 
-OOModelLoadingController.h
-
-Protocol for objects that manage the process of loading a model (OOMesh +
-associated materials). This abstraction allows different host applications to
-customize the loading process - in particular, it wraps differences between
-Oolite and Dry Dock.
+OOPreloadModelLoadingController.m
  
 
 Oolite
@@ -51,32 +46,122 @@ SOFTWARE.
 
 */
 
-#import "OOCocoa.h"
+#import "OOPreloadModelLoadingController.h"
+#import "ResourceManager.h"
+#import "OOBasicMaterial.h"
 
-@class OOMaterial;
+
+@implementation OOPreloadModelLoadingController
+
+- (id) init
+{
+	if ((self = [super init]))
+	{
+		_diagnostics = [[NSMutableArray alloc] init];
+	}
+	return self;
+}
 
 
-@protocol OOModelLoadingController <NSObject>
+- (void) dealloc
+{
+	[_fileName release];
+	[_material release];
+	[_diagnostics release];
+	
+	[super dealloc];
+}
+
+
+- (void) startFileNamed:(NSString *)fileName path:(NSString *)path smooth:(BOOL)smooth
+{
+	if (fileName != _fileName)
+	{
+		[_fileName release];
+		_fileName = [fileName copy];
+	}
+	if (path != _path)
+	{
+		[_path release];
+		_path = [path copy];
+	}
+	_smooth = smooth;
+	_failed = NO;
+	[_diagnostics removeAllObjects];
+}
+
+
+- (BOOL) failed
+{
+	return _failed;
+}
+
+
+- (NSArray *) diagnostics
+{
+	return [[_diagnostics copy] autorelease];
+}
+
 
 - (void) reportProblemWithKey:(NSString *)key
 						fatal:(BOOL)isFatal
-					   format:(NSString *)format, ...;
+					   format:(NSString *)format, ...
+{
+	va_list args;
+	va_start(args, format);
+	[self reportProblemWithKey:key
+						 fatal:isFatal
+						format:format
+					 arguments:args];
+	va_end(args);
+}
+
+
 - (void) reportProblemWithKey:(NSString *)key
 						fatal:(BOOL)isFatal
 					   format:(NSString *)format
-					arguments:(va_list)args;
+					arguments:(va_list)args
+{
+	NSString *prefix = isFatal ? @"***** ERROR: " : @"----- WARNING: ";
+	format = [prefix stringByAppendingString:format];
+	format = [[NSString alloc] initWithFormat:format arguments:args];
+	[_diagnostics addObject:[NSArray arrayWithObjects:key, format, nil]];
+	[format release];
+	
+	if (isFatal)  _failed = YES;
+}
 
-- (NSString *) pathForMeshNamed:(NSString *)name;
 
-- (OOMaterial *) loadMaterialWithKey:(NSString *)key;
+- (NSString *) pathForMeshNamed:(NSString *)name
+{
+	assert([name isEqualToString:_fileName]);
+	return _path;
+}
 
-// Only applies to model formats with no direct representation of normals.
-- (BOOL) shouldUseSmoothShading;
 
-- (BOOL) permitCacheRead;
-- (BOOL) permitCacheWrite;
+- (OOMaterial *) loadMaterialWithKey:(NSString *)key
+{
+	if (_material == nil)  _material = [[OOBasicMaterial alloc] initWithName:@"<placeholder material>"];
+	
+	return _material;
+}
+
+
+- (BOOL) shouldUseSmoothShading
+{
+	return _smooth;
+}
+
+
+- (BOOL) permitCacheRead
+{
+	return NO;
+}
+
+
+- (BOOL) permitCacheWrite
+{
+	return YES;
+}
 
 @end
-
-
-extern NSString * const kOOPlaceholderMaterialName;

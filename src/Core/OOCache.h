@@ -24,6 +24,11 @@ subclass of NSMutableDictionary.)
 
 Default and minimum prune threshold values are specified in OOCacheManager.h.
 
+Thread safety: a given OOCache may not be used from multiple threads without
+appropriate serialization by the client. OOCacheManager performs such
+serialization, so indirect access to OOCaches through OOCacheManager are
+thread-safe.
+
 
 Oolite
 Copyright (C) 2004-2008 Giles C Williams and contributors
