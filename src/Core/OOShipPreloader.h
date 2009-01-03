@@ -77,6 +77,8 @@ SOFTWARE.
 
 - (NSSet *) badMeshNames;
 
+- (OOUInteger) completedCount;
+
 @end
 
 

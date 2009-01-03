@@ -188,6 +188,12 @@ SOFTWARE.
 	return result;
 }
 
+
+- (OOUInteger) completedCount
+{
+	return _doneCount + [_completionQueue count];
+}
+
 @end
 
 

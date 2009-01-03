@@ -763,9 +763,12 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 	NSEnumerator			*badMeshEnum = nil;
 	NSString				*badMesh = nil;
 	NSArray					*allShipKeys = nil;
+	GameController			*gameController = nil;
+	OOUInteger				count;
 	
 	preloader = [[[OOShipPreloader alloc] initWithExpectedMeshCount:[ioData count]] autorelease];
-	[preloader setDelegate:self];
+	gameController = [GameController sharedController];
+	count = [ioData count];
 	
 	// Preload ship meshes.
 	for (shipKeyEnum = [ioData keyEnumerator]; (shipKey = [shipKeyEnum nextObject]); )
@@ -777,9 +780,12 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 		modelName = [shipEntry stringForKey:@"model"];
 		[preloader preloadMeshNamed:modelName smoothed:[shipEntry boolForKey:@"smooth"]];
 		
+		[gameController setProgressBarValue:(double)[preloader completedCount] / (double)count];
+		
 		[pool release];
 	}
 	
+	[preloader setDelegate:self];
 	[preloader waitUntilDone];
 	
 	badMeshNames = [preloader badMeshNames];
@@ -807,7 +813,7 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 		}
 	}
 	
-	[[GameController sharedController] setProgressBarValue:-1.0f];
+	[gameController setProgressBarValue:-1.0f];
 	
 	return YES;
 }
@@ -815,7 +821,7 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 
 - (void) shipPreloader:(OOShipPreloader *)preloader processedCount:(OOUInteger)count ofTotal:(OOUInteger)total
 {
-	[[GameController sharedController] setProgressBarValue:(double)count++ / (double)total];
+	[[GameController sharedController] setProgressBarValue:(double)count / (double)total];
 }
 #endif
 
