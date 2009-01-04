@@ -896,7 +896,7 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 - (void) logProgress:(NSString *)message
 {}
 
-- (void) setProgressBarValue:(float)value
+- (void) setProgressBarValue:(double)value
 {}
 
 - (void) endSplashScreen
