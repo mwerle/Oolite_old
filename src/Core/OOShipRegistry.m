@@ -447,7 +447,7 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 			if ([reportedBadShips count] != 0)
 			{
 				[reportedBadShips sortUsingSelector:@selector(caseInsensitiveCompare:)];
-				OOLog(@"shipData.merge.failed", @"***** ERROR: one or more shipdata.plist entries have like_ship references that cannot be resolved: ", reportedBadShips);
+				OOLog(@"shipData.merge.failed", @"***** ERROR: one or more shipdata.plist entries have like_ship references that cannot be resolved: %@", reportedBadShips);
 			}
 			break;
 		}
