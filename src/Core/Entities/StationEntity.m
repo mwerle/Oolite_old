@@ -1472,6 +1472,8 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	NSString		*defense_ship_key = nil,
 					*defense_ship_role = nil,
 					*default_defense_ship_role = nil;
+	NSString	*defense_ship_ai = @"policeInterceptAI.plist";
+					
 	OOTechLevelID	techlevel;
 	
 	techlevel = [self equivalentTechLevel];
@@ -1494,6 +1496,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	if (defense_ship_key != nil)
 	{
 		defense_ship = [UNIVERSE newShipWithName:defense_ship_key];
+		defense_ship_ai = nil;
 	}
 	if (!defense_ship)
 	{
@@ -1523,6 +1526,11 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 		[self setGroupID:universalID];	
 	}
 	[defense_ship setGroupID:groupID];	// who's your Daddy
+	
+	if ([defense_ship isPolice])
+	{
+		[defense_ship setStateMachine:defense_ship_ai];
+	}
 	
 	[defense_ship addTarget:[UNIVERSE entityForUniversalID:defense_target]];
 
