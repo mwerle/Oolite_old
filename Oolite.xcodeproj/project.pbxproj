@@ -532,6 +532,8 @@
 		1AA324470F0B92E200B410D7 /* OOStandardModelLoadingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA324450F0B92E200B410D7 /* OOStandardModelLoadingController.m */; };
 		1AA82C8A0CC10E700023B797 /* OOJSWorldScripts.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA82C820CC10E3D0023B797 /* OOJSWorldScripts.m */; };
 		1AAB9A980D779F4500A9F424 /* OOCocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB9A960D779F3C00A9F424 /* OOCocoa.m */; };
+		1AAF57190F1A5B4900A2F2E6 /* whitelist.plist in Copy Config */ = {isa = PBXBuildFile; fileRef = 1AAF57180F1A5B4300A2F2E6 /* whitelist.plist */; };
+		1AAF571F0F1A5C7A00A2F2E6 /* Comparison.h in Copy Debug OXP */ = {isa = PBXBuildFile; fileRef = 1AAF571E0F1A5C7A00A2F2E6 /* Comparison.h */; };
 		1AB01ABE0BB15AED00F1B949 /* OOTextureScaling.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AB01ABC0BB15AED00F1B949 /* OOTextureScaling.h */; };
 		1AB01B5F0BB1639600F1B949 /* OOTextureScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31"; }; };
 		1AB01BBB0BB16A8A00F1B949 /* OOFastArithmetic.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */; };
@@ -730,6 +732,7 @@
 			dstPath = Config;
 			dstSubfolderSpec = 7;
 			files = (
+				1AAF57190F1A5B4900A2F2E6 /* whitelist.plist in Copy Config */,
 				1ABC04270EF872B7003B740A /* crosshairs.plist in Copy Config */,
 				1A4501E20DBF699A00815C04 /* descriptions.plist in Copy Config */,
 				1AC5452D0D4D298E00C90E5B /* oolite-font.plist in Copy Config */,
@@ -1050,6 +1053,7 @@
 			dstSubfolderSpec = 16;
 			files = (
 				1AD267650C83058C00B4BFD1 /* Debug.oxp in Copy Debug OXP */,
+				1AAF571F0F1A5C7A00A2F2E6 /* Comparison.h in Copy Debug OXP */,
 			);
 			name = "Copy Debug OXP";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1585,6 +1589,8 @@
 		1AA82C810CC10E3D0023B797 /* OOJSWorldScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSWorldScripts.h; sourceTree = "<group>"; };
 		1AA82C820CC10E3D0023B797 /* OOJSWorldScripts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSWorldScripts.m; sourceTree = "<group>"; };
 		1AAB9A960D779F3C00A9F424 /* OOCocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOCocoa.m; sourceTree = "<group>"; };
+		1AAF57180F1A5B4300A2F2E6 /* whitelist.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = whitelist.plist; sourceTree = "<group>"; };
+		1AAF571E0F1A5C7A00A2F2E6 /* Comparison.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comparison.h; sourceTree = "<group>"; };
 		1AB01ABC0BB15AED00F1B949 /* OOTextureScaling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOTextureScaling.h; path = ../OOTextureScaling.h; sourceTree = "<group>"; };
 		1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOTextureScaling.m; path = ../OOTextureScaling.m; sourceTree = "<group>"; };
 		1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOFastArithmetic.h; sourceTree = "<group>"; };
@@ -1851,6 +1857,7 @@
 				1A2316EC0B9CFAD700EF0852 /* shipyard.plist */,
 				1A2316ED0B9CFAD700EF0852 /* speech_pronunciation_guide.plist */,
 				1A3591820C1C382700E52220 /* startextures.plist */,
+				1AAF57180F1A5B4300A2F2E6 /* whitelist.plist */,
 				1A3491290BC25EAA00802DA7 /* world-scripts.plist */,
 			);
 			path = Config;
@@ -2461,6 +2468,7 @@
 				1AE546300C19A2E2005B89F3 /* JoystickHandler.m */,
 				1A1E99B40EF04837008B48E2 /* OOProgressBar.h */,
 				1A1E99B50EF04837008B48E2 /* OOProgressBar.m */,
+				1AAF571E0F1A5C7A00A2F2E6 /* Comparison.h */,
 			);
 			name = "Mac-specific";
 			path = ../Cocoa;

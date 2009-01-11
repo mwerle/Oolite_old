@@ -200,8 +200,10 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 					return NO;
 				}
 				
-				if ((self->isStation)&&([subdesc rangeOfString:@"dock"].location != NSNotFound))
+				if (self->isStation && [subdesc rangeOfString:@"dock"].location != NSNotFound)
+				{
 					[(StationEntity*)self setDockingPortModel:subent :sub_pos :sub_q];
+				}
 				
 				[subent setStatus:STATUS_INACTIVE];
 				
@@ -3793,6 +3795,11 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 
 - (void) setCrew: (NSArray*) crewArray
 {
+	if (isUnpiloted) 
+	{
+		//unpiloted ships cannot have crew
+		return;
+	}
 	//do not set to hulk here when crew is nill (or 0).  Some things like missiles have no crew.
 	[crew autorelease];
 	crew = [crewArray copy];
@@ -4010,10 +4017,10 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 
 - (void) decrease_flight_speed:(double) delta
 {
-	if (flightSpeed > -maxFlightSpeed)
-		flightSpeed -= delta;
+	if (flightSpeed > maxFlightSpeed)
+		flightSpeed = maxFlightSpeed;
 	else
-		flightSpeed = -maxFlightSpeed;
+		flightSpeed -= delta;
 }
 
 
@@ -4584,6 +4591,7 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 }
 
 
+// Exposed to AI
 - (void) becomeEnergyBlast
 {
 	ParticleEntity* blast = [[ParticleEntity alloc] initEnergyMineFromShip:self];
@@ -6350,6 +6358,7 @@ BOOL class_masslocks(int some_class)
 }
 
 
+// Exposed to AI
 - (BOOL) fireECM
 {
 	if (![self hasECM])  return NO;
@@ -6966,13 +6975,39 @@ BOOL class_masslocks(int some_class)
 	// If it's an energy mine...
 	if (ent && ent->isParticle && ent->scanClass == CLASS_MINE)
 	{
-		// ...start a chain reaction, if we're dying and have a non-trivial amount of energy.
-		if (energy < amount && energy > 10)
+		switch (scanClass)
 		{
-			ParticleEntity *chainReaction = [[ParticleEntity alloc] initEnergyMineFromShip:self];
-			[UNIVERSE addEntity:chainReaction];
-			[chainReaction setOwner:[ent owner]];
-			[chainReaction release];
+			case CLASS_WORMHOLE :
+			case CLASS_ROCK :
+			case CLASS_CARGO :
+			case CLASS_BUOY :
+				// does not normally cascade
+				if ((fuel > MIN_FUEL) || isStation) 
+				{
+					//we have fuel onboard so we can still go pop, or we are a station which can
+				}
+				else break;
+			case CLASS_STATION :
+			case CLASS_MINE :
+			case CLASS_PLAYER :
+			case CLASS_POLICE :
+			case CLASS_MILITARY :
+			case CLASS_THARGOID :
+			case CLASS_MISSILE :
+			case CLASS_NOT_SET :
+			case CLASS_NO_DRAW :
+			case CLASS_NEUTRAL :
+			case CLASS_TARGET :
+				// ...start a chain reaction, if we're dying and have a non-trivial amount of energy.
+				if (energy < amount && energy > 10)
+				{
+					ParticleEntity *chainReaction = [[ParticleEntity alloc] initEnergyMineFromShip:self];
+					[UNIVERSE addEntity:chainReaction];
+					[chainReaction setOwner:[ent owner]];
+					[chainReaction release];
+				}				
+				break;
+			//no default thanks, we want the compiler to tell us if we missed a case.
 		}
 	}
 	
@@ -7418,6 +7453,7 @@ int w_space_seed = 1234567;
 }
 
 
+// Exposed to AI
 - (void) deployEscorts
 {
 	if (escortCount < 1)
@@ -7471,6 +7507,7 @@ int w_space_seed = 1234567;
 }
 
 
+// Exposed to AI
 - (void) dockEscorts
 {
 	if (escortCount < 1)
@@ -7504,7 +7541,8 @@ int w_space_seed = 1234567;
 }
 
 
-- (void) setTargetToStation
+// Exosed to AI
+- (void) setTargetToNearestStation
 {
 	// check if the groupID (parent ship) points to a station...
 	Entity* mother = [UNIVERSE entityForUniversalID:groupID];
@@ -7550,6 +7588,7 @@ int w_space_seed = 1234567;
 }
 
 
+// Exosed to AI
 - (void) setTargetToSystemStation
 {
 	StationEntity* system_station = [UNIVERSE station];
@@ -7609,6 +7648,7 @@ int w_space_seed = 1234567;
 }
 
 
+// Exposed to AI
 - (void) abortDocking
 {
 	[[UNIVERSE findEntitiesMatchingPredicate:IsStationPredicate
@@ -7796,6 +7836,21 @@ static BOOL AuthorityPredicate(Entity *entity, void *parameter)
 - (void) receiveCommsMessage:(NSString *) message_text
 {
 	// ignore messages for now
+}
+
+
+- (void) commsMessage:(NSString *)valueString withUnpilotedOverride:(BOOL)unpilotedOverride
+{
+	Random_Seed very_random_seed;
+	very_random_seed.a = rand() & 255;
+	very_random_seed.b = rand() & 255;
+	very_random_seed.c = rand() & 255;
+	very_random_seed.d = rand() & 255;
+	very_random_seed.e = rand() & 255;
+	very_random_seed.f = rand() & 255;
+	seed_RNG_only_for_planet_description(very_random_seed);
+	
+	[self broadcastMessage:valueString withUnpilotedOverride:unpilotedOverride];
 }
 
 

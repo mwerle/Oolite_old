@@ -48,19 +48,6 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 
 @implementation StationEntity
 
-- (void) acceptDistressMessageFrom:(ShipEntity *)other
-{
-	if (self != [UNIVERSE station])  return;
-	
-	int old_target = primaryTarget;
-	primaryTarget = [[other primaryTarget] universalID];
-	[(ShipEntity *)[other primaryTarget] markAsOffender:8];	// mark their card
-	[self launchDefenseShip];
-	primaryTarget = old_target;
-
-}
-
-
 - (OOTechLevelID) equivalentTechLevel
 {
 	return equivalentTechLevel;
@@ -730,6 +717,13 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	
 	// ** Set up a the docking port
 	// Look for subentity specifying position
+	/*	NOTE: all this is overriden by -setDockingPortModel:::, called from
+		-setUpSubEntities:, if any subentity key contains "dock" (not just
+		prefixed with "dock" as here). port_radius and port_dimensions should
+		be considered obsolete.
+		-- Ahruman 20090108
+	*/
+	
 	NSArray		*subs = [dict arrayForKey:@"subentities"];
 	NSArray		*dockSubEntity = nil;
 	
@@ -1129,6 +1123,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 		}
 #endif
 		[launchQueue removeObjectAtIndex:0];
+		[self doScriptEvent:@"stationLaunchedShip" withArgument:se];
 	}
 	if (([launchQueue count] == 0)&&(no_docking_while_launching))
 		no_docking_while_launching = NO;	// launching complete
@@ -1471,10 +1466,12 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 - (void) launchDefenseShip
 {
 	OOUniversalID	defense_target = primaryTarget;
-	ShipEntity		*defense_ship = nil;
-	NSString		*defense_ship_key = nil,
-					*defense_ship_role = nil,
-					*default_defense_ship_role = nil;
+	ShipEntity	*defense_ship = nil;
+	NSString	*defense_ship_key = nil,
+				*defense_ship_role = nil,
+				*default_defense_ship_role = nil;
+	NSString	*defense_ship_ai = @"policeInterceptAI.plist";
+	
 	OOTechLevelID	techlevel;
 	
 	techlevel = [self equivalentTechLevel];
@@ -1497,6 +1494,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	if (defense_ship_key != nil)
 	{
 		defense_ship = [UNIVERSE newShipWithName:defense_ship_key];
+		defense_ship_ai = nil;
 	}
 	if (!defense_ship)
 	{
@@ -1521,11 +1519,16 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	}
 				
 	[defense_ship setOwner: self];
-	if (groupID != NO_TARGET)
+	if (groupID == NO_TARGET)
 	{
 		[self setGroupID:universalID];	
 	}
 	[defense_ship setGroupID:groupID];	// who's your Daddy
+	
+	if ([defense_ship isPolice])
+	{
+		[defense_ship setStateMachine:defense_ship_ai];
+	}
 	
 	[defense_ship addTarget:[UNIVERSE entityForUniversalID:defense_target]];
 
@@ -1643,7 +1646,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 		// set the owner of the ship to the station so that it can check back for docking later
 		[pirate_ship setOwner:self];
 		[pirate_ship setGroupID:universalID];	// who's your Daddy
-		[pirate_ship setPrimaryRole:@"pirate"];
+		[pirate_ship setPrimaryRole:@"defense_ship"];
 		[pirate_ship addTarget:[UNIVERSE entityForUniversalID:defense_target]];
 		[pirate_ship setScanClass: CLASS_NEUTRAL];
 		//**Lazygun** added 30 Nov 04 to put a bounty on those pirates' heads.
@@ -1732,13 +1735,21 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	
 	if (escort_ship)
 	{
-		if (![escort_ship crew])
+		if (![escort_ship crew] && ![escort_ship isUnpiloted])
 			[escort_ship setCrew:[NSArray arrayWithObject:
 				[OOCharacter randomCharacterWithRole: @"hunter"
 				andOriginalSystem: [UNIVERSE systemSeed]]]];
 				
 		[escort_ship setScanClass: CLASS_NEUTRAL];
 		[escort_ship setCargoFlag: CARGO_FLAG_FULL_PLENTIFUL];
+		
+		[escort_ship setOwner: self];
+		if (groupID == NO_TARGET)
+		{
+			[self setGroupID:universalID];	
+		}
+		[escort_ship setGroupID:groupID];	// who's your Daddy
+		
 		[[escort_ship getAI] setStateMachine:@"escortAI.plist"];
 		[self addShipToLaunchQueue:escort_ship];
 		
@@ -1806,6 +1817,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 }
 
 
+// Exposed to AI
 - (void) becomeExplosion
 {
 	if (self == [UNIVERSE station])  return;
@@ -1833,6 +1845,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 }
 
 
+// Exposed to AI
 - (void) becomeEnergyBlast
 {
 	if (self == [UNIVERSE station])  return;
