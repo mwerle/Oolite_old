@@ -62,12 +62,14 @@
 		"debugOn",
 		"debugOff",
 		"debugMessage:",
-		"replaceVariablesInString:",
 		"playSound:",
 		"setGuiToMissionScreen",
 	//	"setBackgroundFromDescriptionsKey:",	// Is this ever used from a script? It seems a bad match for future plans of mine. -- Ahruman
 		"setGalacticHyperspaceBehaviourTo:",
-		"setGalacticHyperspaceFixedCoordsTo:"
+		"setGalacticHyperspaceFixedCoordsTo:",
+		
+		// ShipEntity.m
+		"initialiseTurret"
 	);
 	ai_methods =
 	(
@@ -97,12 +99,9 @@
 		"performFaceDestination",
 		"performTumble",
 		"fightOrFleeMissile",
-		"findNearestPlanet",
 		"setCourseToPlanet",
 		"setTakeOffFromPlanet",
 		"landOnPlanet",
-		"setAITo:",
-		"switchAITo:",
 		"checkTargetLegalStatus",
 		"exitAI",
 		"setDestinationToTarget",
@@ -124,7 +123,6 @@
 		"scanForThargoid",
 		"scanForNonThargoid",
 		"becomeUncontrolledThargon",
-		"initialiseTurret",
 		"checkDistanceTravelled",
 		"scanForHostiles",
 		"fightOrFleeHostiles",
@@ -149,7 +147,6 @@
 		"setDestinationToDockingAbort",
 		"requestNewTarget",
 		"rollD:",
-	//	"scanForNearestShipWithRole:",	// Handled by ai_method_aliases
 		"scanForNearestShipWithPrimaryRole:",
 		"scanForNearestShipHavingRole:",
 		"scanForNearestShipWithAnyPrimaryRole:",
@@ -174,14 +171,14 @@
 		"targetNextBeaconWithCode:",
 		"setRacepointsFromTarget",
 		"performFlyRacepoints",
-		"performDocking",
+		"debugDumpMessages",
+		"dropMessages:",
 		
 		// StationEntity.m/stubs in ShipEntityAI.m
 		"increaseAlertLevel",
 		"decreaseAlertLevel",
 		"launchPolice",
 		"launchDefenseShip",
-	//	"launchDefenceShip",	// Handled by ai_method_aliases
 		"launchScavenger",
 		"launchMiner",
 		"launchPirateShip",
@@ -202,8 +199,9 @@
 		"deployEscorts",
 		"dockEscorts",
 		"setTargetToNearestStation",
-	//	"setTargetToStation",	// Handled by ai_method_aliases
 		"setTargetToSystemStation",
+		"setUpEscorts",
+		"fireMissile"
 	);
 	
 	ai_and_action_methods =
@@ -213,6 +211,12 @@
 		"dumpCargo",
 		"switchLightsOn",
 		"switchLightsOff",
+		"doNothing",
+		"spawn:",
+		
+		// ShipEntityAI.m
+		"setAITo:",
+		"switchAITo:",
 		
 		// PlayerEntityLegacyScriptEngine.m
 		"targetNearestHostile",
@@ -220,7 +224,6 @@
 	
 	query_methods =
 	(
-		"mission_string",
 		"status_string",
 		"gui_screen_string",
 		"galaxy_number",
@@ -241,7 +244,7 @@
 		"clock_mins_number",
 		"clock_hours_number",
 		"clock_days_number",
-		"fuel_level_number",
+		"fuelLevel_number",
 		"dockedAtMainStation_bool",
 		"foundEquipment_bool",
 		"sunWillGoNova_bool",
@@ -260,17 +263,117 @@
 		"commanderRank_string",
 		"commanderShip_string",
 		"commanderShipDisplayName_string",
-		"fuel_leak_rate_number"		
+		"fuelLeakRate_number"		
 	);
-	shader_binding_methods =
+	
+	shader_entity_binding_methods =
 	(
-		// FIXME: copy list from http://wiki.alioth.net/index.php/Shaders_in_Oolite:_uniforms when wiki is up.
+		"position",
+		"orientation",
+		"relativePosition",
+		"viewpointOffset",
+		"collisionRadius",
+		"mass",
+		"energy",
+		"maxEnergy",
+		"universalTime",
+		"spawnTime",
+		"timeElapsedSinceSpawn",
+		"throwingSparks"
 	);
+	
+	shader_ship_binding_methods =
+	(
+		"isBeacon",
+		"isFrangible",
+		"isCloaked",
+		"isJammingScanning",
+		"hasMilitaryScannerFilter",
+		"messageTime",
+		"groupID",
+		"escortCount",
+		"hasHostileTarget",
+		"weaponRange",
+		"scannerRange",
+		"withinStationAegis",
+		"fuel",
+		"flightPitch",
+		"flightRoll",
+		"flightYaw",
+		"flightSpeed",
+		"maxFlightSpeed",
+		"speedFactor",
+		"damage",
+		"laserHeatLevel",
+		"hullHeatLevel",
+		"entityPersonality",
+		"entityPersonalityInt",
+		"numberOfScannedShips",
+		"destination",
+		"rangeToDestination",
+		"rangeToPrimaryTarget",
+		"laserColor",
+		"isHulk"
+	);
+	
+	shader_player_ship_binding_methods =
+	(	
+		"massLocked",
+		"atHyperspeed",
+		"velocityVector",
+		"dialForwardShield",
+		"dialAftShield",
+		"dialMissileStatus",
+		"dialFuelScoopStatus",
+		"compassMode",
+		"activeMissile",
+		"dialMaxMissiles",
+		"dialIdentEngaged",
+		"alertCondition",
+		"trumbleCount",
+		
+		// PlayerShipLegacyScriptEngine.m
+		"galaxy_number",
+		"planet_number",
+		"score_number",
+		"credits_number",
+		"scriptTimer_number",
+		"shipsFound_number",
+		"legalStatus_number",
+		"commanderLegalStatus_number",
+		"pseudoFixedD100_number",
+		"pseudoFixedD256_number",
+		"clock_number",
+		"clock_secs_number",
+		"clock_mins_number",
+		"clock_hours_number",
+		"clock_days_number",
+		"fuelLevel_number",
+		"dockedTechLevel_number",
+		"systemGovernment_number",
+		"systemEconomy_number",
+		"systemTechLevel_number",
+		"systemPopulation_number",
+		"systemProductivity_number",
+		"fuelLeakRate_number"
+	);
+	
+	action_method_aliases =
+	{
+		"setGuiToStatusScreen" = "doNothing";
+	};
+	
+	query_method_aliases =
+	{
+		"fuel_leak_rate_number" = "fuelLeakRate_number";
+		"fuel_level_number" = "fuelLevel_number";
+	};
 	
 	ai_method_aliases =
 	{
 		"scanForNearestShipWithRole:" = "scanForNearestShipWithPrimaryRole:";
 		"launchDefenceShip"= "launchDefenseShip";
 		"setTargetToStation" = "setTargetToNearestStation";
+		"performDocking" = "doNothing";
 	};
 }

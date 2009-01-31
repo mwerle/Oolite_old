@@ -3,7 +3,7 @@
 AI.m
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -508,6 +508,37 @@ static AI *sCurrentlyRunningAI = nil;
 }
 
 
+- (void) dropMessage:(NSString *) ms
+{
+	[pendingMessages removeObject:ms];
+}
+	
+
+- (NSSet *) pendingMessages
+{
+	return [[pendingMessages copy] autorelease];
+}
+
+
+- (void) debugDumpPendingMessages
+{
+	NSArray				*sortedMessages = nil;
+	NSString			*displayMessages = nil;
+	
+	if ([pendingMessages count] > 0)
+	{
+		sortedMessages = [[pendingMessages allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		displayMessages = [sortedMessages componentsJoinedByString:@", "];
+	}
+	else
+	{
+		displayMessages = @"none";
+	}
+	
+	OOLog(@"ai.debug.pendingMessages", @"Pending messages for AI %@: %@", [self descriptionComponents], displayMessages);
+}
+
+
 - (void) setNextThinkTime:(OOTimeAbsolute) ntt
 {
 	nextThinkTime = ntt;
@@ -643,52 +674,55 @@ static AI *sCurrentlyRunningAI = nil;
 	OOCacheManager			*cacheMgr = [OOCacheManager sharedCache];
 	NSEnumerator			*stateEnum = nil;
 	NSString				*stateKey = nil;
-	NSDictionary			*stateMessages = nil;
+	NSDictionary			*stateHandlers = nil;
+	NSAutoreleasePool		*pool = nil;
 	
 	newSM = [cacheMgr objectForKey:smName inCache:@"AIs"];
 	if (newSM != nil && ![newSM isKindOfClass:[NSDictionary class]])  return nil;	// catches use of @"nil" to indicate no AI found.
 	
 	if (newSM == nil)
 	{
+		pool = [[NSAutoreleasePool alloc] init];
 		OOLog(@"ai.load", @"Loading and sanitizing AI \"%@\"", smName);
 		OOLogPushIndent();
 		OOLogIndentIf(@"ai.load");
 		
 		NS_DURING
-		// Load state machine and validate against whitelist.
-		newSM = [ResourceManager dictionaryFromFilesNamed:smName inFolder:@"AIs" andMerge:NO];
-		if (newSM == nil)
-		{
-			[cacheMgr setObject:@"nil" forKey:smName inCache:@"AIs"];
-			return nil;
-		}
-		
-		cleanSM = [NSMutableDictionary dictionaryWithCapacity:[newSM count]];
-		
-		for (stateEnum = [newSM keyEnumerator]; (stateKey = [stateEnum nextObject]); )
-		{
-			stateMessages = [newSM objectForKey:stateKey];
-			if (![stateMessages isKindOfClass:[NSDictionary class]])
+			// Load state machine and validate against whitelist.
+			newSM = [ResourceManager dictionaryFromFilesNamed:smName inFolder:@"AIs" andMerge:NO];
+			if (newSM == nil)
 			{
-				OOLog(@"ai.invalidFormat.state", @"State \"%@\" in AI \"%@\" is not a dictionary, ignoring.", stateKey, smName);
-				continue;
+				[cacheMgr setObject:@"nil" forKey:smName inCache:@"AIs"];
+				return nil;
 			}
 			
-			stateMessages = [self cleanHandlers:stateMessages forState:stateKey stateMachine:smName];
-			[cleanSM setObject:stateMessages forKey:stateKey];
-		}
-		
-		// Make immutable.
-		newSM = [[cleanSM copy] autorelease];
-		
-		// Cache.
-		[cacheMgr setObject:newSM forKey:smName inCache:@"AIs"];
+			cleanSM = [NSMutableDictionary dictionaryWithCapacity:[newSM count]];
+			
+			for (stateEnum = [newSM keyEnumerator]; (stateKey = [stateEnum nextObject]); )
+			{
+				stateHandlers = [newSM objectForKey:stateKey];
+				if (![stateHandlers isKindOfClass:[NSDictionary class]])
+				{
+					OOLog(@"ai.invalidFormat.state", @"State \"%@\" in AI \"%@\" is not a dictionary, ignoring.", stateKey, smName);
+					continue;
+				}
+				
+				stateHandlers = [self cleanHandlers:stateHandlers forState:stateKey stateMachine:smName];
+				[cleanSM setObject:stateHandlers forKey:stateKey];
+			}
+			
+			// Make immutable.
+			newSM = [[cleanSM copy] autorelease];
+			
+			// Cache.
+			[cacheMgr setObject:newSM forKey:smName inCache:@"AIs"];
 		NS_HANDLER
-		OOLogPopIndent();
-		[localException raise];
+			OOLogPopIndent();
+			[localException raise];
 		NS_ENDHANDLER
 		
 		OOLogPopIndent();
+		[pool release];
 	}
 	
 	return newSM;
@@ -754,6 +788,9 @@ static AI *sCurrentlyRunningAI = nil;
 			continue;
 		}
 		
+		// Trim spaces from beginning and end.
+		action = [action stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		
 		// Cut off parameters.
 		spaceRange = [action rangeOfString:@" "];
 		if (spaceRange.location == NSNotFound)  selector = action;
@@ -772,7 +809,7 @@ static AI *sCurrentlyRunningAI = nil;
 		// Check for selector in whitelist.
 		if (![whitelist containsObject:selector])
 		{
-			OOLog(@"ai.unpermittedMethod", @"Handler \"%@\" for state \"%@\" in AI \"%@\" uses \"%@\", which is not a permitted AI method."/*" In a future version of Oolite, this method will be removed from the handler. If you believe the handler should be a permitted method, please report it to oolite.bug.reports@gmail.com."*/, handlerKey, stateKey, smName, selector);
+			OOLog(@"ai.unpermittedMethod", @"Handler \"%@\" for state \"%@\" in AI \"%@\" uses \"%@\", which is not a permitted AI method. In a future version of Oolite, this method will be removed from the handler. If you believe the handler should be a permitted method, please report it to oolite.bug.reports@gmail.com.", handlerKey, stateKey, smName, selector);
 			// continue;
 		}
 		

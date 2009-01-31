@@ -14,9 +14,11 @@
 	IBOutlet NSTextField		*_stateMachineNameField;
 	IBOutlet NSTextField		*_stateField;
 	IBOutlet NSTextField		*_stackDepthField;
+	IBOutlet NSTextField		*_pendingMessagesField;
 	IBOutlet NSTextField		*_timeToThinkField;
 }
 
+- (IBAction) dumpPendingMessages:sender;
 - (IBAction) thinkNow:sender;
 
 @end

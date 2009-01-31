@@ -281,18 +281,11 @@ static OODebugController *sSingleton = nil;
 
 - (IBAction)showLogPreferencesAction:sender
 {
-	[logShowAppNameCheckBox setState:OOLogShowApplicationName()];
 	[logShowFunctionCheckBox setState:OOLogShowFunction()];
 	[logShowFileAndLineCheckBox setState:OOLogShowFileAndLine()];
 	[logShowMessageClassCheckBox setState:OOLogShowMessageClass()];
 	
 	[logPrefsWindow makeKeyAndOrderFront:self];
-}
-
-
-- (IBAction)logSetShowAppNameAction:sender
-{
-	OOLogSetShowApplicationName([sender state]);
 }
 
 

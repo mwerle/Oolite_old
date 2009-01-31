@@ -1110,7 +1110,6 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	{
 		ShipEntity *se=(ShipEntity *)[launchQueue objectAtIndex:0];
 		[self launchShip:se];
-		//OOLog(@"launchqueue.objectDump", @":::::: ai name: %@ ship name: %@ - %@ ::::::", [[se getAI] name], [se displayName], [se groupID] == universalID ? @"defender" : @"civilian" );
 #if 0
 		// This code is most likely causing many ships to leave the station with the wrong AI
 		// (route1PatrolAi.plist). Disabling it for now - Nikos
@@ -1494,7 +1493,6 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	if (defense_ship_key != nil)
 	{
 		defense_ship = [UNIVERSE newShipWithName:defense_ship_key];
-		defense_ship_ai = nil;
 	}
 	if (!defense_ship)
 	{
@@ -1539,16 +1537,6 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	[defense_ship release];
 	no_docking_while_launching = YES;
 	[self abortAllDockings];
-}
-
-
-/*	Spelling variant, because people get confused about whether Oolite uses
-	UK or US spelling. (General answer: it varies.)
- */
-// Exposed to AI
-- (void) launchDefenceShip
-{
-	[self launchDefenseShip];
 }
 
 
@@ -2001,19 +1989,12 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	// NOTE: non-standard capitalization is documented and entrenched.
 	if ([shipinfoDictionary objectForKey:@"hasShipyard"])
 	{
-		PlayerEntity	*player = [PlayerEntity sharedPlayer];
 		id				determinant = [shipinfoDictionary objectForKey:@"hasShipyard"];
 		
 		if ([determinant isKindOfClass:[NSArray class]])
 		{
-			NSArray *conditions = (NSArray *)determinant;
-			BOOL success = YES;
-			unsigned i;
-			for (i = 0; (i < [conditions count])&&(success); i++)
-			{
-				success = success && [player scriptTestCondition:[conditions stringAtIndex:i]];
-			}
-			return success;
+			
+			return [[PlayerEntity sharedPlayer] scriptTestConditions:determinant];
 		}
 		else
 		{

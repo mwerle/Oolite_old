@@ -4014,15 +4014,6 @@ static PlayerEntity *sSharedPlayer = nil;
 }
 
 
-- (void) performDocking
-{
-	// Huh? What is this? Doesn't seem to get called. -- ahruman
-	[self abortDocking];			// let the station know that you are no longer on approach
-	autopilot_engaged = NO;
-	status = STATUS_IN_FLIGHT;
-}
-
-
 ///////////////////////////////////
 
 - (void) setGuiToStatusScreen
@@ -4570,6 +4561,14 @@ static PlayerEntity *sSharedPlayer = nil;
 		else
 			[gui setText:DESC(@"gameoptions-wireframe-graphics-no") forRow:GUI_ROW_GAMEOPTIONS_WIREFRAMEGRAPHICS align:GUI_ALIGN_CENTER];
 		[gui setKey:GUI_KEY_OK forRow:GUI_ROW_GAMEOPTIONS_WIREFRAMEGRAPHICS];
+		
+#ifdef ALLOW_PROCEDURAL_PLANETS
+		if ([UNIVERSE doProcedurallyTexturedPlanets])
+			[gui setText:DESC(@"gameoptions-procedurally-textured-planets-yes") forRow:GUI_ROW_GAMEOPTIONS_PROCEDURALLYTEXTUREDPLANETS align:GUI_ALIGN_CENTER];
+		else
+			[gui setText:DESC(@"gameoptions-procedurally-textured-planets-no") forRow:GUI_ROW_GAMEOPTIONS_PROCEDURALLYTEXTUREDPLANETS align:GUI_ALIGN_CENTER];
+		[gui setKey:GUI_KEY_OK forRow:GUI_ROW_GAMEOPTIONS_PROCEDURALLYTEXTUREDPLANETS];
+#endif
 		
 		if ([UNIVERSE reducedDetail])
 			[gui setText:DESC(@"gameoptions-reduced-detail-yes") forRow:GUI_ROW_GAMEOPTIONS_DETAIL align:GUI_ALIGN_CENTER];
@@ -5727,19 +5726,7 @@ static int last_outfitting_index;
 	if (![super canAddEquipment:equipmentKey])  return NO;
 	
 	NSArray *conditions = [[OOEquipmentType equipmentTypeWithIdentifier:equipmentKey] conditions];
-	if (conditions != nil)
-	{
-		NSEnumerator	*condEnum = nil;
-		NSString		*condition = nil;
-		
-		for (condEnum = [conditions objectEnumerator]; (condition = [condEnum nextObject]); )
-		{
-			if ([condition isKindOfClass:[NSString class]])
-			{
-				if (![self scriptTestCondition:condition])  return NO;
-			}
-		}
-	}
+	if (conditions != nil && ![self scriptTestConditions:conditions])  return NO;
 	
 	return YES;
 }
@@ -6521,6 +6508,12 @@ static int last_outfitting_index;
 #endif
 	
 	return isDockedStatus;
+}
+
+
+- (void) initialiseTurret
+{
+	OOLog(@"script.invalid", @"SCRIPT ERROR: attempt to call initialiseTurret for player.");
 }
 
 

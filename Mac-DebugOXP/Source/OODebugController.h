@@ -60,7 +60,6 @@ show them, set the preference debug-show-extra-menu-items:
 	IBOutlet NSTextField					*logMsgClassPanelTextField;
 	
 	IBOutlet NSWindow						*logPrefsWindow;
-	IBOutlet NSButton						*logShowAppNameCheckBox;
 	IBOutlet NSButton						*logShowFunctionCheckBox;
 	IBOutlet NSButton						*logShowFileAndLineCheckBox;
 	IBOutlet NSButton						*logShowMessageClassCheckBox;
@@ -106,7 +105,6 @@ show them, set the preference debug-show-extra-menu-items:
 
 // Log Preferences window
 - (IBAction) showLogPreferencesAction:sender;
-- (IBAction) logSetShowAppNameAction:sender;
 - (IBAction) logSetShowFunctionAction:sender;
 - (IBAction) logSetShowFileAndLineAction:sender;
 - (IBAction) logSetShowMessageClassAction:sender;

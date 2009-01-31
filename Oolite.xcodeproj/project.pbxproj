@@ -462,8 +462,6 @@
 		1A73712E0C623DAE0097AC37 /* OOJSStation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A73712C0C623DAE0097AC37 /* OOJSStation.m */; };
 		1A7376BE0C64AE330097AC37 /* OOJSSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A7376BC0C64AE330097AC37 /* OOJSSystem.h */; };
 		1A7376BF0C64AE330097AC37 /* OOJSSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A7376BD0C64AE330097AC37 /* OOJSSystem.m */; };
-		1A73795D0C65CF090097AC37 /* OOLegacyEventHandlerScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A73795B0C65CF090097AC37 /* OOLegacyEventHandlerScript.h */; };
-		1A73795E0C65CF090097AC37 /* OOLegacyEventHandlerScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A73795C0C65CF090097AC37 /* OOLegacyEventHandlerScript.m */; };
 		1A7B967F0E620C9E00322821 /* OOSoundInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A7B967E0E620C9E00322821 /* OOSoundInternal.h */; };
 		1A7BA8830D843485003C6CA3 /* ShipEntityScriptMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A7BA80B0D84231A003C6CA3 /* ShipEntityScriptMethods.h */; };
 		1A7BA8840D843485003C6CA3 /* ShipEntityScriptMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A7BA80C0D84231A003C6CA3 /* ShipEntityScriptMethods.m */; };
@@ -518,6 +516,11 @@
 		1A94D5AF0D65A6960072C805 /* OOLight.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A94D5AD0D65A6960072C805 /* OOLight.h */; };
 		1A94D5B50D65A6B40072C805 /* OOCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A94D5B30D65A6B40072C805 /* OOCamera.h */; };
 		1A94D5B60D65A6B40072C805 /* OOCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A94D5B40D65A6B40072C805 /* OOCamera.m */; };
+		1A94E54B0F34968B00F1B5D9 /* delayedReactToAttackAI.plist in Copy AIs */ = {isa = PBXBuildFile; fileRef = 1A94E5480F34967500F1B5D9 /* delayedReactToAttackAI.plist */; };
+		1A94E5500F34972800F1B5D9 /* OOLegacyScriptWhitelist.m in Copy Debug OXP */ = {isa = PBXBuildFile; fileRef = 1A94E54E0F34972800F1B5D9 /* OOLegacyScriptWhitelist.m */; };
+		1A94E5510F34972800F1B5D9 /* OOLegacyScriptWhitelist.h in Copy Debug OXP */ = {isa = PBXBuildFile; fileRef = 1A94E54F0F34972800F1B5D9 /* OOLegacyScriptWhitelist.h */; };
+		1A94E5550F34973600F1B5D9 /* OOLegacyScriptWhitelist.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A94E54F0F34972800F1B5D9 /* OOLegacyScriptWhitelist.h */; };
+		1A94E5580F34974700F1B5D9 /* OOLegacyScriptWhitelist.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A94E54E0F34972800F1B5D9 /* OOLegacyScriptWhitelist.m */; };
 		1A95338B0C02089E004EBB58 /* material-defaults.plist in Copy Config */ = {isa = PBXBuildFile; fileRef = 1A9533890C02089E004EBB58 /* material-defaults.plist */; };
 		1A95338C0C02089E004EBB58 /* planetinfo.plist in Copy Config */ = {isa = PBXBuildFile; fileRef = 1A95338A0C02089E004EBB58 /* planetinfo.plist */; };
 		1AA324120F0B909F00B410D7 /* OOMeshBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA324110F0B909F00B410D7 /* OOMeshBuilder.h */; };
@@ -769,6 +772,7 @@
 			dstPath = AIs;
 			dstSubfolderSpec = 7;
 			files = (
+				1A94E54B0F34968B00F1B5D9 /* delayedReactToAttackAI.plist in Copy AIs */,
 				1A572FE50D84B6A3003D4A26 /* oolite-constrictor-AI.plist in Copy AIs */,
 				1A2317B30B9D022500EF0852 /* buoyAI.plist in Copy AIs */,
 				1A2317B40B9D022500EF0852 /* collectLootAI.plist in Copy AIs */,
@@ -1054,6 +1058,8 @@
 			files = (
 				1AD267650C83058C00B4BFD1 /* Debug.oxp in Copy Debug OXP */,
 				1AAF571F0F1A5C7A00A2F2E6 /* Comparison.h in Copy Debug OXP */,
+				1A94E5500F34972800F1B5D9 /* OOLegacyScriptWhitelist.m in Copy Debug OXP */,
+				1A94E5510F34972800F1B5D9 /* OOLegacyScriptWhitelist.h in Copy Debug OXP */,
 			);
 			name = "Copy Debug OXP";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1515,8 +1521,6 @@
 		1A73712C0C623DAE0097AC37 /* OOJSStation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSStation.m; sourceTree = "<group>"; };
 		1A7376BC0C64AE330097AC37 /* OOJSSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSSystem.h; sourceTree = "<group>"; };
 		1A7376BD0C64AE330097AC37 /* OOJSSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSSystem.m; sourceTree = "<group>"; };
-		1A73795B0C65CF090097AC37 /* OOLegacyEventHandlerScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLegacyEventHandlerScript.h; sourceTree = "<group>"; };
-		1A73795C0C65CF090097AC37 /* OOLegacyEventHandlerScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLegacyEventHandlerScript.m; sourceTree = "<group>"; };
 		1A7B967E0E620C9E00322821 /* OOSoundInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOSoundInternal.h; sourceTree = "<group>"; };
 		1A7BA80B0D84231A003C6CA3 /* ShipEntityScriptMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShipEntityScriptMethods.h; sourceTree = "<group>"; };
 		1A7BA80C0D84231A003C6CA3 /* ShipEntityScriptMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipEntityScriptMethods.m; sourceTree = "<group>"; };
@@ -1574,6 +1578,9 @@
 		1A94D5AD0D65A6960072C805 /* OOLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLight.h; sourceTree = "<group>"; };
 		1A94D5B30D65A6B40072C805 /* OOCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOCamera.h; sourceTree = "<group>"; };
 		1A94D5B40D65A6B40072C805 /* OOCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOCamera.m; sourceTree = "<group>"; };
+		1A94E5480F34967500F1B5D9 /* delayedReactToAttackAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = delayedReactToAttackAI.plist; path = ../../trunk/Resources/AIs/delayedReactToAttackAI.plist; sourceTree = SOURCE_ROOT; };
+		1A94E54E0F34972800F1B5D9 /* OOLegacyScriptWhitelist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOLegacyScriptWhitelist.m; path = ../../trunk/src/Core/Scripting/OOLegacyScriptWhitelist.m; sourceTree = SOURCE_ROOT; };
+		1A94E54F0F34972800F1B5D9 /* OOLegacyScriptWhitelist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOLegacyScriptWhitelist.h; path = ../../trunk/src/Core/Scripting/OOLegacyScriptWhitelist.h; sourceTree = SOURCE_ROOT; };
 		1A9533890C02089E004EBB58 /* material-defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "material-defaults.plist"; sourceTree = "<group>"; };
 		1A95338A0C02089E004EBB58 /* planetinfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = planetinfo.plist; sourceTree = "<group>"; };
 		1AA324110F0B909F00B410D7 /* OOMeshBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMeshBuilder.h; sourceTree = "<group>"; };
@@ -1901,6 +1908,7 @@
 				1A2317B00B9D022500EF0852 /* thargletAI.plist */,
 				1A2317B10B9D022500EF0852 /* thargoidAI.plist */,
 				1A2317B20B9D022500EF0852 /* timebombAI.plist */,
+				1A94E5480F34967500F1B5D9 /* delayedReactToAttackAI.plist */,
 			);
 			path = AIs;
 			sourceTree = "<group>";
@@ -2279,11 +2287,11 @@
 				1A5DBAA20BC000DC00D57389 /* OOScript.m */,
 				1A5DBA9E0BC000DC00D57389 /* OOPListScript.h */,
 				1A5DBA9F0BC000DC00D57389 /* OOPListScript.m */,
-				1A73795B0C65CF090097AC37 /* OOLegacyEventHandlerScript.h */,
-				1A73795C0C65CF090097AC37 /* OOLegacyEventHandlerScript.m */,
 				1A6B1EEE0C9AA5C6000717CF /* OOScriptTimer.h */,
 				1A6B1EEF0C9AA5C6000717CF /* OOScriptTimer.m */,
 				1A5DBAB50BC000E700D57389 /* JavaScript */,
+				1A94E54F0F34972800F1B5D9 /* OOLegacyScriptWhitelist.h */,
+				1A94E54E0F34972800F1B5D9 /* OOLegacyScriptWhitelist.m */,
 			);
 			path = Scripting;
 			sourceTree = "<group>";
@@ -2968,7 +2976,6 @@
 				1A736C7F0C61FD220097AC37 /* OOJSCall.h in Headers */,
 				1A73712D0C623DAE0097AC37 /* OOJSStation.h in Headers */,
 				1A7376BE0C64AE330097AC37 /* OOJSSystem.h in Headers */,
-				1A73795D0C65CF090097AC37 /* OOLegacyEventHandlerScript.h in Headers */,
 				1A4FB23A0C8D6A9A00DC8E1F /* jsautocfg.h in Headers */,
 				1A4FB23C0C8D6AA900DC8E1F /* jsapi.h in Headers */,
 				1A4FB23F0C8D6AB400DC8E1F /* jspubtd.h in Headers */,
@@ -3036,6 +3043,7 @@
 				1AB368B60F0E57830046BEAC /* OOPreloadModelLoadingController.h in Headers */,
 				1A0A31C70F0E5AAE00CCC319 /* OOShipPreloader.h in Headers */,
 				1ABC485D0F1577E600B977AD /* OOJSFunction.h in Headers */,
+				1A94E5550F34973600F1B5D9 /* OOLegacyScriptWhitelist.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3344,7 +3352,6 @@
 				1A736C800C61FD220097AC37 /* OOJSCall.m in Sources */,
 				1A73712E0C623DAE0097AC37 /* OOJSStation.m in Sources */,
 				1A7376BF0C64AE330097AC37 /* OOJSSystem.m in Sources */,
-				1A73795E0C65CF090097AC37 /* OOLegacyEventHandlerScript.m in Sources */,
 				1A4FB3360C8DC86800DC8E1F /* OOJSOolite.m in Sources */,
 				1ACEA34A0C91507000C7CE97 /* OORoleSet.m in Sources */,
 				1ACEA6C00C91DA3E00C7CE97 /* OOJSGlobal.m in Sources */,
@@ -3402,6 +3409,7 @@
 				1AB368B70F0E57830046BEAC /* OOPreloadModelLoadingController.m in Sources */,
 				1A0A31C80F0E5AAE00CCC319 /* OOShipPreloader.m in Sources */,
 				1ABC485C0F1577E600B977AD /* OOJSFunction.m in Sources */,
+				1A94E5580F34974700F1B5D9 /* OOLegacyScriptWhitelist.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

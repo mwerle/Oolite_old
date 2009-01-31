@@ -157,6 +157,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	reducedDetail = [prefs boolForKey:@"reduced-detail-graphics" defaultValue:NO];
 	autoSave = [prefs boolForKey:@"autosave" defaultValue:NO];
 	wireframeGraphics = [prefs boolForKey:@"wireframe-graphics" defaultValue:NO];
+#ifdef ALLOW_PROCEDURAL_PLANETS
+	doProcedurallyTexturedPlanets = [prefs boolForKey:@"procedurally-textured-planets" defaultValue:NO];
+#endif
 	shaderEffectsLevel = SHADERS_SIMPLE;
 	[self setShaderEffectsLevel:[prefs intForKey:@"shader-effects-level" defaultValue:shaderEffectsLevel]];
 	
@@ -294,10 +297,6 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	framesDoneThisUpdate = 0;
 	
-#ifdef ALLOW_PROCEDURAL_PLANETS	
-	doProcedurallyTexturedPlanets = NO;
-#endif
-	
 	OOInitDebugSupport();
 	
 	[[GameController sharedController] logProgress:@"Running scripts..."];
@@ -371,7 +370,8 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 
 - (void) setDoProcedurallyTexturedPlanets:(BOOL) value
 {
-	doProcedurallyTexturedPlanets = value;
+	doProcedurallyTexturedPlanets = !!value;	// ensure yes or no
+	[[NSUserDefaults standardUserDefaults] setBool:doProcedurallyTexturedPlanets forKey:@"procedurally-textured-planets"];
 }
 #endif
 
@@ -748,21 +748,18 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	PlayerEntity*		player = [PlayerEntity sharedPlayer];
 	Quaternion			randomQ;
 	
-	NSMutableDictionary*	systeminfo = [NSMutableDictionary dictionaryWithCapacity:4];
+	NSMutableDictionary *systeminfo = [NSMutableDictionary dictionaryWithCapacity:4];
 
-	if (player)
-	{
-		Random_Seed		s1 = player->system_seed;
-		Random_Seed		s2 = player->target_system_seed;
-		NSString*		override_key = [self keyForInterstellarOverridesForSystemSeeds:s1 :s2 inGalaxySeed:galaxy_seed];
-		
-		// check at this point
-		// for scripted overrides for this insterstellar area
-		[systeminfo addEntriesFromDictionary:[planetInfo dictionaryForKey:PLANETINFO_UNIVERSAL_KEY]];
-		[systeminfo addEntriesFromDictionary:[planetInfo dictionaryForKey:@"interstellar space"]];
-		[systeminfo addEntriesFromDictionary:[planetInfo dictionaryForKey:override_key]];
-		[systeminfo addEntriesFromDictionary:[localPlanetInfoOverrides dictionaryForKey:override_key]];
-	}
+	Random_Seed		s1 = player->system_seed;
+	Random_Seed		s2 = player->target_system_seed;
+	NSString*		override_key = [self keyForInterstellarOverridesForSystemSeeds:s1 :s2 inGalaxySeed:galaxy_seed];
+	
+	// check at this point
+	// for scripted overrides for this insterstellar area
+	[systeminfo addEntriesFromDictionary:[planetInfo dictionaryForKey:PLANETINFO_UNIVERSAL_KEY]];
+	[systeminfo addEntriesFromDictionary:[planetInfo dictionaryForKey:@"interstellar space"]];
+	[systeminfo addEntriesFromDictionary:[planetInfo dictionaryForKey:override_key]];
+	[systeminfo addEntriesFromDictionary:[localPlanetInfoOverrides dictionaryForKey:override_key]];
 	
 	[universeRegion clearSubregions];
 	
@@ -827,7 +824,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 			[thargoid setStatus:STATUS_IN_FLIGHT];
 			[self addEntity:thargoid];
 			if (thargoid_group == NO_TARGET)
+			{
 				thargoid_group = [thargoid universalID];
+			}
 			
 			[thargoid setGroupID:thargoid_group];
 			
@@ -837,7 +836,12 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	// systeminfo might have a 'script_actions' resource we want to activate now...
 	NSArray *script_actions = [systeminfo arrayForKey:@"script_actions"];
-	if (script_actions != nil)  [player scriptActions:script_actions forTarget: nil];
+	if (script_actions != nil)
+	{
+		[player runUnsanitizedScriptActions:script_actions
+							withContextName:@"witchspace script_actions"
+								  forTarget:nil];
+	}
 	
 	OOLogOutdentIf(kOOLogUniversePopulateWitchspace);
 }
@@ -1131,7 +1135,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	NSArray *script_actions = [systeminfo arrayForKey:@"script_actions"];
 	if (script_actions != nil)
 	{
-		[[PlayerEntity sharedPlayer] scriptActions:script_actions forTarget:nil];
+		[[PlayerEntity sharedPlayer] runUnsanitizedScriptActions:script_actions
+							withContextName:@"system script_actions"
+								  forTarget:nil];
 	}
 }
 
@@ -2836,15 +2842,15 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 
 - (BOOL) canInstantiateShip:(NSString *)shipKey
 {
-	PlayerEntity			*player = nil;
 	NSDictionary			*shipInfo = nil;
+	NSArray					*conditions = nil;
 	
 	shipInfo = [[OOShipRegistry sharedRegistry] shipInfoForKey:shipKey];
-	if ([shipInfo objectForKey:@"conditions"] == nil)  return YES;
+	conditions = [shipInfo arrayForKey:@"conditions"];
+	if (conditions == nil)  return YES;
 	
 	// Check conditions
-	player = [PlayerEntity sharedPlayer];
-	return [player checkCouplet:shipInfo onEntity:player];
+	return [[PlayerEntity sharedPlayer] scriptTestConditions:conditions];
 }
 
 
@@ -7028,10 +7034,11 @@ double estimatedTimeForJourney(double distance, int hops)
 			//eliminate any ships that fail a 'conditions test'
 			NSString		*key = [keysForShips stringAtIndex:si];
 			NSDictionary	*dict = [registry shipyardInfoForKey:key];
-			if ([dict objectForKey:@"conditions"])
+			NSArray			*conditions = [dict arrayForKey:@"conditions"];
+			
+			if (![player scriptTestConditions:conditions])
 			{
-				if (![player checkCouplet:dict onEntity:player])
-					[keysForShips removeObjectAtIndex:si--];
+				[keysForShips removeObjectAtIndex:si--];
 			}
 		}
 		

@@ -30,6 +30,30 @@ MA 02110-1301, USA.
 @class OOScript;
 
 
+typedef enum
+{
+	COMPARISON_EQUAL,
+	COMPARISON_NOTEQUAL,
+	COMPARISON_LESSTHAN,
+	COMPARISON_GREATERTHAN,
+	COMPARISON_ONEOF,
+	COMPARISON_UNDEFINED
+} OOComparisonType;
+
+
+typedef enum
+{
+	OP_STRING,
+	OP_NUMBER,
+	OP_BOOL,
+	OP_MISSION_VAR,
+	OP_LOCAL_VAR,
+	OP_FALSE,
+	
+	OP_INVALID	// Must be last.
+} OOOperationType;
+
+
 @interface PlayerEntity (Scripting)
 
 - (void) checkScript;
@@ -37,14 +61,11 @@ MA 02110-1301, USA.
 - (void) setScriptTarget:(ShipEntity *)ship;
 - (ShipEntity*) scriptTarget;
 
-- (void) scriptActions:(NSArray *)actions forTarget:(ShipEntity *)target;
-- (void) scriptActions:(NSArray *)actions forTarget:(ShipEntity *)target missionKey:(NSString *)missionKey;
+- (void) runScriptActions:(NSArray *)sanitizedActions withContextName:(NSString *)contextName forTarget:(ShipEntity *)target;
+- (void) runUnsanitizedScriptActions:(NSArray *)unsanitizedActions withContextName:(NSString *)contextName forTarget:(ShipEntity *)target;
 
-- (void)runScript:(NSArray *)actions withName:(NSString *)scriptName forTarget:(ShipEntity *)target;	// Hook for OOPListScript
-
-- (BOOL) checkCouplet:(NSDictionary *) couplet onEntity:(Entity *) entity;
-- (void) scriptAction:(NSString *) scriptAction onEntity:(Entity *) entity;
-- (BOOL) scriptTestCondition:(NSString *) scriptCondition;
+// Test (sanitized) legacy script conditions array.
+- (BOOL) scriptTestConditions:(NSArray *)array;
 
 - (NSDictionary*) missionVariables;
 
@@ -79,7 +100,7 @@ MA 02110-1301, USA.
 - (NSNumber *) clock_hours_number;		// returns the game time in hours
 - (NSNumber *) clock_days_number;		// returns the game time in days
 
-- (NSNumber *) fuel_level_number;		// returns the fuel level in LY
+- (NSNumber *) fuelLevel_number;		// returns the fuel level in LY
 
 - (NSString *) dockedAtMainStation_bool;
 - (NSString *) foundEquipment_bool;
@@ -193,7 +214,7 @@ MA 02110-1301, USA.
 - (void) setMissionImage: (NSString *)value;
 
 - (void) setFuelLeak: (NSString *)value;
-- (NSNumber *)fuel_leak_rate_number;
+- (NSNumber *)fuelLeakRate_number;
 - (void) setSunNovaIn: (NSString *)time_value;
 - (void) launchFromStation;
 - (void) blowUpStation;
@@ -227,4 +248,4 @@ MA 02110-1301, USA.
 @end
 
 
-
+NSString *OOComparisonTypeToString(OOComparisonType type) CONST_FUNC;
