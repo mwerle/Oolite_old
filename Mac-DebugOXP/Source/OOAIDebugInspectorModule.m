@@ -19,6 +19,8 @@
 {
 	AI					*object = [self object];
 	NSString			*placeholder = InspectorUnknownValueString();
+	NSSet				*pending = nil;
+	NSString			*pendingDesc = nil;
 	
 	[_stateMachineNameField setStringValue:[object name] ?: placeholder];
 	[_stateField setStringValue:[object state] ?: placeholder];
@@ -32,12 +34,31 @@
 		[_stackDepthField setStringValue:placeholder];
 		[_timeToThinkField setStringValue:placeholder];
 	}
+	
+	pending = [object pendingMessages];
+	if ([pending count] == 0)
+	{
+		pendingDesc = @"none";
+	}
+	else
+	{
+		pendingDesc = [[[pending allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] componentsJoinedByString:@", "];
+		pendingDesc = [NSString stringWithFormat:@"%u: %@", [pending count], pendingDesc];
+	}
+	
+	[_pendingMessagesField setStringValue:pendingDesc];
 }
 
 
 - (IBAction) thinkNow:sender
 {
 	[[self object] setNextThinkTime:[UNIVERSE getTime]];
+}
+
+
+- (IBAction) dumpPendingMessages:sender
+{
+	[[self object] debugDumpPendingMessages];
 }
 
 @end
