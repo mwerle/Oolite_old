@@ -41,6 +41,9 @@
 		1A57300E0D84C10F003D4A26 /* OOEntityInspectorExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A57300C0D84C10F003D4A26 /* OOEntityInspectorExtensions.h */; };
 		1A57300F0D84C10F003D4A26 /* OOEntityInspectorExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */; };
 		1A5730A10D84D0C3003D4A26 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A57309F0D84D0C3003D4A26 /* Localizable.strings */; };
+		1A909C880F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909C860F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h */; };
+		1A909C890F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909C870F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m */; };
+		1A909C940F3C6DCA003AE160 /* OOShipGroupDebugInspectorModule.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A909C920F3C6DCA003AE160 /* OOShipGroupDebugInspectorModule.xib */; };
 		1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */; };
 		1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */; };
 		1AF024720C99931C006F7275 /* RBSplitSubview.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF0246D0C99931C006F7275 /* RBSplitSubview.h */; };
@@ -140,6 +143,9 @@
 		1A57300D0D84C10F003D4A26 /* OOEntityInspectorExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOEntityInspectorExtensions.m; sourceTree = "<group>"; };
 		1A5730A00D84D0C3003D4A26 /* English */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 10; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1A846BAB0D79F9680081280D /* oolite-version.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-version.xcconfig"; path = "../src/Cocoa/oolite-version.xcconfig"; sourceTree = SOURCE_ROOT; };
+		1A909C860F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOShipGroupDebugInspectorModule.h; sourceTree = "<group>"; };
+		1A909C870F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOShipGroupDebugInspectorModule.m; sourceTree = "<group>"; };
+		1A909C930F3C6DCA003AE160 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OOShipGroupDebugInspectorModule.xib; sourceTree = "<group>"; };
 		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
 		1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextFieldHistoryManager.m; sourceTree = "<group>"; };
 		1AF0246D0C99931C006F7275 /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
@@ -197,6 +203,7 @@
 				1A2DFAF30D8925CB0055CF71 /* OOEntityDebugInspectorModule.xib */,
 				1A2DFBC60D894A100055CF71 /* OOShipDebugInspectorModule.xib */,
 				1A0CF1B50D89FD9A00E0B568 /* OOAIDebugInspectorModule.xib */,
+				1A909C920F3C6DCA003AE160 /* OOShipGroupDebugInspectorModule.xib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				1A0255330C7E1BF000F622D4 /* debugLogMessageClassesMenu.plist */,
 				1A2DA4380CB788DB00DE6823 /* debugConfig.plist */,
@@ -279,6 +286,8 @@
 				1A2DFBCA0D894A1D0055CF71 /* OOShipDebugInspectorModule.m */,
 				1A0CF1AF0D89FD7700E0B568 /* OOAIDebugInspectorModule.h */,
 				1A0CF1B00D89FD7700E0B568 /* OOAIDebugInspectorModule.m */,
+				1A909C860F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h */,
+				1A909C870F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m */,
 			);
 			name = Inspector;
 			sourceTree = "<group>";
@@ -318,6 +327,7 @@
 				1A2DFB0A0D8927B20055CF71 /* OOObjectDebugInspectorModule.h in Headers */,
 				1A2DFBCB0D894A1D0055CF71 /* OOShipDebugInspectorModule.h in Headers */,
 				1A0CF1B10D89FD7700E0B568 /* OOAIDebugInspectorModule.h in Headers */,
+				1A909C880F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +388,7 @@
 				1A2DFBC80D894A100055CF71 /* OOShipDebugInspectorModule.xib in Resources */,
 				1A0CF1B70D89FD9A00E0B568 /* OOAIDebugInspectorModule.xib in Resources */,
 				1A0CF2000D8A083900E0B568 /* OODebugController.xib in Resources */,
+				1A909C940F3C6DCA003AE160 /* OOShipGroupDebugInspectorModule.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,6 +454,7 @@
 				1A2DFB0B0D8927B20055CF71 /* OOObjectDebugInspectorModule.m in Sources */,
 				1A2DFBCC0D894A1D0055CF71 /* OOShipDebugInspectorModule.m in Sources */,
 				1A0CF1B20D89FD7700E0B568 /* OOAIDebugInspectorModule.m in Sources */,
+				1A909C890F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -503,6 +515,14 @@
 				1A5730A00D84D0C3003D4A26 /* English */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		1A909C920F3C6DCA003AE160 /* OOShipGroupDebugInspectorModule.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A909C930F3C6DCA003AE160 /* English */,
+			);
+			name = OOShipGroupDebugInspectorModule.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -18,6 +18,8 @@
 	IBOutlet NSButton			*_reportAIMessagesCheckBox;
 	IBOutlet NSTextField		*_behaviourField;
 	IBOutlet NSTextField		*_scriptField;
+	IBOutlet NSTextField		*_groupField;
+	IBOutlet NSTextField		*_escortGroupField;
 	IBOutlet NSTextField		*_laserTempField;
 	IBOutlet NSLevelIndicator	*_laserTempIndicator;
 	IBOutlet NSTextField		*_cabinTempField;
@@ -28,6 +30,8 @@
 
 - (IBAction) inspectTarget:sender;
 - (IBAction) inspectAI:sender;
+- (IBAction) inspectGroup:sender;
+- (IBAction) inspectEscortGroup:sender;
 - (IBAction) takeReportAIMessagesFrom:sender;
 
 @end

@@ -8,12 +8,21 @@
 
 #import "OOShipDebugInspectorModule.h"
 #import "OOEntityDebugInspectorModule.h"
+#import "OOShipGroupDebugInspectorModule.h"
 #import "OOEntityInspectorExtensions.h"
 #import "ShipEntity.h"
 #import "OODebugInspector.h"
 #import "AI.h"
 #import "OORoleSet.h"
+#import "OOShipGroup.h"
 #import "OOConstToString.h"
+
+
+@interface ShipEntity (DebugRawAccess)
+
+- (OOShipGroup *) rawEscortGroup;
+
+@end
 
 
 @implementation OOShipDebugInspectorModule
@@ -58,6 +67,10 @@
 	[_reportAIMessagesCheckBox setState:[object reportAIMessages]];
 	[_behaviourField setStringValue:object ? BehaviourToString([object behaviour]) : placeholder];
 	[_scriptField setStringValue:[[object script] name] ?: placeholder];
+	
+	[_groupField setStringValue:[[object group] inspDescription] ?: placeholder];
+	[_escortGroupField setStringValue:[[object rawEscortGroup] inspDescription] ?: placeholder];
+	
 	if (object != nil)
 	{
 		level = [object laserHeatLevel];
@@ -94,6 +107,18 @@
 }
 
 
+- (IBAction) inspectGroup:sender
+{
+	[[[self object] group] inspect];
+}
+
+
+- (IBAction) inspectEscortGroup:sender
+{
+	[[[self object] rawEscortGroup] inspect];
+}
+
+
 - (IBAction) takeReportAIMessagesFrom:sender
 {
 	[[self object] setReportAIMessages:[sender state]];
@@ -108,6 +133,16 @@
 {
 	return [[super debugInspectorModules] arrayByAddingInspectorModuleOfClass:[OOShipDebugInspectorModule class]
 																	forObject:(id)self];
+}
+
+@end
+
+
+@implementation ShipEntity (DebugRawAccess)
+
+- (OOShipGroup *) rawEscortGroup
+{
+	return _escortGroup;
 }
 
 @end

@@ -41,6 +41,7 @@ MA 02110-1301, USA.
 #import "OOMaterial.h"
 #import "OOTexture.h"
 #import "OORoleSet.h"
+#import "OOShipGroup.h"
 
 #import "Octree.h"
 #import "CollisionRegion.h"
@@ -798,12 +799,13 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	if (n_thargs < 1)
 		n_thargs = 2;   // just to be sure
 	int i;
-	int thargoid_group = NO_TARGET;
 	
 	Vector		tharg_start_pos = [self getWitchspaceExitPosition];
 	ranrot_srand([[NSDate date] timeIntervalSince1970]);   // reset randomiser with current time
-
+	
 	OOLog(kOOLogUniversePopulateWitchspace, @"... adding %d Thargoid warships", n_thargs);
+	
+	OOShipGroup *thargoidGroup = [OOShipGroup groupWithName:@"thargoid group"];
 	
 	for (i = 0; i < n_thargs; i++)
 	{
@@ -823,12 +825,8 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 			[thargoid setBounty:100];
 			[thargoid setStatus:STATUS_IN_FLIGHT];
 			[self addEntity:thargoid];
-			if (thargoid_group == NO_TARGET)
-			{
-				thargoid_group = [thargoid universalID];
-			}
 			
-			[thargoid setGroupID:thargoid_group];
+			[thargoid setGroup:thargoidGroup];
 			
 			[thargoid release];
 		}
@@ -1280,7 +1278,6 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	unsigned			thargoidChance;
 	Vector				lastPiratePosition = kZeroVector;
 	unsigned			wolfPackCounter = 0;
-	OOUniversalID		wolfPackGroup_id = NO_TARGET;
 	
 	systeminfo = [self generateSystemData:system_seed];
 	sunGoneNova = [systeminfo boolForKey:@"sun_gone_nova"];
@@ -1394,10 +1391,10 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 			[trader_ship setCargoFlag:CARGO_FLAG_FULL_SCARCE];
 			[trader_ship setStatus:STATUS_IN_FLIGHT];
 			
-			if (([trader_ship escortCount] > 0)&&((Ranrot() % 7) < government))	// remove escorts if we feel safe
+			if (([trader_ship pendingEscortCount] > 0)&&((Ranrot() % 7) < government))	// remove escorts if we feel safe
 			{
-				int nx = [trader_ship escortCount] - 2 * (1 + (Ranrot() & 3));	// remove 2,4,6, or 8 escorts
-				[trader_ship setEscortCount:(nx > 0) ? nx : 0];
+				int nx = [trader_ship pendingEscortCount] - 2 * (1 + (Ranrot() & 3));	// remove 2,4,6, or 8 escorts
+				[trader_ship setPendingEscortCount:(nx > 0) ? nx : 0];
 			}
 
 			[self addEntity:trader_ship];
@@ -1409,6 +1406,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	}
 	
 	// add the raiders to route1 (witchspace exit to space-station / planet)
+	OOShipGroup *wolfpackGroup = [OOShipGroup groupWithName:@"raider wolfpack"];
 	for (i = 0; (i < raiding_parties)&&(!sunGoneNova); i++)
 	{
 		pool = [[NSAutoreleasePool alloc] init];
@@ -1446,19 +1444,17 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 			}
 			
 			if (pirate_ship->scanClass == CLASS_NOT_SET)
+			{
 				[pirate_ship setScanClass: CLASS_NEUTRAL];
+			}
 			[pirate_ship setPosition:launchPos];
 			[pirate_ship setStatus:STATUS_IN_FLIGHT];
 			[pirate_ship setBounty: 20 + government + wolfPackCounter + (Ranrot() & 7)];
 			[pirate_ship setCargoFlag: CARGO_FLAG_PIRATE];
-
+			
 			[self addEntity:pirate_ship];
 			
-			if (wolfPackCounter == 0)	// first ship
-			{
-				wolfPackGroup_id = [pirate_ship universalID];
-			}
-			[pirate_ship setGroupID:wolfPackGroup_id];
+			[pirate_ship setGroup:wolfpackGroup];
 			
 			[[pirate_ship getAI] setStateMachine:@"pirateAI.plist"];	// must happen after adding to the universe!
 			[pirate_ship release];
@@ -1499,11 +1495,11 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 				[hunter_ship setPrimaryRole:@"police"];
 				if (hunter_ship->scanClass == CLASS_NOT_SET)
 					[hunter_ship setScanClass: CLASS_POLICE];
-				while (((Ranrot() & 7) + 2 < government)&&([hunter_ship escortCount] < 6))
+				while (((Ranrot() & 7) + 2 < government)&&([hunter_ship pendingEscortCount] < 6))
 				{
-					[hunter_ship setEscortCount:[hunter_ship escortCount] + 2];
+					[hunter_ship setPendingEscortCount:[hunter_ship pendingEscortCount] + 2];
 				}
-				escortsAdded = [hunter_ship escortCount];
+				escortsAdded = [hunter_ship pendingEscortCount];
 			}
 		}
 		else
@@ -1631,10 +1627,10 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 			[trader_ship setCargoFlag:CARGO_FLAG_FULL_PLENTIFUL];
 			[trader_ship setStatus:STATUS_IN_FLIGHT];
 			
-			if (([trader_ship escortCount] > 0)&&((Ranrot() % 7) < government))	// remove escorts if we feel safe
+			if (([trader_ship pendingEscortCount] > 0)&&((Ranrot() % 7) < government))	// remove escorts if we feel safe
 			{
-				int nx = [trader_ship escortCount] - 2 * (1 + (Ranrot() & 3));	// remove 2,4,6, or 8 escorts
-				[trader_ship setEscortCount:(nx > 0) ? nx : 0];
+				int nx = [trader_ship pendingEscortCount] - 2 * (1 + (Ranrot() & 3));	// remove 2,4,6, or 8 escorts
+				[trader_ship setPendingEscortCount:(nx > 0) ? nx : 0];
 			}
 			
 			[self addEntity:trader_ship];
@@ -1692,10 +1688,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 
 			[self addEntity:pirate_ship];
 			
-			if (wolfPackCounter == 0)	// first ship
-				wolfPackGroup_id = [pirate_ship universalID];
-
-			[pirate_ship setGroupID:wolfPackGroup_id];
+			[pirate_ship setGroup:wolfpackGroup];
 			
 			[[pirate_ship getAI] setStateMachine:@"pirateAI.plist"];	// must happen after adding to the universe!
 			[pirate_ship release];
@@ -1720,10 +1713,6 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 		launchPos.y += ship_location * v_route2.y + SCANNER_MAX_RANGE*((Ranrot() & 255)/256.0 - 0.5);
 		launchPos.z += ship_location * v_route2.z + SCANNER_MAX_RANGE*((Ranrot() & 255)/256.0 - 0.5);
 		
-#if DEAD_STORE
-		escortsAdded = 0;
-#endif
-		
 		if ((Ranrot() & 7) < government)
 		{
 			if ((Ranrot() & 7) + 6 <= techlevel)
@@ -1740,13 +1729,10 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 				[hunter_ship setPrimaryRole:@"police"];
 				if (hunter_ship->scanClass == CLASS_NOT_SET)
 					[hunter_ship setScanClass: CLASS_POLICE];
-				while (((Ranrot() & 7) + 2 < government)&&([hunter_ship escortCount] < 6))
+				while (((Ranrot() & 7) + 2 < government)&&([hunter_ship pendingEscortCount] < 6))
 				{
-					[hunter_ship setEscortCount:[hunter_ship escortCount] + 2];
+					[hunter_ship setPendingEscortCount:[hunter_ship pendingEscortCount] + 2];
 				}
-#if DEAD_STORE
-				escortsAdded = [hunter_ship escortCount];
-#endif
 			}
 		}
 		else
