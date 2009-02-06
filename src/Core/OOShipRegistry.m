@@ -866,6 +866,8 @@ static NSString * const	kDefaultDemoShip = @"coriolis-station";
 	GameController			*gameController = nil;
 	OOUInteger				count;
 	
+	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"preload-ship-meshes" defaultValue:YES])  return YES;
+	
 	preloader = [[[OOShipPreloader alloc] initWithExpectedMeshCount:[ioData count]] autorelease];
 	gameController = [GameController sharedController];
 	count = [ioData count];

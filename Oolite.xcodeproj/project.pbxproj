@@ -495,16 +495,22 @@
 		1A8A3D1B0B9B03A500AB7625 /* Oolite.mdimporter in Copy MDImporter */ = {isa = PBXBuildFile; fileRef = 1A5BF2770916D47300BF238F /* Oolite.mdimporter */; };
 		1A8BB8EA0E8311F900122974 /* OONullTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A8BB8E80E8311F900122974 /* OONullTexture.h */; };
 		1A8BB8EB0E8311F900122974 /* OONullTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8BB8E90E8311F900122974 /* OONullTexture.m */; };
-		1A909D600F3CA117003AE160 /* OOJSShipGroup.m in Copy Debug OXP */ = {isa = PBXBuildFile; fileRef = 1A909D5E0F3CA117003AE160 /* OOJSShipGroup.m */; };
-		1A909D610F3CA117003AE160 /* OOJSShipGroup.h in Copy Debug OXP */ = {isa = PBXBuildFile; fileRef = 1A909D5F0F3CA117003AE160 /* OOJSShipGroup.h */; };
-		1A909D770F3CA125003AE160 /* OOShipGroup.m in Copy Debug OXP */ = {isa = PBXBuildFile; fileRef = 1A909D750F3CA125003AE160 /* OOShipGroup.m */; };
-		1A909D780F3CA125003AE160 /* OOShipGroup.h in Copy Debug OXP */ = {isa = PBXBuildFile; fileRef = 1A909D760F3CA125003AE160 /* OOShipGroup.h */; };
 		1A909DB80F3CA25A003AE160 /* OOMeshLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909DB60F3CA25A003AE160 /* OOMeshLoader.m */; };
 		1A909DB90F3CA25A003AE160 /* OOMeshLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909DB70F3CA25A003AE160 /* OOMeshLoader.h */; };
 		1A909DBC0F3CA262003AE160 /* OOStandardModelLoadingController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909DBA0F3CA262003AE160 /* OOStandardModelLoadingController.h */; };
 		1A909DBD0F3CA262003AE160 /* OOStandardModelLoadingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909DBB0F3CA262003AE160 /* OOStandardModelLoadingController.m */; };
 		1A909DC00F3CA26A003AE160 /* OOConcreteMeshBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909DBE0F3CA26A003AE160 /* OOConcreteMeshBuilder.h */; };
 		1A909DC10F3CA26A003AE160 /* OOConcreteMeshBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909DBF0F3CA26A003AE160 /* OOConcreteMeshBuilder.m */; };
+		1A909DFF0F3CA8AC003AE160 /* OOShipGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909D750F3CA125003AE160 /* OOShipGroup.m */; };
+		1A909E000F3CA8AC003AE160 /* OOShipGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909D760F3CA125003AE160 /* OOShipGroup.h */; };
+		1A909E0D0F3CA8E1003AE160 /* OODATMeshLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909E0B0F3CA8E1003AE160 /* OODATMeshLoader.h */; };
+		1A909E0E0F3CA8E1003AE160 /* OODATMeshLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909E0C0F3CA8E1003AE160 /* OODATMeshLoader.m */; };
+		1A909E100F3CA90A003AE160 /* OOJSShipGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909D5F0F3CA117003AE160 /* OOJSShipGroup.h */; };
+		1A909E110F3CA90B003AE160 /* OOJSShipGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909D5E0F3CA117003AE160 /* OOJSShipGroup.m */; };
+		1A909E160F3CA92A003AE160 /* OOShipPreloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909E140F3CA929003AE160 /* OOShipPreloader.m */; };
+		1A909E170F3CA92A003AE160 /* OOShipPreloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909E150F3CA929003AE160 /* OOShipPreloader.h */; };
+		1A909E1B0F3CA93C003AE160 /* OOPreloadModelLoadingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909E190F3CA93C003AE160 /* OOPreloadModelLoadingController.m */; };
+		1A909E1C0F3CA93C003AE160 /* OOPreloadModelLoadingController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909E1A0F3CA93C003AE160 /* OOPreloadModelLoadingController.h */; };
 		1A9322970DF53C33003FD306 /* OOJSSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A9322950DF53C33003FD306 /* OOJSSystemInfo.h */; };
 		1A9322980DF53C33003FD306 /* OOJSSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9322960DF53C33003FD306 /* OOJSSystemInfo.m */; };
 		1A9400BE0BAF0ECD005F6CF3 /* OOStringParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9400BD0BAF0ECD005F6CF3 /* OOStringParsing.m */; };
@@ -1059,10 +1065,6 @@
 				1A3159280F1B7B7E00328E4A /* OOAIStateMachineVerifierStage.m in Copy Debug OXP */,
 				1A3C67F50F1C90BF0000D45B /* OOLegacyScriptWhitelist.h in Copy Debug OXP */,
 				1A3C67F60F1C90BF0000D45B /* OOLegacyScriptWhitelist.m in Copy Debug OXP */,
-				1A909D600F3CA117003AE160 /* OOJSShipGroup.m in Copy Debug OXP */,
-				1A909D610F3CA117003AE160 /* OOJSShipGroup.h in Copy Debug OXP */,
-				1A909D770F3CA125003AE160 /* OOShipGroup.m in Copy Debug OXP */,
-				1A909D780F3CA125003AE160 /* OOShipGroup.h in Copy Debug OXP */,
 			);
 			name = "Copy Debug OXP";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1565,6 +1567,12 @@
 		1A909DBB0F3CA262003AE160 /* OOStandardModelLoadingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOStandardModelLoadingController.m; sourceTree = "<group>"; };
 		1A909DBE0F3CA26A003AE160 /* OOConcreteMeshBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOConcreteMeshBuilder.h; sourceTree = "<group>"; };
 		1A909DBF0F3CA26A003AE160 /* OOConcreteMeshBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOConcreteMeshBuilder.m; sourceTree = "<group>"; };
+		1A909E0B0F3CA8E1003AE160 /* OODATMeshLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODATMeshLoader.h; sourceTree = "<group>"; };
+		1A909E0C0F3CA8E1003AE160 /* OODATMeshLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODATMeshLoader.m; sourceTree = "<group>"; };
+		1A909E140F3CA929003AE160 /* OOShipPreloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOShipPreloader.m; sourceTree = "<group>"; };
+		1A909E150F3CA929003AE160 /* OOShipPreloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOShipPreloader.h; sourceTree = "<group>"; };
+		1A909E190F3CA93C003AE160 /* OOPreloadModelLoadingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOPreloadModelLoadingController.m; sourceTree = "<group>"; };
+		1A909E1A0F3CA93C003AE160 /* OOPreloadModelLoadingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOPreloadModelLoadingController.h; sourceTree = "<group>"; };
 		1A9322950DF53C33003FD306 /* OOJSSystemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSSystemInfo.h; sourceTree = "<group>"; };
 		1A9322960DF53C33003FD306 /* OOJSSystemInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSSystemInfo.m; sourceTree = "<group>"; };
 		1A9400BD0BAF0ECD005F6CF3 /* OOStringParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOStringParsing.m; sourceTree = "<group>"; };
@@ -2316,8 +2324,8 @@
 				1A6B228C0C9B40D4000717CF /* OOJSTimer.m */,
 				1AC27A0D0EA7E9940054E5F0 /* OOJSEquipmentInfo.h */,
 				1AC27A0E0EA7E9940054E5F0 /* OOJSEquipmentInfo.m */,
-				1A909D5E0F3CA117003AE160 /* OOJSShipGroup.m */,
 				1A909D5F0F3CA117003AE160 /* OOJSShipGroup.h */,
+				1A909D5E0F3CA117003AE160 /* OOJSShipGroup.m */,
 			);
 			name = JavaScript;
 			sourceTree = "<group>";
@@ -2701,6 +2709,8 @@
 				1A2A1CA90BD2914F00152975 /* OOMesh.m */,
 				1A909DB60F3CA25A003AE160 /* OOMeshLoader.m */,
 				1A909DB70F3CA25A003AE160 /* OOMeshLoader.h */,
+				1A909E0B0F3CA8E1003AE160 /* OODATMeshLoader.h */,
+				1A909E0C0F3CA8E1003AE160 /* OODATMeshLoader.m */,
 				1A909DBE0F3CA26A003AE160 /* OOConcreteMeshBuilder.h */,
 				1A909DBF0F3CA26A003AE160 /* OOConcreteMeshBuilder.m */,
 				1A909DBA0F3CA262003AE160 /* OOStandardModelLoadingController.h */,
@@ -2764,6 +2774,10 @@
 				1ACEA3480C91507000C7CE97 /* OORoleSet.m */,
 				1A0479E70DC9F81000EE1CD0 /* OOShipRegistry.h */,
 				1A0479E80DC9F81000EE1CD0 /* OOShipRegistry.m */,
+				1A909E150F3CA929003AE160 /* OOShipPreloader.h */,
+				1A909E140F3CA929003AE160 /* OOShipPreloader.m */,
+				1A909E1A0F3CA93C003AE160 /* OOPreloadModelLoadingController.h */,
+				1A909E190F3CA93C003AE160 /* OOPreloadModelLoadingController.m */,
 				1A62F0FC0E26A2A000897506 /* OOEquipmentType.h */,
 				1A62F0FB0E26A2A000897506 /* OOEquipmentType.m */,
 			);
@@ -3034,6 +3048,11 @@
 				1A909DB90F3CA25A003AE160 /* OOMeshLoader.h in Headers */,
 				1A909DBC0F3CA262003AE160 /* OOStandardModelLoadingController.h in Headers */,
 				1A909DC00F3CA26A003AE160 /* OOConcreteMeshBuilder.h in Headers */,
+				1A909E000F3CA8AC003AE160 /* OOShipGroup.h in Headers */,
+				1A909E0D0F3CA8E1003AE160 /* OODATMeshLoader.h in Headers */,
+				1A909E100F3CA90A003AE160 /* OOJSShipGroup.h in Headers */,
+				1A909E170F3CA92A003AE160 /* OOShipPreloader.h in Headers */,
+				1A909E1C0F3CA93C003AE160 /* OOPreloadModelLoadingController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3398,6 +3417,11 @@
 				1A909DB80F3CA25A003AE160 /* OOMeshLoader.m in Sources */,
 				1A909DBD0F3CA262003AE160 /* OOStandardModelLoadingController.m in Sources */,
 				1A909DC10F3CA26A003AE160 /* OOConcreteMeshBuilder.m in Sources */,
+				1A909DFF0F3CA8AC003AE160 /* OOShipGroup.m in Sources */,
+				1A909E0E0F3CA8E1003AE160 /* OODATMeshLoader.m in Sources */,
+				1A909E110F3CA90B003AE160 /* OOJSShipGroup.m in Sources */,
+				1A909E160F3CA92A003AE160 /* OOShipPreloader.m in Sources */,
+				1A909E1B0F3CA93C003AE160 /* OOPreloadModelLoadingController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
