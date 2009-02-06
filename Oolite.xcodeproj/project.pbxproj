@@ -377,6 +377,8 @@
 		1A472917096B5454000E78D8 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472916096B5454000E78D8 /* CoreAudio.framework */; };
 		1A472921096B5468000E78D8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A47291F096B5468000E78D8 /* AudioToolbox.framework */; };
 		1A472922096B5468000E78D8 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A472920096B5468000E78D8 /* AudioUnit.framework */; };
+		1A4890960F3CD69F008117BD /* OOExcludeObjectEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4890940F3CD69F008117BD /* OOExcludeObjectEnumerator.m */; };
+		1A4890970F3CD69F008117BD /* OOExcludeObjectEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4890950F3CD69F008117BD /* OOExcludeObjectEnumerator.h */; };
 		1A4FB23A0C8D6A9A00DC8E1F /* jsautocfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2390C8D6A9A00DC8E1F /* jsautocfg.h */; };
 		1A4FB23C0C8D6AA900DC8E1F /* jsapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB23B0C8D6AA900DC8E1F /* jsapi.h */; };
 		1A4FB23F0C8D6AB400DC8E1F /* jspubtd.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB23E0C8D6AB400DC8E1F /* jspubtd.h */; };
@@ -1438,6 +1440,8 @@
 		1A472916096B5454000E78D8 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		1A47291F096B5468000E78D8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		1A472920096B5468000E78D8 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		1A4890940F3CD69F008117BD /* OOExcludeObjectEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOExcludeObjectEnumerator.m; sourceTree = "<group>"; };
+		1A4890950F3CD69F008117BD /* OOExcludeObjectEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOExcludeObjectEnumerator.h; sourceTree = "<group>"; };
 		1A4FB2390C8D6A9A00DC8E1F /* jsautocfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsautocfg.h; path = xcode/jsautocfg.h; sourceTree = "<group>"; };
 		1A4FB23B0C8D6AA900DC8E1F /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = src/jsapi.h; sourceTree = "<group>"; };
 		1A4FB23E0C8D6AB400DC8E1F /* jspubtd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jspubtd.h; path = src/jspubtd.h; sourceTree = "<group>"; };
@@ -2493,6 +2497,8 @@
 		1A8A3BFB0B963F91007D20B8 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				1A4890950F3CD69F008117BD /* OOExcludeObjectEnumerator.h */,
+				1A4890940F3CD69F008117BD /* OOExcludeObjectEnumerator.m */,
 				1A909D750F3CA125003AE160 /* OOShipGroup.m */,
 				1A909D760F3CA125003AE160 /* OOShipGroup.h */,
 				1ABDBA390EB365D90086BC3D /* OOIsNumberLiteral.m */,
@@ -3053,6 +3059,7 @@
 				1A909E100F3CA90A003AE160 /* OOJSShipGroup.h in Headers */,
 				1A909E170F3CA92A003AE160 /* OOShipPreloader.h in Headers */,
 				1A909E1C0F3CA93C003AE160 /* OOPreloadModelLoadingController.h in Headers */,
+				1A4890970F3CD69F008117BD /* OOExcludeObjectEnumerator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3422,6 +3429,7 @@
 				1A909E110F3CA90B003AE160 /* OOJSShipGroup.m in Sources */,
 				1A909E160F3CA92A003AE160 /* OOShipPreloader.m in Sources */,
 				1A909E1B0F3CA93C003AE160 /* OOPreloadModelLoadingController.m in Sources */,
+				1A4890960F3CD69F008117BD /* OOExcludeObjectEnumerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
