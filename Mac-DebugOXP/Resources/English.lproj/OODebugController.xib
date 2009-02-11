@@ -8,6 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="237"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -211,13 +212,13 @@
 								</object>
 								<object class="NSMenuItem" id="955036251">
 									<reference key="NSMenu" ref="266309693"/>
-									<string key="NSTitle">Hide HUD</string>
+									<string key="NSTitle">Hide HUD and Dust</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="142044732"/>
 									<reference key="NSMixedImage" ref="11105957"/>
-									<int key="NSTag">512</int>
+									<int key="NSTag">2560</int>
 								</object>
 								<object class="NSMenuItem" id="330811453">
 									<reference key="NSMenu" ref="266309693"/>
@@ -1035,6 +1036,7 @@
 													</object>
 													<string key="NSFrame">{{1, 1}, {465, 295}}</string>
 													<reference key="NSSuperview" ref="530439762"/>
+													<reference key="NSNextKeyView" ref="361232484"/>
 													<reference key="NSDocView" ref="361232484"/>
 													<reference key="NSBGColor" ref="446104622"/>
 													<object class="NSCursor" key="NSCursor">
@@ -1066,6 +1068,7 @@
 											</object>
 											<string key="NSFrameSize">{482, 297}</string>
 											<reference key="NSSuperview" ref="1006463408"/>
+											<reference key="NSNextKeyView" ref="827342109"/>
 											<int key="NSsFlags">18</int>
 											<reference key="NSVScroller" ref="950291896"/>
 											<reference key="NSHScroller" ref="70857678"/>
@@ -2596,7 +2599,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{312, 822}, {178, 243}}</string>
+					<string>{{867, 822}, {201, 243}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

@@ -273,8 +273,23 @@ static OODebugController *sSingleton = nil;
 
 - (IBAction)toggleThisDebugFlagAction:sender
 {
-//	gDebugFlags ^= [sender tag];
-	NSString *command = [NSString stringWithFormat:@"console.debugFlags ^= 0x%.X", [sender tag]];
+	uint32_t					tag, bits;
+	NSString					*command = nil;
+	
+	tag = [sender tag];
+	bits = gDebugFlags & tag;
+	
+	if (bits != tag)
+	{
+		// Flags are off or mixed.
+		command = [NSString stringWithFormat:@"console.debugFlags |= 0x%.X", tag];
+	}
+	else
+	{
+		// Flags are all on.
+		command = [NSString stringWithFormat:@"console.debugFlags &= ~0x%.X", tag];
+	}
+	
 	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
 }
 
@@ -358,7 +373,8 @@ static OODebugController *sSingleton = nil;
 {
 	SEL							action = NULL;
 	NSString					*msgClass = nil;
-	uint32_t					tag;
+	uint32_t					tag, bits;
+	int							state;
 	
 	action = [menuItem action];
 	
@@ -371,7 +387,12 @@ static OODebugController *sSingleton = nil;
 	if (action == @selector(toggleThisDebugFlagAction:))
 	{
 		tag = [menuItem tag];
-		[menuItem setState:(gDebugFlags & tag) == tag];
+		bits = gDebugFlags & tag;
+		if (bits == 0)  state = NSOffState;
+		else if (bits == tag)  state = NSOnState;
+		else state = NSMixedState;
+		
+		[menuItem setState:state];
 		return YES;
 	}
 	if (action == @selector(toggleWireframeModeAction:))
