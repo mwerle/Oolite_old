@@ -399,6 +399,8 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	//       reinitialize itself - mwerle 20081107.
 	[[OOShipRegistry sharedRegistry] init];
 
+	[[gameView gameController] unpause_game];
+
 #ifndef GNUSTEP
 	//// speech stuff
 	
@@ -7739,20 +7741,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 	displayCursor = !!value;
 	
 #ifdef GNUSTEP
-	if ([gameView inFullScreenMode])
-	{
-		if (displayCursor == YES)
-		{
-			// *** Is the query actually necessary or meaningful? -- Jens
-			if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
-				SDL_ShowCursor(SDL_ENABLE);
-		}
-		else
-		{
-			if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
-				SDL_ShowCursor(SDL_DISABLE);
-		}
-	}
+
+	[gameView autoShowMouse];
+	
 #endif
 }
 

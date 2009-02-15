@@ -131,7 +131,7 @@ extern int debug;
    // Mouse mode indicator (for mouse movement model)
    BOOL  mouseInDeltaMode;
 }
-
+- (void) autoShowMouse;
 
 - (void) setStringInput: (enum StringInput) value;
 - (void) allowStringInput: (BOOL) value;

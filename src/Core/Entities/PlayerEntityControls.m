@@ -456,6 +456,14 @@ static NSTimeInterval	time_last_frame;
 			m_key_pressed = NO;
 		}
 	}
+	else
+	{
+		if (mouse_control_on)
+		{
+			mouse_control_on = NO;
+			[UNIVERSE addMessage:DESC(@"mouse-off") forCount:3.0];
+		}
+	}
 }
 
 

@@ -140,16 +140,7 @@ MA 02110-1301, USA.
 	bounds.size.width = surface->w;
 	bounds.size.height = surface->h;
 
-	if (fullScreen)
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
-			SDL_ShowCursor(SDL_DISABLE);
-	}
-	else
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
-			SDL_ShowCursor(SDL_ENABLE);
-	}
+	[self autoShowMouse];
 
 	virtualJoystickPosition = NSMakePoint(0.0,0.0);
 
@@ -187,6 +178,20 @@ MA 02110-1301, USA.
 	[super dealloc];
 }
 
+- (void) autoShowMouse
+{
+	//call after the bounds property is set & shouldn't touch the 'please wait...' cursor.
+	if (fullScreen)
+	{
+		if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)		
+			SDL_ShowCursor(SDL_DISABLE);
+	}
+	else
+	{
+		if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
+			SDL_ShowCursor(SDL_ENABLE);
+	}
+}
 
 - (void) setStringInput: (enum StringInput) value
 {
@@ -388,16 +393,7 @@ MA 02110-1301, USA.
 
 	surface = SDL_SetVideoMode((int)v_size.width, (int)v_size.height, 32, videoModeFlags);
 
-	if (fullScreen)
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
-			SDL_ShowCursor(SDL_DISABLE);
-	}
-	else
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
-			SDL_ShowCursor(SDL_ENABLE);
-	}
+	[self autoShowMouse];
 
 	glShadeModel(GL_FLAT);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
