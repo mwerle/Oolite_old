@@ -541,7 +541,6 @@ static GLfloat	texture_uv_array[10400 * 2];
 #ifdef ALLOW_PROCEDURAL_PLANETS
 	if (procGen)
 	{
-		RANROTSeed ranrotSavedSeed = RANROTGetFullSeed();
 		fillRanNoiseBuffer();
 		textureName = [TextureStore getPlanetTextureNameFor: planetInfo intoData: &textureData];
 		isTextured = (textureName != 0);
@@ -562,7 +561,6 @@ static GLfloat	texture_uv_array[10400 * 2];
 		}
 #endif
 #endif
-		RANROTSetFullSeed(ranrotSavedSeed);
 	}
 	else
 #endif
