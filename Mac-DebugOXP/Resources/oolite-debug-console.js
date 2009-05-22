@@ -121,7 +121,10 @@ this.dumpObjectShort = function (x)
 	consoleMessage("dumpObject", x.toString() + ":");
 	for (let prop in x)
 	{
-		consoleMessage("dumpObject", "    " + prop);
+		if (prop.hasOwnProperty(name))
+		{
+			consoleMessage("dumpObject", "    " + prop);
+		}
 	}
 }
 
@@ -139,7 +142,10 @@ this.dumpObjectLong = function (x)
 	consoleMessage("dumpObject", x.toString() + ":");
 	for (let prop in x)
 	{
-		consoleMessage("dumpObject", "    " + prop + " = " + x[prop]);
+		if (prop.hasOwnProperty(name))
+		{
+			consoleMessage("dumpObject", "    " + prop + " = " + x[prop]);
+		}
 	}
 }
 
