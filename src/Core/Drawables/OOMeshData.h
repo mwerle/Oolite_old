@@ -94,7 +94,7 @@ OOINLINE BOOL OOMeshDataGetNormal(OOMeshData *meshData, GLuint index, Vector *ou
 	assert(outNormal != NULL);
 	GLuint element;
 	if (!OOMeshDataGetElementIndex(meshData, index, &element))  return NO;
-	*outNormal = meshData->vertexArray[element];
+	*outNormal = meshData->normalArray[element];
 	return YES;
 }
 
@@ -104,7 +104,7 @@ OOINLINE BOOL OOMeshDataGetTangent(OOMeshData *meshData, GLuint index, Vector *o
 	assert(outTangent != NULL);
 	GLuint element;
 	if (!OOMeshDataGetElementIndex(meshData, index, &element))  return NO;
-	*outTangent = meshData->vertexArray[element];
+	*outTangent = meshData->tangentArray[element];
 	return YES;
 }
 
