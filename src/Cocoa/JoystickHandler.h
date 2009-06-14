@@ -87,6 +87,9 @@ enum {
   BUTTON_ARMMISSILE,
   BUTTON_LAUNCHMISSILE,
   BUTTON_UNARM,
+#ifdef TARGET_INCOMING_MISSILES
+  BUTTON_TARGETINCOMINGMISSILE,
+#endif
   BUTTON_CYCLEMISSILE,
   BUTTON_ENERGYBOMB,
   BUTTON_ID,
@@ -104,7 +107,9 @@ enum {
 // Stick constants
 #define MAX_STICKS 4
 #define MAX_AXES  16
-#define MAX_BUTTONS  64
+#define MAX_REAL_BUTTONS  64
+#define MAX_HATS  0
+#define MAX_BUTTONS (MAX_REAL_BUTTONS + 4 * MAX_HATS)
 #define STICK_NOFUNCTION -1
 #define STICK_AXISUNASSIGNED -10.0
 #define STICK_PRECISIONDIV 98304 // 3 times more precise
@@ -141,6 +146,7 @@ enum {
 - (NSPoint) getRollPitchAxis;
 - (NSPoint) getViewAxis;
 - (double) getAxisState:(int)function;
+- (double) getSensitivity;
 - (const BOOL *) getAllButtonStates;
 
 @end

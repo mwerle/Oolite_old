@@ -211,7 +211,7 @@ MA 02110-1301, USA.
 	NSMutableDictionary		*previousCondition;			// restored after collision avoidance
 	
 	// derived variables
-	double					weapon_recharge_rate;		// time between shots
+	float					weapon_recharge_rate;		// time between shots
 	int						shot_counter;				// number of shots fired
 	double					cargo_dump_time;			// time cargo was last dumped
 	
@@ -305,7 +305,8 @@ MA 02110-1301, USA.
 - (void) setAI:(AI *) ai;
 - (AI *) getAI;
 - (void) setShipScript:(NSString *) script_name;
-- (OOScript *)shipScript;
+- (OOScript *) shipScript;
+- (double) frustration;
 
 - (void) interpretAIMessage:(NSString *)message;
 
@@ -503,7 +504,9 @@ MA 02110-1301, USA.
 
 - (GLfloat) weaponRange;
 - (void) setWeaponRange:(GLfloat) value;
-- (void) setWeaponDataFromType:(int) weapon_type;
+- (void) setWeaponDataFromType:(OOWeaponType)weapon_type;
+- (float) weaponRechargeRate;
+- (void) setWeaponRechargeRate:(float)value;
 
 - (GLfloat) scannerRange;
 - (void) setScannerRange: (GLfloat) value;
@@ -515,7 +518,8 @@ MA 02110-1301, USA.
 - (void) setReportAIMessages:(BOOL) yn;
 
 - (void) transitionToAegisNone;
-- (PlanetEntity *) findPlanetNearestSurface;
+- (PlanetEntity *) findNearestPlanet;
+- (PlanetEntity *) findNearestStellarBody;		// NOTE: includes sun.
 - (OOAegisStatus) checkForAegis;
 - (BOOL) withinStationAegis;
 
@@ -673,6 +677,8 @@ BOOL	class_masslocks(int some_class);
 - (BOOL) fireLaserShotInDirection: (OOViewID) direction;
 - (BOOL) firePlasmaShot:(double) offset :(double) speed :(OOColor *) color;
 - (BOOL) fireMissile;
+- (BOOL) isMissileFlagSet;
+- (void) setIsMissileFlag:(BOOL)newValue;
 - (BOOL) fireECM;
 - (BOOL) activateCloakingDevice;
 - (void) deactivateCloakingDevice;
@@ -717,8 +723,6 @@ BOOL	class_masslocks(int some_class);
 
 - (void) setTargetToNearestStation;
 - (void) setTargetToSystemStation;
-
-- (PlanetEntity *) findNearestPlanet;
 
 - (void) landOnPlanet:(PlanetEntity *)planet;
 

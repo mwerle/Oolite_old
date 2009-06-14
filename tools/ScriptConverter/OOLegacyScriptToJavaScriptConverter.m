@@ -9,6 +9,7 @@
 #import "OOLegacyScriptToJavaScriptConverterCore.h"
 #import "OOCollectionExtractors.h"
 #import "OOIsNumberLiteral.h"
+#import "OOJSExprNodeHelpers.h"
 
 
 NSString * const kOOScriptMetadataKeyName			= @"name";
@@ -390,6 +391,28 @@ static BOOL IsIdentifier(NSString *string);
 }
 
 
+- (OOJSExprNode *) convertVariableAccess:(NSString *)variableName
+{
+	NSString				*name = nil;
+	
+	if ([variableName hasPrefix:@"mission_"])
+	{
+		name = [variableName substringFromIndex:8];
+		return EX_PROP(@"missionVariables", name);
+	}
+	else if ([variableName hasPrefix:@"local_"])
+	{
+		return EX_THIS_PROP(variableName);
+	}
+	else
+	{
+		[self addStopIssueWithKey:@"bad-variable-name"
+						   format:@"Expected mission_variable or local_variable, got \"%@\".", variableName];
+		return EX_ERROR(@"bad variable name");
+	}
+}
+
+
 - (NSString *) expandStringWithLocalVariables:(NSString *)string
 {
 	/*	Strings with [local_foo] substitutions are handled by splitting
@@ -579,6 +602,125 @@ static BOOL IsIdentifier(NSString *string);
 	NSString *substr = [string substringWithRange:NSMakeRange(1, [string length] - 2)];	// unquoted string
 	if (IsIdentifier(substr))  return [@"." stringByAppendingString:substr];
 	else  return [NSString stringWithFormat:@"[%@]", string];
+}
+
+
+- (void) addRange:(NSRange)range fromString:(NSString *)string toResultList:(NSMutableArray *)results
+{
+	NSString			*subStr = nil;
+	OOJSExprNode		*node = nil;
+	
+	subStr = [string substringWithRange:range];
+	node = EX_STR(subStr);
+	
+	if (StringContainsEscapes(subStr))
+	{
+		node = EX_CALL(@"expandDescription", node);
+	}
+	
+	[results addObject:node];
+}
+
+
+- (OOJSExprNode *) expandRightHandSide:(NSString *)rhs
+{
+	if (OOScriptConverterIsNumberLiteral(rhs))  return OOJSExprNumberFromLiteral(rhs);
+	
+	if (!StringContainsEscapes(rhs))  return EX_STR(rhs);
+	
+	OOUInteger			length = [rhs length];
+	NSRange				remaining = {0, length};
+	OOUInteger			start, end;
+	NSRange				subrange;
+	NSString			*token = nil;
+	OOJSExprNode		*expansion = nil;
+	NSMutableArray		*components = nil;
+	OOJSExprNode		*result = nil;
+	OOUInteger			i, count;
+	static NSDictionary *specialCases = nil;
+	
+	if (specialCases == nil)
+	{
+	/*	Kludge: handle some common cases to make output code look less stupid.
+		A better way might be to expand all brackets instead. A problem there
+		is that in principle, descriptions.plist entries can override method
+		call substitutions (but not local or mission variables), although it
+		would be reasonable to consider that a bug.
+	*/
+		specialCases = [[NSDictionary alloc] initWithObjectsAndKeys:
+						EX_PROP(@"player", @"credits"), @"credits_number",
+						EX_PROP(@"player", @"score"), @"score_number",
+						EX_PROP(@"player", @"bounty"), @"legalStatus_number",
+						EX_PROP(@"player", @"bounty"), @"commanderLegalStatus_number",
+						EX_PROP(@"player", @"bounty"), @"commander_legal_status",
+						EX_PROP(@"system", @"psuedoRandom100"), @"d100_number",
+						EX_PROP(@"system", @"psuedoRandom256"), @"d256_number",
+						nil];
+	}
+		
+	components = [[NSMutableArray alloc] init];
+	
+	for (;;)
+	{
+		start = [rhs rangeOfString:@"[" options:NSLiteralSearch range:remaining].location;
+		if (start == NSNotFound)  break;
+		
+		end = [rhs rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(start + 1, length - start  - 1)].location + 1;
+		if (end == NSNotFound)  break;
+		
+		token = [rhs substringWithRange:NSMakeRange(start + 1, end - start - 2)];
+		expansion = nil;
+		
+		if ([token hasPrefix:@"local_"] || [token hasPrefix:@"mission_"])
+		{
+			expansion = [self convertVariableAccess:token];
+		}
+		else
+		{
+			expansion = [specialCases objectForKey:token];
+		}
+		
+		if (expansion != nil)
+		{
+			// Get segment to left
+			subrange = NSMakeRange(remaining.location, start - remaining.location);
+			if (subrange.length > 0)
+			{
+				[self addRange:subrange fromString:rhs toResultList:components];
+			}
+			
+			// Add expansion
+			[components addObject:expansion];
+		}
+		// Else skip and expand at runtime.
+		
+		remaining.location = end;
+		remaining.length = length - end;
+	}
+	
+	if (remaining.length != 0)
+	{
+		[self addRange:remaining fromString:rhs toResultList:components];
+	}
+	
+	count = [components count];
+	if (count == 0)
+	{
+		result = EX_STR(@"");
+	}
+	else
+	{
+		// Join components with + operator.
+		result = [components objectAtIndex:0];
+		
+		for (i = 1; i < count; i++)
+		{
+			result = EX_ADD(result, [components objectAtIndex:1]);
+		}
+	}
+	
+	[components release];
+	return result;
 }
 
 
@@ -794,7 +936,7 @@ static NSCharacterSet *NewlineCharSet(void)
 
 static NSCharacterSet *IdentifierCharSet(void)
 {
-	return [NSCharacterSet characterSetWithCharactersInString:@"_0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"];
+	return [NSCharacterSet characterSetWithCharactersInString:@"_0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm$"];
 }
 
 

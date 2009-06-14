@@ -191,6 +191,7 @@
 				D2AAC043055464E500DB518D /* Headers */,
 				D2AAC044055464E500DB518D /* Sources */,
 				D289987405E68DCB004EDB86 /* Frameworks */,
+				1A1A07B80F486468006C802F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -217,6 +218,22 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1A1A07B80F486468006C802F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -e \"$SRCROOT/../src/jsautocfg.h\" ]\nthen\n\techo \"error: jsautocfg.h exists in SpiderMonkey/js/src. This suggests you have run the configure script for libjs, which is not needed to build with Xcode.\"\n\t\n\tmv \"$SRCROOT/../src/jsautocfg.h\" \"$SRCROOT/../src/jsautocfg~.h\"\n\tif [ -e \"$SRCROOT/../src/jsautocfg.h\" ]\n\tthen\n\t\techo \"error: Attempting to remove the file failed. Please do it manually and perform a clean build of libjs.xcodeproj.\"\n\telse\n\t\trm -rf \"$PROJECT_TEMP_DIR\"\n\t\techo \"note: The file has been moved and the project has been cleaned. You may now rebuild.\"\n\tfi\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D2AAC044055464E500DB518D /* Sources */ = {

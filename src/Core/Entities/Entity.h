@@ -47,11 +47,9 @@ MA 02110-1301, USA.
 #define DEBUG_OCTREE_DRAW			0x00000080
 #define DEBUG_DRAW_NORMALS			0x00000100
 #define DEBUG_HIDE_HUD				0x00000200
-#define DEBUG_SLOW_MODE				0x00000400
-#define DEBUG_NO_DUST				0x00000800
+#define DEBUG_NO_DUST				0x00000400
 #define DEBUG_MISC					0x10000000
 
-#define DEBUG_SLOW_MODE_FACTOR		0.1
 
 extern uint32_t gDebugFlags;
 
@@ -109,7 +107,6 @@ typedef struct
 							isExplicitlyNotMainStation: 1;
 	
 	OOScanClass				scanClass;
-	OOEntityStatus			status;
 	
 	GLfloat					zero_distance;
 	GLfloat					no_draw_distance;		// 10 km initially
@@ -164,16 +161,17 @@ typedef struct
 	
 @private
 	OOWeakReference			*_owner;
+	OOEntityStatus			_status;
 }
 
-- (BOOL)isShip;
-- (BOOL)isStation;
-- (BOOL)isSubEntity;
-- (BOOL)isPlayer;
-- (BOOL)isPlanet;
-- (BOOL)isSun;
-- (BOOL)isSky;
-- (BOOL)isWormhole;
+- (BOOL) isShip;
+- (BOOL) isStation;
+- (BOOL) isSubEntity;
+- (BOOL) isPlayer;
+- (BOOL) isPlanet;
+- (BOOL) isSun;
+- (BOOL) isSky;
+- (BOOL) isWormhole;
 
 - (BOOL) validForAddToUniverse;
 - (void) addToLinkedLists;
@@ -264,8 +262,8 @@ typedef struct
 
 - (void) takeEnergyDamage:(double) amount from:(Entity *) ent becauseOf:(Entity *) other;
 
-- (void)dumpState;		// General "describe situtation verbosely in log" command.
-- (void)dumpSelfState;	// Subclasses should override this, not -dumpState, and call throught to super first.
+- (void) dumpState;		// General "describe situtation verbosely in log" command.
+- (void) dumpSelfState;	// Subclasses should override this, not -dumpState, and call throught to super first.
 
 // Subclass repsonsibilities
 - (double) findCollisionRadius;
@@ -273,8 +271,8 @@ typedef struct
 - (void) drawEntity:(BOOL)immediate :(BOOL)translucent;
 
 // For shader bindings.
-- (GLfloat)universalTime;
-- (GLfloat)spawnTime;
-- (GLfloat)timeElapsedSinceSpawn;
+- (GLfloat) universalTime;
+- (GLfloat) spawnTime;
+- (GLfloat) timeElapsedSinceSpawn;
 
 @end

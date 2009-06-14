@@ -72,6 +72,7 @@ MA 02110-1301, USA.
    return self;
 }
 
+
 - (BOOL) handleSDLEvent: (SDL_Event *)evt
 {
    BOOL rc=NO;
@@ -86,35 +87,50 @@ MA 02110-1301, USA.
          [self decodeButtonEvent: (SDL_JoyButtonEvent *)evt];
          rc=YES;
          break;
+      case SDL_JOYHATMOTION:
+         [self decodeHatEvent: (SDL_JoyHatEvent *)evt];
+         rc=YES;
+         break;
       default:
          NSLog(@"JoystickHandler was sent an event it doesn't know");
    }
    return rc;
 }
 
+
 - (NSPoint) getRollPitchAxis
 {
    return NSMakePoint(axstate[AXIS_ROLL], axstate[AXIS_PITCH]);
 }
+
 
 - (NSPoint) getViewAxis
 {
    return NSMakePoint(axstate[AXIS_VIEWX], axstate[AXIS_VIEWY]);
 }
 
+
 - (BOOL) getButtonState: (int)function
 {
    return butstate[function];
 }
+
 
 - (const BOOL *)getAllButtonStates
 {
    return butstate;
 }
 
+
 - (double) getAxisState: (int)function
 {
    return axstate[function];
+}
+
+
+- (double) getSensitivity
+{
+   return precisionMode ? STICK_PRECISIONFAC : 1.0;
 }
 
 - (NSArray *)listSticks
@@ -127,6 +143,7 @@ MA 02110-1301, USA.
    }
    return stickList;
 }
+
 
 - (NSDictionary *)getAxisFunctions
 {
@@ -153,6 +170,7 @@ MA 02110-1301, USA.
    return fnList;
 }
 
+
 - (NSDictionary *)getButtonFunctions
 {
    int i, j;
@@ -178,6 +196,7 @@ MA 02110-1301, USA.
    return fnList;
 }
 
+
 - (void) setFunction: (int)function  withDict: (NSDictionary *)stickFn
 {
    BOOL isAxis=[(NSNumber *)[stickFn objectForKey: STICK_ISAXIS] boolValue];
@@ -197,6 +216,7 @@ MA 02110-1301, USA.
                            stick: stickNum];
    }
 }
+
 
 - (void) setFunctionForAxis: (int)axis 
                    function: (int)function
@@ -230,6 +250,7 @@ MA 02110-1301, USA.
    }
 }
 
+
 - (void) setFunctionForButton: (int)button 
                      function: (int)function 
                         stick: (int)stickNum
@@ -249,6 +270,7 @@ MA 02110-1301, USA.
    buttonmap[stickNum][button]=function;
 }
 
+
 - (void) unsetAxisFunction: (int)function
 {
    int i, j;
@@ -266,6 +288,7 @@ MA 02110-1301, USA.
    }
 }
 
+
 - (void) unsetButtonFunction: (int)function
 {
    int i,j;
@@ -282,6 +305,7 @@ MA 02110-1301, USA.
    }
 }
 
+
 - (void) setDefaultMapping
 {
    // assign the simplest mapping: stick 0 having
@@ -292,6 +316,7 @@ MA 02110-1301, USA.
    buttonmap[0][0]=BUTTON_FIRE;
    buttonmap[0][1]=BUTTON_LAUNCHMISSILE;
 }
+
 
 - (void) clearMappings
 {
@@ -312,6 +337,7 @@ MA 02110-1301, USA.
    }
 }
 
+
 - (void) clearStickStates
 {
    int i;
@@ -325,20 +351,23 @@ MA 02110-1301, USA.
    }
 }
 
+
 - (void)setCallback: (SEL) selector
              object: (id) obj
            hardware: (char)hwflags
-{
-   cbObject=obj;
-   cbSelector=selector;
-   cbHardware=hwflags;
-}
+   {
+      cbObject=obj;
+      cbSelector=selector;
+      cbHardware=hwflags;
+   }
+
 
 - (void)clearCallback
 {
    cbObject=nil;
    cbHardware=0;
 }
+
 
 - (void)decodeAxisEvent: (SDL_JoyAxisEvent *)evt
 {
@@ -410,6 +439,7 @@ MA 02110-1301, USA.
    }
 }
 
+
 - (void)decodeButtonEvent: (SDL_JoyButtonEvent *)evt
 {
    BOOL bs=NO;
@@ -451,15 +481,15 @@ MA 02110-1301, USA.
          // adjust current states now
          if(precisionMode)
          {
-            axstate[AXIS_PITCH] /= STICK_PRECISIONFAC;
-            axstate[AXIS_ROLL] /= STICK_PRECISIONFAC;
-            axstate[AXIS_YAW] /= STICK_PRECISIONFAC;
+            if (axstate[AXIS_PITCH] != STICK_AXISUNASSIGNED) axstate[AXIS_PITCH] /= STICK_PRECISIONFAC;
+            if (axstate[AXIS_ROLL] != STICK_AXISUNASSIGNED) axstate[AXIS_ROLL] /= STICK_PRECISIONFAC;
+            if (axstate[AXIS_YAW] != STICK_AXISUNASSIGNED) axstate[AXIS_YAW] /= STICK_PRECISIONFAC;
          }
          else
          {
-            axstate[AXIS_PITCH] *= STICK_PRECISIONFAC;
-            axstate[AXIS_ROLL] *= STICK_PRECISIONFAC;
-            axstate[AXIS_YAW] *= STICK_PRECISIONFAC;
+            if (axstate[AXIS_PITCH] != STICK_AXISUNASSIGNED) axstate[AXIS_PITCH] *= STICK_PRECISIONFAC;
+            if (axstate[AXIS_ROLL] != STICK_AXISUNASSIGNED) axstate[AXIS_ROLL] *= STICK_PRECISIONFAC;
+            if (axstate[AXIS_YAW] != STICK_AXISUNASSIGNED) axstate[AXIS_YAW] *= STICK_PRECISIONFAC;
          }
       }
    }
@@ -471,10 +501,36 @@ MA 02110-1301, USA.
 
 }
 
+
+- (void)decodeHatEvent: (SDL_JoyHatEvent *)evt                                     
+{                                                                                  
+   // HACK: handle this as a set of buttons                                        
+   int i;                                                                          
+   SDL_JoyButtonEvent btn;                                                         
+                                                                                   
+   btn.which = evt->which;                                                         
+                                                                                   
+   for (i = 0; i < 4; ++i)                                                         
+   {                                                                               
+      if ((evt->value ^ hatstate[evt->which][evt->hat]) & (1 << i))                
+      {                                                                            
+         btn.type = (evt->value & (1 << i)) ? SDL_JOYBUTTONDOWN : SDL_JOYBUTTONUP; 
+         btn.button = MAX_REAL_BUTTONS + i + evt->which * 4;                       
+         btn.state = (evt->value & (1 << i)) ? SDL_PRESSED : SDL_RELEASED;         
+         [self decodeButtonEvent:&btn];                                            
+      }                                                                            
+   }                                                                               
+                                                                                   
+   hatstate[evt->which][evt->hat] = evt->value;                                    
+}                                                                                  
+
+
+
 - (int)getNumSticks
 {
    return numSticks;
 }
+
 
 - (void)saveStickSettings
 {
@@ -486,6 +542,7 @@ MA 02110-1301, USA.
    
    [defaults synchronize];
 }
+
 
 - (void)loadStickSettings
 {

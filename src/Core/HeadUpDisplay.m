@@ -3,7 +3,7 @@
 HeadUpDisplay.m
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -37,6 +37,7 @@ MA 02110-1301, USA.
 #import "OOEncodingConverter.h"
 #import "OOCrosshairs.h"
 #import "OOConstToString.h"
+#import "OOStringParsing.h"
 
 
 #define kOOLogUnconvertedNSLog @"unclassified.HeadUpDisplay"
@@ -130,6 +131,7 @@ GLfloat redplus_color[4] =  {1.0, 0.0, 0.5, 1.0};
 GLfloat yellow_color[4] =   {1.0, 1.0, 0.0, 1.0};
 GLfloat green_color[4] =	{0.0, 1.0, 0.0, 1.0};
 GLfloat darkgreen_color[4] ={0.0, 0.75, 0.0, 1.0};
+GLfloat cyan_color[4] =		{0.0, 1.0, 1.0, 1.0};
 GLfloat blue_color[4] =		{0.0, 0.0, 1.0, 1.0};
 GLfloat black_color[4] =	{0.0, 0.0, 0.0, 1.0};
 GLfloat lightgray_color[4] =	{0.25, 0.25, 0.25, 1.0};
@@ -187,6 +189,8 @@ OOINLINE void GLColorWithOverallAlpha(GLfloat *color, GLfloat alpha)
 	overallAlpha = [hudinfo floatForKey:@"overall_alpha" defaultValue:DEFAULT_OVERALL_ALPHA];
 	
 	reticleTargetSensitive = [hudinfo boolForKey:@"reticle_target_sensitive" defaultValue:NO];
+	
+	cloakIndicatorOnStatusLight = [hudinfo boolForKey:@"cloak_indicator_on_status_light" defaultValue:NO];
 	
 	last_transmitter = NO_TARGET;
 	
@@ -621,7 +625,7 @@ static BOOL hostiles;
 					double dist =   planet->zero_distance;
 					double rad =	planet->collision_radius;
 					double factor = ([planet planetType] == PLANET_TYPE_SUN) ? 2.0 : 4.0;
-					//mass lock no closer than 25 km from the surface
+					// mass lock when 25 km or less from the surface - dist is a square distance so needs to be compared to (rad+25000) * (rad+25000)!
 					if (dist< rad*rad +50000*rad+625000000 || dist < rad*rad*factor) 
 					{
 						mass_locked = YES;
@@ -895,18 +899,19 @@ static BOOL hostiles;
 	glEnd();
 	glLineWidth(line_width);	// thinner
 	
-	PlanetEntity*	the_sun = [UNIVERSE sun];
-	PlanetEntity*	the_planet = [UNIVERSE planet];
-	StationEntity*	the_station = [UNIVERSE station];
-	Entity*			the_target = [player primaryTarget];
-	Entity*			the_next_beacon = [UNIVERSE entityForUniversalID:[player nextBeaconID]];
-	int				p_status = player->status;
+	PlanetEntity	*the_sun = [UNIVERSE sun];
+	PlanetEntity	*the_planet = [UNIVERSE planet];
+	StationEntity	*the_station = [UNIVERSE station];
+	Entity			*the_target = [player primaryTarget];
+	Entity			*the_next_beacon = [UNIVERSE entityForUniversalID:[player nextBeaconID]];
+	OOEntityStatus	p_status = [player status];
 	if	(((p_status == STATUS_IN_FLIGHT)
 		||(p_status == STATUS_AUTOPILOT_ENGAGED)
 		||(p_status == STATUS_LAUNCHING)
 		||(p_status == STATUS_WITCHSPACE_COUNTDOWN))	// be in the right mode
 		&&(the_sun)
-		&&(the_planet))									// and be in a system
+		&&(the_planet)					// and be in a system
+		&& ![the_sun goneNova])				// and the system has not been novabombed
 	{
 		Entity *reference = nil;
 		
@@ -985,8 +990,22 @@ static BOOL hostiles;
 				break;
 			case COMPASS_MODE_BEACONS:
 				[self drawCompassBeaconBlipAt:relativePosition Size:sz Alpha:alpha];
-				OODrawString(	[NSString stringWithFormat:@"%c", [(ShipEntity*)the_next_beacon beaconChar]],
+				NSArray	 *icon = [[UNIVERSE descriptions] arrayForKey:[(ShipEntity*)the_next_beacon primaryRole]];
+				if (icon == nil)
+					OODrawString([NSString stringWithFormat:@"%c", [(ShipEntity*)the_next_beacon beaconChar]],
 							x - 2.5 * sz.width, y - 3.0 * sz.height, z1, NSMakeSize(sz.width * 2, sz.height * 2));
+				else
+				{
+					glBegin(GL_POLYGON);
+					hudDrawSpecialIconAt(icon,
+									x - sz.width, y - 1.5 * sz.height, z1, NSMakeSize(sz.width, sz.height));
+					glEnd();
+					glColor4f(0.0, 0.0, 0.0, 0.5 * alpha);
+					glBegin(GL_LINE_LOOP);
+					hudDrawSpecialIconAt(icon,
+									x - sz.width, y - 1.5 * sz.height, z1, NSMakeSize(sz.width, sz.height));
+					glEnd();
+				}
 				break;
 		}
 	}
@@ -1433,7 +1452,7 @@ static BOOL hostiles;
 		GLColorWithOverallAlpha(red_color, overallAlpha);
 	if ((flash)&&(temp > .90))
 		GLColorWithOverallAlpha(redplus_color, overallAlpha);
-	[player setAlertFlag:ALERT_FLAG_TEMP to:((temp > .90)&&(player->status == STATUS_IN_FLIGHT))];
+	[player setAlertFlag:ALERT_FLAG_TEMP to:((temp > .90)&&([player status] == STATUS_IN_FLIGHT))];
 	hudDrawBarAt(x, y, z1, siz, temp);
 }
 
@@ -1485,7 +1504,7 @@ static BOOL hostiles;
 
 	hudDrawBarAt(x, y, z1, siz, alt);
 	
-	[player setAlertFlag:ALERT_FLAG_ALT to:((alt < .10)&&(player->status == STATUS_IN_FLIGHT))];
+	[player setAlertFlag:ALERT_FLAG_ALT to:((alt < .10)&&([player status] == STATUS_IN_FLIGHT))];
 }
 
 
@@ -1636,7 +1655,7 @@ static BOOL hostiles;
 {
 	PlayerEntity *player = [PlayerEntity sharedPlayer];
 	
-	if ([player dialMissileStatus] == MISSILE_STATUS_TARGET_LOCKED)
+	if ([player primaryTargetID] != NO_TARGET)
 	{
 		hudDrawReticleOnTarget([player primaryTarget], player, z1, overallAlpha, reticleTargetSensitive);
 		[self drawDirectionCue:info];
@@ -1650,6 +1669,7 @@ static BOOL hostiles;
 	int				x;
 	int				y;
 	NSSize			siz;
+	BOOL			blueAlert = cloakIndicatorOnStatusLight && [player isCloaked];
 	
 	x = [info intForKey:X_KEY defaultValue:STATUS_LIGHT_CENTRE_X];
 	y = [info intForKey:Y_KEY defaultValue:STATUS_LIGHT_CENTRE_Y];
@@ -1665,17 +1685,17 @@ static BOOL hostiles;
 		case ALERT_CONDITION_RED :
 			status_color[0] = red_color[0];
 			status_color[1] = red_color[1];
-			status_color[2] = red_color[2];
+			status_color[2] = blueAlert ? blue_color[2] : red_color[2];
 			break;
 		case ALERT_CONDITION_GREEN :
 			status_color[0] = green_color[0];
 			status_color[1] = green_color[1];
-			status_color[2] = green_color[2];
+			status_color[2] = blueAlert ? blue_color[2] : green_color[2];
 			break;
 		case ALERT_CONDITION_YELLOW :
 			status_color[0] = yellow_color[0];
 			status_color[1] = yellow_color[1];
-			status_color[2] = yellow_color[2];
+			status_color[2] = blueAlert ? blue_color[2] : yellow_color[2];
 			break;
 		default :
 		case ALERT_CONDITION_DOCKED :
@@ -1707,62 +1727,59 @@ static BOOL hostiles;
 	if ([UNIVERSE displayGUI])
 		return;
 	
-	if ([player dialMissileStatus] == MISSILE_STATUS_TARGET_LOCKED)
+	GLfloat		clear_color[4] = {0.0, 1.0, 0.0, 0.0};
+	Entity		*target = [player primaryTarget];
+	if (!target)
+		return;
+	
+	// draw the direction cue
+	OOMatrix	rotMatrix;
+	Vector		position = [player position];
+	
+	rotMatrix = [player rotationMatrix];
+	
+	if ([UNIVERSE viewDirection] != VIEW_GUI_DISPLAY)
 	{
-		GLfloat		clear_color[4] = {0.0, 1.0, 0.0, 0.0};
-		Entity		*target = [player primaryTarget];
-		if (!target)
-			return;
+		GLfloat siz1 = CROSSHAIR_SIZE * (1.0 - ONE_EIGHTH);
+		GLfloat siz0 = CROSSHAIR_SIZE * ONE_EIGHTH;
+		GLfloat siz2 = CROSSHAIR_SIZE * (1.0 + ONE_EIGHTH);
 		
-		// draw the direction cue
-		OOMatrix	rotMatrix;
-		Vector		position = [player position];
+		// Transform the view
+		Vector rpn = vector_subtract([target position], position);
+		rpn = OOVectorMultiplyMatrix(rpn, rotMatrix);
 		
-		rotMatrix = [player rotationMatrix];
-		
-		if ([UNIVERSE viewDirection] != VIEW_GUI_DISPLAY)
+		switch ([UNIVERSE viewDirection])
 		{
-			GLfloat siz1 = CROSSHAIR_SIZE * (1.0 - ONE_EIGHTH);
-			GLfloat siz0 = CROSSHAIR_SIZE * ONE_EIGHTH;
-			GLfloat siz2 = CROSSHAIR_SIZE * (1.0 + ONE_EIGHTH);
+			case VIEW_AFT:
+				rpn.x = - rpn.x;
+				break;
+			case VIEW_PORT:
+				rpn.x = rpn.z;
+				break;
+			case VIEW_STARBOARD:
+				rpn.x = -rpn.z;
+				break;
+			case VIEW_CUSTOM:
+				rpn = OOVectorMultiplyMatrix(rpn, [player customViewMatrix]);
+				break;
 			
-			// Transform the view
-			Vector rpn = vector_subtract([target position], position);
-			rpn = OOVectorMultiplyMatrix(rpn, rotMatrix);
-			
-			switch ([UNIVERSE viewDirection])
-			{
-				case VIEW_AFT:
-					rpn.x = - rpn.x;
-					break;
-				case VIEW_PORT:
-					rpn.x = rpn.z;
-					break;
-				case VIEW_STARBOARD:
-					rpn.x = -rpn.z;
-					break;
-				case VIEW_CUSTOM:
-					rpn = OOVectorMultiplyMatrix(rpn, [player customViewMatrix]);
-					break;
-				
-				default:
-					break;
-			}
-			rpn.z = 0;	// flatten vector
-			if (rpn.x||rpn.y)
-			{
-				rpn = vector_normal(rpn);
-				glBegin(GL_LINES);
-					glColor4fv(clear_color);
-					glVertex3f(rpn.x * siz1 - rpn.y * siz0, rpn.y * siz1 + rpn.x * siz0, z1);
-					GLColorWithOverallAlpha(green_color, overallAlpha);
-					glVertex3f(rpn.x * siz2, rpn.y * siz2, z1);
-					glColor4fv(clear_color);
-					glVertex3f(rpn.x * siz1 + rpn.y * siz0, rpn.y * siz1 - rpn.x * siz0, z1);
-					GLColorWithOverallAlpha(green_color, overallAlpha);
-					glVertex3f(rpn.x * siz2, rpn.y * siz2, z1);
-				glEnd();
-			}
+			default:
+				break;
+		}
+		rpn.z = 0;	// flatten vector
+		if (rpn.x||rpn.y)
+		{
+			rpn = vector_normal(rpn);
+			glBegin(GL_LINES);
+				glColor4fv(clear_color);
+				glVertex3f(rpn.x * siz1 - rpn.y * siz0, rpn.y * siz1 + rpn.x * siz0, z1);
+				GLColorWithOverallAlpha(green_color, overallAlpha);
+				glVertex3f(rpn.x * siz2, rpn.y * siz2, z1);
+				glColor4fv(clear_color);
+				glVertex3f(rpn.x * siz1 + rpn.y * siz0, rpn.y * siz1 - rpn.x * siz0, z1);
+				GLColorWithOverallAlpha(green_color, overallAlpha);
+				glVertex3f(rpn.x * siz2, rpn.y * siz2, z1);
+			glEnd();
 		}
 	}
 }
@@ -1801,6 +1818,7 @@ static BOOL hostiles;
 	
 	NSString* positionInfo = [UNIVERSE expressPosition:player->position inCoordinateSystem:@"pwm"];
 	NSString* collDebugInfo = [NSString stringWithFormat:@"%@ - %@", [player dial_objinfo], [UNIVERSE collisionDescription]];
+	NSString* timeAccelerationFactorInfo = [NSString stringWithFormat:@"TAF: x%.2f", [UNIVERSE timeAccelerationFactor]];
 	
 	NSSize siz08 = NSMakeSize(0.8 * siz.width, 0.8 * siz.width);
 
@@ -1809,6 +1827,7 @@ static BOOL hostiles;
 	OODrawString(collDebugInfo, x, y - siz.height, z1, siz);
 	
 	OODrawString(positionInfo, x, y - 1.8 * siz.height, z1, siz08);
+	OODrawString(timeAccelerationFactorInfo, x, y - 3.2 * siz08.height, z1, siz08);
 }
 
 
@@ -2117,14 +2136,17 @@ static void hudDrawStatusIconAt(int x, int y, int z, NSSize siz)
 
 static void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloat z1, GLfloat overallAlpha, BOOL reticleTargetSensitive)
 {
-	ShipEntity		*target_ship = (ShipEntity *)target;
+	ShipEntity		*target_ship = nil;
 	NSString		*legal_desc = nil;
 	if ((!target)||(!player1))
 		return;
 
+	if ([target isShip])
+		target_ship = (ShipEntity*)target;
+
 	if ([target_ship isCloaked])  return;
 	
-	switch ([target_ship scanClass])
+	switch ([target scanClass])
 	{
 		case CLASS_NEUTRAL:
 			{
@@ -2153,9 +2175,6 @@ static void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloa
 	}
 	
 	if ([player1 guiScreen] != GUI_SCREEN_MAIN)	// don't draw on text screens
-		return;
-	
-	if (!target)
 		return;
 	
 	OOMatrix		back_mat;
@@ -2214,14 +2233,24 @@ static void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloa
 	//rotate to face player1
 	GLMultOOMatrix(back_mat);
 	// draw the reticle
-	// If reticleis target sensitive, draw target box in red when target passes through crosshairs.
-	if (reticleTargetSensitive && [UNIVERSE getFirstEntityTargettedByPlayer] == [player1 primaryTarget])
+#ifdef WORMHOLE_SCANNER
+	// Draw reticle cyan for Wormholes
+	if ([target isWormhole] )
 	{
-		GLColorWithOverallAlpha(red_color, overallAlpha);
+		GLColorWithOverallAlpha(cyan_color, overallAlpha);
 	}
 	else
+#endif
 	{
-		GLColorWithOverallAlpha(green_color, overallAlpha);
+		// If reticle is target sensitive, draw target box in red when target passes through crosshairs.
+		if (reticleTargetSensitive && [UNIVERSE getFirstEntityTargettedByPlayer] == [player1 primaryTarget])
+		{
+			GLColorWithOverallAlpha(red_color, overallAlpha);
+		}
+		else
+		{
+			GLColorWithOverallAlpha(green_color, overallAlpha);
+		}
 	}
 	glBegin(GL_LINES);
 		glVertex2f(rs0,rs2);	glVertex2f(rs0,rs0);
@@ -2242,11 +2271,43 @@ static void hudDrawReticleOnTarget(Entity* target, PlayerEntity* player1, GLfloa
 	float range = (sqrtf(target->zero_distance) - target->collision_radius) * 0.001f;
 	NSSize textsize = NSMakeSize(rdist * ONE_SIXTYFOURTH, rdist * ONE_SIXTYFOURTH);
 	float line_height = rdist * ONE_SIXTYFOURTH;
-	NSString*	info1 = [target_ship identFromShip: player1];
-	NSString*	info2 = (legal_desc == nil)? [NSString stringWithFormat:@"%0.3f km", range] : [NSString stringWithFormat:@"%0.3f km (%@)", range, legal_desc];
+	NSString*	info = (legal_desc == nil)? [NSString stringWithFormat:@"%0.3f km", range] : [NSString stringWithFormat:@"%0.3f km (%@)", range, legal_desc];
 	// no need to set color - tis green already!
-	OODrawString(info1, rs0, 0.5 * rs2, 0, textsize);
-	OODrawString(info2, rs0, 0.5 * rs2 - line_height, 0, textsize);
+	OODrawString([player1 dialTargetName], rs0, 0.5 * rs2, 0, textsize);
+	OODrawString(info, rs0, 0.5 * rs2 - line_height, 0, textsize);
+	
+#ifdef WORMHOLE_SCANNER
+	if ([target isWormhole])
+	{
+		// Note: No break statements in the following switch() since every case
+		//       falls through to the next.  Cases arranged in reverse order.
+		switch([(WormholeEntity *)target scanInfo])
+		{
+			case WH_SCANINFO_SHIP:
+				// TOOD: Render anything on the HUD for this?
+			case WH_SCANINFO_DESTINATION:
+				// Rendered above in dialTargetName, so no need to do anything here
+				// unless we want a separate line Destination: XXX ?
+			case WH_SCANINFO_ARRIVAL_TIME:
+			{
+				NSString *wormholeETA = [NSString stringWithFormat:DESC(@"wormhole-ETA-@"), ClockToString([(WormholeEntity *)target arrivalTime], NO)];
+				OODrawString(wormholeETA, rs0, 0.5 * rs2 - 3 * line_height, 0, textsize);
+			}
+			case WH_SCANINFO_COLLAPSE_TIME:
+			{
+				double timeForCollapsing = [(WormholeEntity *)target expiryTime] - [player1 clockTimeAdjusted];
+				int minutesToCollapse = floor (timeForCollapsing / 60.0);
+				int secondsToCollapse = (int)timeForCollapsing % 60;
+		
+				NSString *wormholeExpiringIn = [NSString stringWithFormat:DESC(@"wormhole-collapsing-in-mm:ss"), minutesToCollapse, secondsToCollapse];
+				OODrawString(wormholeExpiringIn, rs0, 0.5 * rs2 - 2 * line_height, 0, textsize);
+			}
+			case WH_SCANINFO_SCANNED:
+			case WH_SCANINFO_NONE:
+				break;
+		}
+	}
+#endif
 	
 	glPopMatrix();
 }

@@ -46,8 +46,8 @@ OOINLINE BOOL RowInRange(OOGUIRow row, NSRange range)
 	self = [super init];
 		
 	size_in_pixels  = NSMakeSize(MAIN_GUI_PIXEL_WIDTH, MAIN_GUI_PIXEL_HEIGHT);
-	n_columns		= 6;
-	n_rows			= 24;
+	n_columns		= GUI_DEFAULT_COLUMNS;
+	n_rows			= GUI_DEFAULT_ROWS;
 	pixel_row_center = size_in_pixels.width / 2;
 	pixel_row_height = MAIN_GUI_ROW_HEIGHT;
 	pixel_row_start	= MAIN_GUI_PIXEL_ROW_START;		// first position down the page...
@@ -554,6 +554,19 @@ OOINLINE BOOL RowInRange(OOGUIRow row, NSRange range)
 	}
 }
 
+- (void) leaveLastLine
+{
+	unsigned i;
+	for (i=0; i < n_rows-1; i++)
+	{
+		[rowText	replaceObjectAtIndex:i withObject:@""];
+		[rowColor	replaceObjectAtIndex:i withObject:textColor];
+		[rowKey		replaceObjectAtIndex:i withObject:@""];
+		rowAlignment[i] = GUI_ALIGN_LEFT;
+		rowFadeTime[i]	= 0.0f;
+	}
+	rowFadeTime[i]	= 0.4f; // fade the last line...
+}
 
 - (void) printLongText:(NSString *)str
 				 align:(OOGUIAlignment) alignment
@@ -1102,15 +1115,25 @@ OOINLINE BOOL RowInRange(OOGUIRow row, NSRange range)
 		{
 			unsigned j;
 			NSArray*	array = (NSArray *)[rowText objectAtIndex:i];
-			for (j = 0; ((j < [array count])&&(j < n_columns)) ; j++)
+			unsigned max_columns=[array count] < n_columns ? [array count] : n_columns;
+			BOOL isLeftAligned;
+			
+			for (j = 0; j < max_columns ; j++)
 			{
 				NSString*   text = [array stringAtIndex:j];
 				if ([text length] != 0)
 				{
-					rowPosition[i].x = tabStops[j];
+					isLeftAligned=tabStops[j]>=0;
+					rowPosition[i].x = abs(tabStops[j]);
+					NSRect block = OORectFromString(text, x + rowPosition[i].x + 2, y + rowPosition[i].y + 2, characterSize);
+					if(!isLeftAligned)
+					{
+						rowPosition[i].x -=block.size.width+6;
+						block = OORectFromString(text, x + rowPosition[i].x, y + rowPosition[i].y + 2, characterSize);
+						block.size.width+=2;
+					}					
 					if (i == (unsigned)selectedRow)
 					{
-						NSRect block = OORectFromString(text, x + rowPosition[i].x + 2, y + rowPosition[i].y + 2, characterSize);
 						glColor4f(1.0f, 0.0f, 0.0f, row_alpha);	// red
 						glBegin(GL_QUADS);
 							glVertex3f(block.origin.x,						block.origin.y,						z);

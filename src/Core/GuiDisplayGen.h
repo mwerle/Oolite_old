@@ -30,6 +30,9 @@ MA 02110-1301, USA.
 #import "OOTypes.h"
 
 
+#define GUI_DEFAULT_COLUMNS			6
+#define GUI_DEFAULT_ROWS			24
+
 #define GUI_MAX_ROWS				64
 #define GUI_MAX_COLUMNS				40
 #define MAIN_GUI_PIXEL_HEIGHT		480
@@ -54,7 +57,7 @@ typedef enum
 
 
 typedef int OOGUIRow;	// -1 for none
-typedef unsigned OOGUITabStop;
+typedef int OOGUITabStop; // negative value = right align text
 typedef OOGUITabStop OOGUITabSettings[GUI_MAX_COLUMNS];
 
 
@@ -203,6 +206,8 @@ typedef OOGUITabStop OOGUITabSettings[GUI_MAX_COLUMNS];
 
 - (void)setBackgroundTexture:(OOTexture *)backgroundTexture;
 - (void)clearBackground;
+
+- (void)leaveLastLine;
 
 - (int) drawGUI:(GLfloat) alpha drawCursor:(BOOL) drawCursor;
 - (int) drawGUI:(GLfloat)x :(GLfloat)y :(GLfloat)z :(GLfloat) alpha drawCursor:(BOOL) drawCursor;

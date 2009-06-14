@@ -120,7 +120,7 @@ static NSString * const kStageName	= @"Checking shipdata.plist";
 	// Check that it's a dictionary
 	if (![_shipdataPList isKindOfClass:[NSDictionary class]])
 	{
-		OOLog(@"verifyOXP.shipdataPList.notDict", @"ERROR: shipdata.plist is not a dictionary.");
+		OOLog(@"verifyOXP.shipdataPList.notDict", @"***** ERROR: shipdata.plist is not a dictionary.");
 		return;
 	}
 	
@@ -154,7 +154,7 @@ static NSString * const kStageName	= @"Checking shipdata.plist";
 		shipInfo = [_shipdataPList dictionaryForKey:shipKey];
 		if (shipInfo == nil)
 		{
-			OOLog(@"verifyOXP.shipdata.badType", @"ERROR: shipdata.plist entry for \"%@\" is not a dictionary.", shipKey);
+			OOLog(@"verifyOXP.shipdata.badType", @"***** ERROR: shipdata.plist entry for \"%@\" is not a dictionary.", shipKey);
 		}
 		else
 		{
@@ -251,7 +251,7 @@ static NSString * const kStageName	= @"Checking shipdata.plist";
 	
 	if (_isPlayer && _isStation)
 	{
-		[self message:@"ERROR: ship is both a player ship and a station. Treating as non-station."];
+		[self message:@"***** ERROR: ship is both a player ship and a station. Treating as non-station."];
 		_isStation = NO;
 	}
 }
@@ -273,11 +273,11 @@ static NSString * const kStageName	= @"Checking shipdata.plist";
 		{
 			if ([_allKeys containsObject:key])
 			{
-				[self message:@"WARNING: key \"%@\" does not apply to this category of ship.", key];
+				[self message:@"----- WARNING: key \"%@\" does not apply to this category of ship.", key];
 			}
 			else
 			{
-				[self message:@"WARNING: unknown key \"%@\".", key];
+				[self message:@"----- WARNING: unknown key \"%@\".", key];
 			}
 		}
 	}
@@ -308,14 +308,14 @@ static NSString * const kStageName	= @"Checking shipdata.plist";
 												withMaterials:materials
 												   andShaders:shaders])
 		{
-			[self message:@"WARNING: model \"%@\" could not be found in %@ or in Oolite.", model, [[self verifier] oxpDisplayName]];
+			[self message:@"----- WARNING: model \"%@\" could not be found in %@ or in Oolite.", model, [[self verifier] oxpDisplayName]];
 		}
 	}
 	else
 	{
 		if ([_info stringForKey:@"like_ship"] == nil)
 		{
-			[self message:@"ERROR: ship does not specify model or like_ship."];
+			[self message:@"***** ERROR: ship does not specify model or like_ship."];
 		}
 	}
 }
@@ -373,7 +373,7 @@ withPropertyList:(id)rootPList
 	expectedType:(NSDictionary *)localSchema
 {
 	// FIXME: use fancy new error codes to provide useful error descriptions.
-	[self message:@"ERROR: verification of ship \"%@\" failed at \"%@\": %@", name, [error plistKeyPathDescription], [error localizedDescription]];
+	[self message:@"***** ERROR: verification of ship \"%@\" failed at \"%@\": %@", name, [error plistKeyPathDescription], [error localizedDescription]];
 	return YES;
 }
 

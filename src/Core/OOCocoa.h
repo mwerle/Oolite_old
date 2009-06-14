@@ -279,7 +279,9 @@ enum {
 		typedef float			OOCGFloat;
 	#endif
 #elif OOLITE_GNUSTEP
-	#if GNUSTEP_BASE_MAJOR_VERSION > 1 || GNUSTEP_BASE_MINOR_VERSION >= 16
+	/* MKW 20090414 - GNUStep 1.19 still has the NSInteger bug, so let's revert
+	 * to the older definitions for OOInteger */
+	#if GNUSTEP_BASE_MAJOR_VERSION > 1 || GNUSTEP_BASE_MINOR_VERSION >= 20
 		typedef NSInteger OOInteger;
 		typedef NSUInteger OOUInteger;
 	#else
@@ -295,11 +297,11 @@ enum {
 #endif
 
 
-/*	Use native exception handling under OS X in release and test builds.
+/*	Use native exception handling under OS X.
 	This would probably work for Linux too, but not Windows as yet.
  */
 
-#if OOLITE_MAC_OS_X && defined (OO_DEBUG)
+#if OOLITE_MAC_OS_X
 	#undef NS_DURING
 	#undef NS_HANDLER
 	#undef NS_ENDHANDLER
@@ -330,3 +332,13 @@ enum {
 #else
 	#define OOLITE_FAST_ENUMERATION		0
 #endif
+
+
+/*	Speech synthesis
+*/
+#if MAC_OS_X || defined(HAVE_LIBESPEAK)
+#define OOLITE_SPEECH_SYNTH				1
+#else
+#define OOLITE_SPEECH_SYNTH				0
+#endif
+

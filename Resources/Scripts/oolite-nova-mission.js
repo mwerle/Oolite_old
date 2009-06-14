@@ -6,7 +6,7 @@ Script for nova mission.
 
 
 Oolite
-Copyright © 2004-2008 Giles C Williams and contributors
+Copyright ¨© 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,32 +26,36 @@ MA 02110-1301, USA.
 */
 
 
+/*jslint bitwise: true, undef: true, eqeqeq: true, immed: true, newcap: true*/
+/*global Timer, expandDescription, galaxyNumber, guiScreen, mission, missionVariables, player, system*/
+
+
 this.name			= "oolite-nova";
 this.author			= "Eric Walch, Jens Ayton, Kaks";
-this.copyright		= "© 2008 the Oolite team.";
+this.copyright		= "© 2009 the Oolite team.";
 this.version		= "1.73";
 
 
 this.missionOffers = function ()
 {
-	if (guiScreen == "GUI_SCREEN_MISSION" || (mission.choice && mission.choice != "") || !player.ship.docked)  return;
-	
+	if (guiScreen === "GUI_SCREEN_MISSION" || (mission.choice && mission.choice !== "") || !player.ship.docked)  { return; }
+
 	// there will be a "missionScreenEnded" or a "missionChoiceWasReset" in future to react to.
 	if (player.ship.dockedStation.isMainStation)
 	{
-		if (galaxyNumber == 3)
+		if (galaxyNumber === 3)
 		{
-			if (!missionVariables.nova && !missionVariables.novacount)  missionVariables.novacount = 0;
-			if (missionVariables.nova == "TWO_HRS_TO_ZERO")
+			if (!missionVariables.nova && !missionVariables.novacount)  { missionVariables.novacount = 0; }
+			if (missionVariables.nova === "TWO_HRS_TO_ZERO")
 			{
 				mission.runMissionScreen("nova_1", "solar.png", "nova_yesno");
 				this.novaOffer = "NOVA_CHOICE";  // use a temporary variable for the offering.
 				this.novaMissionTimer.stop();
 			}
 		}
-		if (galaxyNumber == 3 || galaxyNumber == 4)
+		if (galaxyNumber === 3 || galaxyNumber === 4)
 		{
-			if (missionVariables.nova == "NOVA_ESCAPED_SYSTEM")
+			if (missionVariables.nova === "NOVA_ESCAPED_SYSTEM")
 			{
 				player.ship.removeAllCargo();
 				player.ship.awardCargo("Gem-Stones", 100);
@@ -59,26 +63,29 @@ this.missionOffers = function ()
 				missionVariables.nova = "NOVA_HERO";
 				mission.setInstructionsKey(null);
 			}
-			if (missionVariables.nova == "NOVA_ESCAPE_POD")
+			if (missionVariables.nova === "NOVA_ESCAPE_POD")
 			{
 				player.ship.removeAllCargo();  // can only be done while docked.
 				missionVariables.nova = "NOVA_HERO";  // not a real hero but other scripts expect this missionend string.
 				mission.setInstructionsKey(null);
 			}
-			if (missionVariables.nova == "NOVA_ESCAPE_COWARD")
+			if (missionVariables.nova === "NOVA_ESCAPE_COWARD" && !system.sun.isGoingNova && !system.sun.hasGoneNova)
 			{
+				mission.runMissionScreen("nova_coward", "solar.png");
 				missionVariables.nova = "NOVA_HERO";  // not a real hero but other scripts expect this missionend string.
+				player.decreaseContractReputation();
+				player.decreasePassengerReputation();
 			}
 		}
 	}
-}
+};
 
 
 this.choiceEvaluation = function()
 {
-	if (this.novaOffer && this.novaOffer == "NOVA_CHOICE")
+	if (this.novaOffer && this.novaOffer === "NOVA_CHOICE")
 	{
-		if (mission.choice == "YES")
+		if (mission.choice === "YES")
 		{
 			player.ship.useSpecialCargo(expandDescription("[oolite-nova-refugees]"));
 			mission.setInstructionsKey("nova_missiondesc");
@@ -90,14 +97,14 @@ this.choiceEvaluation = function()
 		}
 		else
 		{
-			// mission.choice = "NO", or null when player launched without a choice.
-			missionVariables.nova = "NOVA_ESCAPE_COWARD";
-			player.commsMessage(expandDescription("[oolite-nova-coward]"), 4.5);
-			system.sun.goNova(3);
-			missionVariables.novacount = null;
+ 			// mission.choice = "NO", or null when player launched without a choice.
+ 			missionVariables.nova = "NOVA_ESCAPE_COWARD";
+ 			player.commsMessage(expandDescription("[oolite-nova-coward]"), 4.5);
+ 			system.sun.goNova(3);
+ 			missionVariables.novacount = null;
 		}
 		
-		/*	IMPORTANT
+		/*   IMPORTANT
 			The line "mission.choice = null" causes a missionChoiceWasReset()
 			event to occur. Our missionChoiceWasReset() handler calls back into
 			choiceEvaluation(). It is therefore imperative that this.novaOffer
@@ -107,13 +114,13 @@ this.choiceEvaluation = function()
 		delete this.novaOffer;
 		mission.choice = null;
 	}
-}
+};
 
 
 // general, used when player enters nova system after mission.
 this.sendShipsAway = function()
 {
-	if (!system.goneNova)
+	if (!system.sun.hasGoneNova)
 	{
 		this.novaTimer.stop();
 		return;
@@ -122,21 +129,32 @@ this.sendShipsAway = function()
 	{
 		system.sendAllShipsAway();
 	}
-}
+};
 
 
 // special, used when player enters nova system during mission.
 this.sendShipsAwayForMission = function()
 {
-	if (missionVariables.nova != "TWO_HRS_TO_ZERO")
+	if (!system.sun.isGoingNova)  // player left system without dockin at main station
+	{
+		this.novaMissionTimer.stop();
+		missionVariables.nova = "NOVA_ESCAPE_COWARD";
+		return;
+	}
+	if (missionVariables.nova !== "TWO_HRS_TO_ZERO")
 	{
 		this.novaMissionTimer.stop();
 	}
 	else
 	{
 		system.sendAllShipsAway();
+		if(!this.buoyLoaded) {this.witchBuoy = system.shipsWithPrimaryRole("buoy-witchpoint")[0]; this.buoyLoaded = true;}
+		if(this.witchBuoy && this.witchBuoy.isValid)
+		{
+			this.witchBuoy.commsMessage(expandDescription("[oolite-nova-distress-call]"));
+		}
 	}
-}
+};
 
 
 // Destroy all stations (and carriers) in the system. If we just blow up the
@@ -149,39 +167,42 @@ this.blowUpAllStations = function ()
 	
 	// Blow them all up.
 	stations.forEach(function (entity) { entity.explode(); });
-}
+};
 
 
 /**** Event handlers ****/
 
 this.shipLaunchedEscapePod = function ()
 {
-	if (missionVariables.nova == "NOVA_ESCAPED_SYSTEM")
+	if (missionVariables.nova === "NOVA_ESCAPED_SYSTEM")
 	{
 		missionVariables.nova = "NOVA_ESCAPE_POD";
 	}
-}
+};
 
 
 this.shipDockedWithStation = function ()
 {
 	this.missionOffers();
-}
+};
 
 
 this.missionScreenEnded = this.missionChoiceWasReset = function ()
 {
 	this.choiceEvaluation();
-	if (player.ship.docked)  this.missionOffers();
-}
+	if (player.ship.docked)
+	{
+		this.missionOffers();
+	}
+};
 
 
 this.shipWillExitWitchspace = function ()  // call this as soon as possible so other scripts can see it will go nova.
 {
-	if (galaxyNumber == 3)
+	if (galaxyNumber === 3)
 	{
-		if (missionVariables.novacount)  missionVariables.novacount++;
-		if (player.ship.hasEquipment("EQ_GAL_DRIVE") && missionVariables.novacount > 3 && !missionVariables.nova)
+		if (missionVariables.novacount !== undefined)  { missionVariables.novacount++; }
+		if (player.ship.hasEquipment("EQ_GAL_DRIVE") && missionVariables.novacount > 3 && !missionVariables.nova && !system.isInterstellarSpace)
 		{
 			missionVariables.nova = "TWO_HRS_TO_ZERO";
 			player.ship.fuelLeakRate = 25;
@@ -189,20 +210,36 @@ this.shipWillExitWitchspace = function ()  // call this as soon as possible so o
 			player.consoleMessage(expandDescription("[danger-fuel-leak]"), 4.5);
 			system.info.market = "none";
 			system.info.sun_gone_nova = "YES";
-			
-			if (this.novaMissionTimer)  this.novaMissionTimer.start();
-			else  this.novaMissionTimer = new Timer(this, this.sendShipsAwayForMission, 60, 30);
+			this.buoyLoaded = false;  // w-bouy is not in system yet.
+
+			if (this.novaMissionTimer)
+			{
+				this.novaMissionTimer.start();
+			}
+			else
+			{
+				this.novaMissionTimer = new Timer(this, this.sendShipsAwayForMission, 15, 30);
+			}
 		}
 	}
-	if (missionVariables.nova == "NOVA_ESCAPE_HERO")  missionVariables.nova = "NOVA_ESCAPED_SYSTEM";
-}
+	if (missionVariables.nova === "NOVA_ESCAPE_HERO")
+	{
+		missionVariables.nova = "NOVA_ESCAPED_SYSTEM";
+	}
+};
 
 
 this.shipExitedWitchspace = function()
 {
-	if (system.goneNova)
+	if (system.sun && system.sun.hasGoneNova)
 	{
-		if (this.novaTimer)  this.novaTimer.start();
-		else  this.novaTimer = new Timer(this, this.sendShipsAway, 1, 60);
+		if (this.novaTimer)
+		{
+			this.novaTimer.start();
+		}
+		else
+		{
+			this.novaTimer = new Timer(this, this.sendShipsAway, 1, 60);
+		}
 	}
-}
+};

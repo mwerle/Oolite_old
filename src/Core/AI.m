@@ -186,7 +186,7 @@ static AI *sCurrentlyRunningAI = nil;
 	
 	if ([aiStack count] > 32)
 	{
-		OOLog(@"ai.pushStateMachine.overflow", @"***** ERROR: AI stack overflow for %@ stack:\n%@", [_owner shortDescription], aiStack);
+		OOLogERR(@"ai.pushStateMachine.overflow", @"AI stack overflow for %@ stack:\n%@", [_owner shortDescription], aiStack);
 		[NSException raise:@"OoliteException"
 					format:@"AI stack overflow for %@", _owner];
 	}
@@ -230,12 +230,13 @@ static AI *sCurrentlyRunningAI = nil;
 }
 
 
-- (void) exitStateMachine
+- (void) exitStateMachineWithMessage:(NSString *)message
 {
 	if ([aiStack count] != 0)
 	{
 		[self restorePreviousStateMachine];
-		[self reactToMessage:@"RESTARTED"];
+		if (message == nil)  message = @"RESTARTED";
+		[self reactToMessage:message];
 	}
 }
 
@@ -347,7 +348,7 @@ static AI *sCurrentlyRunningAI = nil;
 	*/
 	if (recursionLimiter > 32)
 	{
-		OOLog(@"ai.error.recursion", @"ERROR: AI reactToMessage: recursion in AI %@, state %@, aborting. It is not valid to call reactToMessage: FOO in state FOO.", stateMachineName, currentState);
+		OOLogERR(@"ai.error.recursion", @"AI reactToMessage: recursion in AI %@, state %@, aborting. It is not valid to call reactToMessage: FOO in state FOO.", stateMachineName, currentState);
 		return;
 	}
 	
@@ -442,11 +443,11 @@ static AI *sCurrentlyRunningAI = nil;
 				if ([selectorStr isEqual:@"setStateTo:"])  [self setState:dataString];
 				else if ([selectorStr isEqual:@"debugMessage:"])
 				{
-					OOLog(@"ai.takeAction.debugMessage", @"AI-DEBUG MESSAGE from %@ : %@", ownerDesc, dataString);
+					OOLog(@"ai.takeAction.debugMessage", @"DEBUG: AI MESSAGE from %@: %@", ownerDesc, dataString);
 				}
 				else
 				{
-					OOLog(@"ai.takeAction.badSelector", @"***** ERROR in AI %@ in state %@: %@ does not respond to %@", stateMachineName, currentState, ownerDesc, selectorStr);
+					OOLogERR(@"ai.takeAction.badSelector", @"in AI %@ in state %@: %@ does not respond to %@", stateMachineName, currentState, ownerDesc, selectorStr);
 				}
 			}
 		}
@@ -458,7 +459,7 @@ static AI *sCurrentlyRunningAI = nil;
 	else
 	{
 #ifndef NDEBUG
-		if (report)  OOLog(@"ai.takeAction.noAction", @"  - no action '%@'", action);
+		if (report)  OOLog(@"ai.takeAction.noAction", @"DEBUG: - no action '%@'", action);
 #endif
 	}
 	
@@ -499,7 +500,7 @@ static AI *sCurrentlyRunningAI = nil;
 
 	if ([pendingMessages count] > 32)
 	{
-		OOLog(@"ai.message.failed.overflow", @"***** ERROR: AI pending messages overflow for '%@'; pending messages:\n%@", ownerDesc, pendingMessages);
+		OOLogERR(@"ai.message.failed.overflow", @"AI pending messages overflow for '%@'; pending messages:\n%@", ownerDesc, pendingMessages);
 		[NSException raise:@"OoliteException"
 					format:@"AI pendingMessages overflow for %@", ownerDesc];
 	}
@@ -669,7 +670,7 @@ static AI *sCurrentlyRunningAI = nil;
 
 - (NSDictionary *) loadStateMachine:(NSString *)smName
 {
-	id						newSM = nil;
+	NSDictionary			*newSM = nil;
 	NSMutableDictionary		*cleanSM = nil;
 	OOCacheManager			*cacheMgr = [OOCacheManager sharedCache];
 	NSEnumerator			*stateEnum = nil;
@@ -693,7 +694,7 @@ static AI *sCurrentlyRunningAI = nil;
 			if (newSM == nil)
 			{
 				[cacheMgr setObject:@"nil" forKey:smName inCache:@"AIs"];
-				return nil;
+				NS_VALUERETURN(nil, NSDictionary *);
 			}
 			
 			cleanSM = [NSMutableDictionary dictionaryWithCapacity:[newSM count]];
@@ -703,7 +704,7 @@ static AI *sCurrentlyRunningAI = nil;
 				stateHandlers = [newSM objectForKey:stateKey];
 				if (![stateHandlers isKindOfClass:[NSDictionary class]])
 				{
-					OOLog(@"ai.invalidFormat.state", @"State \"%@\" in AI \"%@\" is not a dictionary, ignoring.", stateKey, smName);
+					OOLogWARN(@"ai.invalidFormat.state", @"State \"%@\" in AI \"%@\" is not a dictionary, ignoring.", stateKey, smName);
 					continue;
 				}
 				
@@ -742,7 +743,7 @@ static AI *sCurrentlyRunningAI = nil;
 		handlerActions = [handlers objectForKey:handlerKey];
 		if (![handlerActions isKindOfClass:[NSArray class]])
 		{
-			OOLog(@"ai.invalidFormat.handler", @"Handler \"%@\" for state \"%@\" in AI \"%@\" is not an array, ignoring.", handlerKey, stateKey, smName);
+			OOLogWARN(@"ai.invalidFormat.handler", @"Handler \"%@\" for state \"%@\" in AI \"%@\" is not an array, ignoring.", handlerKey, stateKey, smName);
 			continue;
 		}
 		
@@ -761,7 +762,7 @@ static AI *sCurrentlyRunningAI = nil;
 	NSString				*action = nil;
 	NSRange					spaceRange;
 	NSString				*selector = nil;
-	NSString				*aliasedSelector = nil;
+	id						aliasedSelector = nil;
 	NSMutableArray			*result = nil;
 	static NSSet			*whitelist = nil;
 	static NSDictionary		*aliases = nil;
@@ -784,7 +785,7 @@ static AI *sCurrentlyRunningAI = nil;
 	{
 		if (![action isKindOfClass:[NSString class]])
 		{
-			OOLog(@"ai.invalidFormat.action", @"An action in handler \"%@\" for state \"%@\" in AI \"%@\" is not a string, ignoring.", handlerKey, stateKey, smName);
+			OOLogWARN(@"ai.invalidFormat.action", @"An action in handler \"%@\" for state \"%@\" in AI \"%@\" is not a string, ignoring.", handlerKey, stateKey, smName);
 			continue;
 		}
 		
@@ -797,19 +798,28 @@ static AI *sCurrentlyRunningAI = nil;
 		else  selector = [action substringToIndex:spaceRange.location];
 		
 		// Look in alias table.
-		aliasedSelector = [aliases stringForKey:selector];
+		aliasedSelector = [aliases objectForKey:selector];
 		if (aliasedSelector != nil)
 		{
-			// Change selector and action to use real method name.
-			selector = aliasedSelector;
-			if (spaceRange.location == NSNotFound)  action = aliasedSelector;
-			else action = [aliasedSelector stringByAppendingString:[action substringFromIndex:spaceRange.location]];
+			if ([aliasedSelector isKindOfClass:[NSString class]])
+			{
+				// Change selector and action to use real method name.
+				selector = aliasedSelector;
+				if (spaceRange.location == NSNotFound)  action = aliasedSelector;
+				else action = [aliasedSelector stringByAppendingString:[action substringFromIndex:spaceRange.location]];
+			}
+			else if ([aliasedSelector isKindOfClass:[NSArray class]] && [aliasedSelector count] != 0)
+			{
+				// Alias is complete expression, pretokenized in anticipation of a tokenized future.
+				action = [aliasedSelector componentsJoinedByString:@" "];
+				selector = [[aliasedSelector objectAtIndex:0] description];
+			}
 		}
 		
 		// Check for selector in whitelist.
 		if (![whitelist containsObject:selector])
 		{
-			OOLog(@"ai.unpermittedMethod", @"Handler \"%@\" for state \"%@\" in AI \"%@\" uses \"%@\", which is not a permitted AI method. In a future version of Oolite, this method will be removed from the handler. If you believe the handler should be a permitted method, please report it to oolite.bug.reports@gmail.com.", handlerKey, stateKey, smName, selector);
+			OOLog(@"ai.unpermittedMethod", @"Handler \"%@\" for state \"%@\" in AI \"%@\" uses \"%@\", which is not a permitted AI method. In a future version of Oolite, this method will be removed from the handler. If you believe the handler should be a permitted method, please report it to bugs@oolite.org.", handlerKey, stateKey, smName, selector);
 			// continue;
 		}
 		

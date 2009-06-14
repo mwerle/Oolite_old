@@ -3,7 +3,7 @@
 MyOpenGLView.m
 
 Oolite
-Copyright (C) 2004-2007 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -35,11 +35,9 @@ MA 02110-1301, USA.
 #import "PlanetEntity.h"
 #import "OOGraphicsResetManager.h"
 
-#if OOLITE_WINDOWS
-#import "TextureStore.h"
-#endif
-
 #define kOOLogUnconvertedNSLog @"unclassified.MyOpenGLView"
+
+#define SDL_SPLASH 1
 
 #include <ctype.h>
 
@@ -83,6 +81,11 @@ MA 02110-1301, USA.
 {
 	self = [super init];
 
+	Uint32          colorkey;
+	SDL_Surface     *icon=NULL;
+	NSString		*imagesDir;
+
+
 	// TODO: This code up to and including stickHandler really ought
 	// not to be in this class.
 	OOLog(@"sdl.init", @"initialising SDL");
@@ -93,20 +96,46 @@ MA 02110-1301, USA.
 		return nil;
 	}
 	
+	SDL_putenv ("SDL_VIDEO_WINDOW_POS=center");
+	
 	stickHandler=[[JoystickHandler alloc] init];
 	// end TODO
-	
+
 	[OOSound setUp];
 
 	// Generate the window caption, containing the version number and the date the executable was compiled.
 	static char windowCaption[128];
 	NSString *versionString = [NSString stringWithFormat:@"Oolite v%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
-	
+
 	strcpy (windowCaption, [versionString UTF8String]);
 	strcat (windowCaption, " - "__DATE__);
-	SDL_WM_SetCaption (windowCaption, "OOLITE");	// Set window title.
+	SDL_WM_SetCaption (windowCaption, "Oolite");	// Set window title.
 
+#if OOLITE_WINDOWS
 
+	//capture the window handle for later
+	static SDL_SysWMinfo wInfo;
+	SDL_VERSION(&wInfo.version);
+	SDL_GetWMInfo(&wInfo);
+	SDL_Window   = wInfo.window;
+	imagesDir = @"Resources/Images";
+	
+#else
+
+	imagesDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Images"];
+
+#endif
+
+	icon = SDL_LoadBMP([[imagesDir stringByAppendingPathComponent:@"WMicon.bmp"] cString]);
+
+	if (icon != NULL)
+	{
+		colorkey = SDL_MapRGB(icon->format, 128, 0, 128);
+		SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);
+		SDL_WM_SetIcon(icon, NULL);
+	}
+	SDL_FreeSurface(icon);
+	
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
@@ -121,36 +150,54 @@ MA 02110-1301, USA.
 	// Find what the full screen and windowed settings are.
 	[self loadFullscreenSettings];
 	[self loadWindowSize];
+	
+	//set up the surface dimensions
 
-	int videoModeFlags = SDL_HWSURFACE | SDL_OPENGL;
-	if (fullScreen)
-	{
-		videoModeFlags |= SDL_FULLSCREEN;
-		NSSize fs=[self modeAsSize: currentSize];
-		surface = SDL_SetVideoMode(fs.width, fs.height, 32, videoModeFlags);
-   	}
-	else
-	{
-		videoModeFlags |= SDL_RESIZABLE;
-		surface = SDL_SetVideoMode(currentWindowSize.width,
-                                 currentWindowSize.height,
-                                 32, videoModeFlags);
-	}
+	// changing the flags can trigger texture bugs
+	int videoModeFlags = SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE;
+	firstScreen= (fullScreen) ? [self modeAsSize: currentSize] : currentWindowSize;
+
+#if !SDL_SPLASH
+
+	// new SDL.dll  decouples mouse boundaries, snapshots & planet roundness from SetVideoMode.
+	surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
+	// blank the surface / go to fullscreen
+	[self initialiseGLWithSize: firstScreen];
+	
+#else
+
+  #if OOLITE_WINDOWS
+	//pre setVideoMode adjustments
+	NSSize tmp=currentWindowSize;
+	splashScreen=YES;	//don't update the window!
+	ShowWindow(SDL_Window,SW_HIDE);
+	ShowWindow(SDL_Window,SW_MINIMIZE);
+	// new SDL.dll  decouples mouse boundaries, snapshots & planet roundness from SetVideoMode.
+	surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
+
+	//post setVideoMode adjustments
+	currentWindowSize=tmp;
+  #else
+  
+  	// SDL_NOFRAME here triggers the same texture bug
+	// as  multiple setVideoMode in windows.
+	surface = SDL_SetVideoMode(8, 8, 32, videoModeFlags );
+
+  #endif
+
+#endif
+    if (!surface)
+    {
+        char * errStr = SDL_GetError();
+        OOLog(@"display.mode.error", @"ERROR creating display: %s", errStr);
+    }
+    assert(surface != NULL);
 
 	bounds.size.width = surface->w;
 	bounds.size.height = surface->h;
-
-	if (fullScreen)
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
-			SDL_ShowCursor(SDL_DISABLE);
-	}
-	else
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
-			SDL_ShowCursor(SDL_ENABLE);
-	}
-
+	
+	[self autoShowMouse];
+	
 	virtualJoystickPosition = NSMakePoint(0.0,0.0);
 
 	typedString = [[NSMutableString alloc] initWithString:@""];
@@ -164,6 +211,34 @@ MA 02110-1301, USA.
 	return self;
 }
 
+- (void) endSplashScreen
+{
+
+#if SDL_SPLASH
+
+  #if OOLITE_WINDOWS
+  
+	wasFullScreen=!fullScreen;
+	splashScreen=NO;
+	ShowWindow(SDL_Window,SW_RESTORE);
+	[self initialiseGLWithSize: firstScreen];
+  
+  #else
+
+	int videoModeFlags = SDL_HWSURFACE | SDL_OPENGL;
+
+	videoModeFlags |= (fullScreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
+	surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
+	SDL_putenv ("SDL_VIDEO_WINDOW_POS=none"); //stop linux from auto centering on resize
+	
+  #endif
+ 
+	[self autoShowMouse];
+	[self updateScreen];
+
+#endif
+
+}
 
 - (void) dealloc
 {
@@ -187,6 +262,20 @@ MA 02110-1301, USA.
 	[super dealloc];
 }
 
+- (void) autoShowMouse
+{
+	//don't touch the 'please wait...' cursor.
+	if (fullScreen)
+	{
+		if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)		
+			SDL_ShowCursor(SDL_DISABLE);
+	}
+	else
+	{
+		if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
+			SDL_ShowCursor(SDL_ENABLE);
+	}
+}
 
 - (void) setStringInput: (enum StringInput) value
 {
@@ -323,22 +412,33 @@ MA 02110-1301, USA.
 
 - (void) display
 {
+	[self updateScreen];
+}
+
+- (void) updateScreen
+{
 	[self drawRect: NSMakeRect(0, 0, viewSize.width, viewSize.height)];
 }
 
-
 - (void) drawRect:(NSRect)rect
+{
+	[self updateScreenWithVideoMode:YES];
+}
+
+- (void) updateScreenWithVideoMode:(BOOL) v_mode
 {
 	if ((viewSize.width != surface->w)||(viewSize.height != surface->h)) // resized
 	{
-		m_glContextInitialized = NO;
+#if OOLITE_LINUX
+		m_glContextInitialized = NO; //probably not needed
+#endif
 		viewSize.width = surface->w;
 		viewSize.height = surface->h;
 	}
 
     if (m_glContextInitialized == NO)
 	{
-		[self initialiseGLWithSize:viewSize];
+		[self initialiseGLWithSize:viewSize useVideoMode:v_mode];
 	}
 
 	if (surface == 0)
@@ -357,57 +457,262 @@ MA 02110-1301, USA.
 	SDL_GL_SwapBuffers();
 }
 
+- (void) initSplashScreen
+{
+#if SDL_SPLASH
+
+	//too early for OOTexture!
+	SDL_Surface     	*image=NULL;
+	SDL_Rect			dest;
+	
+  #if OOLITE_WINDOWS
+	NSString		*imagesDir = @"Resources/Images";
+  #else
+	NSString		*imagesDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Images"];
+  #endif
+
+	image = SDL_LoadBMP([[imagesDir stringByAppendingPathComponent:@"splash.bmp"] cString]);
+
+	if (image == NULL)
+	{
+		SDL_FreeSurface(image);
+		OOLogWARN(@"sdl.gameStart", @"image 'splash.bmp' not found!");
+		[self endSplashScreen];
+		return;
+	}
+	
+		dest.x = 0;
+		dest.y = 0;
+		dest.w = image->w;
+		dest.h = image->h;
+
+  #if OOLITE_WINDOWS
+
+	dest.x = (GetSystemMetrics(SM_CXSCREEN)- dest.w)/2;
+	dest.y = (GetSystemMetrics(SM_CYSCREEN)-dest.h)/2;
+	SetWindowLong(SDL_Window,GWL_STYLE,GetWindowLong(SDL_Window,GWL_STYLE) & ~WS_CAPTION & ~WS_THICKFRAME);
+	ShowWindow(SDL_Window,SW_RESTORE);
+	MoveWindow(SDL_Window,dest.x,dest.y,dest.w,dest.h,TRUE);
+
+  #else
+
+	surface = SDL_SetVideoMode(dest.w, dest.h, 32, SDL_HWSURFACE | SDL_OPENGL);
+
+  #endif
+  
+	glViewport( 0, 0, dest.w, dest.h);
+
+	glEnable( GL_TEXTURE_2D );
+	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+	glClear( GL_COLOR_BUFFER_BIT );
+
+	glMatrixMode( GL_PROJECTION );
+	glPushMatrix();
+	glLoadIdentity();
+
+	glOrtho(0.0f, dest.w , dest.h, 0.0f, -1.0f, 1.0f);
+
+	glMatrixMode( GL_MODELVIEW );
+	glPushMatrix();
+	glLoadIdentity();
+
+	GLuint texture;
+	GLenum texture_format;
+	GLint  nOfColors;
+ 
+	// get the number of channels in the SDL image
+	nOfColors = image->format->BytesPerPixel;
+	if (nOfColors == 4)     // contains an alpha channel
+	{
+		if (image->format->Rmask == 0x000000ff)
+			texture_format = GL_RGBA;
+		else
+			texture_format = GL_BGRA;
+	}
+	else if (nOfColors == 3)     // no alpha channel
+	{
+		if (image->format->Rmask == 0x000000ff)
+			texture_format = GL_RGB;
+		else
+			texture_format = GL_BGR;
+	} else {
+		SDL_FreeSurface(image);
+		OOLog(@"Sdl.GameStart", @"----- Encoding error within image 'splash.bmp'");
+		[self endSplashScreen];
+		return;
+	}
+        
+	glGenTextures( 1, &texture );
+	glBindTexture( GL_TEXTURE_2D, texture );
+ 
+	// Set the texture's stretching properties
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+ 
+	// Set the texture image data with the information  from SDL_Surface 
+	glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, image->w, image->h, 0,
+                      texture_format, GL_UNSIGNED_BYTE, image->pixels );
+
+	glBindTexture( GL_TEXTURE_2D, texture );
+	glBegin( GL_QUADS );
+
+	glTexCoord2i( 0, 0 );
+	glVertex2i( 0, 0 );
+	glTexCoord2i( 1, 0 );
+	glVertex2i( dest.w, 0 );
+	glTexCoord2i( 1, 1 );
+	glVertex2i( dest.h, dest.h );
+	glTexCoord2i( 0, 1 );
+	glVertex2i( 0, dest.h );
+	
+	glEnd();
+	
+	SDL_GL_SwapBuffers();
+	glLoadIdentity();       // reset matrix
+ 
+	if ( image ) { 
+		SDL_FreeSurface( image );
+	}
+	glDeleteTextures(1, &texture);
+
+#endif
+
+}
 
 - (void) initialiseGLWithSize:(NSSize) v_size
 {
-	int videoModeFlags;
-	GLfloat	sun_ambient[] =	{0.0, 0.0, 0.0, 1.0};
+	[self initialiseGLWithSize:v_size useVideoMode:YES];
+}
+
+- (void) initialiseGLWithSize:(NSSize) v_size useVideoMode:(BOOL) v_mode
+{
+	viewSize = v_size;
+	OOLog(@"display.initGL", @"Requested a new surface of %d x %d, %@.", (int)viewSize.width, (int)viewSize.height,(fullScreen ? @"fullscreen" : @"windowed"));
+
+#if OOLITE_WINDOWS
+  #if SDL_SPLASH
+	if (splashScreen)
+	{
+		return;
+	}
+  #endif
+
+	DEVMODE settings;
+	settings.dmSize        = sizeof(DEVMODE);
+	settings.dmDriverExtra = 0;
+	EnumDisplaySettings(0, ENUM_CURRENT_SETTINGS, &settings);
+			//ChangeDisplaySettings(NULL, 0);
+	RECT wDC;
+
+	if (fullScreen)
+	{
+
+		settings.dmPelsWidth = viewSize.width;
+		settings.dmPelsHeight = viewSize.height;
+		settings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+		if(!wasFullScreen) {
+			SetWindowLong(SDL_Window,GWL_STYLE,GetWindowLong(SDL_Window,GWL_STYLE) & ~WS_CAPTION & ~WS_THICKFRAME);
+		}
+		SetForegroundWindow(SDL_Window);
+		if (ChangeDisplaySettings(&settings, CDS_FULLSCREEN)==DISP_CHANGE_SUCCESSFUL)
+		{
+			MoveWindow(SDL_Window, 0, 0, viewSize.width, viewSize.height, TRUE);
+		}
+		else
+		{
+			m_glContextInitialized = YES;
+			return;
+		}
+		
+	}
+	else if ( wasFullScreen )
+	{
+			// stop saveWindowSize from reacting to caption & frame
+			saveSize=NO;
+			ChangeDisplaySettings(NULL, 0);
+			SetWindowLong(SDL_Window,GWL_STYLE,GetWindowLong(SDL_Window,GWL_STYLE) | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX );
+
+			MoveWindow(SDL_Window,(GetSystemMetrics(SM_CXSCREEN)-(int)viewSize.width)/2,
+			(GetSystemMetrics(SM_CYSCREEN)-(int)viewSize.height)/2 -16,(int)viewSize.width,(int)viewSize.height,TRUE);
+
+			ShowWindow(SDL_Window,SW_SHOW);
+	}
+
+	GetClientRect(SDL_Window, &wDC);
+
+	// change width in 4 pixels steps! (see snapShot method)
+	if (!fullScreen && (bounds.size.width != wDC.right - wDC.left
+					|| bounds.size.height != wDC.bottom - wDC.top))
+	{
+		bounds.size.width = wDC.right - wDC.left;
+		int w=bounds.size.width;
+		if (w & 3) w = w + 4 - (w & 3);
+		GetWindowRect(SDL_Window, &wDC);
+		viewSize.width = wDC.right - wDC.left + w - bounds.size.width;
+		viewSize.height = wDC.bottom - wDC.top;
+		MoveWindow(SDL_Window,wDC.left,wDC.top,viewSize.width,viewSize.height,TRUE);
+		GetClientRect(SDL_Window, &wDC);
+	}
+	
+	bounds.size.width = wDC.right - wDC.left;
+	bounds.size.height = wDC.bottom - wDC.top;
+	wasFullScreen=fullScreen;
+
+#else //OOLITE_LINUX
+
+	int videoModeFlags = SDL_HWSURFACE | SDL_OPENGL;
+	
+	if (v_mode == NO)
+		videoModeFlags |= SDL_NOFRAME;
+	else if (fullScreen == YES)
+	{
+		videoModeFlags |= SDL_FULLSCREEN;
+	}
+	else
+	{
+		videoModeFlags |= SDL_RESIZABLE;
+	}
+	// change width in 4 pixels steps! (see snapShot method)
+	int w=viewSize.width;
+	if (w & 3) w = w + 4 - (w & 3);
+	viewSize.width=w;
+	surface = SDL_SetVideoMode((int)viewSize.width, (int)viewSize.height, 32, videoModeFlags);
+
+	bounds.size.width = surface->w;
+	bounds.size.height = surface->h;
+
+#endif
+	OOLog(@"display.initGL", @"Created a new surface of %d x %d, %@.", (int)viewSize.width, (int)viewSize.height,(fullScreen ? @"fullscreen" : @"windowed"));
+
+
+	GLfloat	sun_ambient[] = {0.1, 0.1, 0.1, 1.0};	
 	GLfloat	sun_diffuse[] =	{1.0, 1.0, 1.0, 1.0};
 	GLfloat	sun_specular[] = 	{1.0, 1.0, 1.0, 1.0};
 	GLfloat	sun_center_position[] = {4000000.0, 0.0, 0.0, 1.0};
 	GLfloat	stars_ambient[] =	{0.25, 0.2, 0.25, 1.0};
 
-	viewSize = v_size;
 	if (viewSize.width/viewSize.height > 4.0/3.0)
-		display_z = 480.0 * viewSize.width/viewSize.height;
+		display_z = 480.0 * bounds.size.width/bounds.size.height;
 	else
 		display_z = 640.0;
 
 	float	ratio = 0.5;
-	float   aspect = viewSize.height/viewSize.width;
+	float   aspect = bounds.size.height/bounds.size.width;
 
 	if (surface != 0)
 		SDL_FreeSurface(surface);
 
-	OOLog(@"display.initGL", @"Creating a new surface of %d x %d", (int)v_size.width, (int)v_size.height);
-	videoModeFlags = SDL_HWSURFACE | SDL_OPENGL;
-	if (fullScreen == YES)
-		videoModeFlags |= SDL_FULLSCREEN;
-	else
-		videoModeFlags |= SDL_RESIZABLE;
-
-	surface = SDL_SetVideoMode((int)v_size.width, (int)v_size.height, 32, videoModeFlags);
-
-	if (fullScreen)
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
-			SDL_ShowCursor(SDL_DISABLE);
-	}
-	else
-	{
-		if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
-			SDL_ShowCursor(SDL_ENABLE);
-	}
+	[self autoShowMouse];
 
 	glShadeModel(GL_FLAT);
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	SDL_GL_SwapBuffers();
 
 	glClearDepth(MAX_CLEAR_DEPTH);
-	glViewport( 0, 0, viewSize.width, viewSize.height);
+	glViewport( 0, 0, bounds.size.width, bounds.size.height);
 
-	squareX = 0.0;
+	squareX = 0.0f;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();	// reset matrix
 	glFrustum( -ratio, ratio, -aspect*ratio, aspect*ratio, 1.0, MAX_CLEAR_DEPTH);	// set projection matrix
@@ -426,43 +731,25 @@ MA 02110-1301, USA.
 
 	if (UNIVERSE)
 	{
-		Entity* the_sun = [UNIVERSE sun];
-		Vector sun_pos = (the_sun)? the_sun->position : make_vector(0.0f,0.0f,0.0f);
-		sun_center_position[0] = sun_pos.x;
-		sun_center_position[1] = sun_pos.y;
-		sun_center_position[2] = sun_pos.z;
 		[UNIVERSE setLighting];
 	}
 	else
 	{
+		// At startup only...
 		glLightfv(GL_LIGHT1, GL_AMBIENT, sun_ambient);
 		glLightfv(GL_LIGHT1, GL_SPECULAR, sun_specular);
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, sun_diffuse);
 		glLightfv(GL_LIGHT1, GL_POSITION, sun_center_position);
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, stars_ambient);
-		//
-		// light for demo ships display..
-		GLfloat	white[] = { 1.0, 1.0, 1.0, 1.0};	// white light
-		glLightfv(GL_LIGHT0, GL_AMBIENT, white);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 
 		glEnable(GL_LIGHT1);		// lighting
-		glEnable(GL_LIGHT0);		// lighting
 	}
 	glEnable(GL_LIGHTING);		// lighting
 
 	// world's simplest OpenGL optimisations...
-	glHint(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
+	//glHint(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
 	glDisable(GL_NORMALIZE);
 	glDisable(GL_RESCALE_NORMAL);
-
-#if OOLITE_WINDOWS
-	if (UNIVERSE)
-	{
-		[[OOGraphicsResetManager sharedManager] resetGraphicsState];
-	}
-#endif
 
 	m_glContextInitialized = YES;
 }
@@ -692,6 +979,21 @@ MA 02110-1301, USA.
 	return NUM_KEYS;
 }
 
+- (void) setKeyboardTo: (NSString *) value
+{
+#if OOLITE_WINDOWS
+	keyboardMap=gvKeyboardAuto;
+
+	if ([value isEqual: @"UK"])
+	{
+		keyboardMap=gvKeyboardUK;
+	}
+	else if ([value isEqual: @"US"])
+	{
+		keyboardMap=gvKeyboardUS;
+	}
+#endif
+}
 
 - (void)pollControls
 {
@@ -707,6 +1009,7 @@ MA 02110-1301, USA.
 			case SDL_JOYAXISMOTION:
 			case SDL_JOYBUTTONUP:
 			case SDL_JOYBUTTONDOWN:
+			case SDL_JOYHATMOTION:
 				[stickHandler handleSDLEvent: &event];
 				break;
 				
@@ -773,19 +1076,21 @@ MA 02110-1301, USA.
 					// Oolite mouse pointer appears under the X Window System
 					// mouse pointer.
 					mmove_event = (SDL_MouseMotionEvent*)&event;
-					
-					double mx = mmove_event->x - viewSize.width/2.0;
-					double my = mmove_event->y - viewSize.height/2.0;
-					
+
+					int w=bounds.size.width;
+					int h=bounds.size.height;
+
+					double mx = mmove_event->x - w/2.0; 
+					double my = mmove_event->y - h/2.0;
 					if (display_z > 640.0)
 					{
-						mx /= viewSize.width * MAIN_GUI_PIXEL_WIDTH / display_z;
-						my /= viewSize.height;
+						mx /= w * MAIN_GUI_PIXEL_WIDTH / display_z;
+						my /= h;
 					}
 					else
 					{
-						mx /= MAIN_GUI_PIXEL_WIDTH * viewSize.width / 640.0;
-						my /= MAIN_GUI_PIXEL_HEIGHT * viewSize.width / 640.0;
+						mx /= MAIN_GUI_PIXEL_WIDTH * w / 640.0;
+						my /= MAIN_GUI_PIXEL_HEIGHT * w / 640.0;
 					}
 					
 					[self setVirtualJoystick:mx :my];
@@ -806,7 +1111,34 @@ MA 02110-1301, USA.
 if (shift) { keys[a] = YES; keys[b] = NO; } else { keys[a] = NO; keys[b] = YES; } \
 } while (0)
 				
+#if OOLITE_WINDOWS
+				/*
+					Enable backslash in win/UK
+				*/
+				if (kbd_event->keysym.scancode==86)
+				{
+					//non-US scancode. If in autodetect, we'll assume UK  :)
+					if (keyboardMap==gvKeyboardAuto || keyboardMap==gvKeyboardUK)
+					{	KEYCODE_DOWN_EITHER (166, 92);	}		//	windows	UK 	| or \.
+				}
+
 				switch (kbd_event->keysym.sym) {
+
+					case SDLK_BACKSLASH: 
+						if (keyboardMap==gvKeyboardUK )
+						{			
+							keys[35] = YES;						//	windows	UK	#  
+						}
+						else if (keyboardMap==gvKeyboardAuto || keyboardMap==gvKeyboardUS)
+						{
+							KEYCODE_DOWN_EITHER (166, 92); 		// 	windows	US	| or \.
+						}
+						break;
+#else
+				switch (kbd_event->keysym.sym) {
+				
+					case SDLK_BACKSLASH: KEYCODE_DOWN_EITHER (166, 92); break;	// | or \.
+#endif
 					case SDLK_1: KEYCODE_DOWN_EITHER (33, gvNumberKey1); break;	// ! or 1
 					case SDLK_2: KEYCODE_DOWN_EITHER (64, gvNumberKey2); break;	// @ or 2
 					case SDLK_3: KEYCODE_DOWN_EITHER (35, gvNumberKey3); break;	// # or 3
@@ -848,7 +1180,6 @@ if (shift) { keys[a] = YES; keys[b] = NO; } else { keys[a] = NO; keys[b] = YES; 
 					case SDLK_x: KEYCODE_DOWN_EITHER (88, 120); break;		// X or x
 					case SDLK_y: KEYCODE_DOWN_EITHER (89, 121); break;		// Y or y
 					case SDLK_z: KEYCODE_DOWN_EITHER (90, 122); break;		// Z or z
-					case SDLK_BACKSLASH: KEYCODE_DOWN_EITHER (166, 92); break;	// | or \.
 						//SDLK_BACKQUOTE is a special case. No SDLK_ with code 126 exists.
 					case SDLK_BACKQUOTE: if (!shift) keys[96] = YES; break;		// ` 
 					case SDLK_HOME: keys[gvHomeKey] = YES; break;	
@@ -883,59 +1214,62 @@ if (shift) { keys[a] = YES; keys[b] = NO; } else { keys[a] = NO; keys[b] = YES; 
 					
 					case SDLK_LSHIFT:
 					case SDLK_RSHIFT:
-					shift = YES;
-					break;
+						shift = YES;
+						break;
 					
 					case SDLK_LCTRL:
 					case SDLK_RCTRL:
-					ctrl = YES;
-					break;
+						ctrl = YES;
+						break;
 					
 					case SDLK_F11:
-					if(!fullScreen)
+						if (fullScreen==YES && [[gameController displayModes] count] > 1)
+						{
+							int count=[[gameController displayModes] count];
+							if(shift)
+							{
+								currentSize--;
+								if (currentSize < 0)
+									currentSize = count - 1;
+							}
+							else
+							{
+								currentSize++;
+								if (currentSize >= count)
+									currentSize = 0;
+							}
+							//save the new fullscreen mode
+							NSDictionary *mode=[[gameController displayModes] objectAtIndex: currentSize];
+							NSSize newSize = NSMakeSize ([[mode objectForKey:kOODisplayWidth] intValue], [[mode objectForKey:kOODisplayHeight] intValue]);
+							[gameController setDisplayWidth:newSize.width
+									Height:newSize.height Refresh:[[mode objectForKey:kOODisplayRefreshRate] intValue]];
+							[self initialiseGLWithSize: newSize];
+							
+							if([[PlayerEntity sharedPlayer] guiScreen]==GUI_SCREEN_GAMEOPTIONS)
+							{
+								//refresh to display current fullscreen res
+								[[PlayerEntity sharedPlayer] setGuiToGameOptionsScreen];
+							}
+
+						}
 						break;
-					if(shift)
-					{
-						currentSize--;
-						if (currentSize < 0)
-							currentSize = [screenSizes count] - 1;
-					}
-					else
-					{
-						currentSize++;
-						if (currentSize >= [screenSizes count])
-							currentSize = 0;
-					}
-					[self initialiseGLWithSize: [self modeAsSize: currentSize]];
-					break;
 					
 					case SDLK_F12:
-					/*TODO Should this be: [self toggleScreenMode] ? 
-					 * Works under Windows/Linux, what about OS-X? - mwerle 20081006 */
-					if (fullScreen == NO)
-					{
-						fullScreen = YES;
-						[self initialiseGLWithSize: [self modeAsSize: currentSize]];
-					}
-					else
-					{
-						// flip to user-selected size
-						fullScreen = NO;
-						[self initialiseGLWithSize: currentWindowSize];
-					}
-					break;
+						[self toggleScreenMode];
+						break;
 					
 					case SDLK_ESCAPE:
-					if (shift)
-					{
-						SDL_FreeSurface(surface);
-						[gameController exitApp];
-					}
-					else
-						keys[27] = YES;
-					
+						if (shift)
+						{
+							SDL_FreeSurface(surface);
+							[gameController exitApp];
+						}
+						else
+							keys[27] = YES;
+						break;
 					default:
 						// Numerous cases not handled.
+						//OOLog(@"keys.test", @"Keydown scancode: %d", kbd_event->keysym.scancode);
 						;
 				}
 				break;
@@ -948,8 +1282,36 @@ if (shift) { keys[a] = YES; keys[b] = NO; } else { keys[a] = NO; keys[b] = YES; 
 #define KEYCODE_UP_BOTH(a,b)	do { \
 keys[a] = NO; keys[b] = NO; \
 } while (0)
-				
+
+#if OOLITE_WINDOWS
+				/*
+					Windows locale patch. 
+				*/
+				if (kbd_event->keysym.scancode==86)
+				{
+					//non-US scancode. If in autodetect, we'll assume UK  :)
+					if (keyboardMap==gvKeyboardAuto || keyboardMap==gvKeyboardUK)
+					{	KEYCODE_UP_BOTH (166, 92);	}			//	windows	UK 	| or \.
+				}
+
 				switch (kbd_event->keysym.sym) {
+
+					case SDLK_BACKSLASH: 
+						if (keyboardMap==gvKeyboardUK )
+						{			
+							keys[35] = NO;						//	windows	UK	#  
+						}
+						else if (keyboardMap==gvKeyboardAuto || keyboardMap==gvKeyboardUS)
+						{
+							KEYCODE_UP_BOTH (166, 92); 			// 	windows	US	| or \.
+						}
+						break;
+#else
+				switch (kbd_event->keysym.sym) {
+				
+					case SDLK_BACKSLASH: KEYCODE_UP_BOTH (166, 92); break;	// | or \.
+#endif
+
 					case SDLK_1: KEYCODE_UP_BOTH (33, gvNumberKey1); break;		// ! and 1
 					case SDLK_2: KEYCODE_UP_BOTH (64, gvNumberKey2); break;		// @ and 2
 					case SDLK_3: KEYCODE_UP_BOTH (35, gvNumberKey3); break;		// # and 3
@@ -991,7 +1353,6 @@ keys[a] = NO; keys[b] = NO; \
 					case SDLK_x: KEYCODE_UP_BOTH (88, 120); break;			// X and x
 					case SDLK_y: KEYCODE_UP_BOTH (89, 121); break;			// Y and y
 					case SDLK_z: KEYCODE_UP_BOTH (90, 122); break;			// Z and z
-					case SDLK_BACKSLASH: KEYCODE_UP_BOTH (166, 92); break;		// | and \.
 						//SDLK_BACKQUOTE is a special case. No SDLK_ with code 126 exists.
 					case SDLK_BACKQUOTE: keys[96] = NO; break;			// `
 					case SDLK_HOME: keys[gvHomeKey] = NO; break;
@@ -1049,7 +1410,23 @@ keys[a] = NO; keys[b] = NO; \
 				SDL_ResizeEvent *rsevt=(SDL_ResizeEvent *)&event;
 				NSSize newSize=NSMakeSize(rsevt->w, rsevt->h);
 				[self initialiseGLWithSize: newSize];
+#if OOLITE_WINDOWS
+				if (!fullScreen && !splashScreen)
+				{
+					if (saveSize == NO)
+					{
+						// event triggered by caption & frame
+						// next event will be a real resize.
+						saveSize = YES;
+					}
+					else
+					{
+						[self saveWindowSize: newSize];
+					}
+				}
+#else
 				[self saveWindowSize: newSize];
+#endif
 				break;
 			}
 				

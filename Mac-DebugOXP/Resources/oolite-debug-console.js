@@ -51,10 +51,10 @@ debugFlags
 		DEBUG_OCTREE_DRAW:		0x80
 		DEBUG_DRAW_NORMALS:		0x100
 		DEBUG_HIDE_HUD:			0x200
-		DEBUG_SLOW_MODE:		0x400
-		The current flags can be seen in Universe.h in the Oolite source code,
+		DEBUG_NO_DUST:			0x400
+		The current flags can be seen in Entity.h in the Oolite source code,
 		for instance at:
-		http://svn.berlios.de/svnroot/repos/oolite-linux/trunk/src/Core/Universe.h
+		http://svn.berlios.de/svnroot/repos/oolite-linux/trunk/src/Core/Entities/Entity.h
 	For example, to enable rendering of bounding boxes and surface normals,
 	you might use:
 		console.debugFlags ^= 0x40
@@ -121,7 +121,10 @@ this.dumpObjectShort = function (x)
 	consoleMessage("dumpObject", x.toString() + ":");
 	for (let prop in x)
 	{
-		consoleMessage("dumpObject", "    " + prop);
+		if (prop.hasOwnProperty(name))
+		{
+			consoleMessage("dumpObject", "    " + prop);
+		}
 	}
 }
 
@@ -139,7 +142,10 @@ this.dumpObjectLong = function (x)
 	consoleMessage("dumpObject", x.toString() + ":");
 	for (let prop in x)
 	{
-		consoleMessage("dumpObject", "    " + prop + " = " + x[prop]);
+		if (prop.hasOwnProperty(name))
+		{
+			consoleMessage("dumpObject", "    " + prop + " = " + x[prop]);
+		}
 	}
 }
 

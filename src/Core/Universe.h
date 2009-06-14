@@ -5,7 +5,7 @@ Universe.h
 Manages a lot of stuff that isn't managed somewhere else.
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,6 +32,10 @@ MA 02110-1301, USA.
 #import "OOWeakReference.h"
 #import "OOTypes.h"
 #import "OOSound.h"
+
+#ifdef HAVE_LIBESPEAK
+#include <espeak/speak_lib.h>
+#endif
 
 @class	GameController, CollisionRegion, MyOpenGLView, GuiDisplayGen,
 		Entity, ShipEntity, StationEntity, PlanetEntity, PlayerEntity,
@@ -120,6 +124,10 @@ enum
 #define OOLITE_EXCEPTION_FATAL				@"OoliteFatalException"
 
 #define BILLBOARD_DEPTH						50000.0
+
+#define TIME_ACCELERATION_FACTOR_MIN		0.0625f
+#define TIME_ACCELERATION_FACTOR_DEFAULT	1.0f
+#define TIME_ACCELERATION_FACTOR_MAX		16.0f
 
 
 @interface Universe: OOWeakRefObject
@@ -217,10 +225,13 @@ enum
 	StationEntity			*cachedStation;
 	PlanetEntity			*cachedPlanet;
 	PlanetEntity			*cachedSun;
+	NSMutableArray			*allPlanets;
 	
 	BOOL					strict;
 	
 	BOOL					no_update;
+	
+	float				time_acceleration_factor;
 	
 	NSMutableDictionary		*localPlanetInfoOverrides;
 	
@@ -245,7 +256,11 @@ enum
 	
 #if OOLITE_MAC_OS_X
 	NSSpeechSynthesizer		*speechSynthesizer;		// use this from OS X 10.3 onwards
+#endif
+#if OOLITE_SPEECH_SYNTH
 	NSArray					*speechArray;
+	const espeak_VOICE		**espeak_voices;
+	unsigned int			espeak_voice_count;
 #endif
 }
 
@@ -276,6 +291,7 @@ enum
 - (void) set_up_witchspace;
 - (void) setUpSpace;
 - (void) setLighting;
+- (PlanetEntity	*) setUpPlanet;
 
 - (void) populateSpaceFromActiveWormholes;
 - (void) populateSpaceFromHyperPoint:(Vector) h1_pos toPlanetPosition:(Vector) p1_pos andSunPosition:(Vector) s1_pos;
@@ -298,16 +314,14 @@ enum
 - (void) set_up_break_pattern:(Vector) pos quaternion:(Quaternion) q;
 - (void) game_over;
 
-- (void) set_up_intro1;
-- (void) set_up_intro2;
+- (void) setupIntroFirstGo: (BOOL) justCobra;
 - (void) selectIntro2Previous;
 - (void) selectIntro2Next;
 
 - (StationEntity *) station;
 - (PlanetEntity *) planet;
 - (PlanetEntity *) sun;
-- (NSMutableArray *) planets;	// Note: does not include sun.
-- (NSMutableArray *) planetsAndSun;
+- (NSArray *) planets;	// Note: does not include sun.
 
 // Turn main station into just another station, for blowUpStation.
 - (void) unMagicMainStation;
@@ -373,7 +387,7 @@ enum
 - (Vector) getSafeVectorFromEntity:(Entity *) e1 toDistance:(double)dist fromPoint:(Vector) p2;
 
 - (OOUniversalID) getFirstEntityHitByLaserFromEntity:(ShipEntity *)srcEntity inView:(OOViewID)viewdir offset:(Vector)offset rangeFound:(GLfloat*)range_ptr;
-- (ShipEntity *) getFirstEntityTargettedByPlayer;
+- (Entity *) getFirstEntityTargettedByPlayer;
 
 - (NSArray *) getEntitiesWithinRange:(double)range ofEntity:(Entity *)entity;
 - (unsigned) countShipsWithRole:(NSString *)role inRange:(double)range ofEntity:(Entity *)entity;
@@ -434,6 +448,9 @@ enum
 
 - (void) update:(OOTimeDelta)delta_t;
 
+- (float) timeAccelerationFactor;
+- (void) setTimeAccelerationFactor:(float)newTimeAccelerationFactor;
+
 - (void) filterSortedLists;
 
 ///////////////////////////////////////
@@ -459,6 +476,7 @@ enum
 - (NSString *) keyForPlanetOverridesForSystemSeed:(Random_Seed) s_seed inGalaxySeed:(Random_Seed) g_seed;
 - (NSString *) keyForInterstellarOverridesForSystemSeeds:(Random_Seed) s_seed1 :(Random_Seed) s_seed2 inGalaxySeed:(Random_Seed) g_seed;
 - (NSDictionary *) generateSystemData:(Random_Seed) system_seed;
+- (NSDictionary *) generateSystemData:(Random_Seed) s_seed useCache:(BOOL) useCache;
 - (NSDictionary *) currentSystemData;	// Same as generateSystemData:systemSeed unless in interstellar space.
 - (BOOL) inInterstellarSpace;
 
@@ -517,7 +535,7 @@ double estimatedTimeForJourney(double distance, int hops);
 
 - (NSArray*) listBeaconsWithCode:(NSString*) code;
 
-- (void) allShipAIsReactToMessage:(NSString*) message;
+- (void) allShipsDoScriptEvent:(NSString*) event andReactToAIMessage:(NSString*) message;
 
 ///////////////////////////////////////
 
@@ -563,6 +581,14 @@ double estimatedTimeForJourney(double distance, int hops);
 //
 - (BOOL) isSpeaking;
 //
+#ifdef HAVE_LIBESPEAK
+- (NSString *) voiceName:(unsigned int) index;
+- (unsigned int) voiceNumber:(NSString *) name;
+- (unsigned int) nextVoice:(unsigned int) index;
+- (unsigned int) prevVoice:(unsigned int) index;
+- (unsigned int) setVoice:(unsigned int) index withGenderM:(BOOL) isMale;
+#endif
+//
 ////
 
 //autosave 
@@ -594,7 +620,9 @@ OOINLINE Universe *GetUniverse(void)
 
 // Only for use with string literals, and only for looking up strings.
 NSString *DESC_(NSString *key);
+NSString *DESC_PLURAL_(NSString *key, int count);
 #define DESC(key)	(DESC_(key ""))
+#define DESC_PLURAL(key,count)	(DESC_PLURAL_(key, count))
 
 
 @interface OOSound (OOCustomSounds)

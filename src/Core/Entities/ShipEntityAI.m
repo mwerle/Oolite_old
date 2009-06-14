@@ -122,7 +122,7 @@ MA 02110-1301, USA.
 
 - (void) checkTargetLegalStatus;
 
-- (void) exitAI;
+- (void) exitAIWithMessage:(NSString *)message;
 
 - (void) setDestinationToTarget;
 - (void) setDestinationWithinTarget;
@@ -272,6 +272,19 @@ MA 02110-1301, USA.
 	if (found_target != NO_TARGET)  [shipAI message:@"TARGET_FOUND"];
 	else  [shipAI message:@"NOTHING_FOUND"];
 }
+
+
+#ifdef TARGET_INCOMING_MISSILES
+- (void) scanForNearestIncomingMissile
+{
+	BinaryOperationPredicateParameter param =
+	{
+		HasScanClassPredicate, [NSNumber numberWithInt:CLASS_MISSILE],
+		IsHostileAgainstTargetPredicate, self
+	};
+	[self scanForNearestShipWithPredicate:ANDPredicate parameter:&param];
+}
+#endif
 
 
 - (void) performTumble
@@ -426,7 +439,7 @@ MA 02110-1301, USA.
 	for (i = 0; i < n_scanned_ships ; i++)
 	{
 		ship = scanned_ships[i];
-		if ([ship isPirateVictim] && (ship->status != STATUS_DEAD) && (ship->status != STATUS_DOCKED))
+		if ([ship isPirateVictim] && ([ship status] != STATUS_DEAD) && ([ship status] != STATUS_DOCKED))
 		{
 			d2 = distance2_scanned_ships[i];
 			if (PIRATES_PREFER_PLAYER && (d2 < desired_range * desired_range) && ship->isPlayer && [self isPirate])
@@ -459,7 +472,7 @@ MA 02110-1301, USA.
 	for (i = 0; i < n_scanned_ships ; i++)
 	{
 		ShipEntity *ship = scanned_ships[i];
-		if ((ship->status != STATUS_DEAD) && (ship->status != STATUS_DOCKED) && [ship isPirateVictim])
+		if (([ship status] != STATUS_DEAD) && ([ship status] != STATUS_DOCKED) && [ship isPirateVictim])
 			ids_found[n_found++] = ship->universalID;
 	}
 	if (n_found == 0)
@@ -831,9 +844,10 @@ MA 02110-1301, USA.
 }
 
 
-- (void) exitAI
+- (void) exitAIWithMessage:(NSString *)message;
 {
-	[shipAI exitStateMachine];
+	if ([message length] == 0)  message = @"RESTARTED";
+	[shipAI exitStateMachineWithMessage:message];
 }
 
 
@@ -896,7 +910,7 @@ MA 02110-1301, USA.
 	for (i = 0; i < n_scanned_ships ; i++)
 	{
 		ShipEntity *ship = scanned_ships[i];
-		if ((ship->scanClass != CLASS_CARGO)&&(ship->status != STATUS_DEAD)&&(ship->status != STATUS_DOCKED))
+		if ((ship->scanClass != CLASS_CARGO)&&([ship status] != STATUS_DEAD)&&([ship status] != STATUS_DOCKED))
 		{
 			GLfloat	d2 = distance2_scanned_ships[i];
 			float	legal_factor = [ship legalStatus] * gov_factor;
@@ -1048,12 +1062,15 @@ static WormholeEntity *whole = nil;
 				//
 				thanked_ship_id = NO_TARGET;
 			}
-			if (ship->isStation)
-				[ship acceptDistressMessageFrom:self];
-			if ([ship hasPrimaryRole:@"police"])	// Not isPolice because we don't want wingmen shooting off... but what about interceptors?
-				[ship acceptDistressMessageFrom:self];
-			if ([ship hasPrimaryRole:@"hunter"])
-				[ship acceptDistressMessageFrom:self];
+			if ([self bounty] == 0) // Only clean ships can have their distress calls accepted
+			{
+				if (ship->isStation)
+					[ship acceptDistressMessageFrom:self];
+				if ([ship hasPrimaryRole:@"police"])	// Not isPolice because we don't want wingmen shooting off... but what about interceptors?
+					[ship acceptDistressMessageFrom:self];
+				if ([ship hasPrimaryRole:@"hunter"])
+					[ship acceptDistressMessageFrom:self];
+			}
 		}
 	}
 }
@@ -1102,10 +1119,10 @@ static WormholeEntity *whole = nil;
 	{
 		ShipEntity *thing = scanned_ships[i];
 		GLfloat d2 = distance2_scanned_ships[i];
-		if ((thing->scanClass != CLASS_CARGO) && (thing->status != STATUS_DOCKED) && ![thing isThargoid] && (d2 < found_d2))
+		if (([thing scanClass] != CLASS_CARGO) && ([thing status] != STATUS_DOCKED) && ![thing isThargoid] && (d2 < found_d2))
 		{
 			found_target = [thing universalID];
-			if (thing->isPlayer) d2 = 0.0;   // prefer the player
+			if ([thing isPlayer]) d2 = 0.0;   // prefer the player
 			found_d2 = d2;
 		}
 	}
@@ -1192,7 +1209,7 @@ static WormholeEntity *whole = nil;
 #ifndef NDEBUG
 		if (reportAIMessages)
 		{
-			OOLog(@"ai.suggestEscort", @"DEBUG %@ suggests escorting %@", self, mother);
+			OOLog(@"ai.suggestEscort", @"DEBUG: %@ suggests escorting %@", self, mother);
 		}
 #endif
 		
@@ -1215,7 +1232,7 @@ static WormholeEntity *whole = nil;
 #ifndef NDEBUG
 		if (reportAIMessages)
 		{
-			OOLog(@"ai.suggestEscort.refused", @"DEBUG %@ refused by %@", self, mother);
+			OOLog(@"ai.suggestEscort.refused", @"DEBUG: %@ refused by %@", self, mother);
 		}
 #endif
 
@@ -1331,19 +1348,25 @@ static WormholeEntity *whole = nil;
 
 - (void) messageMother:(NSString *)msgString
 {
-	ShipEntity   *mother = [self owner];
-	if (mother)
+	ShipEntity *mother = [self owner];
+	if (mother != nil && mother != self)
 	{
-		[[mother getAI] reactToMessage:msgString];
+		[mother reactToAIMessage:msgString];
 	}
+}
+
+
+- (void) messageSelf:(NSString *)msgString
+{
+	[self sendAIMessage:msgString];
 }
 
 
 - (void) setPlanetPatrolCoordinates
 {
 	// check we've arrived near the last given coordinates
-	Vector r_pos = make_vector(position.x - coordinates.x, position.y - coordinates.y, position.z - coordinates.z);
-	if ((magnitude2(r_pos) < 1000000)||(patrol_counter == 0))
+	Vector r_pos = vector_subtract(position, coordinates);
+	if (magnitude2(r_pos) < 1000000 || patrol_counter == 0)
 	{
 		Entity *the_sun = [UNIVERSE sun];
 		Entity *the_station = [UNIVERSE station];
@@ -1470,7 +1493,7 @@ static WormholeEntity *whole = nil;
 - (void) sendTargetCommsMessage:(NSString*) message
 {
 	ShipEntity *ship = [self primaryTarget];
-	if ((ship == nil) || (ship->status == STATUS_DEAD) || (ship->status == STATUS_DOCKED))
+	if ((ship == nil) || ([ship status] == STATUS_DEAD) || ([ship status] == STATUS_DOCKED))
 	{
 		[self noteLostTarget];
 		return;
@@ -1482,7 +1505,7 @@ static WormholeEntity *whole = nil;
 - (void) markTargetForFines
 {
 	ShipEntity *ship = [self primaryTarget];
-	if ((ship == nil) || (ship->status == STATUS_DEAD) || (ship->status == STATUS_DOCKED))
+	if ((ship == nil) || ([ship status] == STATUS_DEAD) || ([ship status] == STATUS_DOCKED))
 	{
 		[self noteLostTarget];
 		return;
@@ -1496,7 +1519,7 @@ static WormholeEntity *whole = nil;
 	if ((isStation)||(scanClass == CLASS_POLICE))
 	{
 		ShipEntity *ship = [self primaryTarget];
-		if ((ship == nil) || (ship->status == STATUS_DEAD) || (ship->status == STATUS_DOCKED))
+		if ((ship == nil) || ([ship status] == STATUS_DEAD) || ([ship status] == STATUS_DOCKED))
 		{
 			[self noteLostTarget];
 			return;
@@ -1625,7 +1648,7 @@ static WormholeEntity *whole = nil;
 	}
 	else
 	{
-		OOLog(@"ai.rollD.invalidValue", @"***** AI_ERROR - invalid value supplied to rollD: '%@'", die_number);
+		OOLog(@"ai.rollD.invalidValue", @"***** ERROR: invalid value supplied to rollD: '%@'.", die_number);
 	}
 }
 
@@ -1751,6 +1774,7 @@ static WormholeEntity *whole = nil;
 											 fileName:aiName
 										   lineNumber:0
 											  context:context];
+		[function autorelease];
 		
 		// Cache function.
 		if (function != nil)
@@ -1797,7 +1821,7 @@ static WormholeEntity *whole = nil;
 
 	if ([tokens count] != 4)
 	{
-		OOLog(@"ai.syntax.setCoordinates", @"***** AI_ERROR CANNOT setCoordinates: '%@'",system_x_y_z);
+		OOLog(@"ai.syntax.setCoordinates", @"***** ERROR: cannot setCoordinates: '%@'.",system_x_y_z);
 		return;
 	}
 	
@@ -1839,8 +1863,11 @@ static WormholeEntity *whole = nil;
 	StationEntity	*station =  nil;
 	Entity			*targStation = nil;
 	NSString		*message = nil;
+	double		distanceToStation2 = 0.0;
+	BOOL		insideMainStationAegis = NO;
 	
 	targStation = [UNIVERSE entityForUniversalID:targetStation];
+	insideMainStationAegis = (targStation == [UNIVERSE station] && [self withinStationAegis]);
 	if ([targStation isStation])
 	{
 		station = (StationEntity*)targStation;
@@ -1852,7 +1879,9 @@ static WormholeEntity *whole = nil;
 												relativeToEntity:self];
 	}
 	
-	if (station != nil)
+	distanceToStation2 = distance2( [station position], [self position] );
+	
+	if ((station != nil && distanceToStation2 < SCANNER_MAX_RANGE2) || insideMainStationAegis)
 	{
 		// remember the instructions
 		[dockingInstructions release];
@@ -1942,11 +1971,11 @@ static WormholeEntity *whole = nil;
 	if (!deprecationWarning)
 	{
 		deprecationWarning = YES;
-		OOLog(@"script.deprecated.scriptActionOnTarget", @"***** WARNING in AI %@: the AI method scriptActionOnTarget: is deprecated and should not be used. It is slow and has unpredictable side effects. The recommended alternative is to use sendScriptMessage: to call a function in a ship's JavaScript ship script instead. scriptActionOnTarget: should not be used at all from scripts. An alternative is safeScriptActionOnTarget:, which is similar to scriptActionOnTarget: but has less side effects.", [AI currentlyRunningAIDescription]);
+		OOLog(@"script.deprecated.scriptActionOnTarget", @"----- WARNING in AI %@: the AI method scriptActionOnTarget: is deprecated and should not be used. It is slow and has unpredictable side effects. The recommended alternative is to use sendScriptMessage: to call a function in a ship's JavaScript ship script instead. scriptActionOnTarget: should not be used at all from scripts. An alternative is safeScriptActionOnTarget:, which is similar to scriptActionOnTarget: but has less side effects.", [AI currentlyRunningAIDescription]);
 	}
 	else
 	{
-		OOLog(@"script.deprecated.scriptActionOnTarget.repeat", @"***** WARNING in AI %@: the AI method scriptActionOnTarget: is deprecated and should not be used.", [AI currentlyRunningAIDescription]);
+		OOLog(@"script.deprecated.scriptActionOnTarget.repeat", @"----- WARNING in AI %@: the AI method scriptActionOnTarget: is deprecated and should not be used.", [AI currentlyRunningAIDescription]);
 	}
 #endif
 	
@@ -2165,7 +2194,7 @@ static WormholeEntity *whole = nil;
 	{
 		candidate = scanned_ships[i];
 		d2 = distance2_scanned_ships[i];
-		if ((d2 < found_d2) && (candidate->scanClass != CLASS_CARGO) && (candidate->status != STATUS_DOCKED) && predicate(candidate, parameter))
+		if ((d2 < found_d2) && (candidate->scanClass != CLASS_CARGO) && ([candidate status] != STATUS_DOCKED) && predicate(candidate, parameter))
 		{
 			found_target = candidate->universalID;
 			found_d2 = d2;

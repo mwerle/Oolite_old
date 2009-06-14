@@ -9,6 +9,7 @@
 #import "OOLegacyScriptToJavaScriptConverterCore.h"
 #import "NSScannerOOExtensions.h"
 #import "OOCollectionExtractors.h"
+#import "OOJSExprNodeHelpers.h"
 
 
 #define COMMENT_SELECTOR		0
@@ -44,12 +45,14 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 - (void) convertOneAction:(NSString *)action;
 
 - (NSString *) convertOneCondition:(NSString *)condition;
-- (NSString *) convertQuery:(NSString *)query gettingType:(OOOperandType *)outType;
-- (NSString *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition;
-- (NSString *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition;
-- (NSString *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition;
+- (OOJSExprNode *) convertQuery:(NSString *)query gettingType:(OOOperandType *)outType;
+- (OOJSExprNode *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(OOJSExprNode *)lhs rhs:(OOJSExprNode *)rhs rawCondition:(NSString *)rawCondition;
+- (OOJSExprNode *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(OOJSExprNode *)lhs rhs:(OOJSExprNode *)rhs rawCondition:(NSString *)rawCondition;
+- (OOJSExprNode *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(OOJSExprNode *)lhs rhs:(OOJSExprNode *)rhs rawCondition:(NSString *)rawCondition;
 
+#if OBSOLETE
 - (NSString *) stringifyBooleanExpression:(NSString *)expr;
+#endif
 
 @end
 
@@ -266,11 +269,11 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	NSString			*comparisonString = nil;
 	OOComparisonType	comparator = kComparisonUndefined;
 	unsigned			tokenCount;
-//	unsigned			i, count;
-	NSString			*lhs = nil;
+	OOJSExprNode		*lhs = nil;
 	OOOperandType		lhsType = kTypeInvalid;
-	NSString			*rhs = nil;
-	NSString			*result = nil;
+	NSString			*rhsString = nil;
+	OOJSExprNode		*rhs = nil;
+	OOJSExprNode		*result = nil;
 	
 	if (![condition isKindOfClass:[NSString class]])
 	{
@@ -312,8 +315,8 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	
 	if (tokenCount > 2)
 	{
-		rhs = [[tokens subarrayWithRange:NSMakeRange(2, tokenCount - 2)] componentsJoinedByString:@" "];
-		rhs = [self expandStringOrNumber:rhs];
+		rhsString = [[tokens subarrayWithRange:NSMakeRange(2, tokenCount - 2)] componentsJoinedByString:@" "];
+		rhs = [self expandRightHandSide:rhsString];
 	}
 	
 	if (lhsType == kTypeString)  result = [self convertStringCondition:comparator comparatorString:comparisonString lhs:lhs rhs:rhs rawCondition:condition];
@@ -324,37 +327,45 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	{
 		[self addBugIssueWithKey:@"condition-conversion-failed"
 						  format:@"Conversion of condition \"%@\" failed for unknown reasons.", condition];
-		return @"<** condition conversion failed **>";
+		result = EX_ERROR(@"condition conversion failed");
 	}
-	return result;
+	return [result jsCodeRepresentation];
 }
 
 
-- (NSString *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition
+- (OOJSExprNode *) convertStringCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(OOJSExprNode *)lhs rhs:(OOJSExprNode *)rhs rawCondition:(NSString *)rawCondition
 {
+	OOJSExprNode			*parseFloatOrZero = nil;
+	
 	switch (comparator)
 	{
 		case kComparisonEqual:
-			return [NSString stringWithFormat:@"%@ == %@", lhs, rhs];
+			return EX_EQUAL(lhs, rhs);
 			
 		case kComparisonNotEqual:
-			return [NSString stringWithFormat:@"%@ != %@", lhs, rhs];
+			return EX_NOT_EQUAL(lhs, rhs);
 			
 		case kComparisonLessThan:
 			[self setParseFloatOrZeroHelper];
-			if (!OOScriptConverterIsNumberLiteral(rhs))
+			parseFloatOrZero = EX_THIS_PROP(@"parseFloatOrZero");
+			
+			if (![rhs isNumberLiteral])
 			{
-				rhs = [NSString stringWithFormat:@"this.parseFloatOrZero(%@)", rhs];
+				rhs = EX_CALL(parseFloatOrZero, rhs);
 			}
-			return [NSString stringWithFormat:@"this.parseFloatOrZero(%@) < %@", lhs, rhs];
+			// this.parseFloatOrZero(lhs) < rhs
+			return EX_LESS(EX_CALL(parseFloatOrZero, lhs), rhs);
 			
 		case kComparisonGreaterThan:
 			[self setParseFloatOrZeroHelper];
-			if (!OOScriptConverterIsNumberLiteral(rhs))
+			parseFloatOrZero = EX_THIS_PROP(@"parseFloatOrZero");
+			
+			if (![rhs isNumberLiteral])
 			{
-				rhs = [NSString stringWithFormat:@"this.parseFloatOrZero(%@)", rhs];
+				rhs = EX_CALL(parseFloatOrZero, rhs);
 			}
-			return [NSString stringWithFormat:@"this.parseFloatOrZero(%@) > %@", lhs, rhs];
+			// this.parseFloatOrZero(lhs) > rhs
+			return EX_GRTR(EX_CALL(parseFloatOrZero, lhs), rhs);
 			
 		case kComparisonOneOf:
 			[self setHelperFunction:
@@ -362,35 +373,37 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 					"\tlet items = list.split(\",\");\n"
 					"\treturn items.indexOf(string) != -1;\n}"
 				forKey:@"oneOf"];
-			return [NSString stringWithFormat:@"this.oneOf(%@, %@)", lhs, rhs];
+			// this.oneOf(lhs, rhs)
+			return EX_CALL(EX_THIS_PROP(@"oneOf"), lhs, rhs);
 			
 		case kComparisonUndefined:
 			[self setHelperFunction:
 					@"function (value)\n{\n"
 					"\treturn value == undefined || value == null;\n}"
 				forKey:@"isUndefined"];
-			return [NSString stringWithFormat:@"this.isUndefined(%@)", lhs];
+			// this.isUndefined(lhs)
+			return EX_CALL(EX_THIS_PROP(@"isUndefined"), lhs);
 	}
 	
 	return nil;
 }
 
 
-- (NSString *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition
+- (OOJSExprNode *) convertNumberCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(OOJSExprNode *)lhs rhs:(OOJSExprNode *)rhs rawCondition:(NSString *)rawCondition
 {
 	switch (comparator)
 	{
 		case kComparisonEqual:
-			return [NSString stringWithFormat:@"%@ == %@", lhs, rhs];
+			return EX_EQUAL(lhs, rhs);
 			
 		case kComparisonNotEqual:
-			return [NSString stringWithFormat:@"%@ != %@", lhs, rhs];
+			return EX_NOT_EQUAL(lhs, rhs);
 			
 		case kComparisonLessThan:
-			return [NSString stringWithFormat:@"%@ < %@", lhs, rhs];
+			return EX_LESS(lhs, rhs);
 			
 		case kComparisonGreaterThan:
-			return [NSString stringWithFormat:@"%@ > %@", lhs, rhs];
+			return EX_GRTR(lhs, rhs);
 			
 		case kComparisonOneOf:
 			[self setParseFloatOrZeroHelper];
@@ -400,31 +413,70 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 					 "\tfor (let i = 0; i < items.length; ++i)  if (number == parseFloatOrZero(list[i]))  return true;\n"
 					 "\treturn false;\n}"
 				 forKey:@"oneOfNumber"];
-			return [NSString stringWithFormat:@"this.oneOfNumber(%@, %@)", lhs, rhs];
+			return EX_CALL(EX_THIS_PROP(@"oneOfNumber"), lhs, rhs);
 			
 		case kComparisonUndefined:
 			[self addBugIssueWithKey:@"invalid-comparator"
 							  format:@"Operator %@ is not valid for number expressions (condition: %@).", comparatorString, rawCondition];
-			return [NSString stringWithFormat:@"<** invalid operator %@ **>", comparatorString];
+			return EX_ERROR_FMT(@"invalid operator %@", comparatorString);
 	}
 	
 	return nil;
 }
 
 
-- (NSString *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(NSString *)lhs rhs:(NSString *)rhs rawCondition:(NSString *)rawCondition
+- (OOJSExprNode *) convertBoolCondition:(OOComparisonType)comparator comparatorString:(NSString *)comparatorString lhs:(OOJSExprNode *)lhs rhs:(OOJSExprNode *)rhs rawCondition:(NSString *)rawCondition
 {
+	BOOL					convertedRHS = NO;
+	
+	if ([rhs isStringLiteral])
+	{
+		NSString *rhsString = [(OOJSStringLiteralExprNode *)rhs stringValue];
+		if ([rhsString isEqual:@"YES"])
+		{
+			rhs = EX_TRUE;
+			convertedRHS = YES;
+		}
+		else if ([rhsString isEqual:@"NO"])
+		{
+			rhs = EX_FALSE;
+			convertedRHS = YES;
+		}
+	}
+	if (!convertedRHS)
+	{
+		[self setHelperFunction:
+		 @"function (flag)\n{\n"
+		 "\t// Convert booleans to YES/NO for comparisons.\n"
+		 "\treturn flag ? \"YES\" : \"NO\";\n}"
+						 forKey:@"boolToString"];
+		
+		lhs = EX_CALL(EX_THIS_PROP(@"boolToString"), lhs);
+	}
+	
 	switch (comparator)
 	{
 		case kComparisonEqual:
-			if ([rhs isEqualToString:@"\"YES\""])  return lhs;
-			if ([rhs isEqualToString:@"\"NO\""])  return [NSString stringWithFormat:@"!(%@)", lhs];
-			return [NSString stringWithFormat:@"%@ == %@", [self stringifyBooleanExpression:lhs], rhs];
+			if ([rhs isBooleanLiteral])
+			{
+				if ([(OOJSBoolLiteralExprNode *)rhs boolValue])  return lhs;
+				else  return EX_NOT(lhs);
+			}
+			else
+			{
+				return EX_EQUAL(lhs, rhs);
+			}
 			
 		case kComparisonNotEqual:
-			if ([rhs isEqualToString:@"\"YES\""])  return [NSString stringWithFormat:@"!(%@)", lhs];
-			if ([rhs isEqualToString:@"\"NO\""])  return lhs;
-			return [NSString stringWithFormat:@"%@ != %@", [self stringifyBooleanExpression:lhs], rhs];
+			if ([rhs isBooleanLiteral])
+			{
+				if ([(OOJSBoolLiteralExprNode *)rhs boolValue])  return EX_NOT(lhs);
+				else  return lhs;
+			}
+			else
+			{
+				return EX_NOT_EQUAL(lhs, rhs);
+			}
 			
 		case kComparisonLessThan:
 		case kComparisonGreaterThan:
@@ -432,17 +484,17 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 		case kComparisonUndefined:
 			[self addBugIssueWithKey:@"invalid-comparator"
 							  format:@"Operator %@ is not valid for boolean expressions (condition: %@).", comparatorString, rawCondition];
-			return [NSString stringWithFormat:@"<** invalid operator %@ **>", comparatorString];
+			return EX_ERROR_FMT(@"invalid operator %@", comparatorString);
 	}
 	
 	return nil;
 }
 
 
-- (NSString *) convertQuery:(NSString *)query gettingType:(OOOperandType *)outType
+- (OOJSExprNode *) convertQuery:(NSString *)query gettingType:(OOOperandType *)outType
 {
 	SEL					selector;
-	NSString			*converted = nil;
+	OOJSExprNode		*converted = nil;
 	
 	assert(outType != NULL);
 	
@@ -450,7 +502,7 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 	{
 		// Variables in legacy engine are always considered strings.
 		*outType = kTypeString;
-		return [self legalizedVariableName:query];
+		return [self convertVariableAccess:query];
 	}
 	
 	if ([query hasSuffix:@"_string"])  *outType = kTypeString;
@@ -469,20 +521,21 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 				[self addBugIssueWithKey:@"unreported-error"
 								  format:@"An error occurred while converting a condition, but no appropriate message was generated (selector: \"%@\").", query];
 			}
-			converted = @"<** unknown error **>";
+			converted = EX_ERROR(@"unknown error");
 		}
 	}
 	else	
 	{
 		[self addUnknownSelectorIssueWithKey:@"unknown-selector"
 									  format:@"Could not convert unknown conditional selector \"%@\".", query];
-		converted = [NSString stringWithFormat:@"<** %@ **>", query];
+		converted = EX_ERROR(query);
 	}
 	
 	return converted;
 }
 
 
+#if OBSOLETE
 - (NSString *) stringifyBooleanExpression:(NSString *)expr
 {
 	[self setHelperFunction:
@@ -492,6 +545,7 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 		forKey:@"boolToString"];
 	return [NSString stringWithFormat:@"this.boolToString(%@)", expr];
 }
+#endif
 
 
 /*** Action handlers ***/
@@ -1069,99 +1123,101 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 
 /*** Query handlers ***/
 
-- (NSString *) convertQuery_dockedAtMainStation_bool
+- (OOJSExprNode *) convertQuery_dockedAtMainStation_bool
 {
-	return @"player.ship.dockedStation == system.mainStation";
+	return EX_EQUAL(EX_PROP(EX_PROP(@"player", @"ship"), @"dockedStation"), EX_PROP(@"system", @"mainStation"));
 }
 
 
-- (NSString *) convertQuery_galaxy_number
+- (OOJSExprNode *) convertQuery_galaxy_number
 {
-	return @"galaxyNumber";
+	return EX_ID(@"galaxyNumber");
 }
 
 
-- (NSString *) convertQuery_planet_number
+- (OOJSExprNode *) convertQuery_planet_number
 {
-	return @"system.ID";
+	return EX_PROP(@"system", @"ID");
 }
 
 
-- (NSString *) convertQuery_score_number
+- (OOJSExprNode *) convertQuery_score_number
 {
-	return @"player.score";
+	return EX_PROP(@"player", @"score");
 }
 
 
-- (NSString *) convertQuery_d100_number
+- (OOJSExprNode *) convertQuery_d100_number
 {
-	return @"Math.floor(Math.random() * 100)";
+	// Math.floor(Math.random() * 256)
+	return EX_CALL(EX_PROP(@"Math", @"floor"), EX_MULTIPLY(EX_VOID_CALL(EX_PROP(@"Math", @"random")), EX_INT(100)));
 }
 
 
-- (NSString *) convertQuery_d256_number
+- (OOJSExprNode *) convertQuery_d256_number
 {
-	return @"Math.floor(Math.random() * 256)";
+	// Math.floor(Math.random() * 256)
+	return EX_CALL(EX_PROP(@"Math", @"floor"), EX_MULTIPLY(EX_VOID_CALL(EX_PROP(@"Math", @"random")), EX_INT(256)));
 }
 
 
-- (NSString *) convertQuery_sunWillGoNova_bool
+- (OOJSExprNode *) convertQuery_sunWillGoNova_bool
 {
-	return @"system.sun.isGoingNova";
+	return EX_PROP(EX_PROP(@"system", @"sun"), @"isGoingNova");
 }
 
 
-- (NSString *) convertQuery_sunGoneNova_bool
+- (OOJSExprNode *) convertQuery_sunGoneNova_bool
 {
-	return @"system.sun.hasGoneNova";
+	return EX_PROP(EX_PROP(@"system", @"sun"), @"hasGoneNova");
 }
 
 
-- (NSString *) convertQuery_status_string
+- (OOJSExprNode *) convertQuery_status_string
 {
-	return @"player.ship.status";
+	return EX_PROP(EX_PROP(@"player", @"ship"), @"status");
 }
 
 
-- (NSString *) convertQuery_shipsFound_number
+- (OOJSExprNode *) convertQuery_shipsFound_number
 {
 	[self setInitializer:@"this.shipsFound = 0;" forKey:@"shipsFound"];
-	return @"this.shipsFound";
+	return EX_THIS_PROP(@"shipsFound");
 }
 
 
-- (NSString *) convertQuery_foundEquipment_bool
+- (OOJSExprNode *) convertQuery_foundEquipment_bool
 {
 	[self setInitializer:@"this.foundEqipment = false;" forKey:@"foundEqipment"];
-	return @"this.foundEqipment";
+	return EX_THIS_PROP(@"foundEqipment");
 }
 
 
-- (NSString *) convertQuery_missionChoice_string
+- (OOJSExprNode *) convertQuery_missionChoice_string
 {
-	return @"mission.choice";
+	return EX_PROP(@"mission", @"choice");
 }
 
 
-- (NSString *) convertQuery_scriptTimer_number
+- (OOJSExprNode *) convertQuery_scriptTimer_number
 {
-	return @"clock.legacy_scriptTimer";
+	return EX_PROP(@"clock", @"legacy_scriptTimer");
 }
 
 
-- (NSString *) convertQuery_gui_screen_string
+- (OOJSExprNode *) convertQuery_gui_screen_string
 {
-	return @"guiScreen";
+	return EX_ID(@"guiScreen");
 }
 
 
-- (NSString *) convertQuery_credits_number
+- (OOJSExprNode *) convertQuery_credits_number
 {
-	return @"player.credits";
+	return EX_PROP(@"player", @"credits");
 }
 
 
-- (NSString *) convertQuery_dockedStationName_string
+- (OOJSExprNode *) convertQuery_dockedStationName_string
 {
 	/*
 		this.dockedStationName = function ()
@@ -1189,104 +1245,104 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 			"\treturn result;\n}"
 		forKey:@"dockedStationName"];
 	
-	return @"this.dockedStationName()";
+	return EX_VOID_CALL(EX_THIS_PROP(@"dockedStationName"));
 }
 
 
-- (NSString *) convertQuery_systemGovernment_string
+- (OOJSExprNode *) convertQuery_systemGovernment_string
 {
-	return @"system.governmentDescription";
+	return EX_PROP(@"system", @"governmentDescription");
 }
 
 
-- (NSString *) convertQuery_systemGovernment_number
+- (OOJSExprNode *) convertQuery_systemGovernment_number
 {
-	return @"system.government";
+	return EX_PROP(@"system", @"government");
 }
 
 
-- (NSString *) convertQuery_systemEconomy_string
+- (OOJSExprNode *) convertQuery_systemEconomy_string
 {
-	return @"system.economyDescription";
+	return EX_PROP(@"system", @"economyDescription");
 }
 
 
-- (NSString *) convertQuery_systemEconomy_number
+- (OOJSExprNode *) convertQuery_systemEconomy_number
 {
-	return @"system.economy";
+	return EX_PROP(@"system", @"economy");
 }
 
 
-- (NSString *) convertQuery_systemTechLevel_number
+- (OOJSExprNode *) convertQuery_systemTechLevel_number
 {
-	return @"system.techLevel";
+	return EX_PROP(@"system", @"techLevel");
 }
 
 
-- (NSString *) convertQuery_systemPopulation_number
+- (OOJSExprNode *) convertQuery_systemPopulation_number
 {
-	return @"system.population";
+	return EX_PROP(@"system", @"population");
 }
 
 
-- (NSString *) convertQuery_systemProductivity_number
+- (OOJSExprNode *) convertQuery_systemProductivity_number
 {
-	return @"system.productivity";
+	return EX_PROP(@"system", @"productivity");
 }
 
 
-- (NSString *) convertQuery_commanderName_string
+- (OOJSExprNode *) convertQuery_commanderName_string
 {
-	return @"player.name";
+	return EX_PROP(@"player", @"name");
 }
 
 
-- (NSString *) convertQuery_commanderRank_string
+- (OOJSExprNode *) convertQuery_commanderRank_string
 {
-	return @"player.rank";
+	return EX_PROP(@"player", @"rank");
 }
 
 
-- (NSString *) convertQuery_commanderShip_string
+- (OOJSExprNode *) convertQuery_commanderShip_string
 {
-	return @"player.ship.name";
+	return EX_PROP(EX_PROP(@"player", @"ship"), @"name");
 }
 
 
-- (NSString *) convertQuery_commanderShipDisplayName_string
+- (OOJSExprNode *) convertQuery_commanderShipDisplayName_string
 {
-	return @"player.ship.displayName";
+	return EX_PROP(EX_PROP(@"player", @"ship"), @"displayName");
 }
 
 
 
-- (NSString *) convertQuery_commanderLegalStatus_string
+- (OOJSExprNode *) convertQuery_commanderLegalStatus_string
 {
-	return @"player.legalStatus";
+	return EX_PROP(@"player", @"legalStatus");
 }
 
 
-- (NSString *) convertQuery_commanderLegalStatus_number
+- (OOJSExprNode *) convertQuery_commanderLegalStatus_number
 {
-	return @"player.bounty";
+	return EX_PROP(@"player", @"bounty");
 }
 
 
-- (NSString *) convertQuery_legalStatus_number
+- (OOJSExprNode *) convertQuery_legalStatus_number
 {
-	return @"player.bounty";
+	return EX_PROP(@"player", @"bounty");
 }
 
 
-- (NSString *) convertQuery_pseudoFixedD100_number
+- (OOJSExprNode *) convertQuery_pseudoFixedD100_number
 {
-	return @"system.psuedoRandom100";
+	return EX_PROP(@"system", @"psuedoRandom100");
 }
 
 
-- (NSString *) convertQuery_pseudoFixedD256_number
+- (OOJSExprNode *) convertQuery_pseudoFixedD256_number
 {
-	return @"system.psuedoRandom256";
+	return EX_PROP(@"system", @"psuedoRandom256");
 }
 
 @end

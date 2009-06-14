@@ -50,7 +50,7 @@ static JSObject *sSystemPrototype;
 static BOOL GetRelativeToAndRange(JSContext *context, uintN *ioArgc, jsval **ioArgv, Entity **outRelativeTo, double *outRange) NONNULL_FUNC;
 static NSArray *FindJSVisibleEntities(EntityFilterPredicate predicate, void *parameter, Entity *relativeTo, double range);
 static NSArray *FindShips(EntityFilterPredicate predicate, void *parameter, Entity *relativeTo, double range);
-static OOInteger CompareEntitiesByDistance(id a, id b, void *relativeTo);
+static NSComparisonResult CompareEntitiesByDistance(id a, id b, void *relativeTo);
 
 
 static JSBool SystemGetProperty(JSContext *context, JSObject *this, jsval name, jsval *outValue);
@@ -106,8 +106,6 @@ enum
 	kSystem_name,				// name, string, read/write
 	kSystem_description,		// description, string, read/write
 	kSystem_inhabitantsDescription, // description of inhabitant species, string, read/write
-	kSystem_goingNova,			// sun is going nova, boolean, read-only (should be moved to sun)
-	kSystem_goneNova,			// sun has gone nova, boolean, read-only (should be moved to sun)
 	kSystem_government,			// government ID, integer, read/write
 	kSystem_governmentDescription,	// government ID description, string, read-only
 	kSystem_economy,			// economy ID, integer, read/write
@@ -135,8 +133,6 @@ static JSPropertySpec sSystemProperties[] =
 	{ "name",					kSystem_name,				JSPROP_PERMANENT | JSPROP_ENUMERATE },
 	{ "description",			kSystem_description,		JSPROP_PERMANENT | JSPROP_ENUMERATE },
 	{ "inhabitantsDescription",	kSystem_inhabitantsDescription, JSPROP_PERMANENT | JSPROP_ENUMERATE },
-	{ "goingNova",				kSystem_goingNova,			JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
-	{ "goneNova",				kSystem_goneNova,			JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
 	{ "government",				kSystem_government,			JSPROP_PERMANENT | JSPROP_ENUMERATE },
 	{ "governmentDescription",	kSystem_governmentDescription, JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
 	{ "economy",				kSystem_economy,			JSPROP_PERMANENT | JSPROP_ENUMERATE },
@@ -144,7 +140,7 @@ static JSPropertySpec sSystemProperties[] =
 	{ "techLevel",				kSystem_techLevel,			JSPROP_PERMANENT | JSPROP_ENUMERATE },
 	{ "population",				kSystem_population,			JSPROP_PERMANENT | JSPROP_ENUMERATE },
 	{ "productivity",			kSystem_productivity,		JSPROP_PERMANENT | JSPROP_ENUMERATE },
-	{ "isInterstellarSpace",	kSystem_isInterstellarSpace, JSPROP_PERMANENT | JSPROP_ENUMERATE },
+	{ "isInterstellarSpace",	kSystem_isInterstellarSpace, JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY},
 	{ "mainStation",			kSystem_mainStation,		JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
 	{ "mainPlanet",				kSystem_mainPlanet,			JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
 	{ "sun",					kSystem_sun,				JSPROP_PERMANENT | JSPROP_ENUMERATE | JSPROP_READONLY },
@@ -241,14 +237,6 @@ static JSBool SystemGetProperty(JSContext *context, JSObject *this, jsval name, 
 		case kSystem_inhabitantsDescription:
 			result = [systemData objectForKey:KEY_INHABITANTS];
 			if (result == nil)  result = [NSNull null];
-			break;
-		
-		case kSystem_goingNova:
-			*outValue = BOOLToJSVal([[UNIVERSE sun] willGoNova]);
-			break;
-		
-		case kSystem_goneNova:
-			*outValue = BOOLToJSVal([[UNIVERSE sun] goneNova]);
 			break;
 			
 		case kSystem_government:
@@ -433,7 +421,9 @@ static JSBool SystemSetProperty(JSContext *context, JSObject *this, jsval name, 
 		default:
 			OOReportJSBadPropertySelector(context, @"System", JSVAL_TO_INT(name));
 	}
-	
+	// Must reset the systemdata cache now, otherwise getproperty will fetch the unchanged values.
+	// A cleaner implementation than the rev1545 fix (somehow removed in rev1661).
+	[UNIVERSE generateSystemData:player->system_seed useCache:NO];
 	return OK;
 }
 
@@ -1009,7 +999,7 @@ static NSArray *FindShips(EntityFilterPredicate predicate, void *parameter, Enti
 }
 
 
-static OOInteger CompareEntitiesByDistance(id a, id b, void *relativeTo)
+static NSComparisonResult CompareEntitiesByDistance(id a, id b, void *relativeTo)
 {
 	Entity				*ea = a,
 	*eb = b,

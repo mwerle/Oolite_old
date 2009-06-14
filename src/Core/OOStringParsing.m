@@ -95,7 +95,7 @@ BOOL ScanVectorFromString(NSString *xyzString, Vector *outVector)
 	}
 	else
 	{
-		 OOLog(kOOLogStringVectorConversion, @"***** ERROR cannot make vector from '%@': %@", xyzString, error);
+		 OOLog(kOOLogStringVectorConversion, @"***** ERROR: cannot make vector from '%@': %@", xyzString, error);
 		 return NO;
 	}
 }
@@ -130,7 +130,7 @@ BOOL ScanQuaternionFromString(NSString *wxyzString, Quaternion *outQuaternion)
 	}
 	else
 	{
-		OOLog(kOOLogStringQuaternionConversion, @"***** ERROR cannot make quaternion from '%@': %@", wxyzString, error);
+		OOLog(kOOLogStringQuaternionConversion, @"***** ERROR: cannot make quaternion from '%@': %@", wxyzString, error);
 		return NO;
 	}
 }
@@ -155,7 +155,7 @@ BOOL ScanVectorAndQuaternionFromString(NSString *xyzwxyzString, Vector *outVecto
 	
 	if (error)
 	{
-		OOLog(kOOLogStringQuaternionConversion, @"***** ERROR cannot make vector and quaternion from '%@': %@", xyzwxyzString, error);
+		OOLog(kOOLogStringQuaternionConversion, @"***** ERROR: cannot make vector and quaternion from '%@': %@", xyzwxyzString, error);
 		return NO;
 	}
 	
@@ -234,7 +234,7 @@ Random_Seed RandomSeedFromString(NSString *abcdefString)
 	}
 	else
 	{
-		OOLog(kOOLogStringRandomSeedConversion, @"***** ERROR cannot make Random_Seed from '%@': %@", abcdefString, error);
+		OOLog(kOOLogStringRandomSeedConversion, @"***** ERROR: cannot make Random_Seed from '%@': %@", abcdefString, error);
 		result = kNilRandomSeed;
 	}
 	
@@ -524,6 +524,18 @@ NSString *RandomDigrams(void)
 		[name appendString:[digrams substringWithRange:NSMakeRange((Ranrot() % count) * 2, 2)]];
 	}
 	return [name capitalizedString];
+}
+
+
+NSString *OOPadStringTo(NSString * string, float numSpaces)
+{
+	NSString		*result = string;
+	numSpaces -= [result length];
+	if (numSpaces>0)
+	{
+		result=[[@"" stringByPaddingToLength: numSpaces*2 withString: @" " startingAtIndex:0] stringByAppendingString: result];
+	}
+	return result;
 }
 
 

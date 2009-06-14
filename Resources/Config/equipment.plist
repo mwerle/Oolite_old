@@ -236,7 +236,7 @@
 		<integer>3250</integer>
 		<string>Multi-Targeting System</string>
 		<string>EQ_MULTI_TARGET</string>
-		<string>Allows switching between missile stations and multiple target locks.</string>
+		<string>Per-missile target memory, maintains multiple target locks.</string>
 	</array>
 	<array>
 		<integer>7</integer>
@@ -321,6 +321,17 @@
 		<string>External Heat Shielding</string>
 		<string>EQ_HEAT_SHIELD</string>
 		<string>Additional ceramid-fibre blanketing and tiles, no armour value but provides extra solar insulation.</string>
+		<dict>
+			<key>available_to_all</key>
+			<true/>
+		</dict>
+	</array>
+	<array>
+		<integer>9</integer>
+		<integer>23950</integer>
+		<string>Wormhole Scanner</string>
+		<string>EQ_WORMHOLE_SCANNER</string>
+		<string>The Mössbauer-Krantz Works wormhole scanner integrates into your existing targetting system.  It analyzes the residual energy of a wormhole and, in combination with your Galactic Map software, calculates the most likely target system.</string>
 		<dict>
 			<key>available_to_all</key>
 			<true/>

@@ -67,9 +67,6 @@
 	//	"setBackgroundFromDescriptionsKey:",	// Is this ever used from a script? It seems a bad match for future plans of mine. -- Ahruman
 		"setGalacticHyperspaceBehaviourTo:",
 		"setGalacticHyperspaceFixedCoordsTo:",
-		
-		// ShipEntity.m
-		"initialiseTurret"
 	);
 	ai_methods =
 	(
@@ -103,7 +100,6 @@
 		"setTakeOffFromPlanet",
 		"landOnPlanet",
 		"checkTargetLegalStatus",
-		"exitAI",
 		"setDestinationToTarget",
 		"setDestinationWithinTarget",
 		"checkCourseToDestination",
@@ -133,6 +129,7 @@
 		"groupAttackTarget",
 		"scanForFormationLeader",
 		"messageMother:",
+		"messageSelf:",
 		"setPlanetPatrolCoordinates",
 		"setSunSkimStartCoordinates",
 		"setSunSkimEndCoordinates",
@@ -173,6 +170,7 @@
 		"performFlyRacepoints",
 		"debugDumpMessages",
 		"dropMessages:",
+		"exitAIWithMessage:",
 		
 		// StationEntity.m/stubs in ShipEntityAI.m
 		"increaseAlertLevel",
@@ -232,7 +230,6 @@
 		"credits_number",
 		"scriptTimer_number",
 		"shipsFound_number",
-		"legalStatus_number",
 		"commanderLegalStatus_number",
 		"commanderLegalStatus_string",
 		"d100_number",
@@ -361,12 +358,14 @@
 	action_method_aliases =
 	{
 		"setGuiToStatusScreen" = "doNothing";
+		"initialiseTurret" = "doNothing";
 	};
 	
 	query_method_aliases =
 	{
 		"fuel_leak_rate_number" = "fuelLeakRate_number";
 		"fuel_level_number" = "fuelLevel_number";
+		"legalStatus_number" = "commanderLegalStatus_number";
 	};
 	
 	ai_method_aliases =
@@ -375,5 +374,6 @@
 		"launchDefenceShip"= "launchDefenseShip";
 		"setTargetToStation" = "setTargetToNearestStation";
 		"performDocking" = "doNothing";
+		"exitAI" = ("exitAIWithMessage:", "RESTARTED");
 	};
 }

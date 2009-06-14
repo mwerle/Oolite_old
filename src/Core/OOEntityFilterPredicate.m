@@ -134,7 +134,7 @@ BOOL IsStationPredicate(Entity *entity, void *parameter)
 BOOL IsPlanetPredicate(Entity *entity, void *parameter)
 {
 	if (!entity->isPlanet)  return NO;
-	return [(PlanetEntity *)entity planetType] == PLANET_TYPE_GREEN;
+	return ([(PlanetEntity *)entity planetType] == PLANET_TYPE_GREEN || [(PlanetEntity *)entity planetType] == PLANET_TYPE_MOON);
 }
 
 
@@ -166,3 +166,11 @@ BOOL HasPrimaryRoleInSetPredicate(Entity *ship, void *parameter)
 {
 	return [(NSSet *)parameter containsObject:[(ShipEntity *)ship primaryRole]];
 }
+
+
+#ifdef TARGET_INCOMING_MISSILES
+BOOL IsHostileAgainstTargetPredicate(Entity *ship, void *parameter)
+{
+	return [(ShipEntity *)ship hasHostileTarget] && [(ShipEntity *)ship primaryTarget] == (ShipEntity *)parameter;
+}
+#endif

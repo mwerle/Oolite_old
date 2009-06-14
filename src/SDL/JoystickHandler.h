@@ -66,6 +66,9 @@ enum {
   BUTTON_FIRE,
   BUTTON_ARMMISSILE,
   BUTTON_LAUNCHMISSILE,
+#ifdef TARGET_INCOMING_MISSILES
+  BUTTON_TARGETINCOMINGMISSILE,
+#endif
   BUTTON_UNARM,
   BUTTON_CYCLEMISSILE,
   BUTTON_ENERGYBOMB,
@@ -84,7 +87,9 @@ enum {
 // Stick constants
 #define MAX_STICKS 2
 #define MAX_AXES  16
-#define MAX_BUTTONS  64
+#define MAX_REAL_BUTTONS  64
+#define MAX_HATS  4
+#define MAX_BUTTONS (MAX_REAL_BUTTONS + 4 * MAX_HATS)
 #define STICK_NOFUNCTION -1
 #define STICK_AXISUNASSIGNED -10.0
 #define STICK_PRECISIONDIV 98304 // 3 times more precise
@@ -124,6 +129,7 @@ enum {
       int8_t buttonmap[MAX_STICKS][MAX_BUTTONS];
       double axstate[AXIS_end];
       BOOL butstate[BUTTON_end];
+      Uint8 hatstate[MAX_STICKS][MAX_HATS];
       SDL_Joystick *stick[MAX_STICKS];
       BOOL precisionMode;
       int numSticks;
@@ -168,6 +174,7 @@ enum {
 - (int) getNumSticks;
 - (BOOL) getButtonState: (int)function;
 - (double) getAxisState: (int)function;
+- (double) getSensitivity;
 
 // This one just returns a pointer to the entire state array to
 // allow for multiple lookups with only one objc_sendMsg
@@ -194,6 +201,7 @@ enum {
 - (void) clearStickStates;
 - (void) decodeAxisEvent: (SDL_JoyAxisEvent *)evt;
 - (void) decodeButtonEvent: (SDL_JoyButtonEvent *)evt;
+- (void) decodeHatEvent: (SDL_JoyHatEvent *)evt;
 - (void) saveStickSettings;
 - (void) loadStickSettings;
 

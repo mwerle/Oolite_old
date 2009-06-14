@@ -455,12 +455,13 @@
 		return NO;
 	}
 	
+	[UNIVERSE setTimeAccelerationFactor:TIME_ACCELERATION_FACTOR_DEFAULT];
 	[UNIVERSE setSystemTo:system_seed];
 	[UNIVERSE removeAllEntitiesExceptPlayer:NO];
 	[UNIVERSE setUpSpace];
 	[UNIVERSE setAutoSaveNow:NO];
 	
-	status = STATUS_DOCKED;
+	[self setStatus:STATUS_DOCKED];
 	[UNIVERSE setViewDirection:VIEW_GUI_DISPLAY];
 	
 	dockedStation = [UNIVERSE station];
@@ -567,7 +568,7 @@
 	{
 		
 		[UNIVERSE clearPreviousMessage];	// allow this to be given time and again
-		[UNIVERSE addMessage:ExpandDescriptionForCurrentSystem(@"[game-saved]") forCount:2];
+		[UNIVERSE addMessage:DESC(@"game-saved") forCount:2];
 		[save_path autorelease];
 		save_path = [path copy];
 		[[UNIVERSE gameController] setPlayerFileToLoad:save_path];

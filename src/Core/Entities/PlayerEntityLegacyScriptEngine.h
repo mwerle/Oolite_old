@@ -88,7 +88,6 @@ typedef enum
 - (NSNumber *) scriptTimer_number;
 - (NSNumber *) shipsFound_number;
 
-- (NSNumber *) legalStatus_number;
 - (NSNumber *) d100_number;
 - (NSNumber *) pseudoFixedD100_number;
 - (NSNumber *) d256_number;
@@ -233,6 +232,9 @@ typedef enum
 
 - (BOOL) mapKey:(NSString *) keycode toOXP:(OOScript *)oxp;
 - (void) targetNearestHostile;
+#ifdef TARGET_INCOMING_MISSILES
+- (void) targetNearestIncomingMissile;
+#endif
 
 - (void) setGalacticHyperspaceBehaviourTo:(NSString *) galacticHyperspaceBehaviourString;
 - (void) setGalacticHyperspaceFixedCoordsTo:(NSString *) galacticHyperspaceFixedCoordsString;

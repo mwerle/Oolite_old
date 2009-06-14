@@ -33,7 +33,7 @@ MA 02110-1301, USA.
 	GuiDisplayGen *gui=[UNIVERSE gui];
 	NSArray *stickList=[stickHandler listSticks];
 	unsigned i;
-	unsigned tabStop[GUI_MAX_COLUMNS];
+	OOGUITabStop tabStop[GUI_MAX_COLUMNS];
 	tabStop[0]=50;
 	tabStop[1]=210;
 	tabStop[2]=320;
@@ -89,7 +89,7 @@ MA 02110-1301, USA.
 		selFunctionIdx=[[[key componentsSeparatedByString:@":"] objectAtIndex: 1] intValue];
 	else
 		selFunctionIdx=-1;
-	
+
 	if([gameView isDown: 13])
 	{
 		if ([key hasPrefix:@"More:"])
@@ -188,6 +188,7 @@ MA 02110-1301, USA.
 		skip = 0;
 	else
 		skip = ((selFunctionIdx - 1) / (MAX_ROWS_FUNCTIONS - 2)) * (MAX_ROWS_FUNCTIONS - 2) + 1;
+	
 	[self setGuiToStickMapperScreen: skip];
 }
 
@@ -256,7 +257,7 @@ MA 02110-1301, USA.
 			n_rows -= 1;
 			start_row += 1;
 			if (skip > MAX_ROWS_FUNCTIONS)
-				previous = skip - MAX_ROWS_FUNCTIONS - 2;
+				previous = skip - (MAX_ROWS_FUNCTIONS - 2);
 			else
 				previous = 0;
 		}
@@ -340,6 +341,13 @@ MA 02110-1301, USA.
 			desc=[NSString stringWithFormat: @"Stick %d axis %d",
 				  stickNumber+1, thingNumber+1];
 		}
+		else if(thingNumber >= MAX_REAL_BUTTONS)
+		{
+			static const char dir[][6] = { "up", "right", "down", "left" };
+			desc=[NSString stringWithFormat: @"Stick %d hat %d %s",
+				  stickNumber+1, (thingNumber - MAX_REAL_BUTTONS) / 4 + 1,
+				  dir[thingNumber & 3]];
+		}
 		else
 		{
 			desc=[NSString stringWithFormat: @"Stick %d button %d",
@@ -417,6 +425,13 @@ MA 02110-1301, USA.
 				  allowable: HW_BUTTON
 					 axisfn: STICK_NOFUNCTION
 					  butfn: BUTTON_UNARM]];
+#ifdef TARGET_INCOMING_MISSILES
+	[funcList addObject:
+	 [self makeStickGuiDict: @"Target nearest incoming missile"
+				  allowable: HW_BUTTON
+					 axisfn: STICK_NOFUNCTION
+					  butfn: BUTTON_TARGETINCOMINGMISSILE]];
+#endif
 	[funcList addObject:
 	 [self makeStickGuiDict: @"Cycle secondary"
 				  allowable: HW_BUTTON

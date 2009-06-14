@@ -17,8 +17,9 @@ Dave MacLachlan (Jester)
 Nic
 No Sleep Nigel
 Erich Ritz (drumz)
-Darren Salt
+Darren Salt (dsalt/_ds_)
 Adam Sampson
+Rob C Skilton (KZ9999)
 Dylan Smith (winston)
 stardotstar
 Konstantinos Sykas (Getafix)
@@ -32,11 +33,11 @@ Library credits:
 GNUstep: various and numerous.
 libpng: Glenn Randers-Pehrson, Andreas Dilger, Guy Eric Schalnat
         and contributors.
+SDL - Simple DirectMedia Layer: Sam Lantinga and contributors.
+SpiderMonkey: Brendan Eich et al, Mozilla Foundation.
 
 
 Mac OS X-specific libraries:
 ----------------------------
-F-Script: Philippe Mougin and contributors.
 RBSplitView: Rainer Brockerhoff
-SpiderMonkey: Brendan Eich et al, Mozilla Foundation.
 VirtualRingBuffer: Kurt Revis

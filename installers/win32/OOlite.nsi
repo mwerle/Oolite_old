@@ -33,7 +33,7 @@ SetCompressor LZMA
 SetCompressorDictSize 32
 SetDatablockOptimize on
 OutFile "${OUTDIR}\OoliteInstall-${VER}${EXTVER}.exe"
-BrandingText "(C) 2003-2008 Giles Williams and contributors"
+BrandingText "(C) 2003-2009 Giles Williams and contributors"
 Name "Oolite"
 Caption "Oolite ${VER}${EXTVER} Setup"
 SubCaption 0 " "
@@ -53,7 +53,7 @@ SetOverwrite on
 
 VIAddVersionKey "ProductName" "Oolite"
 VIAddVersionKey "FileDescription" "A space combat/trading game, inspired by Elite."
-VIAddVersionKey "LegalCopyright" "© 2003-2008 Giles Williams and contributors"
+VIAddVersionKey "LegalCopyright" "© 2003-2009 Giles Williams and contributors"
 VIAddVersionKey "FileVersion" "${VER}"
 !ifdef SNAPSHOT
 VIAddVersionKey "SVN Revision" "${SVNREV}"
@@ -125,9 +125,9 @@ SetOutPath $INSTDIR
 CreateDirectory "$INSTDIR\AddOns"
 
 File "Oolite.ico"
-File "RunOolite.bat"
 File "Oolite_Readme.txt"
 File "OoliteRS.pdf"
+File "..\..\Doc\AdviceForNewCommanders.pdf"
 File /r /x .svn /x *~ "${DST}"
 
 WriteUninstaller "$INSTDIR\UninstOolite.exe"
@@ -138,12 +138,12 @@ WriteRegStr HKLM Software\Microsoft\Windows\CurrentVersion\Uninstall\Oolite Disp
 WriteRegStr HKLM Software\Microsoft\Windows\CurrentVersion\Uninstall\Oolite UninstallString '"$INSTDIR\UninstOolite.exe"'
 
 ; Start Menu shortcuts
-SetOutPath $INSTDIR
+SetOutPath $INSTDIR\oolite.app
 CreateDirectory "$SMPROGRAMS\Oolite"
-CreateShortCut "$SMPROGRAMS\Oolite\Oolite.lnk" "$INSTDIR\RunOolite.bat" "" "$INSTDIR\Oolite.ico"
+CreateShortCut "$SMPROGRAMS\Oolite\Oolite.lnk" "$INSTDIR\oolite.app\oolite.exe" "" "$INSTDIR\Oolite.ico"
 CreateShortCut "$SMPROGRAMS\Oolite\Oolite ReadMe.lnk" "$INSTDIR\Oolite_Readme.txt"
 CreateShortCut "$SMPROGRAMS\Oolite\Oolite Reference Sheet.lnk" "$INSTDIR\OoliteRS.pdf"
-CreateShortCut "$SMPROGRAMS\Oolite\Oolite Website.lnk" "http://Oolite.aegidian.org/"
+CreateShortCut "$SMPROGRAMS\Oolite\Oolite Website.lnk" "http://oolite.org/"
 CreateShortCut "$SMPROGRAMS\Oolite\Oolite Uninstall.lnk" "$INSTDIR\UninstOolite.exe"
 
 Call RegSetup

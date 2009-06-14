@@ -16,6 +16,8 @@
 	IBOutlet NSTextField		*_stackDepthField;
 	IBOutlet NSTextField		*_pendingMessagesField;
 	IBOutlet NSTextField		*_timeToThinkField;
+	IBOutlet NSTextField		*_behaviourField;
+	IBOutlet NSTextField		*_frustrationField;
 }
 
 - (IBAction) dumpPendingMessages:sender;

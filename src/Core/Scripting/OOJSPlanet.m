@@ -123,14 +123,17 @@ void InitOOJSPlanet(JSContext *context, JSObject *global)
 
 - (NSString *)jsClassName
 {
-	if ([self planetType] == PLANET_TYPE_SUN)
-	{
-		return @"Sun";
+	switch ([self planetType]) {
+		case PLANET_TYPE_SUN:
+			return @"Sun";
+		case PLANET_TYPE_GREEN:
+			return @"Planet";
+		case PLANET_TYPE_MOON:
+			return @"Moon";
+		default:
+			return @"Unknown";
 	}
-	else
-	{
-		return @"Planet";
-	}
+
 }
 
 @end
@@ -171,15 +174,11 @@ static JSBool PlanetSetTexture(JSContext *context, JSObject *this, uintN argc, j
 {
 	PlanetEntity			*thisEnt = nil;
 	NSString				*name = nil;
-	PlayerEntity			*player = [PlayerEntity sharedPlayer];
 	
 	if (!JSPlanetGetPlanetEntity(context, this, &thisEnt)) return YES;	// stale reference, no-op.
 	name = [NSString stringWithJavaScriptValue:*argv inContext:context];
-	if([player status] != STATUS_LAUNCHING && [player status] != STATUS_EXITING_WITCHSPACE)
-	{
-		OOReportJSError(context, @"Planet.%@ must be called only during shipWillLaunchFromStation or shipWillExitWitchspace.", @"setTexture");
-	}
-	else if (name != nil)
+	// can now retexture at any time, eg during huge surface explosion
+	if (name != nil)
 	{
 		if ([thisEnt setUpPlanetFromTexture:name])  return YES;
 		else  OOReportJSError(context, @"Planet.%@(\"%@\"): cannot set texture for planet.", @"setTexture", name);

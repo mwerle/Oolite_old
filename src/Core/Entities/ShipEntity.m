@@ -91,6 +91,10 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 
 - (void) rescaleBy:(GLfloat)factor;
 
+- (BOOL) setUpOneSubentity:(NSDictionary *) subentDict;
+- (BOOL) setUpOneFlasher:(NSDictionary *) subentDict;
+- (BOOL) setUpOneStandardSubentity:(NSDictionary *) subentDict asTurret:(BOOL)asTurret;
+
 @end
 
 
@@ -121,7 +125,7 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	
 	isShip = YES;
 	entity_personality = ranrot_rand() & 0x7FFF;
-	status = STATUS_IN_FLIGHT;
+	[self setStatus:STATUS_IN_FLIGHT];
 	
 	zero_distance = SCANNER_MAX_RANGE2 * 2.0;
 	weapon_recharge_rate = 6.0;
@@ -143,88 +147,6 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	return self;
 }
 
-
-- (BOOL) setUpSubEntities: (NSDictionary *) shipDict
-{
-	unsigned int	i;
-	NSArray			*plumes = [shipDict arrayForKey:@"exhaust"];
-	
-	for (i = 0; i < [plumes count]; i++)
-	{
-		ParticleEntity *exhaust = [[ParticleEntity alloc] initExhaustFromShip:self details:[plumes objectAtIndex:i]];
-		[self addExhaust:exhaust];
-		[exhaust release];
-	}
-	
-	NSArray *subs = [shipDict arrayForKey:@"subentities"];
-	
-	for (i = 0; i < [subs count]; i++)
-	{
-		NSArray *details = ScanTokensFromString([subs objectAtIndex:i]);
-
-		if ([details count] == 8)
-		{
-			Vector sub_pos;
-			sub_pos.x = [details floatAtIndex:1];
-			sub_pos.y = [details floatAtIndex:2];
-			sub_pos.z = [details floatAtIndex:3];
-			
-			Quaternion sub_q;
-			sub_q.w = [details floatAtIndex:4];
-			sub_q.x = [details floatAtIndex:5];
-			sub_q.y = [details floatAtIndex:6];
-			sub_q.z = [details floatAtIndex:7];
-			
-			NSString* subdesc = [details stringAtIndex:0];
-			if ([subdesc isEqual:@"*FLASHER*"])
-			{
-				ParticleEntity *flasher;
-				flasher = [[ParticleEntity alloc]
-							initFlasherWithSize:sub_q.z
-									  frequency:sub_q.x
-										  phase:2.0 * sub_q.y];
-				[flasher setColor:[OOColor colorWithCalibratedHue:sub_q.w/360.0
-													   saturation:1.0
-													   brightness:1.0
-															alpha:1.0]];
-				[flasher setPosition:sub_pos];
-				[self addFlasher:flasher];
-				[flasher release];
-			}
-			else
-			{
- 				quaternion_normalize(&sub_q);
-
-				ShipEntity* subent = [UNIVERSE newShipWithName:subdesc];	// retained
-				if (subent == nil)
-				{
-					// Failing to find a subentity could result in a partial ship, which'd be, y'know, weird.
-					OOLog(@"ship.sanityCheck.failed", @"Ship %@ generated with missing subentity %@!", self, subdesc);
-					return NO;
-				}
-				
-				if (self->isStation && [subdesc rangeOfString:@"dock"].location != NSNotFound)
-				{
-					[(StationEntity*)self setDockingPortModel:subent :sub_pos :sub_q];
-				}
-				
-				[subent setStatus:STATUS_INACTIVE];
-				
-				Vector ref = vector_forward_from_quaternion(sub_q);	// VECTOR FORWARD
-				
-				[subent setReference: ref];
-				[subent setPosition: sub_pos];
-				[subent setOrientation: sub_q];
-				
-				[self addSolidSubentityToCollisionRadius:subent];
-				
-				[self addSubEntity:subent];
-				[subent release];
-			}
-		}
-	}
-	return YES;
-}
 
 - (BOOL) setUpShipFromDictionary:(NSDictionary *) dict
 {
@@ -267,8 +189,9 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	forward_weapon_type = StringToWeaponType([shipDict stringForKey:@"forward_weapon_type" defaultValue:@"WEAPON_NONE"]);
 	aft_weapon_type = StringToWeaponType([shipDict stringForKey:@"aft_weapon_type" defaultValue:@"WEAPON_NONE"]);
 	[self setWeaponDataFromType:forward_weapon_type];
-	
-	weapon_energy = [shipDict floatForKey:@"weapon_energy"];
+	// no front laser? It's probably a missile - no limits to weapon_energy.
+	if (weapon_energy == 0.0) weapon_energy = [shipDict floatForKey:@"weapon_energy"];
+
 	scannerRange = [shipDict floatForKey:@"scanner_range" defaultValue:25600.0];
 	missiles = [shipDict intForKey:@"missiles"];
 
@@ -287,6 +210,9 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	}
 	
 	canFragment = [shipDict fuzzyBooleanForKey:@"fragment_chance" defaultValue:0.9];
+	
+	// Each new ship should start in seemingly good operating condition, unless specifically told not to
+	[self setThrowSparks:[shipDict boolForKey:@"throw_sparks" defaultValue:NO]];
 	
 	cloaking_device_active = NO;
 	military_jammer_active = NO;
@@ -480,6 +406,110 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	
 	[self setShipScript:[shipDict stringForKey:@"script"]];
 
+	return YES;
+}
+
+
+- (BOOL) setUpSubEntities: (NSDictionary *) shipDict
+{
+	unsigned int	i;
+	NSArray			*plumes = [shipDict arrayForKey:@"exhaust"];
+	
+	for (i = 0; i < [plumes count]; i++)
+	{
+		ParticleEntity *exhaust = [[ParticleEntity alloc] initExhaustFromShip:self details:[plumes objectAtIndex:i]];
+		[self addExhaust:exhaust];
+		[exhaust release];
+	}
+	
+	NSArray *subs = [shipDict arrayForKey:@"subentities"];
+	
+	for (i = 0; i < [subs count]; i++)
+	{
+		[self setUpOneSubentity:[subs dictionaryAtIndex:i]];
+	}
+	return YES;
+}
+
+
+- (BOOL) setUpOneSubentity:(NSDictionary *) subentDict
+{
+	NSString			*type = nil;
+	
+	type = [subentDict stringForKey:@"type"];
+	if ([type isEqualToString:@"flasher"])
+	{
+		return [self setUpOneFlasher:subentDict];
+	}
+	else
+	{
+		return [self setUpOneStandardSubentity:subentDict asTurret:[type isEqualToString:@"ball_turret"]];
+	}
+}
+
+
+- (BOOL) setUpOneFlasher:(NSDictionary *) subentDict
+{
+	ParticleEntity		*flasher = nil;
+	float				size, frequency, phase;
+	
+	size = [subentDict floatForKey:@"size"];
+	frequency = [subentDict floatForKey:@"frequency"] * 2.0;
+	phase = [subentDict floatForKey:@"phase"];
+	
+	flasher = [[ParticleEntity alloc] initFlasherWithSize:size frequency:frequency phase:phase];
+	[flasher setColor:[OOColor brightColorWithDescription:[[subentDict arrayForKey:@"colors"] objectAtIndex:0]]];
+	[flasher setPosition:[subentDict vectorForKey:@"position"]];
+	if ([subentDict boolForKey:@"initially_on"])  [flasher setStatus:STATUS_EFFECT];
+	
+	[self addFlasher:flasher];
+	[flasher release];
+	
+	return YES;
+}
+
+
+- (BOOL) setUpOneStandardSubentity:(NSDictionary *) subentDict asTurret:(BOOL)asTurret
+{
+	ShipEntity			*subentity = nil;
+	NSString			*subentKey = nil;
+	Vector				subPosition;
+	Quaternion			subOrientation;
+	
+	subentKey = [subentDict stringForKey:@"subentity_key"];
+	if (subentKey == nil)  return NO;
+	
+	subentity = [UNIVERSE newShipWithName:subentKey];
+	if (subentity == nil)  return NO;
+	
+	subPosition = [subentDict vectorForKey:@"position"];
+	subOrientation = [subentDict quaternionForKey:@"orientation"];
+	
+	if (!asTurret && [self isStation] && [subentDict boolForKey:@"is_dock"])
+	{
+		[(StationEntity *)self setDockingPortModel:subentity :subPosition :subOrientation];
+	}
+	
+	[subentity setPosition:subPosition];
+	[subentity setOrientation:subOrientation];
+	[subentity setReference:vector_forward_from_quaternion(subOrientation)];
+	
+	if (asTurret)
+	{
+		[subentity setBehaviour:BEHAVIOUR_TRACK_AS_TURRET];
+		[subentity setWeaponRechargeRate:[subentDict floatForKey:@"fire_rate"]];
+		[subentity setStatus: STATUS_ACTIVE];
+	}
+	else
+	{
+		[subentity setStatus:STATUS_INACTIVE];
+	}
+	
+	[self addSolidSubentityToCollisionRadius:subentity];
+	
+	[self addSubEntity:subentity];
+	[subentity release];
+	
 	return YES;
 }
 
@@ -746,7 +776,7 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	if (universalID != NO_TARGET)
 	{
 		// set up escorts
-		if (status == STATUS_IN_FLIGHT && _pendingEscortCount != 0)	// just popped into existence
+		if ([self status] == STATUS_IN_FLIGHT && _pendingEscortCount != 0)	// just popped into existence
 		{
 			[self setUpEscorts];
 		}
@@ -847,6 +877,16 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 	NSDictionary	*autoAIMap = nil;
 	NSDictionary	*escortShipDict = nil;
 	AI				*escortAI = nil;
+	
+	// Ensure that we do not try to create escorts if we are an escort ship ourselves.
+	// This could lead to circular reference memory overflows (e.g. "boa-mk2" trying to create 4 "boa-mk2"
+	// escorts or the case of two ships specifying eachother as escorts) - Nikos 20090510
+	if ([self isEscort])
+	{
+		OOLogWARN(@"shipEntity.setupEscorts.escortShipCircularReference", 
+				@"Ship %@ requested escorts, when it is an escort ship itself. Avoiding possible circular reference overflow by ignoring escort setup.", self);
+		return;
+	}
 	
 	if (_pendingEscortCount == 0)  return;
 	
@@ -988,7 +1028,7 @@ static NSString * const kOOLogEntityBehaviourChanged	= @"entity.behaviour.change
 
 BOOL ship_canCollide (ShipEntity* ship)
 {
-	int		s_status =		ship->status;
+	int		s_status =		[ship status];
 	int		s_scan_class =	ship->scanClass;
 	if ((s_status == STATUS_COCKPIT_DISPLAY)||(s_status == STATUS_DEAD)||(s_status == STATUS_BEING_SCOOPED))
 		return NO;
@@ -1416,7 +1456,7 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 	aegis_status = [self checkForAegis];   // is a station or something nearby??
 
 	//scripting
-	if (!haveExecutedSpawnAction && script != nil && status == STATUS_IN_FLIGHT)
+	if (!haveExecutedSpawnAction && script != nil && [self status] == STATUS_IN_FLIGHT)
 	{
 		[[PlayerEntity sharedPlayer] setScriptTarget:self];
 		[self doScriptEvent:@"shipSpawned"];
@@ -1425,11 +1465,11 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 
 	// behaviours according to status and behaviour
 	//
-	if (status == STATUS_LAUNCHING)
+	if ([self status] == STATUS_LAUNCHING)
 	{
 		if ([UNIVERSE getTime] > launch_time + LAUNCH_DELAY)		// move for while before thinking
 		{
-			status = STATUS_IN_FLIGHT;
+			[self setStatus:STATUS_IN_FLIGHT];
 			[self doScriptEvent:@"shipLaunchedFromStation"];
 			[shipAI reactToMessage: @"LAUNCHED OKAY"];
 		}
@@ -1461,19 +1501,19 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 	//
 	// double check scooped behaviour
 	//
-	if (status == STATUS_BEING_SCOOPED)
+	if ([self status] == STATUS_BEING_SCOOPED)
 	{
 		//if we are being tractored, but we have no owner, then we have a problem
 		if (behaviour != BEHAVIOUR_TRACTORED  || [self owner] == nil || [self owner] == self || [self owner] == NO_TARGET)
 		{
 			// escaped tractor beam
-			status = STATUS_IN_FLIGHT;	// should correct 'uncollidable objects' bug
+			[self setStatus:STATUS_IN_FLIGHT];	// should correct 'uncollidable objects' bug
 			behaviour = BEHAVIOUR_IDLE;
 			frustration = 0.0;
 		}
 	}
 	
-	if (status == STATUS_COCKPIT_DISPLAY)
+	if ([self status] == STATUS_COCKPIT_DISPLAY)
 	{
 		[self applyRoll: delta_t * flightRoll andClimb: delta_t * flightPitch];
 		GLfloat range2 = 0.1 * distance2(position, destination) / (collision_radius * collision_radius);
@@ -1621,9 +1661,19 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 			ShipEntity				*escort = nil;
 			unsigned				i = 0;
 			
-			for (escortEnum = [self escortEnumerator]; (escort = [escortEnum nextObject]); )
+			// Note: works on escortArray rather than escortEnumerator because escorts may be mutated.
+			for (escortEnum = [[self escortArray] objectEnumerator]; (escort = [escortEnum nextObject]); )
 			{
 				[escort setDestination:[self coordinatesForEscortPosition:i++]];
+			}
+		}
+		if ([self escortGroup] != nil) 
+		{
+			ShipEntity *leader = [[self escortGroup] leader];
+			if (leader != nil && ([leader scanClass] != [self scanClass])) {
+				OOLog(@"ship.sanityCheck.failed", @"Ship %@ escorting %@ with wrong scanclass!", self, leader);
+				[[self escortGroup] removeShip:self];
+				[[self escortGroup] release];
 			}
 		}
 	}
@@ -2073,7 +2123,7 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 		if (distance < desired_range)
 		{
 			behaviour = BEHAVIOUR_TUMBLE;
-			status = STATUS_IN_FLIGHT;
+			[self setStatus:STATUS_IN_FLIGHT];
 			[hauler scoopUp:self];
 			return;
 		}
@@ -2102,7 +2152,7 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 			velocity.z += moment * dp.z;
 		}
 		//
-		if (status == STATUS_BEING_SCOOPED)
+		if ([self status] == STATUS_BEING_SCOOPED)
 		{
 			BOOL lost_contact = (distance > hauler->collision_radius + collision_radius + 250.0f);	// 250m range for tractor beam
 			if ([hauler isPlayer])
@@ -2119,10 +2169,10 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 			if (lost_contact)	// 250m range for tractor beam
 			{
 				// escaped tractor beam
-				status = STATUS_IN_FLIGHT;
+				[self setStatus:STATUS_IN_FLIGHT];
 				behaviour = BEHAVIOUR_IDLE;
 				frustration = 0.0;
-				[shipAI exitStateMachine];	// exit nullAI.plist
+				[shipAI exitStateMachineWithMessage:nil];	// exit nullAI.plist
 			}
 			else if ([hauler isPlayer])
 			{
@@ -2952,7 +3002,7 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 		}
 	}
 	
-	if (status == STATUS_ACTIVE)
+	if ([self status] == STATUS_ACTIVE)
 	{
 		Vector abspos = position;  // STATUS_ACTIVE means it is in control of it's own orientation
 		Entity		*last = nil;
@@ -3539,6 +3589,8 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 {
 	if (primaryTarget == NO_TARGET)
 		return NO;
+	if ([self isMissile])
+		return YES;	// missiles are always fired against a hostile target
 	if ((behaviour == BEHAVIOUR_AVOID_COLLISION)&&(previousCondition))
 	{
 		int old_behaviour = [previousCondition intForKey:@"behaviour"];
@@ -3560,7 +3612,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 }
 
 
-- (void) setWeaponDataFromType: (int) weapon_type
+- (void) setWeaponDataFromType: (OOWeaponType) weapon_type
 {
 	switch (weapon_type)
 	{
@@ -3600,6 +3652,18 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 			weaponRange =			32000;
 			break;
 	}
+}
+
+
+- (float) weaponRechargeRate
+{
+	return weapon_recharge_rate;
+}
+
+
+- (void) setWeaponRechargeRate:(float)value
+{
+	weapon_recharge_rate = value;
 }
 
 
@@ -3652,7 +3716,7 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 		PlanetEntity* the_planet;
 		if (aegis_status == AEGIS_CLOSE_TO_ANY_PLANET)
 		{
-			the_planet = [self findPlanetNearestSurface];
+			the_planet = [self findNearestStellarBody];
 		}
 		else	//must be the main planet!
 		{
@@ -3670,11 +3734,11 @@ static GLfloat mascem_color2[4] =	{ 0.4, 0.1, 0.4, 1.0};	// purple
 }
 
 
-NSComparisonResult planetSort(id i1, id i2, void* context)
+NSComparisonResult ComparePlanetsBySurfaceDistance(id i1, id i2, void* context)
 {
 	Vector p = [(ShipEntity*) context position];
-	PlanetEntity* e1= i1;
-	PlanetEntity* e2= i2;
+	PlanetEntity* e1 = i1;
+	PlanetEntity* e2 = i2;
 	//fx: empirical value used to help determine proximity when non-nested planets are close to each other
 	float fx=1.35;
 	float r;
@@ -3693,29 +3757,74 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 }
 
 
-- (PlanetEntity *) findPlanetNearestSurface
+- (PlanetEntity *) findNearestPlanet
 {
-	NSMutableArray		*planets = nil;
-	NSArray			*sortedPlanets = nil;
+	PlanetEntity		*result = nil;
+	NSArray				*planets = nil;
 	
-	planets = [UNIVERSE planetsAndSun];
+	planets = [UNIVERSE planets];
 	if ([planets count] == 0)  return nil;
 	
-	PlanetEntity* the_planet = [planets objectAtIndex:0];
-	if ([planets count] >1)
+	planets = [planets sortedArrayUsingFunction:ComparePlanetsBySurfaceDistance context:self];
+	result = [planets objectAtIndex:0];
+	
+	// ignore miniature planets when determining nearest planet - Nikos 20090313
+	if ([result planetType] == PLANET_TYPE_MINIATURE)
 	{
-		sortedPlanets = [planets sortedArrayUsingFunction:planetSort context:self];
-		the_planet = [sortedPlanets objectAtIndex:0];		
+		if ([UNIVERSE sun])	// if we are not in witchspace give us the next in the list, else nothing
+		{
+			result = [planets objectAtIndex:1];
+		}
+		else
+		{
+			result = nil;
+		}
 	}
-	return the_planet;
+	
+	return result;
+}
+
+
+- (PlanetEntity *) findNearestStellarBody
+{
+	PlanetEntity		*result = nil;
+	NSArray				*planets = nil;
+	PlanetEntity		*sun = nil;
+	
+	planets = [UNIVERSE planets];
+	sun = [UNIVERSE sun];
+	if (sun != nil)
+	{
+		planets = [planets arrayByAddingObject:sun];
+	}
+	if ([planets count] == 0)  return nil;
+	
+	planets = [planets sortedArrayUsingFunction:ComparePlanetsBySurfaceDistance context:self];
+	result = [planets objectAtIndex:0];
+	
+	// ignore miniature planets when determining nearest stellar body - Nikos 20090313
+	if ([result planetType] == PLANET_TYPE_MINIATURE)
+	{
+		if (sun)	// if we are not in witchspace give us the next in the list, else nothing
+		{
+			result = [planets objectAtIndex:1];
+		}
+		else
+		{
+			result = nil;
+		}
+	}
+
+	return result;
 }
 
 
 - (OOAegisStatus) checkForAegis
 {
-	PlanetEntity	*the_planet = [self findPlanetNearestSurface];
+	PlanetEntity	*the_planet = [self findNearestStellarBody];
 	PlanetEntity	*warnedPlanet = nil;
 	PlanetEntity	*mainPlanet = nil;
+	BOOL		sunGoneNova = [[UNIVERSE sun] goneNova];
 	
 	if (the_planet == nil)
 	{
@@ -3758,12 +3867,15 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 		warnedPlanet = the_planet;	// Avoid duplicate message
 	}
 	
-	d2 = magnitude2(vector_subtract([[UNIVERSE planet] position], [self position]));
-	cr2 = [[UNIVERSE planet] collisionRadius];
-	cr2 *= cr2;
-	if (d2 < cr2 * 9.0f) // to 3x radius of main planet
+	if (!sunGoneNova)
 	{
-		result = AEGIS_CLOSE_TO_MAIN_PLANET;
+		d2 = magnitude2(vector_subtract([[UNIVERSE planet] position], [self position]));
+		cr2 = [[UNIVERSE planet] collisionRadius];
+		cr2 *= cr2;
+		if (d2 < cr2 * 9.0f) // to 3x radius of main planet
+		{
+			result = AEGIS_CLOSE_TO_MAIN_PLANET;
+		}
 	}
 	
 	// check station
@@ -3788,7 +3900,7 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 	{
 		// script/AI messages on change in status
 		// approaching..
-		if ((aegis_status == AEGIS_NONE)&&(result == AEGIS_CLOSE_TO_MAIN_PLANET))
+		if ((aegis_status == AEGIS_NONE) && (result == AEGIS_CLOSE_TO_MAIN_PLANET) && !sunGoneNova)
 		{
 			mainPlanet = [UNIVERSE planet];
 			if (warnedPlanet != mainPlanet)
@@ -3807,7 +3919,10 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 		if ((aegis_status == AEGIS_CLOSE_TO_ANY_PLANET || result == AEGIS_IN_DOCKING_RANGE)&&(result == AEGIS_CLOSE_TO_MAIN_PLANET))
 		{
 			[self doScriptEvent:@"shipExitedPlanetaryVicinity"]; //needs work!
-			[self doScriptEvent:@"shipEnteredPlanetaryVicinity" withArgument:[UNIVERSE planet]];
+			if (!sunGoneNova)
+			{
+				[self doScriptEvent:@"shipEnteredPlanetaryVicinity" withArgument:[UNIVERSE planet]];
+			}
 			[shipAI message:@"AWAY_FROM_PLANET"];
 			[shipAI message:@"CLOSE_TO_PLANET"];
 			[shipAI message:@"AEGIS_CLOSE_TO_PLANET"];
@@ -3815,11 +3930,14 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 		}
 		if ((aegis_status == AEGIS_CLOSE_TO_MAIN_PLANET || result == AEGIS_IN_DOCKING_RANGE)&&(result == AEGIS_CLOSE_TO_ANY_PLANET))
 		{
-			[self doScriptEvent:@"shipExitedPlanetaryVicinity" withArgument:[UNIVERSE planet]];
+			if (!sunGoneNova)
+			{
+				[self doScriptEvent:@"shipExitedPlanetaryVicinity" withArgument:[UNIVERSE planet]];
+			}
 			[self doScriptEvent:@"shipEnteredPlanetaryVicinity" withArgument:the_planet];
 			[shipAI message:@"AWAY_FROM_PLANET"];
 			[shipAI message:@"CLOSE_TO_PLANET"];
-		}		
+		}
 		if (((aegis_status == AEGIS_CLOSE_TO_MAIN_PLANET)||(aegis_status == AEGIS_NONE))&&(result == AEGIS_IN_DOCKING_RANGE))
 		{
 			[self doScriptEvent:@"shipEnteredStationAegis" withArgument:the_station];
@@ -3850,9 +3968,11 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 
 - (void) setStatus:(OOEntityStatus) stat
 {
-	status = stat;
-	if ((status == STATUS_LAUNCHING)&&(UNIVERSE))
+	[super setStatus:stat];
+	if (stat == STATUS_LAUNCHING)
+	{
 		launch_time = [UNIVERSE getTime];
+	}
 }
 
 
@@ -3925,6 +4045,12 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 											 properties:properties];
 	}
 	[script retain];
+}
+
+
+- (double)frustration
+{
+	return frustration;
 }
 
 
@@ -4214,15 +4340,6 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 }
 
 
-// Exposed to script actions
-- (void) initialiseTurret
-{
-	[self setBehaviour: BEHAVIOUR_TRACK_AS_TURRET];
-	weapon_recharge_rate = 0.5;	// test
-	[self setStatus: STATUS_ACTIVE];
-}
-
-
 // Exposed to AI
 - (void) dealEnergyDamageWithinDesiredRange
 {
@@ -4353,12 +4470,12 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 	int speed_low = 200;
 	int n_alloys = floor(sqrtf(sqrtf(mass / 25000.0)));
 
-	if (status == STATUS_DEAD)
+	if ([self status] == STATUS_DEAD)
 	{
 		[UNIVERSE removeEntity:self];
 		return;
 	}
-	status = STATUS_DEAD;
+	[self setStatus:STATUS_DEAD];
 	
 	if ([self isThargoid])  [self broadcastThargoidDestroyed];
 	
@@ -4602,6 +4719,7 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 						[wreck setStatus:STATUS_IN_FLIGHT];
 						[UNIVERSE addEntity:wreck];
 						[wreck performTumble];
+						[wreck rescaleBy: 1.0/scale_factor];
 						[wreck release];
 					}
 				}
@@ -4699,7 +4817,7 @@ NSComparisonResult planetSort(id i1, id i2, void* context)
 	
 	if ([self hasSubEntity:sub])
 	{
-		OOLog(@"shipEntity.bug.subEntityRetainUnderflow", @"***** VALIDATION ERROR: Subentity died while still in subentity list! This is bad. Leaking subentity list to avoid crash. This is an internal error, please report it.");
+		OOLogERR(@"shipEntity.bug.subEntityRetainUnderflow", @"Subentity died while still in subentity list! This is bad. Leaking subentity list to avoid crash. This is an internal error, please report it.");
 		
 		count = [subEntities count];
 		if (count != 1)
@@ -4837,8 +4955,8 @@ Vector positionOffsetForShipInRotationToAlignment(ShipEntity* ship, Quaternion q
 	OOCargoQuantity n_cargo = (ranrot_rand() % (likely_cargo + 1));
 	OOCargoQuantity cargo_to_go;
 
-	if (status == STATUS_DEAD)  return;
-	status = STATUS_DEAD;
+	if ([self status] == STATUS_DEAD)  return;
+	[self setStatus:STATUS_DEAD];
 	
 	//scripting
 	if (script != nil)
@@ -5230,7 +5348,7 @@ BOOL class_masslocks(int some_class)
 	quaternion_rotate_about_axis(&orientation, axis_to_track_by, thrust * delta_t);
 	[self orientationChanged];
 	
-	status = STATUS_ACTIVE;
+	[self setStatus:STATUS_ACTIVE];
 	
 	return aim_cos;
 }
@@ -5326,7 +5444,7 @@ BOOL class_masslocks(int some_class)
 	quaternion_rotate_about_axis(&orientation, axis_to_track_by, thrust * delta_t);
 	[self orientationChanged];
 	
-	status = STATUS_ACTIVE;
+	[self setStatus:STATUS_ACTIVE];
 	
 	return aim_cos;
 }
@@ -5795,12 +5913,14 @@ BOOL class_masslocks(int some_class)
 	Vector rel_pos, urp;
 	int weapon_type = (fwd_weapon)? forward_weapon_type : aft_weapon_type;
 	if (weapon_type == WEAPON_THARGOID_LASER)
+	{
 		return (randf() < 0.05);	// one in twenty shots on target
+	}
+	
 	Entity  *target = [self primaryTarget];
-	if (target == nil)   // leave now!
-		return NO;
-	if (target->status == STATUS_DEAD)
-		return NO;
+	if (target == nil)  return NO;
+	if ([target status] == STATUS_DEAD)  return NO;
+	
 	if (isSunlit && (target->isSunlit == NO) && (randf() < 0.75))
 		return NO;	// 3/4 of the time you can't see from a lit place into a darker place
 	radius = target->collision_radius;
@@ -5829,6 +5949,7 @@ BOOL class_masslocks(int some_class)
 	// set the values for the forward weapon
 	//
 	[self setWeaponDataFromType:forward_weapon_type];
+	weapon_energy = OOClamp_0_max_f([shipinfoDictionary floatForKey:@"weapon_energy" defaultValue:weapon_energy],50.0);
 	
 	if ([self shotTime] < weapon_recharge_rate)
 		return NO;
@@ -6407,7 +6528,7 @@ BOOL class_masslocks(int some_class)
 	origin.y = position.y + v_right.y * start.x + v_up.y * start.y + v_forward.y * start.z;
 	origin.z = position.z + v_right.z * start.x + v_up.z * start.y + v_forward.z * start.z;
 	
-	if (!isMissile)  [missile setOwner:self];
+	if (![self isMissileFlagSet])  [missile setOwner:self];
 	else  [missile setOwner:[self owner]];
 	
 	[missile addTarget:target];
@@ -6418,7 +6539,7 @@ BOOL class_masslocks(int some_class)
 	[missile setSpeed:150.0];
 	[missile setDistanceTravelled:0.0];
 	[missile setStatus:STATUS_IN_FLIGHT];  // necessary to get it going!
-	missile->isMissile = YES;
+	[missile setIsMissileFlag:YES];
 	[missile resetShotTime];
 	
 	[UNIVERSE addEntity:missile];
@@ -6433,6 +6554,18 @@ BOOL class_masslocks(int some_class)
 	}
 
 	return YES;
+}
+
+
+- (BOOL) isMissileFlagSet
+{
+	return isMissile; // were we created using fireMissile? (for tracking submunitions)
+}
+
+
+- (void) setIsMissileFlag:(BOOL)newValue
+{
+	isMissile = !!newValue; // set the isMissile flag, used for tracking submunitions
 }
 
 
@@ -6546,9 +6679,9 @@ BOOL class_masslocks(int some_class)
 				OOCharacter *ch = (OOCharacter*)[crew objectAtIndex:i];
 				[ch setLegalStatus: [self legalStatus] | [ch legalStatus]];
 			}
-			[pod setCrew: crew];
-			[self setCrew: nil];
-			[self setHulk: true]; //CmdrJames experiment with fixing ejection behaviour
+			[pod setCrew:crew];
+			[self setCrew:nil];
+			[self setHulk:YES]; //CmdrJames experiment with fixing ejection behaviour
 		}
 		[[pod getAI] setStateMachine:@"homeAI.plist"];
 		[self dumpItem:pod];
@@ -6911,7 +7044,7 @@ BOOL class_masslocks(int some_class)
 	desired_speed = 0.0;
 	[self setAITo:@"nullAI.plist"];	// prevent AI from changing status or behaviour
 	behaviour = BEHAVIOUR_TRACTORED;
-	status = STATUS_BEING_SCOOPED;
+	[self setStatus:STATUS_BEING_SCOOPED];
 	[self addTarget:other];
 	[self setOwner:other];
 }
@@ -7047,7 +7180,7 @@ BOOL class_masslocks(int some_class)
 
 - (void) takeEnergyDamage:(double)amount from:(Entity *)ent becauseOf:(Entity *)other
 {
-	if (status == STATUS_DEAD)  return;
+	if ([self status] == STATUS_DEAD)  return;
 	if (amount <= 0.0)  return;
 	
 	// If it's an energy mine...
@@ -7223,11 +7356,11 @@ BOOL class_masslocks(int some_class)
 
 - (void) takeScrapeDamage:(double) amount from:(Entity *) ent
 {
-	if (status == STATUS_DEAD)  return;
+	if ([self status] == STATUS_DEAD)  return;
 
-	if (status == STATUS_LAUNCHING)					// no collisions during launches please
+	if ([self status] == STATUS_LAUNCHING)			// no collisions during launches please
 		return;
-	if (ent && ent->status == STATUS_LAUNCHING)		// no collisions during launches please
+	if ([ent status] == STATUS_LAUNCHING)			// no collisions during launches please
 		return;
 	
 	energy -= amount;
@@ -7254,7 +7387,7 @@ BOOL class_masslocks(int some_class)
 
 - (void) takeHeatDamage:(double) amount
 {
-	if (status == STATUS_DEAD)					// it's too late for this one!
+	if ([self status] == STATUS_DEAD)					// it's too late for this one!
 		return;
 
 	if (amount < 0.0)
@@ -7307,7 +7440,7 @@ BOOL class_masslocks(int some_class)
 	flightPitch = 0.0;
 	flightSpeed = maxFlightSpeed * 0.5;
 	
-	status = STATUS_LAUNCHING;
+	[self setStatus:STATUS_LAUNCHING];
 	
 	[self doScriptEvent:@"shipWillLaunchFromStation" withArgument:station];
 	[shipAI message:@"LAUNCHED"];
@@ -7380,7 +7513,7 @@ int w_space_seed = 1234567;
 	flightRoll = 0.0;
 	flightPitch = 0.0;
 	flightSpeed = maxFlightSpeed * 0.25;
-	status = STATUS_LAUNCHING;
+	[self setStatus:STATUS_LAUNCHING];
 	[shipAI message:@"EXITED_WITCHSPACE"];
 	[UNIVERSE addEntity:self];
 
@@ -7449,6 +7582,10 @@ int w_space_seed = 1234567;
 	if (![self isEscort] && ([self hasRole:@"police"] || [self hasRole:@"interceptor"]))
 	{
 		return [potentialEscort hasRole:@"wingman"];
+	}
+	if ([self bounty] == 0 && [potentialEscort bounty] != 0) // clean mothers can only accept clean escorts
+	{
+		return NO;
 	}
 	if (![self isEscort])
 	{
@@ -7593,8 +7730,8 @@ int w_space_seed = 1234567;
 	NSEnumerator		*escortEnum = nil;
 	ShipEntity			*escort = nil;
 	unsigned			i = 0;
-	
-	for (escortEnum = [self escortEnumerator]; (escort = [escortEnum nextObject]); )
+	// Note: works on escortArray rather than escortEnumerator because escorts may be mutated.
+	for (escortEnum = [[self escortArray] objectEnumerator]; (escort = [escortEnum nextObject]); )
 	{
 		float		delay = i++ * 3.0 + 1.5;		// send them off at three second intervals
 		AI			*ai = [escort getAI];
@@ -7688,20 +7825,6 @@ int w_space_seed = 1234567;
 }
 
 
-- (PlanetEntity *) findNearestPlanet
-{
-	NSArray				*planets = nil;
-	
-	planets = [UNIVERSE findEntitiesMatchingPredicate:IsPlanetPredicate
-											parameter:NULL
-											  inRange:-1
-											 ofEntity:self];
-	
-	if ([planets count] == 0)  return nil;
-	return [planets objectAtIndex:0];
-}
-
-
 - (void) landOnPlanet:(PlanetEntity *)planet
 {
 	if (planet)
@@ -7713,7 +7836,7 @@ int w_space_seed = 1234567;
 #ifndef NDEBUG
 	if ([self reportAIMessages])
 	{
-		OOLog(@"planet.collide.shuttleLanded", @"DEBUG %@ landed on planet %@", self, planet);
+		OOLog(@"planet.collide.shuttleLanded", @"DEBUG: %@ landed on planet %@", self, planet);
 	}
 #endif
 	
@@ -8120,7 +8243,7 @@ static BOOL AuthorityPredicate(Entity *entity, void *parameter)
 
 - (void) pilotArrived
 {
-	[self setHulk:false];
+	[self setHulk:NO];
 	[self reactToAIMessage:@"PILOT_ARRIVED"];
 }
 
@@ -8328,7 +8451,7 @@ static BOOL AuthorityPredicate(Entity *entity, void *parameter)
 	// Sanity check; this should always be true.
 	if (![self hasSubEntity:(ShipEntity *)other])
 	{
-		OOLog(@"ship.subentity.sanityCheck.failed", @"***** VALIDATION ERROR: %@ thinks it's a subentity of %@, but the supposed parent does not agree. This is an internal error, please report it.", [other shortDescription], [self shortDescription]);
+		OOLogERR(@"ship.subentity.sanityCheck.failed", @"%@ thinks it's a subentity of %@, but the supposed parent does not agree. This is an internal error, please report it.", [other shortDescription], [self shortDescription]);
 		[other setOwner:nil];
 		return NO;
 	}

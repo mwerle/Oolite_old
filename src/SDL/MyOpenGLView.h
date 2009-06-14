@@ -87,12 +87,18 @@ enum StringInput
 	gvStringInputAll = 2
 };
 
+enum KeyboardType
+{
+	gvKeyboardAuto,
+	gvKeyboardUS,
+	gvKeyboardUK
+};
+
 extern int debug;
 
 @interface MyOpenGLView : OpenGLViewSuperClass
 {
 	GameController		*gameController;
-	OpenGLSprite		*splashSprite;
 	BOOL				keys[NUM_KEYS];
 	BOOL				supressKeys;    // DJS
 
@@ -120,18 +126,33 @@ extern int debug;
 
    // Full screen sizes
 	NSMutableArray		*screenSizes;
-	unsigned				currentSize;
+	unsigned			currentSize;
 	BOOL				fullScreen;
 
 	// Windowed mode
 	NSSize currentWindowSize;
 	SDL_Surface* surface;
 	JoystickHandler *stickHandler;
+	
+#if OOLITE_WINDOWS
+
+	BOOL				wasFullScreen;
+	BOOL				splashScreen;
+	BOOL				saveSize;
+	unsigned			keyboardMap;
+	HWND 				SDL_Window;
+
+#endif
+
+	NSSize				firstScreen;
 
    // Mouse mode indicator (for mouse movement model)
    BOOL  mouseInDeltaMode;
 }
 
+- (void) initSplashScreen;
+- (void) endSplashScreen;
+- (void) autoShowMouse;
 
 - (void) setStringInput: (enum StringInput) value;
 - (void) allowStringInput: (BOOL) value;
@@ -147,13 +168,16 @@ extern int debug;
 - (void) setGameController:(GameController *) controller;
 
 - (void) initialiseGLWithSize:(NSSize) v_size;
+- (void) initialiseGLWithSize:(NSSize) v_size useVideoMode:(BOOL) v_mode;
 
-- (void)drawRect:(NSRect)rect;
+- (void) display;
+- (void) updateScreen;
+- (void) drawRect:(NSRect)rect;
+- (void) updateScreenWithVideoMode:(BOOL) v_mode;
 
 - (void) snapShot;
 
 - (NSRect) bounds;
-- (void) display;
 + (NSMutableDictionary *) getNativeSize;
 
 - (void) setFullScreenMode:(BOOL)fsm;
@@ -180,6 +204,7 @@ extern int debug;
 - (void) setVirtualJoystick:(double) vmx :(double) vmy;
 - (NSPoint) virtualJoystickPosition;
 
+- (void) setKeyboardTo: (NSString *) value;
 - (void) clearKeys;
 - (void) clearMouse;
 - (BOOL) isAlphabetKeyDown;

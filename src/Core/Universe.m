@@ -3,7 +3,7 @@
 Universe.m
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -69,6 +69,9 @@ MA 02110-1301, USA.
 #import "OOConvertSystemDescriptions.h"
 #endif
 
+#ifdef HAVE_LIBESPEAK
+#include <espeak/speak_lib.h>
+#endif
 
 #define kOOLogUnconvertedNSLog @"unclassified.Universe"
 
@@ -119,8 +122,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 
 - (id) initWithGameView:(MyOpenGLView *)inGameView
 {	
-	PlayerEntity	*player;
-	int				i;
+	PlayerEntity	*player = nil;
 	
 	if (gSharedUniverse != nil)
 	{
@@ -132,14 +134,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	[self setGameView:inGameView];
 	gSharedUniverse = self;
 	
-	n_entities = 0;
-	
-	x_list_start = y_list_start = z_list_start = nil;
-	
-	firstBeacon = NO_TARGET;
-	lastBeacon = NO_TARGET;
-	
-	no_update = NO;
+	allPlanets = [[NSMutableArray alloc] init];
 	
 	OOCPUInfoInit();
 	
@@ -167,25 +162,29 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	// Set up the internal game strings
 	descriptions = [[ResourceManager dictionaryFromFilesNamed:@"descriptions.plist" inFolder:@"Config" andMerge:YES] retain];
 	
+#if OOLITE_SPEECH_SYNTH
 #if OOLITE_MAC_OS_X
 	//// speech stuff
 	speechSynthesizer = [[NSSpeechSynthesizer alloc] init];
-	
-	//Jester Speech Begin
+#elif defined(HAVE_LIBESPEAK)
+	espeak_Initialize(AUDIO_OUTPUT_PLAYBACK, 100, NULL, 0);
+	espeak_SetParameter(espeakPUNCTUATION, espeakPUNCT_NONE, 0);
+	espeak_voices = espeak_ListVoices(NULL);
+	for (espeak_voice_count = 0;
+	     espeak_voices[espeak_voice_count];
+	     ++espeak_voice_count)
+		/**/;
+#endif
 	speechArray = [[ResourceManager arrayFromFilesNamed:@"speech_pronunciation_guide.plist" inFolder:@"Config" andMerge:YES] retain];
-	//Jester Speech End
 #endif
 	
-	[[GameController sharedController] logProgress:@"Loading ship data..."];
+	[[GameController sharedController] logProgress:DESC(@"loading-ships")];
 	// Load ship data
 	[OOShipRegistry sharedRegistry];
 	
-	[[GameController sharedController] logProgress:@"Initialising universe..."];
+	[[GameController sharedController] logProgress:DESC(@"initialising-universe")];
 	
- 	dumpCollisionInfo = NO;
 	next_universal_id = 100;	// start arbitrarily above zero
-	for (i = 0; i < MAX_ENTITY_UID; i++)
-		entity_for_uid[i] = nil;
 	
 	entities = [[NSMutableArray arrayWithCapacity:MAX_NUMBER_OF_ENTITIES] retain];
 	
@@ -193,9 +192,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	sun_center_position[1] = 0.0;
 	sun_center_position[2] = 0.0;
 	sun_center_position[3] = 1.0;
-	
+
+	// this MUST have the default no. of rows else the GUI_ROW macros in PlayerEntity.h need modification
 	gui = [[GuiDisplayGen alloc] init]; // alloc retains
-	displayGUI = NO;
 	
 	message_gui = [[GuiDisplayGen alloc]
 					initWithPixelSize:NSMakeSize(480, 160)
@@ -223,11 +222,6 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	[comm_log_gui printLongText:DESC(@"communications-log-string") align:GUI_ALIGN_CENTER color:[OOColor yellowColor] fadeTime:0 key:nil addToArray:nil];
 	[comm_log_gui setDrawPosition: make_vector(0.0, 180.0, 640.0)];
 	
-	displayFPS = NO;
-	
-	time_delta = 0.0;
-	universal_time = 0.0;
-	
 	commodityLists = [(NSDictionary *)[ResourceManager dictionaryFromFilesNamed:@"commodities.plist" inFolder:@"Config" andMerge:YES] retain];
 	commodityData = [[NSArray arrayWithArray:[commodityLists arrayForKey:@"default"]] retain];
 	
@@ -252,13 +246,8 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	missiontext = [[ResourceManager dictionaryFromFilesNamed:@"missiontext.plist" inFolder:@"Config" andMerge:YES] retain];
 	
 	demo_ships = [[OOShipRegistry sharedRegistry] demoShipKeys];
-	demo_ship_index = 0;
 	
-	breakPatternCounter = 0;
-	
-	cachedSun = nil;
-	cachedPlanet = nil;
-	cachedStation = nil;
+	time_acceleration_factor = TIME_ACCELERATION_FACTOR_DEFAULT;
 	
 	player = [[PlayerEntity alloc] init];	// alloc retains!
 	[self addEntity:player];
@@ -282,15 +271,13 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	characterPool = [[NSMutableArray arrayWithCapacity:256] retain];
 	
-	[[GameController sharedController] logProgress:@"Populating space..."];
+	[[GameController sharedController] logProgress:DESC(@"populating-space")];
 	
 	[self setUpSpace];
 	
 	if (cachedStation)  [player setPosition:cachedStation->position];
 	
 	[self setViewDirection:VIEW_GUI_DISPLAY];
-	
-	demo_ship = nil;
 	
 	universeRegion = [[CollisionRegion alloc] initAsUniverse];
 	
@@ -300,7 +287,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	OOInitDebugSupport();
 	
-	[[GameController sharedController] logProgress:@"Running scripts..."];
+	[[GameController sharedController] logProgress:DESC(@"running-scripts")];
 	
 	[player completeInitialSetUp];
 	
@@ -353,9 +340,13 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	[[OOCacheManager sharedCache] flush];
 	
-#ifndef OOLITE_MAC_OS_X
+#if OOLITE_SPEECH_SYNTH
 	[speechArray release];
+#if OOLITE_MAC_OS_X
 	[speechSynthesizer release];
+#elif defined(HAVE_LIBESPEAK)
+	espeak_Cancel();
+#endif
 #endif
 	
 	[super dealloc];
@@ -419,14 +410,12 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	//       be aware of cache flushes so it can automatically
 	//       reinitialize itself - mwerle 20081107.
 	[[OOShipRegistry sharedRegistry] init];
-
-#ifndef GNUSTEP
-	//// speech stuff
 	
+	[[gameView gameController] unpause_game];
+
+#if OOLITE_SPEECH_SYNTH
 	[speechArray autorelease];
 	speechArray = [[ResourceManager arrayFromFilesNamed:@"speech_pronunciation_guide.plist" inFolder:@"Config" andMerge:YES] retain];
-	
-	////
 #endif
 	
 	
@@ -474,6 +463,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	[comm_log_gui setDrawPosition: make_vector(0.0, 180.0, 640.0)];
 	
 	time_delta = 0.0;
+	time_acceleration_factor = TIME_ACCELERATION_FACTOR_DEFAULT;
 	universal_time = 0.0;
 	
 	[commodityLists autorelease];
@@ -560,7 +550,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	[player setOrientation:q0];
 	if(showDemo)
 	{
-		[player setGuiToIntro2Screen];
+		[player setGuiToIntroFirstGo:NO];
 		[gui setText:(strict)? DESC(@"strict-play-enabled"):DESC(@"unrestricted-play-enabled") forRow:1 align:GUI_ALIGN_CENTER];
 	}
 	else
@@ -588,7 +578,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	if (!OOLogWillDisplayMessagesInClass(@"universe.objectDump"))  return;
 	
-	OOLog(@"universe.objectDump", @"DEBUG ENTITY DUMP: [entities count] = %d,\tn_entities = %d", [entities count], n_entities);
+	OOLog(@"universe.objectDump", @"DEBUG: Entity Dump - [entities count] = %d,\tn_entities = %d", [entities count], n_entities);
 	
 	OOLogIndent();
 	for (i = 0; i < show_count; i++)
@@ -610,7 +600,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 {
 	// deal with the machine going to sleep
 	PlayerEntity *player = [PlayerEntity sharedPlayer];
-	if ((player)&&(player->status == STATUS_IN_FLIGHT))
+	if ((player)&&([player status] == STATUS_IN_FLIGHT))
 	{
 		[self displayMessage:@" Paused (press 'p') " forCount:1.0];
 		[[gameView gameController] pause_game];
@@ -845,6 +835,39 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 }
 
 
+- (PlanetEntity	*) setUpPlanet
+{
+	PlanetEntity		*a_planet;
+
+	// set the system seed for random number generation
+	seed_for_planet_description(system_seed);
+	
+	/*- space planet -*/
+	a_planet = [[PlanetEntity alloc] initWithSeed: system_seed];	// alloc retains!
+	double planet_radius = [a_planet radius];
+	double planet_zpos = (12.0 + (Ranrot() & 3) - (Ranrot() & 3) ) * planet_radius; // 9..15 pr (planet radii) ahead
+	
+	[a_planet setStatus:STATUS_ACTIVE];
+	[a_planet setPositionX:0 y:0 z:planet_zpos];
+	[a_planet setEnergy:  1000000.0];
+	
+	if ([self planet])
+	{
+		PlanetEntity *tmp=[allPlanets objectAtIndex:0];
+		[self addEntity:a_planet];
+		[allPlanets removeObject:a_planet];
+		cachedPlanet=a_planet;
+		[allPlanets replaceObjectAtIndex:0 withObject:a_planet];
+		[self removeEntity:(Entity *)tmp];
+	}
+	else
+	{
+		[self addEntity:a_planet];
+	}
+	return a_planet;
+}
+
+
 - (void) setUpSpace
 {
 	Entity				*thing;
@@ -907,21 +930,8 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	// actual entities next...
 	
-	
-	// set the system seed for random number generation
-	seed_for_planet_description(system_seed);
-	
-	/*- space planet -*/
-	a_planet = [[PlanetEntity alloc] initWithSeed: system_seed];	// alloc retains!
+	a_planet=[self setUpPlanet];
 	double planet_radius = [a_planet radius];
-	double planet_zpos = (12.0 + (Ranrot() & 3) - (Ranrot() & 3) ) * planet_radius; // 10..14 pr (planet radii) ahead
-	
-	[a_planet setPlanetType:PLANET_TYPE_GREEN];
-	[a_planet setStatus:STATUS_ACTIVE];
-	[a_planet setPositionX:0 y:0 z:planet_zpos];
-	[a_planet setScanClass: CLASS_NO_DRAW];
-	[a_planet setEnergy:  1000000.0];
-	[self addEntity:a_planet];
 	
 	// set the system seed for random number generation
 	seed_for_planet_description(system_seed);
@@ -931,9 +941,12 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	sunDistanceModifier = [systeminfo nonNegativeDoubleForKey:@"sun_distance_modifier" defaultValue:20.0];
 
 	double		sun_distance = (sunDistanceModifier + (Ranrot() % 5) - (Ranrot() % 5) ) * planet_radius;
-	double		sun_radius = (2.5 + randf() - randf() ) * planet_radius;
+	double		sun_radius;
+	id			dict_object;
 	Quaternion  q_sun;
 	Vector		sunPos;
+	
+	sun_radius = [systeminfo nonNegativeDoubleForKey:@"sun_radius" defaultValue:(2.5 + randf() - randf() ) * planet_radius];
 	
 	// here we need to check if the sun collides with (or is too close to) the witchpoint
 	// otherwise at (for example) Maregais in Galaxy 1 we go BANG!
@@ -950,22 +963,30 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	
 	} while (magnitude2(sunPos) < 16 * sun_radius * sun_radius);	// stay at least 4 radii away!
 	
-	a_sun = [[PlanetEntity alloc] initAsSunWithColor:pale_bgcolor];	// alloc retains!
-	[a_sun setPlanetType:PLANET_TYPE_SUN];
+	NSMutableDictionary* sun_dict = [[NSMutableDictionary alloc] initWithCapacity:4];
+	[sun_dict setObject:[NSNumber numberWithDouble:sun_radius] forKey:@"sun_radius"];
+	dict_object=[systeminfo objectForKey: @"corona_shimmer"];
+	if (dict_object!=nil) [sun_dict setObject:dict_object forKey:@"corona_shimmer"];
+	dict_object=[systeminfo objectForKey: @"corona_hues"];
+	if (dict_object!=nil) [sun_dict setObject:dict_object forKey:@"corona_hues"];
+	dict_object=[systeminfo objectForKey: @"corona_flare"];
+	if (dict_object!=nil) [sun_dict setObject:dict_object forKey:@"corona_flare"];
+	//dict_object=[systeminfo objectForKey: @"sun_texture"];
+	//if (dict_object!=nil) [sun_dict setObject:dict_object forKey:@"sun_texture"];
+	
+	a_sun = [[PlanetEntity alloc] initSunWithColor:pale_bgcolor andDictionary:sun_dict];	// alloc retains!	
 	[a_sun setStatus:STATUS_ACTIVE];
 	[a_sun setPosition:sunPos];
 	sun_center_position[0] = sunPos.x;
 	sun_center_position[1] = sunPos.y;
 	sun_center_position[2] = sunPos.z;
 	sun_center_position[3] = 1.0;
-	[a_sun setRadius:sun_radius];			// 2.5 pr
-	[a_sun setScanClass: CLASS_NO_DRAW];
 	[a_sun setEnergy:  1000000.0];
 	[self addEntity:a_sun];
 	
 	if (sunGoneNova)
 	{
-		[a_sun setRadius: sun_radius + 600000];
+		[a_sun setRadius: sun_radius + MAX_CORONAFLARE];
 		[a_sun setThrowSparks:YES];
 		[a_sun setVelocity: kZeroVector];
 	}
@@ -1145,9 +1166,9 @@ BOOL	sun_light_on = NO;
 BOOL	demo_light_on = NO;
 GLfloat	demo_light_position[4] = { DEMO_LIGHT_POSITION, 1.0 };
 //
-GLfloat docked_light_ambient[4]	= { (GLfloat) 0.25, (GLfloat) 0.25, (GLfloat) 0.25, (GLfloat) 1.0};	// dark gray (low ambient)
-GLfloat docked_light_diffuse[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 1.0};	// white
-GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5, (GLfloat) 1.0};	// yellow-white
+GLfloat docked_light_ambient[4]	= { (GLfloat) 0.4, (GLfloat) 0.4, (GLfloat) 0.4, (GLfloat) 1.0};	// bright-ish, but shaders still visible!
+GLfloat docked_light_diffuse[4]	= { (GLfloat) 0.7, (GLfloat) 0.7, (GLfloat) 0.7, (GLfloat) 1.0};	// whitish
+GLfloat docked_light_specular[4]	= { (GLfloat) 0.7, (GLfloat) 0.7, (GLfloat) 0.4, (GLfloat) 1.0};	// yellow-white
 
 // Weight of sun in ambient light calculation. 1.0 means only sun's diffuse is used for ambient, 0.0 means only sky colour is used.
 // TODO: considering the size of the sun and the number of background stars might be worthwhile. -- Ahruman 20080322
@@ -1244,9 +1265,15 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	{
 		pool = [[NSAutoreleasePool alloc] init];
 		NS_DURING
-			WormholeEntity* whole = [activeWormholes objectAtIndex:0];
-			
+			WormholeEntity* whole = [activeWormholes objectAtIndex:0];		
+#ifdef WORMHOLE_SCANNER
+			// If the wormhole has been scanned by the player then the
+			// PlayerEntity will take care of it
+			if (![whole isScanned] &&
+				equal_seeds([whole destination], system_seed))
+#else
 			if (equal_seeds([whole destination], system_seed))
+#endif
 			{			
 				// this is a wormhole to this system
 				[whole disgorgeShips];
@@ -2417,6 +2444,11 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	positionString = [spawndict stringForKey:@"position"];
 	if (positionString != nil)
 	{
+		if([positionString hasPrefix:@"abs "] && ([self planet] != nil || [self sun] !=nil))
+		{
+			OOLogWARN(@"script.deprecated", @"position for entity '%@' set in 'abs' inside shipdata.plist ('abs' is intended for dynamic positioning only). Use coordinates relative to main system objects instead.",shipdesc);
+		}
+
 		pos = [self coordinatesFromCoordinateSystemString:positionString];
 		[ship setPosition:pos];
 	}
@@ -2425,6 +2457,11 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	positionString = [spawndict stringForKey:@"facing_position"];
 	if (positionString != nil)
 	{
+		if([positionString hasPrefix:@"abs "] && ([self planet] != nil || [self sun] !=nil))
+		{
+			OOLogWARN(@"script.deprecated", @"facing_position for entity '%@' set in 'abs' inside shipdata.plist ('abs' is intended for dynamic positioning only). Use coordinates relative to main system objects instead.",shipdesc);
+		}
+
 		spos = [ship position];
 		Quaternion q1;
 		rpos = [self coordinatesFromCoordinateSystemString:positionString];
@@ -2578,8 +2615,7 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	[self reinitAndShowDemo:NO];
 }
 
-
-- (void) set_up_intro1
+- (void) setupIntroFirstGo: (BOOL) justCobra
 {
 	PlayerEntity* player = [PlayerEntity sharedPlayer];
 	ShipEntity		*ship;
@@ -2587,83 +2623,58 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 1.0, (GLfloat) 1.0, (GLfloat) 0.5
 	q2.x = 0.0;   q2.y = 0.0;   q2.z = 0.0; q2.w = 1.0;
 	quaternion_rotate_about_y(&q2,M_PI);
 	
-	// in status demo : draw ships and display text
-	
+	// in status demo draw ships and display text
+	if (justCobra==NO)
+	{
+		[self removeDemoShips];
+	}
 	[player setStatus: STATUS_START_GAME];
 	[player setShowDemoShips: YES];
 	displayGUI = YES;
 	
-	/*- cobra -*/
-	ship = [self newShipWithName:PLAYER_SHIP_DESC];   // retain count = 1   // shows the cobra-player ship
-	if (ship)
+	if (justCobra==YES)
 	{
-		[ship setStatus: STATUS_COCKPIT_DISPLAY];
-		[ship setOrientation:q2];
-		[ship setPositionX:0.0f y:0.0f z:3.6f * ship->collision_radius];	// some way ahead
-		
-		[ship setScanClass: CLASS_NO_DRAW];
-		[ship setRoll:M_PI/5.0];
-		[ship setPitch:M_PI/10.0];
-		[[ship getAI] setStateMachine:@"nullAI.plist"];
-		[self addEntity:ship];
-		
-		demo_ship = ship;
-		
-		[ship release];
+		/*- cobra -*/
+		ship = [self newShipWithName:PLAYER_SHIP_DESC];   // retain count = 1   // shows the cobra-player ship
+	}
+	else
+	{
+		/*- demo ships -*/
+		demo_ship_index = 0;
+		ship = [self newShipWithName:[demo_ships stringAtIndex:0]];   // retain count = 1
 	}
 	
-	[self setViewDirection:VIEW_GUI_DISPLAY];
-	displayGUI = YES;
-	
-	
-}
-
-
-- (void) set_up_intro2
-{
-	ShipEntity		*ship;
-	Quaternion		q2;
-	q2.x = 0.0;   q2.y = 0.0;   q2.z = 0.0; q2.w = 1.0;
-	quaternion_rotate_about_y(&q2,M_PI);
-	
-	// in status demo draw ships and display text
-	
-	[self removeDemoShips];
-	[[PlayerEntity sharedPlayer] setStatus: STATUS_START_GAME];
-	[[PlayerEntity sharedPlayer] setShowDemoShips: YES];
-	displayGUI = YES;
-	
-	/*- demo ships -*/
-	demo_ship_index = 0;
-	ship = [self newShipWithName:[demo_ships stringAtIndex:0]];   // retain count = 1
 	if (ship)
 	{
 		[ship setOrientation:q2];
 		[ship setPositionX:0.0f y:0.0f z:3.6f * ship->collision_radius];
-		[ship setDestination: ship->position];	// ideal position
-		
+		if (justCobra==NO)
+		{
+			[ship setDestination: ship->position];	// ideal position
+		}
 		[ship setScanClass: CLASS_NO_DRAW];
 		[ship setRoll:M_PI/5.0];
 		[ship setPitch:M_PI/10.0];
 		[[ship getAI] setStateMachine:@"nullAI.plist"];
 		[self addEntity:ship];
-		
 		// set status here because addEntity may affect status
 		[ship setStatus:STATUS_COCKPIT_DISPLAY];
-		
 		demo_ship = ship;
-		
-		[gui setText:[ship displayName] forRow:19 align:GUI_ALIGN_CENTER];
-		[gui setColor:[OOColor whiteColor] forRow:19];
-		
+		if (justCobra==NO)
+		{
+			[gui setText:[ship displayName] forRow:19 align:GUI_ALIGN_CENTER];
+			[gui setColor:[OOColor whiteColor] forRow:19];
+		}
 		[ship release];
 	}
 	
 	[self setViewDirection:VIEW_GUI_DISPLAY];
 	displayGUI = YES;
-	
-	demo_stage = DEMO_SHOW_THING;
-	demo_stage_time = universal_time + 3.0;
+	if (justCobra==NO)
+	{
+		demo_stage = DEMO_SHOW_THING;
+		demo_stage_time = universal_time + 3.0;
+	}
 	
 }
 
@@ -2702,9 +2713,9 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 
 - (PlanetEntity *) planet
 {
-	if (cachedPlanet == nil)
+	if (cachedPlanet == nil && [allPlanets count] != 0)
 	{
-		cachedPlanet = [self findOneEntityMatchingPredicate:IsPlanetPredicate  parameter:nil];
+		cachedPlanet = [allPlanets objectAtIndex:0];
 	}
 	return cachedPlanet;
 }
@@ -2714,31 +2725,15 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 {
 	if (cachedSun == nil)
 	{
-		cachedSun = [self findOneEntityMatchingPredicate:IsSunPredicate	 parameter:nil];
+		cachedSun = [self findOneEntityMatchingPredicate:IsSunPredicate parameter:nil];
 	}
 	return cachedSun;
 }
 
 
-- (NSMutableArray *) planets
+- (NSArray *) planets
 {
-	return [self findEntitiesMatchingPredicate:IsPlanetPredicate
-									 parameter:NULL
-									   inRange:-1
-									  ofEntity:nil];
-}
-
-
-- (NSMutableArray *) planetsAndSun
-{
-	NSMutableArray *result = [self planets];
-	PlanetEntity *sun = [self sun];
-	if (sun != nil)
-	{
-		if (result != nil)  [result addObject:sun];
-		else  result = [NSMutableArray arrayWithObject:sun];
-	}
-	return result;
+	return [[allPlanets copy] autorelease];
 }
 
 
@@ -2789,7 +2784,7 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 	}
 	else
 	{
-		OOLog(@"universe.beacon.error", @"INTERNAL ERROR! Universe setNextBeacon:%@ where the ship has no beaconChar set", beaconShip);
+		OOLog(@"universe.beacon.error", @"***** ERROR: Universe setNextBeacon '%@'. The ship has no beaconChar set.", beaconShip);
 	}
 }
 
@@ -2819,7 +2814,7 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 - (BOOL) breakPatternHide
 {
 	Entity* player = [PlayerEntity sharedPlayer];
-	return ((breakPatternCounter > 5)||(!player)||(player->status == STATUS_DOCKING));
+	return ((breakPatternCounter > 5)||(!player)||([player status] == STATUS_DOCKING));
 }
 
 
@@ -2910,6 +2905,15 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 				if (autoAI != nil)
 				{
 					[ship setAITo:autoAI];
+					
+				#if 0 	// Disabling this code for the moment, I think it has some side effects
+					// that require further investigation - Nikos 20090604
+					// Pirate with auto_ai? Assign some bounty to the baddie
+					if ([autoAI isEqualToString:@"pirateAI.plist"])
+					{
+						[ship setBounty:20 + randf() * 50];
+					}
+				#endif
 				}
 			}
 		}
@@ -2954,6 +2958,7 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 	// Otherwise, if caller doesn't set a role, one will be selected randomly.
 	if ([ship hasRole:shipKey])  [ship setPrimaryRole:shipKey];
 	
+	// MKW 20090327 - retain count is actually 2!
 	return ship;   // retain count = 1
 }
 
@@ -3127,7 +3132,7 @@ static BOOL IsCandidateMainStationPredicate(Entity *entity, void *parameter)
 		}
 		else
 		{
-			OOLog(@"universe.createContainer.failed", @"***** ERROR failed to find a container to fill with %@ *****", commodity_name);
+			OOLog(@"universe.createContainer.failed", @"***** ERROR: failed to find a container to fill with %@.", commodity_name);
 		}
 		how_much -= amount;
 	}
@@ -3550,16 +3555,15 @@ static const OOMatrix	starboard_matrix =
 				//		DRAW ALL THE OPAQUE ENTITIES
 				for (i = furthest; i >= nearest; i--)
 				{
-					int d_status;
 					drawthing = my_entities[i];
-					d_status = drawthing->status;
+					OOEntityStatus d_status = [drawthing status];
 					
 					if (bpHide && !drawthing->isImmuneToBreakPatternHide)  continue;
 					
 					GLfloat flat_ambdiff[4]	= {1.0, 1.0, 1.0, 1.0};   // for alpha
 					GLfloat mat_no[4]		= {0.0, 0.0, 0.0, 1.0};   // nothing
 					
-					if (((d_status == STATUS_COCKPIT_DISPLAY)&&(inGUIMode)) || ((d_status != STATUS_COCKPIT_DISPLAY)&&(!inGUIMode)))
+					if ((d_status == STATUS_COCKPIT_DISPLAY && inGUIMode) || (d_status != STATUS_COCKPIT_DISPLAY && !inGUIMode))
 					{
 						// reset material properties
 						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, flat_ambdiff);
@@ -3631,13 +3635,12 @@ static const OOMatrix	starboard_matrix =
 				
 				for (i = furthest; i >= nearest; i--)
 				{
-					int d_status;
 					drawthing = my_entities[i];
-					d_status = drawthing->status;
+					OOEntityStatus d_status = [drawthing status];
 					
 					if (bpHide && !drawthing->isImmuneToBreakPatternHide)  continue;
 					
-					if (((d_status == STATUS_COCKPIT_DISPLAY)&&(inGUIMode)) || ((d_status != STATUS_COCKPIT_DISPLAY)&&(!inGUIMode)))
+					if ((d_status == STATUS_COCKPIT_DISPLAY && inGUIMode) || (d_status != STATUS_COCKPIT_DISPLAY && !inGUIMode))
 					{
 						// experimental - atmospheric fog
 						BOOL fogging = (airResistanceFactor > 0.01);
@@ -3804,13 +3807,15 @@ static const OOMatrix	starboard_matrix =
 		return nil;
 	
 	Entity *ent = entity_for_uid[u_id];
-	if (ent->isParticle)	// particles SHOULD NOT HAVE U_IDs!
+	if ([ent isParticle])	// particles SHOULD NOT HAVE U_IDs!
+	{
 		return nil;
-	int ent_status = ent->status;
-	if (ent_status == STATUS_DEAD)
+	}
+	
+	if ([ent status] == STATUS_DEAD || [ent status] == STATUS_DOCKED)
+	{
 		return nil;
-	if (ent_status == STATUS_DOCKED)
-		return nil;
+	}
 
 	return ent;
 }
@@ -3986,7 +3991,7 @@ static BOOL MaintainLinkedLists(Universe* uni)
 			return NO;
 		}
 		
-		if (!(entity->isParticle))
+		if (![entity isParticle])
 		{
 			unsigned limiter = UNIVERSE_MAX_ENTITIES;
 			while (entity_for_uid[next_universal_id] != nil)	// skip allocated numbers
@@ -4037,7 +4042,9 @@ static BOOL MaintainLinkedLists(Universe* uni)
 			}
 		}
 		else
+		{
 			[entity setUniversalID:NO_TARGET];
+		}
 		
 		// lighting considerations
 		entity->isSunlit = YES;
@@ -4072,10 +4079,18 @@ static BOOL MaintainLinkedLists(Universe* uni)
 		// add entity to linked lists
 		[entity addToLinkedLists];	// position and universe have been set - so we can do this
 		if ([entity canCollide])	// filter only collidables disappearing
+		{
 			doLinkedListMaintenanceThisUpdate = YES;
+		}
 		
-		if (entity->isWormhole)
+		if ([entity isWormhole])
+		{
 			[activeWormholes addObject:entity];
+		}
+		else if ([entity isPlanet] && ![entity isSun])
+		{
+			[allPlanets addObject:entity];
+		}
 		
 		return YES;
 	}
@@ -4521,10 +4536,10 @@ static BOOL MaintainLinkedLists(Universe* uni)
 }
 
 
-- (ShipEntity *)getFirstEntityTargettedByPlayer
+- (Entity *)getFirstEntityTargettedByPlayer
 {
 	PlayerEntity	*player = [PlayerEntity sharedPlayer];
-	ShipEntity		*hit_entity = nil;
+	Entity			*hit_entity = nil;
 	double			nearest = SCANNER_MAX_RANGE - 100;	// 100m shorter than range at which target is lost
 	int				i;
 	int				ent_count = n_entities;
@@ -4532,7 +4547,11 @@ static BOOL MaintainLinkedLists(Universe* uni)
 	Entity			*my_entities[ent_count];
 	
 	for (i = 0; i < ent_count; i++)
+#ifdef WORMHOLE_SCANNER
+		if ( ([sortedEntities[i] isShip] && ![sortedEntities[i] isPlayer]) || [sortedEntities[i] isWormhole])
+#else
 		if ((sortedEntities[i]->isShip)&&(sortedEntities[i] != player))
+#endif
 			my_entities[ship_count++] = [sortedEntities[i] retain];	// retained
 
 	Vector p1 = player->position;
@@ -4563,10 +4582,10 @@ static BOOL MaintainLinkedLists(Universe* uni)
 	r1 = vector_right_from_quaternion(q1);
 	for (i = 0; i < ship_count; i++)
 	{
-		ShipEntity *e2 = (ShipEntity *)my_entities[i];
-		if ([e2 canCollide]&&(e2->scanClass != CLASS_NO_DRAW))
+		Entity *e2 = my_entities[i];
+		if ([e2 canCollide]&&([e2 scanClass] != CLASS_NO_DRAW))
 		{
-			Vector rp = e2->position;
+			Vector rp = [e2 position];
 			rp.x -= p1.x;	rp.y -= p1.y;	rp.z -= p1.z;
 			double dist2 = magnitude2(rp);
 			if (dist2 < nearest * nearest)
@@ -4576,7 +4595,7 @@ static BOOL MaintainLinkedLists(Universe* uni)
 				{
 					double du = dot_product(u1,rp);
 					double dr = dot_product(r1,rp);
-					double cr = e2->collision_radius;
+					double cr = [e2 collisionRadius];
 					if (du*du + dr*dr < cr*cr)
 					{
 						hit_entity = e2;
@@ -4587,8 +4606,14 @@ static BOOL MaintainLinkedLists(Universe* uni)
 		}
 	}
 	// check for MASC'M
-	if ((hit_entity) && [hit_entity isJammingScanning] && ![player hasMilitaryScannerFilter])
-		hit_entity = nil;
+	if ((hit_entity) && [hit_entity isShip])
+	{
+		ShipEntity * ship = (ShipEntity*)hit_entity;
+		if ([ship isJammingScanning] && ![player hasMilitaryScannerFilter])
+		{
+			hit_entity = nil;
+		}
+	}
 	
 	for (i = 0; i < ship_count; i++)
 		[my_entities[i] release]; //	released
@@ -4970,32 +4995,60 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 {
 	NSString				*result = nil;
 	NSMutableSet			*seen = nil;
+	id object = [customsounds objectForKey:key];
 	
+	if ([object isKindOfClass:[NSArray class]] && [object count] > 0)
+	{
+		key = [object stringAtIndex:Ranrot() % [object count]];
+	}
+	else
+	{
+		object=nil;
+	}
+
 	result = [[OOCacheManager sharedCache] objectForKey:key inCache:@"resolved custom sounds"];
 	if (result == nil)
 	{
 		// Resolve sound, allowing indirection within customsounds.plist
 		seen = [NSMutableSet set];
 		result = key;
-		for (;;)
+		if (object == nil || ([result hasPrefix:@"["] && [result hasSuffix:@"]"]))
 		{
-			[seen addObject:result];
-			result = [customsounds objectForKey:result];
-			if (result == nil || ![result hasPrefix:@"["] || ![result hasSuffix:@"]"])  break;
-			if ([seen containsObject:result])
+			for (;;)
 			{
-				OOLog(@"sounds.customSounds.recursion", @"***** ERROR: recursion in customsounds.plist for %@ (at %@), no sound will be played.", key, result);
-				result = nil;
-				break;
+				[seen addObject:result];
+				object = [customsounds objectForKey:result];
+				if( [object isKindOfClass:[NSArray class]] && [object count] > 0)
+				{
+					result = [object stringAtIndex:Ranrot() % [object count]];
+					if ([key hasPrefix:@"["] && [key hasSuffix:@"]"]) key=result;
+				}
+				else
+				{
+					if ([object isKindOfClass:[NSString class]])
+						result = object;
+					else
+						result = nil;
+				}
+				if (result == nil || ![result hasPrefix:@"["] || ![result hasSuffix:@"]"])  break;
+				if ([seen containsObject:result])
+				{
+					OOLogERR(@"sound.customSounds.recursion", @"recursion in customsounds.plist for '%@' (at '%@'), no sound will be played.", key, result);
+					result = nil;
+					break;
+				}
 			}
 		}
-		
+
 		if (result == nil)  result = @"__oolite-no-sound";
-		
 		[[OOCacheManager sharedCache] setObject:result forKey:key inCache:@"resolved custom sounds"];
 	}
 	
-	if ([result isEqualToString:@"__oolite-no-sound"])  result = nil;
+	if ([result isEqualToString:@"__oolite-no-sound"])
+	{
+		OOLogERR(@"sound.customSounds", @"could not resolve sound name in customsounds.plist for '%@', no sound will be played.", key);
+		result = nil;
+	}
 	return result;
 }
 
@@ -5063,7 +5116,7 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 {
 	if (![currentMessage isEqual:text])
 	{
-#if OOLITE_MAC_OS_X
+#if OOLITE_SPEECH_SYNTH
 		PlayerEntity* player = [PlayerEntity sharedPlayer];
 		//speech synthesis
 		if ([player isSpeechOn])
@@ -5081,14 +5134,17 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 				for (speechEnumerator = [speechArray objectEnumerator]; (thePair = [speechEnumerator nextObject]); )
 				{
 					NSString *original_phrase = [thePair stringAtIndex:0];
+#if OOLITE_MAC_OS_X
 					NSString *replacement_phrase = [thePair stringAtIndex:1];
-					
-					spoken_text = [[spoken_text componentsSeparatedByString: original_phrase] componentsJoinedByString: replacement_phrase];
+#else
+					NSString *replacement_phrase = [thePair stringAtIndex:([thePair count] > 2 ? 2 : 1)];
+					if (![replacement_phrase isEqualToString:@"_"])
+#endif
+						spoken_text = [[spoken_text componentsSeparatedByString: original_phrase] componentsJoinedByString: replacement_phrase];
 				}
 				spoken_text = [[spoken_text componentsSeparatedByString: systemName] componentsJoinedByString: systemSaid];
 				spoken_text = [[spoken_text componentsSeparatedByString: h_systemName] componentsJoinedByString: h_systemSaid];
 			}
-
 			if ([self isSpeaking])  [self stopSpeaking];
 			[self startSpeakingString:spoken_text];
 			
@@ -5140,9 +5196,8 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 - (void) update:(OOTimeDelta)inDeltaT
 {
 	volatile float delta_t = inDeltaT;
-#ifndef NDEBUG
-	if (gDebugFlags & DEBUG_SLOW_MODE)  delta_t *= DEBUG_SLOW_MODE_FACTOR;
-#endif
+
+	delta_t *= [self timeAccelerationFactor];
 	
 	if (!no_update)
 	{
@@ -5335,6 +5390,22 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 		[my_ent autorelease];
 		[entitiesDeadThisUpdate removeObjectAtIndex:0];
 	}
+}
+
+
+- (float) timeAccelerationFactor
+{
+	return time_acceleration_factor;
+}
+
+
+- (void) setTimeAccelerationFactor:(float)newTimeAccelerationFactor
+{
+	if (newTimeAccelerationFactor < TIME_ACCELERATION_FACTOR_MIN || newTimeAccelerationFactor > TIME_ACCELERATION_FACTOR_MAX)
+	{
+		newTimeAccelerationFactor = TIME_ACCELERATION_FACTOR_DEFAULT;
+	}
+	time_acceleration_factor = newTimeAccelerationFactor;
 }
 
 
@@ -5775,11 +5846,20 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 
 - (NSDictionary *) generateSystemData:(Random_Seed) s_seed
 {
+	return [self generateSystemData:s_seed useCache:YES];
+}
+
+
+- (NSDictionary *) generateSystemData:(Random_Seed) s_seed useCache:(BOOL) useCache
+{
 	static NSDictionary	*cachedResult = nil;
 	static Random_Seed	cachedSeed = {0};
 	
-	// Cache hit ratio is over 95% during respawn, about 80% during initial set-up.
-	if (EXPECT(cachedResult != nil && equal_seeds(cachedSeed, s_seed)))  return [[cachedResult retain] autorelease];
+	if (useCache)
+	{
+		// Cache hit ratio is over 95% during respawn, about 80% during initial set-up.
+		if (EXPECT(cachedResult != nil && equal_seeds(cachedSeed, s_seed)))  return [[cachedResult retain] autorelease];
+	}
 	
 	[cachedResult release];
 	cachedResult = nil;
@@ -5972,8 +6052,11 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 - (NSString *) generatePhoneticSystemName:(Random_Seed) s_seed
 {
 	int i;
-		
+#if OOLITE_MAC_OS_X
 	NSString			*phonograms = [self descriptionForKey:@"phonograms"];
+#else
+	NSString			*phonograms = [self descriptionForKey:@"espkphonos"];
+#endif
 	NSMutableString		*name = [NSMutableString string];
 	int size = 4;
 	
@@ -5993,7 +6076,11 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 		rotate_seed(&s_seed);
 	}
 	
+#if OOLITE_MAC_OS_X
 	return [NSString stringWithFormat:@"[[inpt PHON]]%@[[inpt TEXT]]", name];
+#else
+	return [NSString stringWithFormat:@"[[%@]]", name];
+#endif
 }
 
 
@@ -6006,15 +6093,8 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 	
 	if (s_seed.e < 127)
 	{
-		if (plural)
-		{
-			// TODO: use plist
-			[inhabitants appendString:DESC(@"human-colonial-description-plural")];
-		}
-		else
-		{
-			[inhabitants appendString:DESC(@"human-colonial-description")];
-		}
+		// TODO: use plist
+		[inhabitants appendString:DESC_PLURAL(@"human-colonial-description", plural ? -1 : 1)];
 	}
 	else
 	{
@@ -6636,8 +6716,8 @@ double estimatedTimeForJourney(double distance, int hops)
 				double route_length = [routeInfo doubleForKey:@"distance"];
 				int route_hops = [[routeInfo arrayForKey:@"route"] count] - 1;
 				
-				// 50 cr per hop + 8..15 cr per LY + bonus for low government level of destination
-				OOCreditsQuantity fee = route_hops * 50 + route_length * (8 + (passenger_seed.e & 7)) + 5 * (7 - destination_government) * (7 - destination_government);
+				// Credits increase exponentially with number of hops (more with reputation > 5) + 8..15 cr per LY + bonus for low government level of destination
+				OOCreditsQuantity fee = 5 * pow(route_hops, player_repute > 5 ? 2.65 : 2.5) + route_length * (8 + (passenger_seed.e & 7)) + 5 * (7 - destination_government) * (7 - destination_government);
 				
 				fee = cunningFee(fee);
 				
@@ -6654,7 +6734,7 @@ double estimatedTimeForJourney(double distance, int hops)
 					passenger_name, passenger_species_string, destination_name];
 					
 				long_description = [NSString stringWithFormat:
-					DESC(@"contracts-@-the-route-is-f-light-years-long-a-minimum-of-d-jumps"), long_description,
+					DESC_PLURAL(@"contracts-@-the-route-is-f-light-years-long-a-minimum-of-d-jumps", route_hops), long_description,
 					route_length, route_hops];
 					
 				long_description = [NSString stringWithFormat:
@@ -6738,35 +6818,27 @@ double estimatedTimeForJourney(double distance, int hops)
 	{
 		int days = floor(r_time / 86400);
 		r_time -= 86400 * days;
-		result = [NSString stringWithFormat:@"%@ %d %@", result, days, (days > 1) ?
-									DESC(@"contracts-day-word-plural") :
-									DESC(@"contracts-day-word")];
+		result = [NSString stringWithFormat:@"%@ %d %@", result, days, DESC_PLURAL(@"contracts-day-word", days)];
 		parts++;
 	}
 	if (r_time > 3600)
 	{
 		int hours = floor(r_time / 3600);
 		r_time -= 3600 * hours;
-		result = [NSString stringWithFormat:@"%@ %d %@", result, hours, (hours > 1) ?
-									DESC(@"contracts-hour-word-plural") :
-									DESC(@"contracts-hour-word")];
+		result = [NSString stringWithFormat:@"%@ %d %@", result, hours, DESC_PLURAL(@"contracts-hour-word", hours)];
 		parts++;
 	}
 	if (parts < 2 && r_time > 60)
 	{
 		int mins = floor(r_time / 60);
 		r_time -= 60 * mins;
-		result = [NSString stringWithFormat:@"%@ %d %@", result, mins, (mins > 1) ?
-									DESC(@"contracts-minute-word-plural") :
-									DESC(@"contracts-minute-word")];
+		result = [NSString stringWithFormat:@"%@ %d %@", result, mins, DESC_PLURAL(@"contracts-minute-word", mins)];
 		parts++;
 	}
 	if (parts < 2 && r_time > 0)
 	{
 		int secs = floor(r_time);
-		result = [NSString stringWithFormat:@"%@ %d %@", result, secs, (secs > 1) ?
-									DESC(@"contracts-second-word-plural") :
-									DESC(@"contracts-second-word")];
+		result = [NSString stringWithFormat:@"%@ %d %@", result, secs, DESC_PLURAL(@"contracts-second-word", secs)];
 	}
 	return [result stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
@@ -6922,7 +6994,7 @@ double estimatedTimeForJourney(double distance, int hops)
 						fee = cunningFee(fee);
 
 						// premium = local price
-						float premium = local_cargo_value;
+						float premium = round(local_cargo_value);
 						
 						// 1hr per LY*LY, + 30 mins per hop
 						double contract_arrival_time = contract_departure_time + estimatedTimeForJourney(route_length, route_hops); 
@@ -6932,7 +7004,7 @@ double estimatedTimeForJourney(double distance, int hops)
 							[self describeCommodity:co_type amount:co_amount], destination_name];
 							
 						long_description = [NSString stringWithFormat:
-							DESC(@"contracts-@-the-route-is-f-light-years-long-a-minimum-of-d-jumps"), long_description,
+							DESC_PLURAL(@"contracts-@-the-route-is-f-light-years-long-a-minimum-of-d-jumps", route_hops), long_description,
 							route_length, route_hops];
 							
 						long_description = [NSString stringWithFormat:
@@ -7112,7 +7184,24 @@ double estimatedTimeForJourney(double distance, int hops)
 							// All included equip has a 10% discount.
 							eqPrice *= (tech_price_boost + eqTechLevel - techlevel) * 90 / 100;
 						}
-						else  eqPrice = 0;	// Bar this upgrade.
+						else 
+							eqPrice = 0;	// Bar this upgrade.
+					}
+					
+					if ([item incompatibleEquipment] != nil && extras != nil)
+					{
+						NSEnumerator				*keyEnum = nil;
+						id							key = nil;
+
+						for (keyEnum = [[item incompatibleEquipment] objectEnumerator]; (key = [keyEnum nextObject]); )
+						{
+							if ([extras containsObject:key])
+							{
+								[options removeObject:equipmentKey];
+								eqPrice = 0;
+								break;
+							}
+						}
 					}
 					
 					if (eqPrice > 0)
@@ -7154,7 +7243,7 @@ double estimatedTimeForJourney(double distance, int hops)
 						}
 						else
 						{
-							if ([equipmentKey isEqualToString:@"EQ_PASSENGER_BIRTH"])
+							if ([equipmentKey isEqualToString:@"EQ_PASSENGER_BERTH"])
 							{
 								if ((max_cargo >= 5) && (randf() < chance))
 								{
@@ -7197,7 +7286,7 @@ double estimatedTimeForJourney(double distance, int hops)
 			if (passenger_berths)
 			{
 				NSString* npb = (passenger_berths > 1)? [NSString stringWithFormat:@"%d ", passenger_berths] : (id)@"";
-				NSString* ppb = (passenger_berths > 1)? DESC(@"passenger-berth-plural") : DESC(@"passenger-berth-single");
+				NSString* ppb = DESC_PLURAL(@"passenger-berth", passenger_berths);
 				[description appendFormat:@"Extra %@%@ (%@)", npb, ppb, passengerBerthLongDesc];
 				[short_description appendFormat:@"Extra %@%@.", npb, ppb];
 			}
@@ -7273,8 +7362,8 @@ double estimatedTimeForJourney(double distance, int hops)
 
 static OOComparisonResult compareName(id dict1, id dict2, void * context)
 {
-	NSDictionary	*ship1 = [dict1 dictionaryForKey:SHIPYARD_KEY_SHIP];
-	NSDictionary	*ship2 = [dict2 dictionaryForKey:SHIPYARD_KEY_SHIP];
+	NSDictionary	*ship1 = [(NSDictionary *)dict1 dictionaryForKey:SHIPYARD_KEY_SHIP];
+	NSDictionary	*ship2 = [(NSDictionary *)dict2 dictionaryForKey:SHIPYARD_KEY_SHIP];
 	NSString		*name1 = [ship1 stringForKey:KEY_NAME];
 	NSString		*name2 = [ship2 stringForKey:KEY_NAME];
 	
@@ -7287,8 +7376,8 @@ static OOComparisonResult compareName(id dict1, id dict2, void * context)
 
 static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 {
-	NSNumber		*price1 = [dict1 objectForKey:SHIPYARD_KEY_PRICE];
-	NSNumber		*price2 = [dict2 objectForKey:SHIPYARD_KEY_PRICE];
+	NSNumber		*price1 = [(NSDictionary *)dict1 objectForKey:SHIPYARD_KEY_PRICE];
+	NSNumber		*price2 = [(NSDictionary *)dict2 objectForKey:SHIPYARD_KEY_PRICE];
 	
 	return [price1 compare:price2];
 }
@@ -7311,6 +7400,15 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 	NSDictionary		*shipyard_info = [[OOShipRegistry sharedRegistry] shipyardInfoForKey:ship_desc];
 	NSDictionary		*basic_info = [shipyard_info dictionaryForKey:KEY_STANDARD_EQUIPMENT];
 	OOCreditsQuantity	base_price = [shipyard_info unsignedLongLongForKey:SHIPYARD_KEY_PRICE];
+	// This checks a rare, but possible case. If the ship for which we are trying to calculate a trade in value
+	// does not have a shipyard dictionary entry, report it and set its base price to 0 -- Nikos 20090613.
+	if (shipyard_info == nil)
+	{
+		OOLogERR(@"universe.tradeInValueForCommanderDictionary.valueCalculationError",
+			@"Shipyard dictionary entry for ship %@ required for trade in value calculation, but does not exist. Setting ship value to 0.", ship_desc);
+			
+		base_price = 0ULL;
+	}
 	unsigned			base_missiles = [basic_info unsignedIntForKey:KEY_EQUIPMENT_MISSILES];
 	OOCreditsQuantity	base_missiles_value = base_missiles * [UNIVERSE getPriceForWeaponSystemWithKey:@"EQ_MISSILE"] / 10;
 	NSString			*base_fwd_weapon_key = [basic_info stringForKey:KEY_EQUIPMENT_FORWARD_WEAPON];
@@ -7361,9 +7459,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 		}
 	}
 	
-	int extra_equipment_value = ship_max_passengers * [UNIVERSE getPriceForWeaponSystemWithKey:@"EQ_PASSENGER_BERTH"] / 10;
+	OOCreditsQuantity extra_equipment_value = ship_max_passengers * [UNIVERSE getPriceForWeaponSystemWithKey:@"EQ_PASSENGER_BERTH"] / 10ULL;
 	for (i = 0; i < [ship_extra_equipment count]; i++)
-		extra_equipment_value += [UNIVERSE getPriceForWeaponSystemWithKey:[ship_extra_equipment stringAtIndex:i]] / 10;
+		extra_equipment_value += [UNIVERSE getPriceForWeaponSystemWithKey:[ship_extra_equipment stringAtIndex:i]] / 10ULL;
 	
 	// final reckoning
 	OOCreditsQuantity result = base_price;
@@ -7626,7 +7724,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 }
 
 
-- (void) allShipAIsReactToMessage:(NSString*) message
+- (void) allShipsDoScriptEvent:(NSString*) event andReactToAIMessage:(NSString*) message
 {
 	int i;
 	int ent_count = n_entities;
@@ -7639,6 +7737,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 	for (i = 0; i < ship_count; i++)
 	{
 		ShipEntity* se = my_ships[i];
+		[se doScriptEvent:event];
 		[[se getAI] reactToMessage:message];
 		[se release]; //	released
 	}
@@ -7685,20 +7784,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 	displayCursor = !!value;
 	
 #ifdef GNUSTEP
-	if ([gameView inFullScreenMode])
-	{
-		if (displayCursor == YES)
-		{
-			// *** Is the query actually necessary or meaningful? -- Jens
-			if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
-				SDL_ShowCursor(SDL_ENABLE);
-		}
-		else
-		{
-			if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
-				SDL_ShowCursor(SDL_DISABLE);
-		}
-	}
+
+	[gameView autoShowMouse];
+	
 #endif
 }
 
@@ -7857,6 +7945,149 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 	return [speechSynthesizer isSpeaking];
 }
 
+#elif defined(HAVE_LIBESPEAK)
+
+- (void) startSpeakingString:(NSString *) text
+{
+#if 0
+	// First, do some translation of phoneme representation from Apple to espeak.
+	// We recognise phonemes listed at
+	// http://developer.apple.com/documentation/userexperience/conceptual/speechsynthesisprogrammingguide/Phonemes/chapter_952_section_1.html
+	// and controls "[[inpt PHON]]" and "[[inpt TEXT]]".
+	NSMutableArray *frags = [NSMutableArray arrayWithCapacity:20];
+	[frags setArray:[text componentsSeparatedByString:@"[[inpt PHON]]"]];
+	int frag;
+	for (frag = 1; frag < [frags count]; ++frag)
+	{
+		NSArray *parts = [[frags objectAtIndex:frag] componentsSeparatedByString:@"[[inpt TEXT]]"];
+		const char *oldp = [[parts stringAtIndex:0] cString] - 1;
+		char *newp = malloc (strlen (oldp) * 2);
+		char *ptr = newp;
+		while (*++oldp)
+		{
+			switch (*oldp)
+			{
+				case '%': case '@': *ptr++ = ' '; break;
+				case 'A':
+					switch (*++oldp)
+					{
+						case 'A': *ptr++ = '\''; *ptr++ = 'A'; *ptr++ = ':'; break;	// AA → 'A:
+						case 'E': *ptr++ = '\''; *ptr++ = 'a'; break;				// AE → 'a
+						case 'O': *ptr++ = '\''; *ptr++ = 'O'; *ptr++ = ':'; break;	// AO → 'O:
+						case 'W': *ptr++ = '\''; *ptr++ = 'a'; *ptr++ = 'U'; break;	// AW → 'aU
+						case 'X': *ptr++ = 'a'; *ptr++ = '2'; break;				// AX → a2
+						case 'Y': *ptr++ = '\''; *ptr++ = 'a'; *ptr++ = 'I'; break;	// AY → 'aI
+						default: --oldp; *ptr++ = 'A'; break;
+					}
+				case 'C': *ptr++ = 't'; *ptr++ = 'S'; break;						// C → tS
+				case 'E':
+					switch (*++oldp)
+					{
+						case 'H': *ptr++ = '\''; *ptr++ = 'E'; break;				// EH → 'E
+						case 'Y': *ptr++ = '\''; *ptr++ = 'e'; *ptr++ = 'I'; break;	// EY → 'eI
+						default: --oldp; *ptr++ = 'E'; break;
+					}
+				case 'I':
+					switch (*++oldp)
+					{
+						case 'H': *ptr++ = '\''; *ptr++ = 'I'; break;				// IH → 'I
+						case 'X': *ptr++ = 'I'; *ptr++ = '2'; break;				// IX → I2
+						case 'Y': *ptr++ = '\''; *ptr++ = 'i'; *ptr++ = ':'; break;	// IY → 'i:
+						default: --oldp; *ptr++ = 'I'; break;
+					}
+				case 'J': *ptr++ = 'd'; *ptr++ = 'Z'; break;						// J → dZ
+				case 'O':
+					switch (*++oldp)
+					{
+						case 'W': *ptr++ = '\''; *ptr++ = 'o'; *ptr++ = 'U'; break;	// OW → 'oU
+						case 'Y': *ptr++ = '\''; *ptr++ = 'O'; *ptr++ = 'I'; break;	// OY → 'OI
+						default: --oldp; *ptr++ = 'O'; break;
+					}
+				case 'U':
+					switch (*++oldp)
+					{
+						case 'H': *ptr++ = '\''; *ptr++ = 'U'; break;				// UH → 'U
+						case 'W': *ptr++ = '\''; *ptr++ = 'u'; *ptr++ = ':'; break;	// UW → 'u:
+						case 'X': *ptr++ = '\''; *ptr++ = 'V'; break;				// UX → 'V
+						default: --oldp; *ptr++ = 'U'; break;
+					}
+				case 'y': *ptr++ = 'j'; break;										// y → j
+				default: *ptr++ = *oldp; break;
+			}
+		}
+		*ptr = 0;
+		[frags replaceObjectAtIndex:frag withObject:[NSString stringWithFormat:@"[[%s]]%@", newp, ([frags count] == 2 ? [parts objectAtIndex:1] : (id)@"")]];
+		free (newp);
+	}
+	text = [frags componentsJoinedByString:@""];
+#endif
+	size_t length = [text length];
+	char *ctext = malloc (length + 2);
+	sprintf (ctext, "%s%c", [text cString], 0); // extra NUL; working around an apparent misrendering bug...
+	espeak_Synth(ctext, length + 2 /* inc. NULs */, 0, POS_CHARACTER, length, espeakCHARS_UTF8 | espeakPHONEMES | espeakENDPAUSE, NULL, NULL);
+	free (ctext);
+}
+
+- (void) stopSpeaking
+{
+	espeak_Cancel();
+}
+
+- (BOOL) isSpeaking
+{
+	return espeak_IsPlaying();
+}
+
+- (NSString *) voiceName:(unsigned int) index
+{
+	if (index >= espeak_voice_count)
+		return @"-";
+	return [NSString stringWithCString: espeak_voices[index]->name];
+}
+
+- (unsigned int) voiceNumber:(NSString *) name
+{
+	if (name == nil)
+		return UINT_MAX;
+
+	const char *const label = [name cString];
+	if (!label)
+		return UINT_MAX;
+
+	unsigned int index = -1;
+	while (espeak_voices[++index] && strcmp (espeak_voices[index]->name, label))
+			/**/;
+	return (index < espeak_voice_count) ? index : UINT_MAX;
+}
+
+- (unsigned int) nextVoice:(unsigned int) index
+{
+	if (++index >= espeak_voice_count)
+		index = 0;
+	return index;
+}
+
+- (unsigned int) prevVoice:(unsigned int) index
+{
+	if (--index >= espeak_voice_count)
+		index = espeak_voice_count - 1;
+	return index;
+}
+
+- (unsigned int) setVoice:(unsigned int) index withGenderM:(BOOL) isMale
+{
+	if (index == UINT_MAX)
+		index = [self voiceNumber:DESC(@"espeak-default-voice")];
+
+	if (index < espeak_voice_count)
+	{
+		espeak_VOICE voice = { espeak_voices[index]->name, NULL, NULL, isMale ? 1 : 2 };
+		espeak_SetVoiceByProperties (&voice);
+	}
+
+	return index;
+}
+
 #else
 
 - (void) startSpeakingString:(NSString *) text  {}
@@ -7878,7 +8109,9 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 {
 	// remove reference to entity in linked lists
 	if ([entity canCollide])	// filter only collidables disappearing
+	{
 		doLinkedListMaintenanceThisUpdate = YES;
+	}
 	
 	[entity removeFromLinkedLists];
 	
@@ -7897,14 +8130,14 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 	{
 		if (sortedEntities[index] != entity)
 		{
-			OOLog(kOOLogInconsistentState, @"DEBUG Universe removeEntity:%@ ENTITY IS NOT IN THE RIGHT PLACE IN THE ZERO_DISTANCE SORTED LIST -- FIXING...", entity);
+			OOLog(kOOLogInconsistentState, @"DEBUG: Universe removeEntity:%@ ENTITY IS NOT IN THE RIGHT PLACE IN THE ZERO_DISTANCE SORTED LIST -- FIXING...", entity);
 			unsigned i;
 			index = -1;
 			for (i = 0; (i < n_entities)&&(index == -1); i++)
 				if (sortedEntities[i] == entity)
 					index = i;
 			if (index == -1)
-				 OOLog(kOOLogInconsistentState, @"DEBUG Universe removeEntity:%@ ENTITY IS NOT IN THE ZERO_DISTANCE SORTED LIST -- CONTINUING...", entity);
+				 OOLog(kOOLogInconsistentState, @"DEBUG: Universe removeEntity:%@ ENTITY IS NOT IN THE ZERO_DISTANCE SORTED LIST -- CONTINUING...", entity);
 		}
 		if (index != -1)
 		{
@@ -7918,7 +8151,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 				index++;
 			}
 			if (n > 1)
-				 OOLog(kOOLogInconsistentState, @"DEBUG Universe removeEntity: REMOVED %d EXTRA COPIES OF %@ FROM THE ZERO_DISTANCE SORTED LIST", n - 1, entity);
+				 OOLog(kOOLogInconsistentState, @"DEBUG: Universe removeEntity: REMOVED %d EXTRA COPIES OF %@ FROM THE ZERO_DISTANCE SORTED LIST", n - 1, entity);
 			while (n--)
 			{
 				n_entities--;
@@ -7958,8 +8191,14 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 		}
 		
 		
-		if (entity->isWormhole)
+		if ([entity isWormhole])
+		{
 			[activeWormholes removeObject:entity];
+		}
+		else if ([entity isPlanet] && ![entity isSun])
+		{
+			[allPlanets removeObject:entity];
+		}
 		
 		[entities removeObject:entity];
 		return YES;
@@ -7972,14 +8211,28 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 - (void) preloadSounds
 {
 	NSEnumerator			*soundEnum = nil;
+	NSEnumerator			*arraySoundEnum = nil;
+	id						object=nil;
 	NSString				*soundName = nil;
 	
 	// Preload sounds to avoid loading stutter.
-	for (soundEnum = [customsounds objectEnumerator]; (soundName = [soundEnum nextObject]); )
+	for (soundEnum = [customsounds objectEnumerator]; (object = [soundEnum nextObject]); )
 	{
-		if (![soundName hasPrefix:@"["] && ![soundName hasSuffix:@"]"])
+		if([object isKindOfClass:[NSString class]])
 		{
-			[ResourceManager ooSoundNamed:soundName	inFolder:@"Sounds"];
+			soundName=object;
+			if (![soundName hasPrefix:@"["] && ![soundName hasSuffix:@"]"])
+			{
+				[ResourceManager ooSoundNamed:soundName	inFolder:@"Sounds"];
+			}
+		}
+		else if([object isKindOfClass:[NSArray class]] && [object count] > 0)
+		{
+			for (arraySoundEnum = [object objectEnumerator]; (soundName = [arraySoundEnum nextObject]); )
+			if (![soundName hasPrefix:@"["] && ![soundName hasSuffix:@"]"])
+			{
+				[ResourceManager ooSoundNamed:soundName	inFolder:@"Sounds"];
+			}
 		}
 	}
 }
@@ -8231,4 +8484,86 @@ NSString *DESC_(NSString *key)
 	NSString *result = [UNIVERSE descriptionForKey:key];
 	if (result == nil)  result = key;
 	return result;
+}
+
+
+// There's a hint of gettext about this...
+NSString *DESC_PLURAL(NSString *key, int count)
+{
+	NSArray *conditions = [[UNIVERSE descriptions] arrayForKey:@"plural-rules"];
+
+	if (conditions == nil)
+		return DESC_([NSString stringWithFormat:@"%@%%%d", key, count != 1]);
+
+	int unsigned i;
+	long int index;
+
+	for (index = i = 0; i < [conditions count]; ++index, ++i)
+	{
+		const char *cond = [[conditions stringAtIndex:i] cString];
+		if (!cond)
+			break;
+
+		long int input = count;
+		BOOL flag = NO; // we XOR test results with this
+
+		while (isspace (*cond))
+			++cond;
+
+		for (;;)
+		{
+			while (isspace (*cond))
+				++cond;
+
+			char command = *cond++;
+
+			switch (command)
+			{
+			case 0:
+				goto passed; // end of string
+
+			case '~':
+				flag = !flag;
+				continue;
+			}
+
+			long int param = strtol (cond, (char **)&cond, 10);
+
+			switch (command)
+			{
+			case '#':
+				index = param;
+				continue;
+
+			case '%':
+				if (param < 2)
+					break; // ouch - fail this!
+				input %= param;
+				continue;
+
+			case '=':
+				if (flag ^ (input == param))
+					continue;
+				break;
+			case '!':
+				if (flag ^ (input != param))
+					continue;
+				break;
+
+			case '<':
+				if (flag ^ (input < param))
+					continue;
+				break;
+			case '>':
+				if (flag ^ (input > param))
+					continue;
+				break;
+			}
+			// if we arrive here, we have an unknown test or a test has failed
+			break;
+		}
+	}
+
+passed:
+	return DESC_([NSString stringWithFormat:@"%@%%%d", key, index]);
 }

@@ -184,7 +184,13 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 }
 
 
-- (void)drawRect:(NSRect)rect
+- (void) updateScreen
+{
+	[self drawRect:NSMakeRect(0, 0, viewSize.width, viewSize.height)];
+}
+
+
+- (void) drawRect:(NSRect)rect
 {
 	if ((viewSize.width != [self frame].size.width)||(viewSize.height != [self frame].size.height)) // resized
 	{
@@ -250,11 +256,6 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 	
 	if (UNIVERSE)
 	{
-		Entity* the_sun = [UNIVERSE sun];
-		Vector sun_pos = (the_sun)? the_sun->position : kZeroVector;
-		sun_center_position[0] = sun_pos.x;
-		sun_center_position[1] = sun_pos.y;
-		sun_center_position[2] = sun_pos.z;
 		[UNIVERSE setLighting];
 	}
 	else
@@ -264,15 +265,9 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, sun_diffuse);
 		glLightfv(GL_LIGHT1, GL_POSITION, sun_center_position);
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, stars_ambient);
-		//
-		// light for demo ships display.. 
-		GLfloat	white[] = { 1.0, 1.0, 1.0, 1.0};	// white light
-		glLightfv(GL_LIGHT0, GL_AMBIENT, white);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 		
 		glEnable(GL_LIGHT1);		// lighting
-		glEnable(GL_LIGHT0);		// lighting
+
 	}
 	glEnable(GL_LIGHTING);		// lighting
 	

@@ -179,8 +179,8 @@ static GameController *sSharedController = nil;
 {
 	[gameView release];
 	gameView = [view retain];
-	[UNIVERSE setGameView:gameView];
 	[gameView setGameController:self];
+	[UNIVERSE setGameView:gameView];
 }
 
 
@@ -192,17 +192,9 @@ static GameController *sSharedController = nil;
 	pool = [[NSAutoreleasePool alloc] init];
 	
 	NS_DURING
-#if !OOLITE_HAVE_APPKIT
-		gameView = [MyOpenGLView alloc];
-		[gameView init];
-		[gameView setGameController:self];
-#endif
-		
-		// ensure the gameView is drawn to, so OpenGL is initialised and so textures can initialse.
-		[gameView drawRect:[gameView bounds]];
-		
+		// ensures the gameView is drawn to: OpenGL is initialised and so textures can initialse.
 		[self beginSplashScreen];
-		
+
 #if OO_OXP_VERIFIER_ENABLED
 		if ([OOOXPVerifier runVerificationIfRequested])
 		{
@@ -210,13 +202,15 @@ static GameController *sSharedController = nil;
 		}
 #endif
 		
-		[self logProgress:@"Getting display modes..."];
+		//[self logProgress:@"Getting display modes..."]; //cannot localise strings before loading OXPs
+		[self logProgress:@"..."]; //language neutral
 		[self getDisplayModes];
 		
 		// moved to before the Universe is created
 		if (expansionPathsToInclude)
 		{
-			[self logProgress:@"Loading selected expansion packs..."];
+			//[self logProgress:@"Loading selected expansion packs..."]; //cannot localise strings before loading OXPs
+			[self logProgress:@".........."]; //language neutral
 			for (i = 0; i < [expansionPathsToInclude count]; i++)
 			{
 				[ResourceManager addExternalPath: (NSString*)[expansionPathsToInclude objectAtIndex: i]];
@@ -224,10 +218,10 @@ static GameController *sSharedController = nil;
 		}
 		
 		// moved here to try to avoid initialising this before having an Open GL context
-		[self logProgress:@"Initialising universe..."];
+		[self logProgress:DESC(@"initialising-universe")];
 		[[Universe alloc] initWithGameView:gameView];
 		
-		[self logProgress:@"Loading player..."];
+		[self logProgress:DESC(@"loading-player")];
 		[self loadPlayerIfRequired];
 		
 		[self logProgress:@""];
@@ -264,7 +258,20 @@ static GameController *sSharedController = nil;
 
 - (void) beginSplashScreen
 {
-	// Nothing to do
+#if !OOLITE_HAVE_APPKIT
+
+	if(!gameView){
+		gameView = [MyOpenGLView alloc];
+		[gameView init];
+		[gameView setGameController:self];
+		[gameView initSplashScreen];
+	}
+	
+#else
+
+	[gameView updateScreen];
+	
+#endif
 }
 
 
@@ -342,7 +349,7 @@ static GameController *sSharedController = nil;
 
 
 #if OOLITE_MAC_OS_X && !OOLITE_SDL
-static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
+static NSComparisonResult CompareDisplayModes(id arg1, id arg2, void *context)
 {
    // TODO: If fullscreen mode is practical in GNUstep
 	NSDictionary *mode1 = (NSDictionary *)arg1;
@@ -354,11 +361,17 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 			[[mode1 objectForKey:kOODisplayHeight] intValue];
 	size2 = [[mode2 objectForKey:kOODisplayWidth] intValue] *
 			[[mode2 objectForKey:kOODisplayHeight] intValue];
-	if (size1 != size2)  return size1 - size2;
 
 	// Then on refresh rate
-	return (int)[[mode1 objectForKey:kOODisplayRefreshRate] intValue] -
-		   (int)[[mode2 objectForKey:kOODisplayRefreshRate] intValue];
+	if (size1 == size2)
+	{
+		size1 = (int)[[mode1 objectForKey:kOODisplayRefreshRate] intValue];
+		size2 = (int)[[mode2 objectForKey:kOODisplayRefreshRate] intValue];
+	}
+
+	return (size1 < size2) ? NSOrderedAscending
+		 : (size1 > size2) ? NSOrderedDescending
+		 : NSOrderedSame;
 }
 
 
@@ -389,10 +402,10 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 	for (modeIndex = 0; modeIndex < modeCount; modeIndex++)
 	{
 		mode = [modes objectAtIndex: modeIndex];
-		modeWidth = [mode unsignedIntForKey:(NSString *)kCGDisplayWidth];
-		modeHeight = [mode unsignedIntForKey:(NSString *)kCGDisplayHeight];
-		color = [mode unsignedIntForKey:(NSString *)kCGDisplayBitsPerPixel];
-		modeRefresh = [mode floatForKey:(NSString *)kCGDisplayRefreshRate];
+		modeWidth = [mode unsignedIntForKey:kOODisplayWidth];
+		modeHeight = [mode unsignedIntForKey:kOODisplayHeight];
+		color = [mode unsignedIntForKey:kOODisplayBitsPerPixel];
+		modeRefresh = [mode floatForKey:kOODisplayRefreshRate];
 		
 		if (color < DISPLAY_MIN_COLOURS ||
 			modeWidth < DISPLAY_MIN_WIDTH ||
@@ -426,20 +439,20 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 	for (modeIndex = 0; modeIndex + 1 < [displayModes count]; modeIndex++)
 	{
 		mode = [displayModes objectAtIndex:modeIndex];
-		modeWidth = [mode unsignedIntForKey:(NSString *)kCGDisplayWidth];
-		modeHeight = [mode unsignedIntForKey:(NSString *)kCGDisplayHeight];
-		modeRefresh = [mode floatForKey:(NSString *)kCGDisplayRefreshRate];
-		color = [mode unsignedIntForKey:(NSString *)kCGDisplayBitsPerPixel];
+		modeWidth = [mode unsignedIntForKey:kOODisplayWidth];
+		modeHeight = [mode unsignedIntForKey:kOODisplayHeight];
+		modeRefresh = [mode floatForKey:kOODisplayRefreshRate];
+		color = [mode unsignedIntForKey:kOODisplayBitsPerPixel];
 		stretched = [mode boolForKey:(NSString *)kCGDisplayModeIsStretched];
 		interlaced = [mode boolForKey:(NSString *)kCGDisplayModeIsInterlaced];
 		
 		for (mode2Index = modeIndex + 1; mode2Index < [displayModes count]; ++mode2Index)
 		{
 			mode2 = [displayModes objectAtIndex:mode2Index];
-			modeWidth2 = [mode2 unsignedIntForKey:(NSString *)kCGDisplayWidth];
-			modeHeight2 = [mode2 unsignedIntForKey:(NSString *)kCGDisplayHeight];
-			modeRefresh2 = [mode2 floatForKey:(NSString *)kCGDisplayRefreshRate];
-			color2 = [mode unsignedIntForKey:(NSString *)kCGDisplayBitsPerPixel];
+			modeWidth2 = [mode2 unsignedIntForKey:kOODisplayWidth];
+			modeHeight2 = [mode2 unsignedIntForKey:kOODisplayHeight];
+			modeRefresh2 = [mode2 floatForKey:kOODisplayRefreshRate];
+			color2 = [mode unsignedIntForKey:kOODisplayBitsPerPixel];
 			stretched2 = [mode2 boolForKey:(NSString *)kCGDisplayModeIsStretched];
 			interlaced2 = [mode2 boolForKey:(NSString *)kCGDisplayModeIsInterlaced];
 			
@@ -494,29 +507,6 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 		height = [[fullscreenDisplayMode objectForKey:kOODisplayHeight] intValue];
 		refresh = [[fullscreenDisplayMode objectForKey:kOODisplayRefreshRate] intValue];
 	}
-}
-
-
-- (NSDictionary *) findDisplayModeForWidth:(unsigned int) d_width Height:(unsigned int) d_height Refresh:(unsigned int) d_refresh
-{
-	int i, modeCount;
-	NSDictionary *mode;
-	unsigned int modeWidth, modeHeight, modeRefresh;
-	
-	modeCount = [displayModes count];
-	
-	for (i = 0; i < modeCount; i++)
-	{
-		mode = [displayModes objectAtIndex: i];
-		modeWidth = [[mode objectForKey:kOODisplayWidth] intValue];
-		modeHeight = [[mode objectForKey:kOODisplayHeight] intValue];
-		modeRefresh = [[mode objectForKey:kOODisplayRefreshRate] intValue];
-		if ((modeWidth == d_width)&&(modeHeight == d_height)&&(modeRefresh == d_refresh))
-		{
-			return mode;
-		}
-	}
-	return nil;
 }
 
 
@@ -780,18 +770,30 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 
 - (void) getDisplayModes
 {
-	// SDL code all lives in the gameview.
-	displayModes = [gameView getScreenSizeArray];
+	NSArray *modes = [gameView getScreenSizeArray];
+	NSDictionary		*mode = nil;
+	unsigned	int		modeIndex, modeCount;
+	unsigned	int		modeWidth, modeHeight;
+
+	displayModes = [[NSMutableArray alloc] init];
+	modeCount = [modes count];
+	for (modeIndex = 0; modeIndex < modeCount; modeIndex++)
+	{
+		mode = [modes objectAtIndex: modeIndex];
+		modeWidth = [[mode objectForKey: kOODisplayWidth] intValue];
+		modeHeight = [[mode objectForKey: kOODisplayHeight] intValue];
+		
+		if (modeWidth < DISPLAY_MIN_WIDTH ||
+			modeWidth > DISPLAY_MAX_WIDTH ||
+			modeHeight < DISPLAY_MIN_HEIGHT ||
+			modeHeight > DISPLAY_MAX_HEIGHT)
+			continue;
+		[displayModes addObject: mode];
+	}
+	
 	NSSize fsmSize = [gameView currentScreenSize];
 	width = fsmSize.width;
 	height = fsmSize.height;
-}
-
-
-- (NSDictionary *) findDisplayModeForWidth:(unsigned int) d_width Height:(unsigned int) d_height Refresh:(unsigned int) d_refresh
-{
-	int modenum=[gameView findDisplayModeForWidth: d_width Height: d_height Refresh: d_refresh];
-	return [displayModes objectAtIndex: modenum];
 }
 
 
@@ -815,10 +817,7 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 
 - (void) logProgress:(NSString *)message
 {
-	NSString *text = [UNIVERSE descriptionForKey:message];
-	if (text == nil)  text = message;
-	[splashProgressTextField setStringValue:text];
-	[splashProgressTextField display];
+	[splashProgressTextField setStringValue:message];	[splashProgressTextField display];
 }
 
 
@@ -900,9 +899,9 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 {}
 
 - (void) endSplashScreen
-{}
-
-
+{	
+	[gameView endSplashScreen];
+}
 - (void) exitApp
 {
 	[[NSUserDefaults standardUserDefaults] synchronize];
@@ -916,6 +915,27 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 	#error Unknown environment!
 #endif
 
+- (NSDictionary *) findDisplayModeForWidth:(unsigned int) d_width Height:(unsigned int) d_height Refresh:(unsigned int) d_refresh
+{
+	int i, modeCount;
+	NSDictionary *mode;
+	unsigned int modeWidth, modeHeight, modeRefresh;
+	
+	modeCount = [displayModes count];
+	
+	for (i = 0; i < modeCount; i++)
+	{
+		mode = [displayModes objectAtIndex: i];
+		modeWidth = [[mode objectForKey:kOODisplayWidth] intValue];
+		modeHeight = [[mode objectForKey:kOODisplayHeight] intValue];
+		modeRefresh = [[mode objectForKey:kOODisplayRefreshRate] intValue];
+		if ((modeWidth == d_width)&&(modeHeight == d_height)&&(modeRefresh == d_refresh))
+		{
+			return mode;
+		}
+	}
+	return nil;
+}
 
 - (void) exitFullScreenMode
 {
@@ -933,7 +953,7 @@ static OOInteger CompareDisplayModes(id arg1, id arg2, void *context)
 
 - (void)windowDidResize:(NSNotification *)aNotification
 {
-	[gameView drawRect:[gameView bounds]];
+	[gameView updateScreen];
 }
 
 

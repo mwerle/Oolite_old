@@ -3,7 +3,7 @@
 StationEntity.m
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -249,7 +249,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 #ifdef DOCKING_CLEARANCE_ENABLED
 	PlayerEntity *player = [PlayerEntity sharedPlayer];
 	BOOL isDockingStation = (self == [player getTargetDockStation]);
-	if (isDockingStation && player && player->status == STATUS_IN_FLIGHT &&
+	if (isDockingStation && player && [player status] == STATUS_IN_FLIGHT &&
 			[player getDockingClearanceStatus] >= DOCKING_CLEARANCE_STATUS_REQUESTED)
 	{
 		[self sendExpandedMessage:DESC(@"docking-clearance-abort-cancelled") toShip:player];
@@ -349,7 +349,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	PlayerEntity *player = [PlayerEntity sharedPlayer];
 	BOOL isDockingStation = self == [player getTargetDockStation];
 	if (isDockingStation && ![shipsOnApproach objectForKey:shipID] &&
-			player && player->status == STATUS_IN_FLIGHT &&
+			player && [player status] == STATUS_IN_FLIGHT &&
 			[player getDockingClearanceStatus] >= DOCKING_CLEARANCE_STATUS_REQUESTED)
 	{
 		return instructions(universalID, ship->position, 0, 100, @"TRY_AGAIN_LATER", nil, NO);
@@ -418,7 +418,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	if (![shipsOnApproach objectForKey:shipID])
 	{
 		// some error has occurred - log it, and send the try-again message
-		OOLog(@"station.issueDockingInstructions.failed", @"ERROR - couldn't addShipToShipsOnApproach:%@ in %@ for some reason -- shipsOnApproach:\n%@", ship, self, shipsOnApproach);
+		OOLogERR(@"station.issueDockingInstructions.failed", @"couldn't addShipToShipsOnApproach:%@ in %@, retrying later -- shipsOnApproach:\n%@", ship, self, shipsOnApproach);
 		//
 		return instructions(universalID, ship->position, 0, 100, @"TRY_AGAIN_LATER", nil, NO);
 	}
@@ -430,7 +430,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 
 	if ([coordinatesStack count] == 0)
 	{
-		OOLog(@"station.issueDockingInstructions.failed", @"DEBUG ERROR! -- coordinatesStack = %@", coordinatesStack);
+		OOLogERR(@"station.issueDockingInstructions.failed", @" -- coordinatesStack = %@", coordinatesStack);
 		
 		return instructions(universalID, ship->position, 0, 100, @"HOLD_POSITION", nil, NO);
 	}
@@ -710,48 +710,14 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 
 - (BOOL) setUpShipFromDictionary:(NSDictionary *) dict
 {
-	unsigned int i;
 	
 	isShip = YES;
 	isStation = YES;
 	alertLevel = STATION_ALERT_LEVEL_GREEN;
 	
-	// ** Set up a the docking port
-	// Look for subentity specifying position
-	/*	NOTE: all this is overriden by -setDockingPortModel:::, called from
-		-setUpSubEntities:, if any subentity key contains "dock" (not just
-		prefixed with "dock" as here). port_radius and port_dimensions should
-		be considered obsolete.
-		-- Ahruman 20090108
-	*/
-	
-	NSArray		*subs = [dict arrayForKey:@"subentities"];
-	NSArray		*dockSubEntity = nil;
-	
-	for (i = 0; i < [subs count]; i++)
-	{
-		NSArray* details = ScanTokensFromString([subs objectAtIndex:i]);
-		if (([details count] == 8) && ([[details objectAtIndex:0] hasPrefix:@"dock"]))  dockSubEntity = details;
-	}
-	
-	if (dockSubEntity != nil)
-	{
-		port_position.x = [(NSString *)[dockSubEntity objectAtIndex:1] floatValue];
-		port_position.y = [(NSString *)[dockSubEntity objectAtIndex:2] floatValue];
-		port_position.z = [(NSString *)[dockSubEntity objectAtIndex:3] floatValue];
-		port_orientation.w = [(NSString *)[dockSubEntity objectAtIndex:4] floatValue];
-		port_orientation.x = [(NSString *)[dockSubEntity objectAtIndex:5] floatValue];
-		port_orientation.y = [(NSString *)[dockSubEntity objectAtIndex:6] floatValue];
-		port_orientation.z = [(NSString *)[dockSubEntity objectAtIndex:7] floatValue];
-		quaternion_normalize(&port_orientation);
-	}
-	else
-	{
-		// No dock* subentity found, use defaults.
-		double port_radius = [dict nonNegativeDoubleForKey:@"port_radius" defaultValue:500.0];
-		port_position = make_vector(0, 0, port_radius);
-		port_orientation = kIdentityQuaternion;
-	}
+	double port_radius = [dict nonNegativeDoubleForKey:@"port_radius" defaultValue:500.0];
+	port_position = make_vector(0, 0, port_radius);
+	port_orientation = kIdentityQuaternion;
 	
 	// port_dimensions can be set for rock-hermits and other specials
 	port_dimensions = make_vector(69, 69, 250);
@@ -897,7 +863,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 		//
 	}
 	
-	if (ship->status == STATUS_LAUNCHING)
+	if ([ship status] == STATUS_LAUNCHING)
 		return YES;
 	
 	// if close enough (within 50%) correct and add damage
@@ -966,7 +932,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	{
 		ShipEntity*	ship = (ShipEntity*)my_entities[i];
 		double		d2 = distance2(position, ship->position);
-		if ((ship != self)&&(d2 < 25000000)&&(ship->status != STATUS_DOCKED))	// within 5km
+		if ((ship != self)&&(d2 < 25000000)&&([ship status] != STATUS_DOCKED))	// within 5km
 		{
 			Vector ppos = [self getPortPosition];
 			d2 = distance2(ppos, ship->position);
@@ -1020,7 +986,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	{
 		ShipEntity*	ship = (ShipEntity*)my_entities[i];
 		double		d2 = distance2(position, ship->position);
-		if ((ship != self)&&(d2 < 25000000)&&(ship->status != STATUS_DOCKED))	// within 5km
+		if ((ship != self)&&(d2 < 25000000)&&([ship status] != STATUS_DOCKED))	// within 5km
 		{
 			Vector ppos = [self getPortPosition];
 			float time_out = -15.00;	// 15 secs
@@ -1081,7 +1047,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 #ifdef DOCKING_CLEARANCE_ENABLED
 	PlayerEntity *player = [PlayerEntity sharedPlayer];
 	BOOL isDockingStation = (self == [player getTargetDockStation]);
-	if (isDockingStation && player->status == STATUS_IN_FLIGHT &&
+	if (isDockingStation && [player status] == STATUS_IN_FLIGHT &&
 			[player getDockingClearanceStatus] >= DOCKING_CLEARANCE_STATUS_GRANTED)
 	{
 		if (last_launch_time-20 < unitime && [player getDockingClearanceStatus] != DOCKING_CLEARANCE_STATUS_TIMING_OUT)
@@ -1097,7 +1063,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	}
 	// TODO: If player is waiting for docking clearance, send him an update
 	//       every X seconds telling him where he's at in the queue.
-	if (isDockingStation && player->status == STATUS_IN_FLIGHT && [player getDockingClearanceStatus] == DOCKING_CLEARANCE_STATUS_REQUESTED &&
+	if (isDockingStation && [player status] == STATUS_IN_FLIGHT && [player getDockingClearanceStatus] == DOCKING_CLEARANCE_STATUS_REQUESTED &&
 			[shipsOnApproach count] == 0 && [launchQueue count] == 0)
 	{
 		last_launch_time = unitime + DOCKING_CLEARANCE_WINDOW;
@@ -1344,7 +1310,8 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 			return;
 		}
 	}
-	if (!isFriend)
+	// Stop damage if main station & close to death!
+	if (!isFriend && (self != [UNIVERSE station] || amount < energy) )
 	{
 		// Handle damage like a ship.
 		[super takeEnergyDamage:amount from:ent becauseOf:other];
@@ -1433,7 +1400,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	OOTechLevelID	techlevel = [self equivalentTechLevel];
 	if (techlevel == NSNotFound)  techlevel = 6;
 	
-	for (i = 0; (i < 4)&&(police_launched <= max_police) ; i++)
+	for (i = 0; (i < 4)&&(police_launched < max_police) ; i++)
 	{
 		ShipEntity  *police_ship = nil;
 		if (![UNIVERSE entityForUniversalID:police_target])
@@ -1745,12 +1712,15 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 		[escort_ship setScanClass: CLASS_NEUTRAL];
 		[escort_ship setCargoFlag: CARGO_FLAG_FULL_PLENTIFUL];
 		
-		[escort_ship setOwner: self];
-		if ([self group] == nil)
+		if (![escort_ship escortGroup])	// ensure that we do not give to stations escorts assigned to other ships
 		{
-			[self setGroup:[self escortGroup]];	
+			[escort_ship setOwner: self];
+			if ([self group] == nil)
+			{
+				[self setGroup:[self escortGroup]];	
+			}
+			[escort_ship setGroup:[self escortGroup]];	// who's your Daddy
 		}
-		[escort_ship setGroup:[self escortGroup]];	// who's your Daddy
 		
 		[[escort_ship getAI] setStateMachine:@"escortAI.plist"];
 		[self addShipToLaunchQueue:escort_ship];
@@ -1826,7 +1796,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	
 	// launch docked ships if possible
 	PlayerEntity* player = [PlayerEntity sharedPlayer];
-	if ((player)&&(player->status == STATUS_DOCKED)&&([player dockedStation] == self))
+	if ((player)&&([player status] == STATUS_DOCKED)&&([player dockedStation] == self))
 	{
 		// undock the player!
 		[player leaveDock:self];
@@ -1927,7 +1897,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 
 	// Deny docking for fugitives at the main station
 	// TODO: Should this be another key in shipdata.plist and/or should this
-	//       apply to all stations?
+	//  apply to all stations?
 	if (result == nil && self == [UNIVERSE station] && [other bounty] > 50)	// do not grant docking clearance to fugitives
 	{
 		[self sendExpandedMessage:DESC(@"H-station-refuses-to-grant-docking-clearance") toShip:other];

@@ -2,12 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.03">
 	<data>
 		<int key="IBDocument.SystemTarget">1030</int>
-		<string key="IBDocument.SystemVersion">9G55</string>
+		<string key="IBDocument.SystemVersion">9J61</string>
 		<string key="IBDocument.InterfaceBuilderVersion">677</string>
-		<string key="IBDocument.AppKitVersion">949.43</string>
+		<string key="IBDocument.AppKitVersion">949.46</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="106"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -211,23 +212,13 @@
 								</object>
 								<object class="NSMenuItem" id="955036251">
 									<reference key="NSMenu" ref="266309693"/>
-									<string key="NSTitle">Hide HUD</string>
+									<string key="NSTitle">Hide HUD and Dust</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="142044732"/>
 									<reference key="NSMixedImage" ref="11105957"/>
-									<int key="NSTag">512</int>
-								</object>
-								<object class="NSMenuItem" id="330811453">
-									<reference key="NSMenu" ref="266309693"/>
-									<string key="NSTitle">Slow Mode</string>
-									<string key="NSKeyEquiv"/>
-									<int key="NSKeyEquivModMask">1048576</int>
-									<int key="NSMnemonicLoc">2147483647</int>
-									<reference key="NSOnImage" ref="142044732"/>
-									<reference key="NSMixedImage" ref="11105957"/>
-									<int key="NSTag">1024</int>
+									<int key="NSTag">1536</int>
 								</object>
 								<object class="NSMenuItem" id="1014565718">
 									<reference key="NSMenu" ref="266309693"/>
@@ -1035,6 +1026,7 @@
 													</object>
 													<string key="NSFrame">{{1, 1}, {465, 295}}</string>
 													<reference key="NSSuperview" ref="530439762"/>
+													<reference key="NSNextKeyView" ref="361232484"/>
 													<reference key="NSDocView" ref="361232484"/>
 													<reference key="NSBGColor" ref="446104622"/>
 													<object class="NSCursor" key="NSCursor">
@@ -1066,6 +1058,7 @@
 											</object>
 											<string key="NSFrameSize">{482, 297}</string>
 											<reference key="NSSuperview" ref="1006463408"/>
+											<reference key="NSNextKeyView" ref="827342109"/>
 											<int key="NSsFlags">18</int>
 											<reference key="NSVScroller" ref="950291896"/>
 											<reference key="NSHScroller" ref="70857678"/>
@@ -1679,14 +1672,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					</object>
 					<int key="connectionID">239</int>
 				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">toggleThisDebugFlagAction:</string>
-						<reference key="source" ref="36619977"/>
-						<reference key="destination" ref="330811453"/>
-					</object>
-					<int key="connectionID">240</int>
-				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1866,7 +1851,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 							<reference ref="409446849"/>
 							<reference ref="315860228"/>
 							<reference ref="955036251"/>
-							<reference ref="330811453"/>
 						</object>
 						<reference key="parent" ref="812636362"/>
 					</object>
@@ -2384,11 +2368,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						<reference key="object" ref="955036251"/>
 						<reference key="parent" ref="266309693"/>
 					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">238</int>
-						<reference key="object" ref="330811453"/>
-						<reference key="parent" ref="266309693"/>
-					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -2506,8 +2485,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string>235.ImportedFromIB2</string>
 					<string>237.IBPluginDependency</string>
 					<string>237.ImportedFromIB2</string>
-					<string>238.IBPluginDependency</string>
-					<string>238.ImportedFromIB2</string>
 					<string>24.IBPluginDependency</string>
 					<string>24.ImportedFromIB2</string>
 					<string>25.IBPluginDependency</string>
@@ -2596,7 +2573,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{312, 822}, {178, 243}}</string>
+					<string>{{867, 842}, {201, 223}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2698,8 +2675,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

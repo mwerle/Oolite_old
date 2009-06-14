@@ -1,4 +1,40 @@
 {
+	// Plural-form handling.
+	// * The format is an array of rules, each one a string, as set out below.
+	// * |index| is, by default, 0 for the first rule.
+	//   It is incremented by 1 for each following rule.
+	// * |index| is returned if a rule is matched.
+	// * |index|+1 (wrt the last rule) is returned if none are matched.
+	// * The input is always an integer, and should be -1 if a plural should
+	//   be used but the quantity is indeterminate.
+	// * Each rule is a string containing a list of commands and/or
+	//   conditions, whitespace-separated:
+	//		#n		command		index = n
+	//							affects following rules, is still incremented
+	//		~		command		remaining conditions' results are inverted
+	//							rest of this rule only; second time cancels
+	//		%n		command		input %= n
+	//							rest of this rule only; n >= 2
+	//		=n		condition	input == n
+	//		!n		condition	input != n
+	//		<n		condition	input < n
+	//		>n		condition	input > n
+	// * Parsing of the rule stops at the first false condition.
+	//   #n is therefore normally only useful in one of two places in any rule:
+	//   - the start, so that it always affects following rules;
+	//   - the end, so that it affects only this rule.
+	// * All conditions must be true for the rule to be true.
+	// * If you require either of two conditions, you need two rules.
+	//   The second rule will require use of #n.
+	// * Suffix your tokens with "%n", e.g. "item%0"="item", "item%1"="items".
+	// * If the plural rule list is undefined, you will get English rules.
+	// * If the plural rule list is empty, you will get index 0.
+	"plural-rules" =
+	(
+		"=1"	// index 0: singular
+	//	"!1"	// index 1: plural
+	);
+
 	// *** Basic lists ***
 	condition =
 	(
@@ -367,6 +403,8 @@
 	digrams-apostrophe = "’";
 	// this string represents the 4 character phonemes associated with each digram.
 	phonograms = "AEb=UW==sEH=IHt=IHl=EHt=st==AAn=lOW=nUW=T===nOW=AEl=lEY=hEY=JEH=zEY=sEH=bIY=sOW=UHs=EHz=AEr=mAE=IHn=dIY=rEY=EH==UXr=AEt=EHn=bEH=rAX=lAX=vEH=tIY=EHd=AAr=kw==AXn=tEY=IHz=rIY=AAn=";
+	// this string similarly, but for espeak. (Note also Apple 'AA' is changed, else 'or' would sound like 'ar'.)
+	espkphonos = "ab=='u:=sE==It==Il==Et==st==0n==l'oUn'u:T===n'oUal==l'eIh'eIdZ'Ez'eIs'E=b'i:s'oU'Us='Ez='ar=m'a='In=d'i:r'eI'E=='Vr='at='En=b'E=ra2=la2=v'E=t'i:'Ed=0r==kw==a2n=t'eI'Iz=r'i:0n==";
 	"interstellar-space"			= "Interstellar space";
 	"not-applicable"				= "N/A";
 	
@@ -375,8 +413,7 @@
 	
 	// *** Misc. messages ***
 	// Messages used when awarding bounties
-	"bounty-@"						= "Bounty: %@";
-	"total-@-credits"				= "Total: %@";
+	"bounty-@-total-@"						= "Bounty: %@\nTotal: %@";
 	"right-on-commander"			= "Right On, Commander!";
 	
 	// Assorted messages used by the onboard computer
@@ -384,6 +421,7 @@
 	"autopilot-off"					= ( "Autopilot disengaged." );
 	"autopilot-out-of-range"		= ( "Could not contact station for docking instructions." );
 	"autopilot-cannot-dock-with-target" = ( "Target is not capable of autopilot-docking." );
+	"autopilot-target-docking-instructions-denied" = ( "Target has denied broadcast of docking instructions." );
 	"autopilot-denied"				= ( "Station refuses to issue docking instructions." );
 	"witch-to-@-in-f-seconds"		= ( "Witchspace to %@ in %.0f s." );
 	"witch-blocked-by-@"			= ( "Witchspace jump aborted (too close to %@.)" );
@@ -393,8 +431,7 @@
 	"witch-too-far"					= ( "Engines incapable of witchspace jump to that target." );
 	"witch-engine-malfunction"		= ( "Witchspace engine malfunction!" );
 	"witch-galactic-in-f-seconds"	= ( "Intergalactic jump in %.0f s." );
-	"game-paused"					= ( "Game paused." );
-	"game-paused-options"			= ( "Press F2 for options, P to resume." );
+	"game-paused"					= ( "Game paused.\nPress F2 for options, P to resume." );
 	"game-saved"					= ( "Game saved." );
 	"mouse-on"						= ( "Mouse control on." );
 	"mouse-off"						= ( "Mouse control off." );
@@ -584,11 +621,16 @@
 		"You have been fined %@ credits, and are forced to clean up after the [6]oids.",
 		"You have been fined %@ credits, and sent for “attitude adjustment”."
 	);
+	
 	// system description after a nova
 	"nova-system-description" =
 	(
 		"The %I sun has gone nova, destroying the planet and all life here. Beware of navigational and radiological hazards in this system."
 	);
+	"nova-system-government"			= "Uninhabited system - no government";
+	"nova-system-economy"				= "Uninhabited system - no economy";
+	"nova-system-inhabitants"			= "Uninhabited system";
+	
 	// trumbles
 	"trumbles-eat-@"				= ( "Trumbles have eaten a cargopod of %@." );
 	// internal damage
@@ -757,7 +799,7 @@
 	"unknown-ship-@"				= "Unknown Ship '%@'.";
 
 	// Intro1 screen
-	"game-copyright"				= "by Giles Williams and contributors © 2003–2008";
+	"game-copyright"				= "by Giles Williams and contributors © 2003–2009";
 	"theme-music-credit"			= "Oolite Theme Music by NoSleep © 2004";
 	"load-previous-commander"		= "Load Previous Commander (Y/N)?";
 	"load-previous-commander-yes"	= "y"; // Defines the key that corresponds to the yes answer to load-previous-commander.
@@ -766,11 +808,11 @@
 	// Loading screen (currently Mac only)
 	"Getting display modes..."		= "Getting display modes…";	// Can't be localized, OXPs aren't loaded yet
 	"Loading selected expansion packs..." = "Loading selected expansion packs…";	// Can't be localized, OXPs aren't loaded yet
-	"Loading ships..."				= "Loading ships…";
-	"Initialising universe..."		= "Initialising universe…";
-	"Loading player..."				= "Loading player…";
-	"Populating space..."			= "Populating space…";
-	"Running scripts..."			= "Running scripts…";
+	"loading-ships"					= "Loading ship data…";
+	"initialising-universe"			= "Initialising universe…";
+	"loading-player"				= "Loading player…";
+	"populating-space"				= "Populating space…";
+	"running-scripts"				= "Running scripts…";
 	
 	// Status screen
 	"status-commander-@"			= "Commander %@";
@@ -787,8 +829,8 @@
 	"equipment-aft-weapon-@"		= "Aft %@";
 	"equipment-stb-weapon-@"		= "Starboard %@";
 	"equipment-port-weapon-@"		= "Port %@";
-	"equipment-single-pass-berth-@"	= "1 Passenger Berth";
-	"equipment-multiple-pass-berth-@" = "%d Passenger Berths";
+	"equipment-pass-berth-@%0"		= "1 Passenger Berth";
+	"equipment-pass-berth-@%1"		= "%d Passenger Berths";
 	"equipment-@-not-available"		= "%@ (N/A)";
 	"manifest-cargo-quantity-format" = "%d %@ × %@";	// $count $units × $commodityName
 	
@@ -846,6 +888,9 @@
 	"gameoptions-show-growl-messages-@"		= " Show Growl Messages: %@ ";
 	"gameoptions-spoken-messages-yes"		= " Spoken Messages: On ";
 	"gameoptions-spoken-messages-no"		= " Spoken Messages: Off ";
+	"gameoptions-voice-@"					= " Voice: %@ ";
+	"gameoptions-voice-M"					= " Gender: Male ";
+	"gameoptions-voice-F"					= " Gender: Female ";
 	"gameoptions-music-mode-@"				= " Music: %@ ";
 	"gameoptions-fullscreen-mode-d-by-d-at-g-hz" = " Full Screen Mode: %d × %d at %.3g Hz ";
 	"gameoptions-fullscreen-mode-d-by-d"	= " Full Screen Mode: %d × %d ";
@@ -854,8 +899,8 @@
 	"gameoptions-joystick-configuration"	= " Joystick Configuration ";
 	"gameoptions-wireframe-graphics-yes"	= " Wireframe Graphics: On ";
 	"gameoptions-wireframe-graphics-no"		= " Wireframe Graphics: Off ";
-	"gameoptions-procedurally-textured-planets-yes"	= " Procedurally Textured Planets: On ";
-	"gameoptions-procedurally-textured-planets-no"	= " Procedurally Textured Planets: Off ";
+	"gameoptions-procedurally-textured-planets-yes"	= " Detailed Planets: On ";
+	"gameoptions-procedurally-textured-planets-no"	= " Detailed Planets: Off ";
 	"gameoptions-reduced-detail-yes"		= " Reduced Detail: On ";
 	"gameoptions-reduced-detail-no"			= " Reduced Detail: Off ";
 	"gameoptions-shaderfx-not-available"	= " Shader Effects: Not available ";
@@ -906,22 +951,24 @@
 	"contracts-cargo-cargotype"		= "Cargo:";
 	"contracts-cargo-premium"		= "Premium:";
 	"contracts-cargo-pays"			= "Pays:";
-	"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths" = "Cash: %@. Load %d of %d t. Passengers %d of %d berths.";
+	"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths%0" = "Cash: %@. Load %d of %d t. Passengers %d of %d berth.";
+	"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths%1" = "Cash: %@. Load %d of %d t. Passengers %d of %d berths.";
 	"contracts-@-a-@-wishes-to-go-to-@" = "%@, a %@, wishes to go to %@.";
-	"contracts-@-the-route-is-f-light-years-long-a-minimum-of-d-jumps" = "%@ The route is %.1f light years long, a minimum of %d jumps.";
+	"contracts-@-the-route-is-f-light-years-long-a-minimum-of-d-jumps%0" = "%@ The route is %.1f light years long, a minimum of %d jump.";
+	"contracts-@-the-route-is-f-light-years-long-a-minimum-of-d-jumps%1" = "%@ The route is %.1f light years long, a minimum of %d jumps.";
 	"contracts-@-you-will-need-to-depart-within-@-in-order-to-arrive-within-@-time" = "%@ You will need to depart within %@, in order to arrive within %@ time.";
 	"contracts-@-will-pay-@-@-in-advance-and-@-on-arrival" = "%@ Will pay %@: %@ in advance, and %@ on arrival.";
 	"contracts-deliver-a-cargo-of-@-to-@" = "Deliver a cargo of %@ to %@.";
 	"contracts-@-the-contract-will-cost-you-@-and-pay-a-total-of-@" = "%@ The contract will cost you %@, and pay a total of %@.";
 	"contracts-no-time"				= "no time";
-	"contracts-day-word"			= "day";
-	"contracts-day-word-plural"		= "days";
-	"contracts-hour-word"			= "hr";
-	"contracts-hour-word-plural"	= "hrs";
-	"contracts-minute-word"			= "min";
-	"contracts-minute-word-plural"	= "mins";
-	"contracts-second-word"			= "sec";
-	"contracts-second-word-plural"	= "secs";
+	"contracts-day-word%0"			= "day";
+	"contracts-day-word%1"			= "days";
+	"contracts-hour-word%0"			= "hr";
+	"contracts-hour-word%1"			= "hrs";
+	"contracts-minute-word%0"		= "min";
+	"contracts-minute-word%1"		= "mins";
+	"contracts-second-word%0"		= "sec";
+	"contracts-second-word%1"		= "secs";
 	
 	"cargo-ton"						= "ton";
 	"cargo-gram"					= "gram";
@@ -943,7 +990,7 @@
 	// Shipyard screen
 	"@-shipyard-title"				= "%@ Ships For Sale";
 	"shipyard-shiptype"				= "Ship Type:";
-	"shipyard-price"				= "Price:";
+	"shipyard-price"				= "Price:    ";
 	"shipyard-cargo"				= "Cargo:";
 	"shipyard-cargo-d-tc"			= "Cargo: %d TC";
 	"shipyard-speed"				= "Speed:";
@@ -951,8 +998,8 @@
 	"shipyard-no-ships-available-for-purchase" = "No ships available for purchase.";
 	"shipyard-your-@-trade-in-value-@" = "Your %@’s trade-in value: %@.";
 	"shipyard-total-available-%@-%@-plus-%@-trade" = "Total available: %@. (%@ Cash + %@ Trade.)";
-	"passenger-berth-plural"		= "Passenger Berths";
-	"passenger-berth-single"		= "Passenger Berth";
+	"passenger-berth%0"				= "Passenger Berth";
+	"passenger-berth%1"				= "Passenger Berths";
 	"extra-@-@"						= " Extra %@ (%@)";
 	"plus-@"						= " Plus %@.";
 	"shipyard-standard-customer-model" = " Standard customer model.";
@@ -995,6 +1042,7 @@
 	"mission-information"			= "Mission Information";
 	
 	// Game Over screen
+	"gameoverscreen-score-@-f"		= "Score: %@, %.1f ₢";
 	"gameoverscreen-game-over"		= "Game Over";
 	"gameoverscreen-press-space"	= "Press Space";
 	
@@ -1005,8 +1053,8 @@
 	"strict-play-enabled"			= "Strict Play Enabled";
 	"unrestricted-play-enabled"		= "Unrestricted Play Enabled";
 	"human-word"					= "human"; // Important – only lower case characters here!
-	"human-colonial-description"	= "Human Colonial";
-	"human-colonial-description-plural" = "Human Colonials";
+	"human-colonial-description%0"	= "Human Colonial";
+	"human-colonial-description%1"	= "Human Colonials";
 	"clock-format"					= "%07d:%02d:%02d:%02d";
 	"clock-format-adjusting"		= "%07d:%02d:%02d:%02d (adjusting)";
 	"danger-fuel-leak"				= "Danger! Fuel leak!";
@@ -1014,6 +1062,12 @@
 	"legal-desc-system-vessel"		= "System Vessel";
 	"legal-desc-military-vessel"	= "Military Vessel";
 	"planetname-derivative-suffix"	= "ian";	// This is the suffix used with %I (producing 'Laveian' for example)
+	"wormhole-desc"				= "Wormhole";
+	"wormhole-to-@"				= "Wormhole to %@";
+	"wormhole-destination-computed-@"	= "Wormhole Scanner - Destination computed: %@";
+	"wormhole-arrival-time-computed-@"	= "Wormhole Scanner - Arrival time computed: %@";
+	"wormhole-ETA-@"			= "ETA: %@";
+	"wormhole-collapsing-in-mm:ss"		= "Collapsing in %02d:%02d";
 	
 	"oxp-is-incompatible"			= "\t“%@” is incompatible with version %@ of Oolite.";
 	
@@ -1087,14 +1141,15 @@
 	
 	// background scenes for GUI screens
 	"gui-scene-show-planet"			= ( "target-planet   120 80 640" );
+	"gui-scene-show-local-planet"	= ( "local-planet   120 80 640" );
 	
 	// character descriptions
 	// basic short desc - “A $species from $homeworld”
 	"character-a-@-from-@"			= "a %@ from %@";
 	
 	// rewards and bounties from escapepods
-	"rescue-reward-for-@@-@-credits" = "For rescuing %@, %@, their insurance pays %@ credits.";
-	"capture-reward-for-@@-@-credits" = "For capturing %@, %@, you’re paid a bounty of %@ credits.";
+	"rescue-reward-for-@@-@-credits" = "For rescuing %@, %@, their insurance pays %@  ₢.\n";
+	"capture-reward-for-@@-@-credits" = "For capturing %@, %@, you’re paid a bounty of %@  ₢.\n";
 	
 	// Commodity names
 	"commodity-name food"			= "Food";
@@ -1121,4 +1176,12 @@
 	// Nova mission strings
 	"oolite-nova-coward"			= "Coward! You chose not to help the refugees!";
 	"oolite-nova-refugees"			= "A hold full of %I refugees.";
+	"oolite-nova-distress-call"		= (
+							"Warning, the %I sun is going nova.",
+							"Mayday! Orbital Station in danger.",
+							"To all receiving vessels: This is a system-wide Sierra November alert. Station in need of assistance."
+						  );
+
+	// Locale-specific defaults
+	"espeak-default-voice"	= "default";
 }

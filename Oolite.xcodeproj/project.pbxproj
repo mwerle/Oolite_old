@@ -488,6 +488,8 @@
 		1A7D833B0C40147800E4A5F5 /* OOAsyncQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A7D83390C40147700E4A5F5 /* OOAsyncQueue.m */; };
 		1A81F7090A7BAC4D006580AD /* OOCAMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A81F7070A7BAC4D006580AD /* OOCAMusic.m */; };
 		1A81F70A0A7BAC4D006580AD /* OOCAMusic.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A81F7080A7BAC4D006580AD /* OOCAMusic.h */; };
+		1A82FAA10FE58B4400A78C8B /* OODeepCopy.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A82FA9F0FE58B4400A78C8B /* OODeepCopy.h */; };
+		1A82FAA20FE58B4400A78C8B /* OODeepCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A82FAA00FE58B4400A78C8B /* OODeepCopy.m */; };
 		1A8A37560B960337007D20B8 /* NSMutableDictionaryOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A37540B960337007D20B8 /* NSMutableDictionaryOOExtensions.m */; };
 		1A8A37570B960337007D20B8 /* NSMutableDictionaryOOExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A8A37550B960337007D20B8 /* NSMutableDictionaryOOExtensions.h */; };
 		1A8A394E0B96229C007D20B8 /* NSFileManagerOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A394C0B96229C007D20B8 /* NSFileManagerOOExtensions.m */; };
@@ -1552,6 +1554,8 @@
 		1A7D83390C40147700E4A5F5 /* OOAsyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOAsyncQueue.m; sourceTree = "<group>"; };
 		1A81F7070A7BAC4D006580AD /* OOCAMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOCAMusic.m; sourceTree = "<group>"; };
 		1A81F7080A7BAC4D006580AD /* OOCAMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOCAMusic.h; sourceTree = "<group>"; };
+		1A82FA9F0FE58B4400A78C8B /* OODeepCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODeepCopy.h; sourceTree = "<group>"; };
+		1A82FAA00FE58B4400A78C8B /* OODeepCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODeepCopy.m; sourceTree = "<group>"; };
 		1A846BA90D79F9570081280D /* oolite-version.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-version.xcconfig"; path = "src/Cocoa/oolite-version.xcconfig"; sourceTree = "<group>"; };
 		1A8A37540B960337007D20B8 /* NSMutableDictionaryOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMutableDictionaryOOExtensions.m; sourceTree = "<group>"; };
 		1A8A37550B960337007D20B8 /* NSMutableDictionaryOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSMutableDictionaryOOExtensions.h; sourceTree = "<group>"; };
@@ -2554,6 +2558,8 @@
 				1ACBF0700D82DF9B00CC005F /* OOSoundSourcePool.m */,
 				1A047B7C0DCB3D7500EE1CD0 /* OOProbabilitySet.h */,
 				1A047B7D0DCB3D7500EE1CD0 /* OOProbabilitySet.m */,
+				1A82FA9F0FE58B4400A78C8B /* OODeepCopy.h */,
+				1A82FAA00FE58B4400A78C8B /* OODeepCopy.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -3060,6 +3066,7 @@
 				1A909E170F3CA92A003AE160 /* OOShipPreloader.h in Headers */,
 				1A909E1C0F3CA93C003AE160 /* OOPreloadModelLoadingController.h in Headers */,
 				1A4890970F3CD69F008117BD /* OOExcludeObjectEnumerator.h in Headers */,
+				1A82FAA10FE58B4400A78C8B /* OODeepCopy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3430,6 +3437,7 @@
 				1A909E160F3CA92A003AE160 /* OOShipPreloader.m in Sources */,
 				1A909E1B0F3CA93C003AE160 /* OOPreloadModelLoadingController.m in Sources */,
 				1A4890960F3CD69F008117BD /* OOExcludeObjectEnumerator.m in Sources */,
+				1A82FAA20FE58B4400A78C8B /* OODeepCopy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3508,6 +3516,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
 					ALLOW_PROCEDURAL_PLANETS,
 					DOCKING_CLEARANCE_ENABLED,
+					WORMHOLE_SCANNER,
 					OO_DEBUG,
 					DEBUG_GRAPHVIZ,
 					DEBUG,
@@ -3575,6 +3584,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = XP_UNIX;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
 					DOCKING_CLEARANCE_ENABLED,
+					WORMHOLE_SCANNER,
 					NDEBUG,
 					OO_EXCLUDE_DEBUG_SUPPORT,
 				);
@@ -3694,6 +3704,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = XP_UNIX;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
 					DOCKING_CLEARANCE_ENABLED,
+					WORMHOLE_SCANNER,
 					"OO_SMART_CRASH_REPORT_INSTALL=1",
 				);
 				GCC_REUSE_STRINGS = YES;
@@ -3812,6 +3823,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = XP_UNIX;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
 					DOCKING_CLEARANCE_ENABLED,
+					WORMHOLE_SCANNER,
 					OO_DEBUG,
 					DEBUG_GRAPHVIZ,
 					DEBUG,

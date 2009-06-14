@@ -27,6 +27,9 @@ MA 02110-1301, USA.
 */
 
 #import <Foundation/Foundation.h>
+#ifdef WORMHOLE_SCANNER
+#import "WormholeEntity.h"
+#endif
 #import "ShipEntity.h"
 #import "OOTypes.h"
 
@@ -36,9 +39,13 @@ MA 02110-1301, USA.
 
 #define SCRIPT_TIMER_INTERVAL			10.0
 
+#define GUI_ROW_INIT(GUI) /*int n_rows = [(GUI) rows]*/
+#define GUI_FIRST_ROW(GROUP) ((GUI_DEFAULT_ROWS - GUI_ROW_##GROUP##OPTIONS_END_OF_LIST) / 2)
+#define GUI_ROW(GROUP,ITEM) (GUI_FIRST_ROW(GROUP) + GUI_ROW_##GROUP##OPTIONS_##ITEM)
+
 enum
 {
-	GUI_ROW_OPTIONS_QUICKSAVE			= 6,
+	GUI_ROW_OPTIONS_QUICKSAVE,
 	GUI_ROW_OPTIONS_SAVE,
 	GUI_ROW_OPTIONS_LOAD,
 	GUI_ROW_OPTIONS_BEGIN_NEW,
@@ -46,9 +53,10 @@ enum
 	GUI_ROW_OPTIONS_GAMEOPTIONS,
 	GUI_ROW_OPTIONS_SPACER2,
 	GUI_ROW_OPTIONS_STRICT,
+#if OOLITE_SDL
 	GUI_ROW_OPTIONS_SPACER3,
 	GUI_ROW_OPTIONS_QUIT,
-	
+#endif	
 	GUI_ROW_OPTIONS_END_OF_LIST,
 	
 	GUI_ROW_EQUIPMENT_START				= 3,
@@ -59,15 +67,22 @@ enum
 	GUI_ROW_MARKET_START				= 2,
 	GUI_ROW_MARKET_CASH					= 20
 };
+#if GUI_FIRST_ROW() < 0
+# error Too many items in OPTIONS list!
+#endif
 
 enum
 {
-	GUI_ROW_GAMEOPTIONS_AUTOSAVE		= 5,
+	GUI_ROW_GAMEOPTIONS_AUTOSAVE,
 	GUI_ROW_GAMEOPTIONS_SPACER1,
 	GUI_ROW_GAMEOPTIONS_VOLUME,
 #if OOLITE_MAC_OS_X
 	GUI_ROW_GAMEOPTIONS_GROWL,
+#endif
+#if OOLITE_SPEECH_SYNTH
 	GUI_ROW_GAMEOPTIONS_SPEECH,
+	GUI_ROW_GAMEOPTIONS_SPEECH_LANGUAGE,
+	GUI_ROW_GAMEOPTIONS_SPEECH_GENDER,
 #endif
 	GUI_ROW_GAMEOPTIONS_MUSIC,
 	GUI_ROW_GAMEOPTIONS_SPACER2,
@@ -88,6 +103,9 @@ enum
 	
 	GUI_ROW_GAMEOPTIONS_END_OF_LIST
 };
+#if GUI_FIRST_ROW() < 0
+# error Too many items in GAMEOPTIONS list!
+#endif
 
 
 enum
@@ -344,6 +362,9 @@ typedef enum
 	
 	OOKeyCode				key_target_missile;
 	OOKeyCode				key_untarget_missile;
+#ifdef TARGET_INCOMING_MISSILES
+	OOKeyCode				key_target_incoming_missile;
+#endif
 	OOKeyCode				key_ident_system;
 	
 	OOKeyCode				key_scanner_zoom;
@@ -412,7 +433,6 @@ typedef enum
 	int						target_memory_index;
 	
 	// custom view points
-	NSMutableArray			*custom_views;
 	Quaternion				customViewQuaternion;
 	OOMatrix				customViewMatrix;
 	Vector					customViewOffset, customViewForwardVector, customViewUpVector, customViewRightVector;
@@ -459,7 +479,11 @@ typedef enum
 							keyboardRollPitchOverride: 1,
 							keyboardYawOverride: 1,
 waitingForStickCallback: 1;
-	
+#ifdef HAVE_LIBESPEAK
+	unsigned int			voice_no;
+	BOOL					voice_gender_m;
+#endif
+
 	// Note: joystick stuff does nothing under OS X.
 	// Keeping track of joysticks
 	int						numSticks;
@@ -472,8 +496,15 @@ waitingForStickCallback: 1;
 	OOGalacticHyperspaceBehaviour		galacticHyperspaceBehaviour;
 	NSPoint					galacticHyperspaceFixedCoords;
 	
+@private
+	NSArray					*_customViews;
+	OOUInteger				_customViewIndex;
+	
 #ifdef DOCKING_CLEARANCE_ENABLED
 	OODockingClearanceStatus dockingClearanceStatus;
+#endif
+#ifdef WORMHOLE_SCANNER
+	NSMutableArray *scannedWormholes;
 #endif
 }
 
@@ -551,7 +582,8 @@ waitingForStickCallback: 1;
 
 - (int) dialFuelScoopStatus;
 
-- (double) clockTime;	// Note that this is not an OOTimeAbsolute
+- (double) clockTime;		// Note that this is not an OOTimeAbsolute
+- (double) clockTimeAdjusted;	// Note that this is not an OOTimeAbsolute
 - (BOOL) clockAdjusting;
 
 - (NSString *) dial_clock;
@@ -620,8 +652,7 @@ waitingForStickCallback: 1;
 - (void) calculateCurrentCargo;
 - (void) setGuiToMarketScreen;
 
-- (void) setGuiToIntro1Screen;
-- (void) setGuiToIntro2Screen;
+- (void) setGuiToIntroFirstGo: (BOOL) justCobra;
 
 - (void) noteGuiChangeFrom:(OOGUIScreenID)fromScreen to:(OOGUIScreenID)toScreen;
 
@@ -629,8 +660,8 @@ waitingForStickCallback: 1;
 
 - (void) buySelectedItem;
 - (BOOL) marketFlooded:(int) index;
-- (BOOL) tryBuyingCommodity:(int) index;
-- (BOOL) trySellingCommodity:(int) index;
+- (BOOL) tryBuyingCommodity:(int) index all:(BOOL) all;
+- (BOOL) trySellingCommodity:(int) index all:(BOOL) all;
 
 - (BOOL) isSpeechOn;
 
@@ -639,6 +670,7 @@ waitingForStickCallback: 1;
 - (void) getFined;
 
 - (void) setDefaultViewOffsets;
+- (void) setDefaultCustomViews;
 - (Vector) weaponViewOffset;
 
 - (void) setUpTrumbles;

@@ -92,7 +92,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 		else if ([rescuee insuranceCredits])
 		{
 			// claim insurance reward
-			[result appendFormat:ExpandDescriptionForCurrentSystem(@"[rescue-reward-for-@@-@-credits]\n"),
+			[result appendFormat:DESC(@"rescue-reward-for-@@-@-credits"),
 				[rescuee name], [rescuee shortDescription], OOStringFromDeciCredits([rescuee insuranceCredits] * 10, YES, NO)];
 			credits += 10 * [rescuee insuranceCredits];
 		}
@@ -100,7 +100,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 		{
 			// claim bounty for capture
 			float reward = (5.0 + government) * [rescuee legalStatus];
-			[result appendFormat:ExpandDescriptionForCurrentSystem(@"[capture-reward-for-@@-@-credits]\n"),
+			[result appendFormat:DESC(@"capture-reward-for-@@-@-credits"),
 				[rescuee name], [rescuee shortDescription], OOStringFromDeciCredits(reward, YES, NO)];
 			credits += reward;
 		}
@@ -177,7 +177,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 			if (dest_eta < 0)
 			{
 				// we've run out of time!
-				[result appendFormatLine:DESC(@"[passenger-failed-@]"), passenger_name];
+				[result appendFormatLine:DESC(@"passenger-failed-@"), passenger_name];
 				
 				[passengers removeObjectAtIndex:i--];
 				[self decreasePassengerReputation];
@@ -587,8 +587,8 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 		tab_stops[0] = 0;
 		tab_stops[1] = 160;
 		tab_stops[2] = 240;
-		tab_stops[3] = 360;
-		tab_stops[4] = 440;
+		tab_stops[3] = -410;
+		tab_stops[4] = -476;
 		
 		[gui setTabStops:tab_stops];
 		
@@ -664,7 +664,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 				[gui setKey:GUI_KEY_OK forRow:GUI_ROW_CARGO_START + i];
 		}
 		
-		[gui setText:[NSString stringWithFormat:DESC(@"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths"), OOCredits(credits), current_cargo, max_cargo, [passengers count], max_passengers]  forRow: GUI_ROW_MARKET_CASH];
+		[gui setText:[NSString stringWithFormat:DESC_PLURAL(@"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths", max_passengers), OOCredits(credits), current_cargo, max_cargo, [passengers count], max_passengers]  forRow: GUI_ROW_MARKET_CASH];
 		
 		for (i = GUI_ROW_CARGO_START + n_contracts; i < GUI_ROW_MARKET_CASH; i++)
 		{
@@ -886,7 +886,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 		}
 		
 		
-		if (status == STATUS_DOCKED)
+		if ([self status] == STATUS_DOCKED)
 		{
 			unsigned n_commodities = [shipCommodityData count];
 			current_cargo = 0;  // for calculating remaining hold space
@@ -902,7 +902,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 		[gui clear];
 		[gui setTitle:DESC(@"manifest-title")];
 		
-		[gui setText:[NSString stringWithFormat:DESC(@"manifest-cargo-d-d"), (status == STATUS_DOCKED)? current_cargo : [cargo count], max_cargo]	forRow:cargo_row - 1];
+		[gui setText:[NSString stringWithFormat:DESC(@"manifest-cargo-d-d"), ([self status] == STATUS_DOCKED)? current_cargo : [cargo count], max_cargo]	forRow:cargo_row - 1];
 		[gui setText:DESC(@"manifest-none")	forRow:cargo_row];
 		[gui setColor:[OOColor yellowColor]	forRow:cargo_row - 1];
 		[gui setColor:[OOColor greenColor]	forRow:cargo_row];
@@ -1022,7 +1022,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 		else
 			text_row = [gui addLongText:report startingAtRow:text_row align:GUI_ALIGN_LEFT];
 
-		[gui setText:[NSString stringWithFormat:DESC(@"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths"), OOCredits(credits), current_cargo, max_cargo, [passengers count], max_passengers]  forRow: GUI_ROW_MARKET_CASH];
+		[gui setText:[NSString stringWithFormat:DESC_PLURAL(@"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths", max_passengers), OOCredits(credits), current_cargo, max_cargo, [passengers count], max_passengers]  forRow: GUI_ROW_MARKET_CASH];
 		
 		[gui setText:@"press-space-commander" forRow:21 align:GUI_ALIGN_CENTER];
 		[gui setColor:[OOColor yellowColor] forRow:21];
@@ -1083,7 +1083,7 @@ static NSString * const kOOLogNoteShowShipyardModel = @"script.debug.note.showSh
 			}
 		}
 
-		[gui setText:[NSString stringWithFormat:DESC(@"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths"), OOCredits(credits), current_cargo, max_cargo, [passengers count], max_passengers]  forRow: GUI_ROW_MARKET_CASH];
+		[gui setText:[NSString stringWithFormat:DESC_PLURAL(@"contracts-cash-@-load-d-of-d-passengers-d-of-d-berths", max_passengers), OOCredits(credits), current_cargo, max_cargo, [passengers count], max_passengers]  forRow: GUI_ROW_MARKET_CASH];
 		
 		[gui setText:DESC(@"press-space-commander") forRow:21 align:GUI_ALIGN_CENTER];
 		[gui setColor:[OOColor yellowColor] forRow:21];
@@ -1156,6 +1156,8 @@ static NSMutableDictionary* currentShipyard = nil;
 	//error check
 	if (skip >= n_ships)
 		skip = n_ships - 1;
+	if (skip < 2)
+		skip = 0;
 	
 	// GUI stuff
 	{
@@ -1166,34 +1168,30 @@ static NSMutableDictionary* currentShipyard = nil;
 		
 		OOGUITabSettings tab_stops;
 		tab_stops[0] = 0;
-		tab_stops[1] = 160;
+		tab_stops[1] = -258;
 		tab_stops[2] = 270;
 		tab_stops[3] = 370;
 		tab_stops[4] = 450;
 		[gui setTabStops:tab_stops];
 		
-		int n_rows, start_row, previous = 0;
+		int n_rows = MAX_ROWS_SHIPS_FOR_SALE;
+		int start_row = GUI_ROW_SHIPYARD_START;
+		int previous = 0;
 		
-		if (n_ships < MAX_ROWS_SHIPS_FOR_SALE)
-		{
+		if (n_ships <= MAX_ROWS_SHIPS_FOR_SALE)
 			skip = 0;
-			previous = 0;
-			n_rows = MAX_ROWS_SHIPS_FOR_SALE;
-			start_row = GUI_ROW_SHIPYARD_START;
-		}
 		else
 		{
-			n_rows = MAX_ROWS_SHIPS_FOR_SALE - 1;
-			start_row = GUI_ROW_SHIPYARD_START;
 			if (skip > 0)
 			{
 				n_rows -= 1;
 				start_row += 1;
-				if (skip > MAX_ROWS_SHIPS_FOR_SALE)
-					previous = skip - MAX_ROWS_SHIPS_FOR_SALE - 2;
-				else
+				previous = skip - MAX_ROWS_SHIPS_FOR_SALE + 2;
+				if (previous < 2)
 					previous = 0;
 			}
+			if (skip + n_rows < n_ships)
+				n_rows -= 1;
 		}
 		
 		if (n_ships > 0)
@@ -1201,7 +1199,7 @@ static NSMutableDictionary* currentShipyard = nil;
 			[gui setColor:[OOColor greenColor] forRow:GUI_ROW_SHIPYARD_LABELS];
 			[gui setArray:[NSArray arrayWithObjects:DESC(@"shipyard-shiptype"), DESC(@"shipyard-price"),
 					DESC(@"shipyard-cargo"), DESC(@"shipyard-speed"), nil] forRow:GUI_ROW_SHIPYARD_LABELS];
-			
+
 			if (skip > 0)
 			{
 				[gui setColor:[OOColor greenColor] forRow:GUI_ROW_SHIPYARD_START];
@@ -1227,7 +1225,7 @@ static NSMutableDictionary* currentShipyard = nil;
 				[gui setKey:[NSString stringWithFormat:@"More:%d", n_rows + skip] forRow:start_row + i];
 				i++;
 			}
-			
+
 			[gui setSelectableRange:NSMakeRange( GUI_ROW_SHIPYARD_START, i + start_row - GUI_ROW_SHIPYARD_START)];
 			[self showShipyardInfoForSelection];
 		}
@@ -1239,9 +1237,7 @@ static NSMutableDictionary* currentShipyard = nil;
 			[gui setNoSelectedRow];
 		}
 		
-		OOCreditsQuantity tradeIn = [self tradeInValue];
-		[gui setText:[NSString stringWithFormat:DESC(@"shipyard-your-@-trade-in-value-@"), shipName, OOCredits(tradeIn)]  forRow: GUI_ROW_MARKET_CASH - 1];
-		[gui setText:[NSString stringWithFormat:DESC(@"shipyard-total-available-%@-%@-plus-%@-trade"), OOCredits(credits + tradeIn), OOCredits(credits), OOCredits(tradeIn)]  forRow: GUI_ROW_MARKET_CASH];
+		[self showTradeInInformationFooter];
 		
 		[gui setShowTextCursor:NO];
 	}
@@ -1273,7 +1269,17 @@ static NSMutableDictionary* currentShipyard = nil;
 	NSString* key = [gui keyForRow:sel_row];
 	
 	NSDictionary* info = (NSDictionary *)[currentShipyard objectForKey:key];
-	
+
+	// clean up the display ready for the newly-selected ship (if there is one)
+	[row_info replaceObjectAtIndex:2 withObject:@""];
+	[row_info replaceObjectAtIndex:3 withObject:@""];
+	for (i = GUI_ROW_SHIPYARD_INFO_START; i < GUI_ROW_MARKET_CASH - 1; i++)
+	{
+		[gui setText:@"" forRow:i];
+		[gui setColor:[OOColor greenColor] forRow:i];
+	}
+	[UNIVERSE removeDemoShips];
+
 	if (info)
 	{
 		// the key is a particular ship - show the details
@@ -1296,17 +1302,13 @@ static NSMutableDictionary* currentShipyard = nil;
 		
 		[row_info replaceObjectAtIndex:2 withObject:[NSString stringWithFormat:DESC(@"shipyard-cargo-d-tc"), cargo_rating]];
 		[row_info replaceObjectAtIndex:3 withObject:[NSString stringWithFormat:DESC(@"shipyard-speed-f-ls"), speed_rating]];
-		[gui setArray:[NSArray arrayWithArray:row_info] forRow:GUI_ROW_SHIPYARD_LABELS];
 		
-		for (i = GUI_ROW_SHIPYARD_INFO_START; i < GUI_ROW_MARKET_CASH - 1; i++)
+		if ([gui addLongText:sales_pitch startingAtRow:GUI_ROW_SHIPYARD_INFO_START align:GUI_ALIGN_LEFT] < GUI_ROW_MARKET_CASH - 1)
 		{
-			[gui setText:@"" forRow:i];
-			[gui setColor:[OOColor greenColor] forRow:i];
+			[self showTradeInInformationFooter];
 		}
-		[gui addLongText:sales_pitch startingAtRow:GUI_ROW_SHIPYARD_INFO_START align:GUI_ALIGN_LEFT];
-			
+		
 		// now display the ship
-		[UNIVERSE removeDemoShips];
 		[self showShipyardModel:shipDict];
 	}
 	else
@@ -1315,6 +1317,17 @@ static NSMutableDictionary* currentShipyard = nil;
 		// build an array from the entries for that model in the currentShipyard TODO
 		// 
 	}
+
+	[gui setArray:[NSArray arrayWithArray:row_info] forRow:GUI_ROW_SHIPYARD_LABELS];
+}
+
+
+- (void) showTradeInInformationFooter
+{
+	GuiDisplayGen *gui = [UNIVERSE gui];
+	OOCreditsQuantity tradeIn = [self tradeInValue];
+	[gui setText:[NSString stringWithFormat:DESC(@"shipyard-your-@-trade-in-value-@"), [self displayName], OOCredits(tradeIn)]  forRow: GUI_ROW_MARKET_CASH - 1];
+	[gui setText:[NSString stringWithFormat:DESC(@"shipyard-total-available-%@-%@-plus-%@-trade"), OOCredits(credits + tradeIn), OOCredits(credits), OOCredits(tradeIn)]  forRow: GUI_ROW_MARKET_CASH];
 }
 
 
@@ -1402,7 +1415,7 @@ static NSMutableDictionary* currentShipyard = nil;
 	unsigned i;
 	for (i = 0; i < [shipCommodityData count]; i++)
 	{
-		while ([self trySellingCommodity:i]);	// empty loop
+		[self trySellingCommodity:i all:YES];
 	}
 	
 	// We tried to sell everything. If there are still items present in our inventory, it
@@ -1511,7 +1524,7 @@ static NSMutableDictionary* currentShipyard = nil;
 	NSDictionary* cmdr_dict = [self commanderDataDictionary];	// gather up all the info
 	if (![self setCommanderDataFromDictionary:cmdr_dict])  return NO;
 
-	status = STATUS_DOCKED;
+	[self setStatus:STATUS_DOCKED];
 	
 	// adjust the clock forward by an hour
 	ship_clock_adjust += 3600.0;

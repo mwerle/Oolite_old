@@ -32,14 +32,16 @@ MA 02110-1301, USA.
 
 typedef enum
 {
-	PLANET_TYPE_GREEN		= 100,
-	PLANET_TYPE_SUN			= 200,
-	PLANET_TYPE_ATMOSPHERE  = 300,
-	PLANET_TYPE_MINIATURE	= 111
+	PLANET_TYPE_GREEN,
+	PLANET_TYPE_SUN,
+	PLANET_TYPE_ATMOSPHERE,
+	PLANET_TYPE_MOON,
+	PLANET_TYPE_MINIATURE
 } OOPlanetType;
 
 
 #define ATMOSPHERE_DEPTH		500.0
+#define MAX_CORONAFLARE			600000.0	// nova flare
 #define PLANET_MINIATURE_FACTOR	0.00185
 
 #define MAX_SUBDIVIDE			6	// 0 -> 20 verts
@@ -77,6 +79,7 @@ typedef struct
 	GLuint					displayListNames[MAX_SUBDIVIDE];
 	
 	BOOL					isTextured;
+	BOOL					isTextureImage; //is the texture a png image?
 	GLuint					textureName;
 	unsigned char			*textureData;
 	
@@ -122,13 +125,16 @@ typedef struct
 double		corona_speed_factor;	// multiply delta_t by this before adding it to corona_stage
 double		corona_stage;			// 0.0 -> 1.0
 GLfloat		rvalue[729];			// stores random values for adjusting colors in the corona
-	
-- (id) initAsSunWithColor:(OOColor *) sun_color;
-- (id) initWithSeed:(Random_Seed) p_seed;
-- (id) initMiniatureFromPlanet:(PlanetEntity*) planet;
 
-- (id) initPlanetFromDictionary:(NSDictionary*) dict;
+- (id) initSunWithColor:(OOColor*)sun_color andDictionary:(NSDictionary*) dict;
+- (id) initWithSeed:(Random_Seed) p_seed;
+- (void) miniaturize;
+- (id) initMiniatureFromPlanet:(PlanetEntity*) planet;
+- (id) initMiniatureFromPlanet:(PlanetEntity*) planet withAlpha:(float) alpha;
+
 - (id) initMoonFromDictionary:(NSDictionary*) dict;
+- (id) initPlanetFromDictionary:(NSDictionary*) dict;
+- (id) initPlanetFromDictionary:(NSDictionary*) dict withAtmosphere: (BOOL) atmo andSeed:(Random_Seed) p_seed;
 - (BOOL) setUpPlanetFromTexture:(NSString *)fileName;
 
 void drawActiveCorona(GLfloat inner_radius, GLfloat outer_radius, GLfloat step, GLfloat z_distance, GLfloat* col4v1, int rv);

@@ -153,7 +153,7 @@ static Vector circleVertex[65];		// holds vector coordinates for a unit circle
 		
 		particle_type = PARTICLE_TEST;
 		isParticle = YES;
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		
 		basefile = @"Particle";
 		[self setTexture:@"blur256.png"];
@@ -169,6 +169,9 @@ static Vector circleVertex[65];		// holds vector coordinates for a unit circle
 - (id) initLaserFromShip:(ShipEntity *) srcEntity view:(OOViewID) view offset:(Vector)offset
 {
 	ShipEntity			*ship = [srcEntity rootShipEntity];
+	BoundingBox 		bbox = [srcEntity boundingBox];
+	float				midx = 0.5 * (bbox.max.x + bbox.min.x);
+	float				midz = 0.5 * (bbox.max.z + bbox.min.z);
 	
 	self = [super init];
 	if (self == nil)  goto FAIL;
@@ -178,14 +181,18 @@ static Vector circleVertex[65];		// holds vector coordinates for a unit circle
 	if (ship == nil)  goto FAIL;
 #endif
 	
-	status = STATUS_EFFECT;
-	if (ship == srcEntity)  position = [ship position];
+	[self setStatus:STATUS_EFFECT];
+	
+	Vector middle = make_vector(midx, 0.5 * (bbox.max.y + bbox.min.y), midz);
+	if (ship == srcEntity) 
+	{
+		// main laser offset
+		position = vector_add([ship position],OOVectorMultiplyMatrix(offset, [ship drawRotationMatrix]));
+	}
 	else
 	{
-		// FIXME: shouldn't the subentity case work in any case?
-		BoundingBox bbox = [srcEntity boundingBox];
-		Vector midfrontplane = make_vector(0.5 * (bbox.max.x + bbox.min.x), 0.5 * (bbox.max.y + bbox.min.y), bbox.max.z);
-		position = [srcEntity absolutePositionForSubentityOffset:midfrontplane];
+		// subentity laser
+		position = [srcEntity absolutePositionForSubentityOffset:middle];
 	}
 	
 	orientation = [ship normalOrientation];
@@ -198,23 +205,20 @@ static Vector circleVertex[65];		// holds vector coordinates for a unit circle
 	switch (view)
 	{
 		default:
-		case VIEW_FORWARD:
-			viewOffset = vector_multiply_scalar(v_forward, [srcEntity boundingBox].max.z);
-			break;
-			
 		case VIEW_AFT:
-			quaternion_rotate_about_axis(&orientation, v_up, M_PI);
-			viewOffset = vector_multiply_scalar(v_forward, [srcEntity boundingBox].min.z);
+			quaternion_rotate_about_axis(&orientation, v_up, M_PI);	
+		case VIEW_FORWARD:
+			viewOffset = vector_multiply_scalar(v_forward, midz);
 			break;
-			
+
 		case VIEW_PORT:
 			quaternion_rotate_about_axis(&orientation, v_up, M_PI/2.0);
-			viewOffset = vector_multiply_scalar(v_right, [srcEntity boundingBox].min.x);
+			viewOffset = vector_multiply_scalar(v_right, midx);
 			break;
 			
 		case VIEW_STARBOARD:
 			quaternion_rotate_about_axis(&orientation, v_up, -M_PI/2.0);
-			viewOffset = vector_multiply_scalar(v_right, [srcEntity boundingBox].max.x);
+			viewOffset = vector_multiply_scalar(v_right, midx);
 			break;
 	}
 	position = vector_add(position, viewOffset);
@@ -264,7 +268,7 @@ FAIL:
 		scale.z = [values floatAtIndex:5];
 		exhaustScale = scale;
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 
 		particle_type = PARTICLE_EXHAUST;
 		
@@ -291,7 +295,7 @@ FAIL:
 		duration = ECM_EFFECT_DURATION;
 		position = [ship position];
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		scanClass = CLASS_NO_DRAW;
 		
 		particle_type = PARTICLE_ECM_MINE;
@@ -326,7 +330,7 @@ FAIL:
 		alpha = 0.5;
 		collision_radius = 0;
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		scanClass = CLASS_MINE;
 		
 		particle_type = PARTICLE_ENERGY_MINE;
@@ -360,7 +364,7 @@ FAIL:
 		[self setOrientation:ship->orientation];
 		[self setVelocity:[ship velocity]];
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		scanClass = CLASS_NO_DRAW;
 		
 		particle_type = PARTICLE_HYPERRING;
@@ -413,7 +417,7 @@ FAIL:
 			faces[i].normal.x = 16.0 * speed_low / speed;
 		}
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		scanClass = CLASS_NO_DRAW;
 		
 		particle_type = PARTICLE_FRAGBURST;
@@ -468,7 +472,7 @@ FAIL:
 			faces[i].normal.z = 1.0;
 		}
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		scanClass = CLASS_NO_DRAW;
 		
 		particle_type = PARTICLE_BURST2;
@@ -514,7 +518,7 @@ FAIL:
 		[self setColor:flashColor];
 		color_fv[3] = 1.0;
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		scanClass = CLASS_NO_DRAW;
 		
 		particle_type = PARTICLE_FLASH;
@@ -550,7 +554,7 @@ FAIL:
 		[self setColor:[OOColor whiteColor]];
 		color_fv[3] = 1.0;
 		
-		status = STATUS_EFFECT;
+		[self setStatus:STATUS_EFFECT];
 		scanClass = CLASS_NO_DRAW;
 		
 		particle_type = PARTICLE_BILLBOARD;
@@ -1357,7 +1361,7 @@ FAIL:
 			return; // TOO FAR AWAY TO DRAW
 	}
 
-	if ((particle_type == PARTICLE_FLASHER)&&(status != STATUS_INACTIVE))
+	if (particle_type == PARTICLE_FLASHER && [self status] != STATUS_INACTIVE)
 	{
 		Vector		abspos = position;  // in control of it's own orientation
 		int			view_dir = [UNIVERSE viewDirection];
@@ -1366,11 +1370,13 @@ FAIL:
 		OOMatrix	r_mat;
 		OOMatrix	temp_matrix;
 		
-		while ((father)&&(father != last))
+		while ((father) && (father != last) && father != NO_TARGET)
 		{
 			r_mat = [father drawRotationMatrix];
 			abspos = vector_add(OOVectorMultiplyMatrix(abspos, r_mat), [father position]);
 			last = father;
+			
+			if (![last isSubEntity]) break;
 			father = [father owner];
 		}
 

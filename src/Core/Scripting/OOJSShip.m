@@ -62,6 +62,7 @@ static JSBool ShipExplode(JSContext *context, JSObject *this, uintN argc, jsval 
 static JSBool ShipRemove(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool ShipRunLegacyScriptActions(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool ShipCommsMessage(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
+static JSBool ShipFireECM(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 
 static BOOL RemoveOrExplodeShip(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult, BOOL explode);
 
@@ -222,6 +223,7 @@ static JSFunctionSpec sShipMethods[] =
 	{ "explode",				ShipExplode,				0 },
 	{ "remove",					ShipRemove,					0 },
 	{ "commsMessage",			ShipCommsMessage,			1 },
+	{ "fireECM",				ShipFireECM,				0 },
 	{ 0 }
 };
 
@@ -566,7 +568,15 @@ static JSBool ShipSetProperty(JSContext *context, JSObject *this, jsval name, js
 			{
 				sValue = [NSString stringWithJavaScriptValue:*value inContext:context];
 				if (sValue != nil)  [[entity getAI] setState:sValue];
-				OK = YES;
+				
+				if ([[entity getAI] state] != sValue)
+				{
+					OOReportJSError(context, @"Ship.%@ [setter]: could not set state to '%@'.", @"AIState",sValue);
+				}
+				else
+				{
+					OK = YES;
+				}
 			}
 			break;
 		
@@ -749,6 +759,7 @@ static JSBool ShipExitAI(JSContext *context, JSObject *this, uintN argc, jsval *
 {
 	ShipEntity				*thisEnt = nil;
 	AI						*thisAI = nil;
+	NSString				*message = nil;
 	
 	if (!JSShipGetShipEntity(context, this, &thisEnt)) return YES;	// stale reference, no-op.
 	if (EXPECT_NOT([thisEnt isPlayer]))
@@ -758,13 +769,18 @@ static JSBool ShipExitAI(JSContext *context, JSObject *this, uintN argc, jsval *
 	}
 	thisAI = [thisEnt getAI];
 	
+	if (argc > 0)
+	{
+		message = JSValToNSString(context, argv[0]);
+	}
+	
 	if (![thisAI hasSuspendedStateMachines])
 	{
 		OOReportJSWarningForCaller(context, @"Ship", @"exitAI()", @"Cannot cannot exit current AI state machine because there are no suspended state machines.");
 	}
 	else
 	{
-		[thisAI exitStateMachine];
+		[thisAI exitStateMachineWithMessage:message];
 	}
 	return YES;
 }
@@ -983,6 +999,20 @@ static JSBool ShipCommsMessage(JSContext *context, JSObject *this, uintN argc, j
 	if (![thisEnt isPlayer])
 	{
 		[thisEnt commsMessage:message withUnpilotedOverride:YES];
+	}
+	return YES;
+}
+
+
+static JSBool ShipFireECM(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
+{
+	ShipEntity				*thisEnt = nil;
+	
+	if (!JSShipGetShipEntity(context, this, &thisEnt))  return YES;	// stale reference, no-op.
+	
+	if (![thisEnt fireECM])
+	{
+		OOReportJSWarning(context, @"Ship %@ was requested to fire ECM burst but does not carry ECM equipment.", thisEnt);
 	}
 	return YES;
 }

@@ -201,7 +201,7 @@ static void ReportJSError(JSContext *context, const char *message, JSErrorReport
 	// if runtime creation failed, end the program here
 	if (runtime == NULL)
 	{
-		OOLog(@"script.javaScript.init.error", @"FATAL ERROR: failed to create JavaScript %@.", @"runtime");
+		OOLog(@"script.javaScript.init.error", @"***** FATAL ERROR: failed to create JavaScript %@.", @"runtime");
 		exit(1);
 	}
 
@@ -211,7 +211,7 @@ static void ReportJSError(JSContext *context, const char *message, JSErrorReport
 	// if context creation failed, end the program here
 	if (mainContext == NULL)
 	{
-		OOLog(@"script.javaScript.init.error", @"FATAL ERROR: failed to create JavaScript %@.", @"context");
+		OOLog(@"script.javaScript.init.error", @"***** FATAL ERROR: failed to create JavaScript %@.", @"context");
 		exit(1);
 	}
 	
@@ -345,7 +345,7 @@ static void ReportJSError(JSContext *context, const char *message, JSErrorReport
 		// if context creation failed, end the program here
 		if (context == NULL)
 		{
-			OOLog(@"script.javaScript.error", @"FATAL ERROR: failed to create JavaScript %@.", @"context");
+			OOLog(@"script.javaScript.error", @"***** FATAL ERROR: failed to create JavaScript %@.", @"context");
 			exit(1);
 		}
 		
@@ -920,7 +920,7 @@ static BOOL JSNewNSDictionaryValue(JSContext *context, NSDictionary *dictionary,
 {
 	JSString				*string = NULL;
 	BOOL					tempCtxt = NO;
-	
+
 	if (JSVAL_IS_NULL(value) || JSVAL_IS_VOID(value))  return nil;
 	
 	if (context == NULL)
@@ -944,7 +944,7 @@ static BOOL JSNewNSDictionaryValue(JSContext *context, NSDictionary *dictionary,
 	NSMutableString			*result = [NSMutableString stringWithString:@"("];
 	NSString				*valString = nil;
 	
-	for (i = 0; i != count; ++i)
+	for (i = 0; i < count; ++i)
 	{
 		if (i != 0)  [result appendString:@", "];
 		
@@ -954,17 +954,12 @@ static BOOL JSNewNSDictionaryValue(JSContext *context, NSDictionary *dictionary,
 		{
 			[result appendFormat:@"\"%@\"", valString];
 		}
-		else if (JSVAL_IS_OBJECT(val) && JS_IsArrayObject(context, JSVAL_TO_OBJECT(val)))
+		else if (val && JSVAL_IS_OBJECT(val) && JS_IsArrayObject(context, JSVAL_TO_OBJECT(val)))
 		{
-			[result appendFormat:@"[%@]", valString];
+			[result appendFormat:@"[%@]", valString ];
 		}
 		else
 		{
-			if (valString == nil)
-			{
-				if (JSVAL_IS_VOID(val))  valString = @"undefined";
-				else valString = @"null";
-			}
 			[result appendString:valString];
 		}
 	}
@@ -1287,6 +1282,7 @@ BOOL JSEntityIsJavaScriptSearchablePredicate(Entity *entity, void *parameter)
 	{
 		switch ([(PlanetEntity *)entity planetType])
 		{
+			case PLANET_TYPE_MOON:
 			case PLANET_TYPE_GREEN:
 			case PLANET_TYPE_SUN:
 				return YES;

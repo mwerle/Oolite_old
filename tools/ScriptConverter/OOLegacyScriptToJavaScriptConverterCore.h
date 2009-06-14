@@ -10,6 +10,9 @@
 #import "OOLegacyScriptToJavaScriptConverter.h"
 
 
+@class OOJSExprNode;
+
+
 @interface OOLegacyScriptToJavaScriptConverter (Private)
 
 - (void) setMetadata:(NSDictionary *)metadata;
@@ -33,6 +36,9 @@
 - (NSString *) expandIntegerExpression:(NSString *)string;
 - (NSString *) expandFloatExpression:(NSString *)string;
 - (NSString *) expandPropertyReference:(NSString *)string;	// either .identifier or ["string expression"]
+
+- (OOJSExprNode *) expandRightHandSide:(NSString *)rhs;
+- (OOJSExprNode *) convertVariableAccess:(NSString *)variableName;
 
 - (void) setInitializer:(NSString *)initializerStatement forKey:(NSString *)key;
 - (void) setHelperFunction:(NSString *)function forKey:(NSString *)key;

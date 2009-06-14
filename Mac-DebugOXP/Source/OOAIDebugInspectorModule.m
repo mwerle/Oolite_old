@@ -8,9 +8,10 @@
 
 #import "OOAIDebugInspectorModule.h"
 #import "AI.h"
-#import "OOInstinct.h"
+#import "ShipEntity.h"
 #import "Universe.h"
 #import "OOEntityInspectorExtensions.h"
+#import "OOConstToString.h"
 
 
 @implementation OOAIDebugInspectorModule
@@ -28,11 +29,15 @@
 	{
 		[_stackDepthField setIntValue:[object stackDepth]];
 		[_timeToThinkField setStringValue:[NSString stringWithFormat:@"%.1f", [object nextThinkTime] - [UNIVERSE getTime]]];
+		[_behaviourField setStringValue:BehaviourToString([[object owner] behaviour])];
+		[_frustrationField setDoubleValue:[[object owner] frustration]];
 	}
 	else
 	{
 		[_stackDepthField setStringValue:placeholder];
 		[_timeToThinkField setStringValue:placeholder];
+		[_behaviourField setStringValue:placeholder];
+		[_frustrationField setStringValue:placeholder];
 	}
 	
 	pending = [object pendingMessages];
