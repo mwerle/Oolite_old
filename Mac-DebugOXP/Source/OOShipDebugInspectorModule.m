@@ -65,7 +65,6 @@
 		[_AIField setStringValue:placeholder];
 	}
 	[_reportAIMessagesCheckBox setState:[object reportAIMessages]];
-	[_behaviourField setStringValue:object ? BehaviourToString([object behaviour]) : placeholder];
 	[_scriptField setStringValue:[[object script] name] ?: placeholder];
 	
 	[_groupField setStringValue:[[object group] inspDescription] ?: placeholder];

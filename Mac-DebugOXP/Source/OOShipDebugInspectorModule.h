@@ -16,7 +16,6 @@
 	IBOutlet NSTextField		*_targetField;
 	IBOutlet NSTextField		*_AIField;
 	IBOutlet NSButton			*_reportAIMessagesCheckBox;
-	IBOutlet NSTextField		*_behaviourField;
 	IBOutlet NSTextField		*_scriptField;
 	IBOutlet NSTextField		*_groupField;
 	IBOutlet NSTextField		*_escortGroupField;
