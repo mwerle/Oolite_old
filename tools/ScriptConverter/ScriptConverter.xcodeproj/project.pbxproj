@@ -11,6 +11,9 @@
 		1A626A790E69C46800CC2450 /* NSScannerOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A626A780E69C46800CC2450 /* NSScannerOOExtensions.m */; };
 		1A73CDF50CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A73CDF40CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.m */; };
 		1A73CE160CF7BB2F00D21D5D /* OOCollectionExtractors.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A73CE150CF7BB2F00D21D5D /* OOCollectionExtractors.m */; };
+		1A7B00AB0F6A7CDB00E99B84 /* TestRigHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A7B00AA0F6A7CDB00E99B84 /* TestRigHelpers.m */; };
+		1A7B01050F6AA04200E99B84 /* OOJSExprNode+Graphviz.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A7B01040F6AA04200E99B84 /* OOJSExprNode+Graphviz.m */; };
+		1A938DF00F685D8A009A18A4 /* OOJSExprNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A938DEF0F685D8A009A18A4 /* OOJSExprNode.m */; };
 		1ABDBAAE0EB368920086BC3D /* OOIsNumberLiteral.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAAC0EB368920086BC3D /* OOIsNumberLiteral.m */; };
 		8DD76F9A0486AA7600D96B5E /* ScriptConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* ScriptConverter.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -46,6 +49,14 @@
 		1A73CE0D0CF7B5A500D21D5D /* OOProblemReportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOProblemReportManager.h; sourceTree = "<group>"; };
 		1A73CE140CF7BB2F00D21D5D /* OOCollectionExtractors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOCollectionExtractors.h; sourceTree = "<group>"; };
 		1A73CE150CF7BB2F00D21D5D /* OOCollectionExtractors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOCollectionExtractors.m; sourceTree = "<group>"; };
+		1A7B00850F6A716200E99B84 /* OOJSExprNodeHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSExprNodeHelpers.h; sourceTree = "<group>"; };
+		1A7B00A90F6A7CDB00E99B84 /* TestRigHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestRigHelpers.h; sourceTree = "<group>"; };
+		1A7B00AA0F6A7CDB00E99B84 /* TestRigHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRigHelpers.m; sourceTree = "<group>"; };
+		1A7B01030F6AA04200E99B84 /* OOJSExprNode+Graphviz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OOJSExprNode+Graphviz.h"; sourceTree = "<group>"; };
+		1A7B01040F6AA04200E99B84 /* OOJSExprNode+Graphviz.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OOJSExprNode+Graphviz.m"; sourceTree = "<group>"; };
+		1A938DEE0F685D8A009A18A4 /* OOJSExprNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOJSExprNode.h; sourceTree = "<group>"; };
+		1A938DEF0F685D8A009A18A4 /* OOJSExprNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOJSExprNode.m; sourceTree = "<group>"; };
+		1ABAC97D0F6BFB09002DE6D0 /* test-script.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "test-script.plist"; sourceTree = "<group>"; };
 		1ABDBAAC0EB368920086BC3D /* OOIsNumberLiteral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOIsNumberLiteral.m; sourceTree = "<group>"; };
 		1ABDBAAD0EB368920086BC3D /* OOIsNumberLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOIsNumberLiteral.h; sourceTree = "<group>"; };
 		1ACFA0710E6CA0690015068D /* ups-courier-1.3.5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = "ups-courier-1.3.5.plist"; sourceTree = "<group>"; };
@@ -85,10 +96,17 @@
 			children = (
 				32A70AAB03705E1F00C91783 /* ScriptConverter_Prefix.pch */,
 				08FB7796FE84155DC02AAC07 /* ScriptConverter.m */,
+				1A7B00A90F6A7CDB00E99B84 /* TestRigHelpers.h */,
+				1A7B00AA0F6A7CDB00E99B84 /* TestRigHelpers.m */,
 				1A73CDF30CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.h */,
 				1A73CDF40CF7B43700D21D5D /* OOLegacyScriptToJavaScriptConverter.m */,
 				1A626A320E69C14C00CC2450 /* OOLegacyScriptToJavaScriptConverterCore.h */,
 				1A626A330E69C14C00CC2450 /* OOLegacyScriptToJavaScriptConverterCore.m */,
+				1A938DEE0F685D8A009A18A4 /* OOJSExprNode.h */,
+				1A938DEF0F685D8A009A18A4 /* OOJSExprNode.m */,
+				1A7B00850F6A716200E99B84 /* OOJSExprNodeHelpers.h */,
+				1A7B01030F6AA04200E99B84 /* OOJSExprNode+Graphviz.h */,
+				1A7B01040F6AA04200E99B84 /* OOJSExprNode+Graphviz.m */,
 				1A73CE0D0CF7B5A500D21D5D /* OOProblemReportManager.h */,
 				1A73CE120CF7BB1100D21D5D /* Oolite */,
 			);
@@ -116,6 +134,7 @@
 				1AD4118C0E6D9AAC00CA8C31 /* random-hits-1.2.plist */,
 				1ACFA0840E6CAD5B0015068D /* trident-down-1.0.plist */,
 				1ACFA0710E6CA0690015068D /* ups-courier-1.3.5.plist */,
+				1ABAC97D0F6BFB09002DE6D0 /* test-script.plist */,
 			);
 			path = "test-scripts";
 			sourceTree = "<group>";
@@ -198,6 +217,9 @@
 				1A626A340E69C14C00CC2450 /* OOLegacyScriptToJavaScriptConverterCore.m in Sources */,
 				1A626A790E69C46800CC2450 /* NSScannerOOExtensions.m in Sources */,
 				1ABDBAAE0EB368920086BC3D /* OOIsNumberLiteral.m in Sources */,
+				1A938DF00F685D8A009A18A4 /* OOJSExprNode.m in Sources */,
+				1A7B00AB0F6A7CDB00E99B84 /* TestRigHelpers.m in Sources */,
+				1A7B01050F6AA04200E99B84 /* OOJSExprNode+Graphviz.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
