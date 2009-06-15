@@ -5,13 +5,13 @@ DOCKING_CLEARANCE = yes
 PROCEDURAL_PLANETS = yes
 WORMHOLE_SCANNER = yes
 TARGET_INCOMING_MISSILES = yes
-vpath %.m src/SDL:src/Core:src/Core/Entities:src/Core/Materials:src/Core/Scripting:src/Core/OXPVerifier:src/Core/Debug
-vpath %.h src/SDL:src/Core:src/Core/Entities:src/Core/Materials:src/Core/Scripting:src/Core/OXPVerifier:src/Core/Debug
+vpath %.m src/SDL:src/Core:src/Core/Entities:src/Core/Materials:src/Core/Scripting:src/Core/OXPVerifier:src/Core/Debug:src/Core/Drawables
+vpath %.h src/SDL:src/Core:src/Core/Entities:src/Core/Materials:src/Core/Scripting:src/Core/OXPVerifier:src/Core/Debug:src/Core/Drawables
 vpath %.c src/SDL:src/Core:src/BSDCompat:src/Core/Debug
 GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_USER_ROOT)
 GNUSTEP_OBJ_DIR_BASENAME := $(GNUSTEP_OBJ_DIR_NAME)
 ifeq ($(GNUSTEP_HOST_OS),mingw32)
-	ADDITIONAL_INCLUDE_DIRS = -Ideps/Windows-x86-deps/include -Isrc/SDL -Isrc/Core -Isrc/BSDCompat -Isrc/Core/Scripting -Isrc/Core/Materials -Isrc/Core/Entities -Isrc/Core/OXPVerifier -Isrc/Core/Debug
+	ADDITIONAL_INCLUDE_DIRS = -Ideps/Windows-x86-deps/include -Isrc/SDL -Isrc/Core -Isrc/BSDCompat -Isrc/Core/Scripting -Isrc/Core/Materials -Isrc/Core/Entities -Isrc/Core/OXPVerifier -Isrc/Core/Debug -Isrc/Core/Drawables
 	ADDITIONAL_OBJC_LIBS = -lglu32 -lopengl32 -lpng12.dll -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lgnustep-base -ljs32 -mwindows
 	ADDITIONAL_CFLAGS = -DWIN32 -DNEED_STRLCPY `sdl-config --cflags`
 # note the vpath stuff above isn't working for me, so adding src/SDL and src/Core explicitly
@@ -97,7 +97,11 @@ OOLITE_ENTITY_FILES = \
 
 OOLITE_GRAPHICS_DRAWABLE_FILES = \
 	OODrawable.m \
-	OOMesh.m
+	OOMesh.m \
+	OODATMeshLoader.m \
+	OOConcreteMeshBuilder.m \
+	OOMeshLoader.m \
+	OOStandardModelLoadingController.m
 
 OOLITE_GRAPHICS_MATERIAL_FILES = \
 	OOBasicMaterial.m \
@@ -247,6 +251,8 @@ OOLITE_MISC_FILES = \
 	OOEquipmentType.m \
 	OORoleSet.m \
 	OOShipRegistry.m \
+	OOShipPreloader.m \
+	OOPreloadModelLoadingController.m \
 	OOSpatialReference.m \
 	OOTrumble.m \
 	Universe.m
