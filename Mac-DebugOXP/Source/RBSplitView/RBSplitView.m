@@ -971,13 +971,7 @@ static inline float fMAX(float a,float b) {
 
 // This returns the number of visible subviews.
 - (OOUInteger)RB___numberOfSubviews {
-	unsigned int result = 0;
-	NSEnumerator* enumerator = [[self subviews] objectEnumerator];
-	RBSplitSubview* sub;
-	while ((sub = [enumerator nextObject])) {
-		++result;
-	}
-	return result;
+	return [[self subviews] count];
 }
 
 // This returns the origin coordinate of the Nth divider.
