@@ -27,6 +27,7 @@
 	IBOutlet NSLevelIndicator	*_fuelIndicator;
 }
 
+- (IBAction) inspectPlayer:sender;
 - (IBAction) inspectTarget:sender;
 - (IBAction) inspectAI:sender;
 - (IBAction) inspectGroup:sender;

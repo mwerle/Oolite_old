@@ -94,9 +94,15 @@
 }
 
 
-- (IBAction) inspectTarget:sender
-{
-	[[[self object] primaryTarget] inspect];
+- (IBAction) inspectPlayer:sender 
+{ 
+   [[self object] inspect]; 
+} 
+
+
+- (IBAction) inspectTarget:sender 
+{ 
+   [[[self object] primaryTarget] inspect]; 
 }
 
 
