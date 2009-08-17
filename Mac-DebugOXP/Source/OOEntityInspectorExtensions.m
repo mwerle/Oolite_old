@@ -190,11 +190,11 @@
 
 - (NSString *) inspSecondaryIdentityLine
 {
-	//return [self displayName];
+	return [self displayName];
 	
 	// FIXME: trying to access player_name returns nil and leads to oolite crashing
 	// the following test line
-	return [NSString stringWithFormat:@"%@",  player_name];
+	// return [NSString stringWithFormat:@"%@",  player_name];
 	// exhibits the same behaviour as the original line, including crashes.
 	
 	// original line - allows for international characters in the commander's name.
