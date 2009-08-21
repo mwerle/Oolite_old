@@ -148,6 +148,7 @@
 		1A909C930F3C6DCA003AE160 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OOShipGroupDebugInspectorModule.xib; sourceTree = "<group>"; };
 		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
 		1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOTextFieldHistoryManager.m; sourceTree = "<group>"; };
+		1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-options.xcconfig"; path = "../src/Cocoa/oolite-options.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1AF0246D0C99931C006F7275 /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
 		1AF0246E0C99931C006F7275 /* RBSplitSubview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RBSplitSubview.m; sourceTree = "<group>"; };
 		1AF0246F0C99931C006F7275 /* RBSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitView.h; sourceTree = "<group>"; };
@@ -174,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				1A846BAB0D79F9680081280D /* oolite-version.xcconfig */,
+				1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */,
 				1A0518D00C7CC69600BA5CCA /* Source */,
 				1A4FB2F70C8DB87100DC8E1F /* SpiderMonkey headers */,
 				089C167CFE841241C02AAC07 /* Resources */,
@@ -541,7 +543,7 @@
 		};
 		1A581F830E311D5C007594C1 /* Debug GCC 4.2/Leopard */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1A846BAB0D79F9680081280D /* oolite-version.xcconfig */;
+			baseConfigurationReference = 1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
@@ -557,7 +559,10 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = XP_UNIX;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					$OOLITE_OPTION_MACROS,
+					XP_UNIX,
+				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
@@ -577,7 +582,7 @@
 		};
 		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1A846BAB0D79F9680081280D /* oolite-version.xcconfig */;
+			baseConfigurationReference = 1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = ../build/$CONFIGURATION/OoliteDev.app/Contents/MacOS/OoliteDev;
 				COPY_PHASE_STRIP = NO;
@@ -591,7 +596,10 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = XP_UNIX;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					$OOLITE_OPTION_MACROS,
+					XP_UNIX,
+				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
@@ -611,7 +619,7 @@
 		};
 		1DEB913C08733D840010E9CD /* TestRelease */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1A846BAB0D79F9680081280D /* oolite-version.xcconfig */;
+			baseConfigurationReference = 1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					ppc,
@@ -627,7 +635,10 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = XP_UNIX;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					$OOLITE_OPTION_MACROS,
+					XP_UNIX,
+				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
