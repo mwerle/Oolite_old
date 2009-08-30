@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -530,56 +530,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1A581F820E311D5C007594C1 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_VERSION = 4.2;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-			};
-			name = "Debug GCC 4.2/Leopard";
-		};
-		1A581F830E311D5C007594C1 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
-				BUNDLE_LOADER = "../build/Debug GCC 4.2/Leopard/OoliteDev.app/Contents/MacOS/OoliteDev";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)\"";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					$OOLITE_OPTION_MACROS,
-					XP_UNIX,
-				);
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
-				PRODUCT_NAME = Debug;
-				SYMROOT = ../build;
-				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-unused-parameter",
-					"-Wno-missing-field-initializers",
-				);
-				WRAPPER_EXTENSION = oxp;
-			};
-			name = "Debug GCC 4.2/Leopard";
-		};
 		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */;
@@ -621,10 +571,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				BUNDLE_LOADER = ../build/TestRelease/Oolite.app/Contents/MacOS/Oolite;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -662,7 +608,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
 			name = Debug;
 		};
@@ -672,7 +618,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = TestRelease;
 		};
@@ -683,7 +628,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913B08733D840010E9CD /* Debug */,
-				1A581F830E311D5C007594C1 /* Debug GCC 4.2/Leopard */,
 				1DEB913C08733D840010E9CD /* TestRelease */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -693,7 +637,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913F08733D840010E9CD /* Debug */,
-				1A581F820E311D5C007594C1 /* Debug GCC 4.2/Leopard */,
 				1DEB914008733D840010E9CD /* TestRelease */,
 			);
 			defaultConfigurationIsVisible = 0;
