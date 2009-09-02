@@ -1643,7 +1643,7 @@ static inline float fMAX(float a,float b) {
 	RBSplitSubview* last = nil;
 // And we make a note if there's any nested RBSplitView.
 	OOInteger nested = NSNotFound;
-	newsize = DIM(bounds.size)-divcount*divt;
+//	newsize = DIM(bounds.size)-divcount*divt;
 	for (i=0;i<subcount;i++) {
 		curr = &caches[i];
 // If we have a nested split view store its index.
@@ -1685,9 +1685,12 @@ static inline float fMAX(float a,float b) {
 			}
 		} else {
 // For any but the last subview, we just calculate the divider frame.
-			DIM(newframe.size) = divt;
-			dividers[i] = newframe;
-			DIM(newframe.origin) += divt;
+			if (dividers != NULL)
+			{
+				DIM(newframe.size) = divt;
+				dividers[i] = newframe;
+				DIM(newframe.origin) += divt;
+			}
 		}
 	}
 // We resize our frame at this point, if we're inside an NSScrollView.
