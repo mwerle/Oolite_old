@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A1966F6104EC4880079B400 /* oolite-targets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */; };
 		1A1AB0E80909B67E001039FA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1AB0E70909B67E001039FA /* Foundation.framework */; };
 		1A69FD68090A3BC600914D59 /* schema.xml in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7D7067446EC006EBB30 /* schema.xml */; };
 		1AADEB2E09169CCB00B6D1FA /* Values.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AADEB2D09169CCB00B6D1FA /* Values.plist */; };
@@ -22,6 +23,7 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77B6FE84183AC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-targets.xcconfig"; path = "../src/Cocoa/oolite-targets.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1A1AB0E70909B67E001039FA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		1A1AB1C60909BF46001039FA /* Oolite.mdimporter */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Oolite.mdimporter; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AADEB2D09169CCB00B6D1FA /* Values.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Values.plist; sourceTree = "<group>"; };
@@ -49,6 +51,7 @@
 		089C166AFE841209C02AAC07 /* Oolite-importer */ = {
 			isa = PBXGroup;
 			children = (
+				1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */,
 				08FB77AFFE84173DC02AAC07 /* Source */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
@@ -155,6 +158,7 @@
 				C88FB7E40674480E006EBB30 /* schema.strings in Resources */,
 				1A69FD68090A3BC600914D59 /* schema.xml in Resources */,
 				1AADEB2E09169CCB00B6D1FA /* Values.plist in Resources */,
+				1A1966F6104EC4880079B400 /* oolite-targets.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,12 +260,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
 			name = TestRelease;
 		};
-		1A1AB07E0909AE56001039FA /* Development */ = {
+		1A1AB07E0909AE56001039FA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -299,65 +304,15 @@
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
 			};
-			name = Development;
+			name = Debug;
 		};
-		1A1AB0820909AE56001039FA /* Development */ = {
+		1A1AB0820909AE56001039FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
-			name = Development;
-		};
-		1A581F710E311D36007594C1 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_VERSION = 4.2;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-			};
-			name = "Debug GCC 4.2/Leopard";
-		};
-		1A581F720E311D36007594C1 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = /Library/Spotlight;
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
-				PRODUCT_NAME = Oolite;
-				SECTORDER_FLAGS = "";
-				SYMROOT = ../build;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-unused-parameter",
-				);
-				WRAPPER_EXTENSION = mdimporter;
-				ZERO_LINK = NO;
-			};
-			name = "Debug GCC 4.2/Leopard";
+			name = Debug;
 		};
 		1ADCD4380975615F0038B52E /* Deployment */ = {
 			isa = XCBuildConfiguration;
@@ -413,7 +368,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
 			name = Deployment;
 		};
@@ -423,8 +378,7 @@
 		1A1AB07D0909AE56001039FA /* Build configuration list for PBXNativeTarget "Oolite-importer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A1AB07E0909AE56001039FA /* Development */,
-				1A581F720E311D36007594C1 /* Debug GCC 4.2/Leopard */,
+				1A1AB07E0909AE56001039FA /* Debug */,
 				1ADCD4380975615F0038B52E /* Deployment */,
 				1A0832E50C2F10BC00E3AE25 /* TestRelease */,
 			);
@@ -434,8 +388,7 @@
 		1A1AB0810909AE56001039FA /* Build configuration list for PBXProject "Oolite-importer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A1AB0820909AE56001039FA /* Development */,
-				1A581F710E311D36007594C1 /* Debug GCC 4.2/Leopard */,
+				1A1AB0820909AE56001039FA /* Debug */,
 				1ADCD4390975615F0038B52E /* Deployment */,
 				1A0832E60C2F10BC00E3AE25 /* TestRelease */,
 			);

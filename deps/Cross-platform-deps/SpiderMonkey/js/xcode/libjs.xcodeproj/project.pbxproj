@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -50,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A196701104EC4BD0079B400 /* oolite-targets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-targets.xcconfig"; path = "../../../../../src/Cocoa/oolite-targets.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1A4FB1BE0C8D662300DC8E1F /* jsautokw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsautokw.h; sourceTree = SOURCE_ROOT; };
 		1A4FB1D20C8D66CC00DC8E1F /* jsiter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jsiter.c; sourceTree = "<group>"; };
 		1A4FB1D90C8D66EA00DC8E1F /* jskwgen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jskwgen.c; sourceTree = "<group>"; };
@@ -107,6 +108,7 @@
 		08FB7794FE84155DC02AAC07 /* libjs */ = {
 			isa = PBXGroup;
 			children = (
+				1A196701104EC4BD0079B400 /* oolite-targets.xcconfig */,
 				1AEAABF50BA4555C000705D0 /* Source */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
@@ -286,12 +288,9 @@
 /* Begin XCBuildConfiguration section */
 		1A6B50330C8B42130035DFCC /* TestRelease */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A196701104EC4BD0079B400 /* oolite-targets.xcconfig */;
 			buildSettings = {
 				ALL_CONFIG_MACROS = "JS_HAVE_LONG_LONG XP_UNIX JS_C_STRINGS_ARE_UTF8 NAME_ALL_GC_ROOTS";
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
@@ -312,48 +311,13 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
 			name = TestRelease;
 		};
-		1AD6B24A0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
-				GCC_VERSION = 4.2;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-			};
-			name = "Debug GCC 4.2/Leopard";
-		};
-		1AD6B24B0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALL_CONFIG_MACROS = "JS_HAVE_LONG_LONG XP_UNIX JS_C_STRINGS_ARE_UTF8 NAME_ALL_GC_ROOTS";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_DEBUGGING_SYMBOLS = full;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREFIX_HEADER = jsautocfg.h;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					$ALL_CONFIG_MACROS,
-					DEBUG,
-					DEBUG_brendan,
-				);
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = js;
-				SYMROOT = ../../../../../build;
-				USER_HEADER_SEARCH_PATHS = "\"$PROJECT_DIR\" \"$PROJECT_DIR/../src/\"";
-			};
-			name = "Debug GCC 4.2/Leopard";
-		};
 		1DEB91EC08733DB70010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A196701104EC4BD0079B400 /* oolite-targets.xcconfig */;
 			buildSettings = {
 				ALL_CONFIG_MACROS = "JS_HAVE_LONG_LONG XP_UNIX JS_C_STRINGS_ARE_UTF8 NAME_ALL_GC_ROOTS";
 				COPY_PHASE_STRIP = NO;
@@ -376,12 +340,9 @@
 		};
 		1DEB91ED08733DB70010E9CD /* Deployment */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A196701104EC4BD0079B400 /* oolite-targets.xcconfig */;
 			buildSettings = {
 				ALL_CONFIG_MACROS = "JS_HAVE_LONG_LONG XP_UNIX JS_C_STRINGS_ARE_UTF8 NAME_ALL_GC_ROOTS";
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREPROCESSOR_DEFINITIONS = $ALL_CONFIG_MACROS;
@@ -401,7 +362,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
 			name = Debug;
 		};
@@ -411,7 +372,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
 			name = Deployment;
 		};
@@ -422,7 +383,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91EC08733DB70010E9CD /* Debug */,
-				1AD6B24B0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */,
 				1DEB91ED08733DB70010E9CD /* Deployment */,
 				1A6B50330C8B42130035DFCC /* TestRelease */,
 			);
@@ -433,7 +393,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91F008733DB70010E9CD /* Debug */,
-				1AD6B24A0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */,
 				1DEB91F108733DB70010E9CD /* Deployment */,
 				1A6B50340C8B42130035DFCC /* TestRelease */,
 			);
