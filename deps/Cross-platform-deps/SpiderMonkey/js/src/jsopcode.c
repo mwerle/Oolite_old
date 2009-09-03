@@ -208,7 +208,7 @@ js_Disassemble1(JSContext *cx, JSScript *script, jsbytecode *pc, uintN loc,
       case JOF_JUMP:
       case JOF_JUMPX:
         off = GetJumpOffset(pc, pc);
-        fprintf(fp, " %u (%d)", loc + off, off);
+        fprintf(fp, " %lu (%ld)", (unsigned long)(loc + off), (long)off);
         break;
 
       case JOF_CONST:
@@ -239,10 +239,10 @@ js_Disassemble1(JSContext *cx, JSScript *script, jsbytecode *pc, uintN loc,
         pc2 += JUMP_OFFSET_LEN;
         high = GET_JUMP_OFFSET(pc2);
         pc2 += JUMP_OFFSET_LEN;
-        fprintf(fp, " defaultOffset %d low %d high %d", off, low, high);
+        fprintf(fp, " defaultOffset %ld low %ld high %ld", (long)off, (long)low, (long)high);
         for (i = low; i <= high; i++) {
             off = GetJumpOffset(pc, pc2);
-            fprintf(fp, "\n\t%d: %d", i, off);
+            fprintf(fp, "\n\t%d: %long d", i, (long)off);
             pc2 += jmplen;
         }
         len = 1 + pc2 - pc;
@@ -262,7 +262,7 @@ js_Disassemble1(JSContext *cx, JSScript *script, jsbytecode *pc, uintN loc,
         pc2 += jmplen;
         npairs = GET_ATOM_INDEX(pc2);
         pc2 += ATOM_INDEX_LEN;
-        fprintf(fp, " offset %d npairs %u", off, (uintN) npairs);
+        fprintf(fp, " offset %ld npairs %u", (long)off, (uintN) npairs);
         while (npairs) {
             atom = GET_ATOM(cx, script, pc2);
             pc2 += ATOM_INDEX_LEN;
@@ -272,7 +272,7 @@ js_Disassemble1(JSContext *cx, JSScript *script, jsbytecode *pc, uintN loc,
             bytes = ToDisassemblySource(cx, ATOM_KEY(atom));
             if (!bytes)
                 return 0;
-            fprintf(fp, "\n\t%s: %d", bytes, off);
+            fprintf(fp, "\n\t%s: %ld", bytes, (long)off);
             npairs--;
         }
         len = 1 + pc2 - pc;

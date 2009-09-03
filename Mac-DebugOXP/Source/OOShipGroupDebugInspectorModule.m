@@ -63,13 +63,13 @@
 }
 
 
-- (int)numberOfRowsInTableView:(NSTableView *)tableView
+- (OOInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
 	return [_members count];
 }
 
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(OOInteger)row
 {
 	return [[_members objectAtIndex:row] inspDescription];
 }

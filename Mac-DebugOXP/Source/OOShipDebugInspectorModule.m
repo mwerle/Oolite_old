@@ -141,13 +141,3 @@
 }
 
 @end
-
-
-@implementation ShipEntity (DebugRawAccess)
-
-- (OOShipGroup *) rawEscortGroup
-{
-	return _escortGroup;
-}
-
-@end

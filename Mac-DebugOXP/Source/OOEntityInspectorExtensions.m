@@ -190,7 +190,7 @@
 
 - (NSString *) inspSecondaryIdentityLine
 {
-	return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"\"%@\", %@", nil, [NSBundle bundleForClass:[self class]], @""), player_name, [self displayName]];
+	return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"\"%@\", %@", nil, [NSBundle bundleForClass:[self class]], @""), [self captainName], [self displayName]];
 }
 
 

@@ -849,10 +849,10 @@ OptimizeSpanDeps(JSContext *cx, JSCodeGenerator *cg)
 
     if (growth) {
 #ifdef DEBUG_brendan
-        printf("%s:%u: %u/%u jumps extended in %d passes (%d=%d+%d)\n",
+        printf("%s:%u: %lu/%u jumps extended in %d passes (%ld=%ld+%ld)\n",
                cg->filename ? cg->filename : "stdin", cg->firstLine,
-               growth / (JUMPX_OFFSET_LEN - JUMP_OFFSET_LEN), cg->numSpanDeps,
-               passes, offset + growth, offset, growth);
+               (long)(growth / (JUMPX_OFFSET_LEN - JUMP_OFFSET_LEN)), cg->numSpanDeps,
+               passes, (long)(offset + growth), (long)offset, (long)growth);
 #endif
 
         /*
