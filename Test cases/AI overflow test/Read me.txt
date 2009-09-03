@@ -1,0 +1,5 @@
+Test case for AI stack overflow behaviour.
+
+Usage: system.legacy_addShipsWithinRadius('ahruman-stack-overflow-test', 1, 'abs', player.ship.position, 10000)
+
+This will immediately trigger a setAITo: recursion.
