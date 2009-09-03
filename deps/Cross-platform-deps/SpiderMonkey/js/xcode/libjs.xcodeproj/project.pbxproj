@@ -298,6 +298,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = js;
 				SYMROOT = ../../../../../build;
+				WARNING_CFLAGS = "-Wno-unused-value";
 			};
 			name = TestRelease;
 		};
@@ -331,6 +332,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = js;
 				SYMROOT = ../../../../../build;
+				WARNING_CFLAGS = "-Wno-unused-value";
 			};
 			name = Debug;
 		};
@@ -345,6 +347,7 @@
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = js;
 				SYMROOT = ../../../../../build;
+				WARNING_CFLAGS = "-Wno-unused-value";
 			};
 			name = Deployment;
 		};
