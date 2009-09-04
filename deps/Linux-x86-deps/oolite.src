@@ -36,8 +36,8 @@ export GNUSTEP_SYSTEM_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/System
 export GNUSTEP_NETWORK_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/Local
 export GNUSTEP_LOCAL_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/Local
 export LD_LIBRARY_PATH=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/lib
-cd $OOLITE_ROOT/$TOPLEVEL/oolite.app
-./oolite
+cd $OOLITE_ROOT/$TOPLEVEL
+./oolite.app/oolite
 if [ $? != 0 ]
 then
    echo

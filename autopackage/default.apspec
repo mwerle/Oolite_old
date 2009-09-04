@@ -28,7 +28,7 @@ profession. Above all, reach the Elite rating.
 # the libc version. Note: autopackage doesn't seem to compress, that's
 # why we are using tar files :/
 [BuildPrepare]
-make
+make -f Makefile release
 cp FreeDesktop/oolite.desktop $build_root
 cp FreeDesktop/oolite-icon.png $build_root
 cp oolite.app/oolite $build_root/oolite
