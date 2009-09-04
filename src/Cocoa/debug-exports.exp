@@ -1,4 +1,6 @@
 # Symbols used by Debug.OXP
+.objc_class_name_AI
+.objc_class_name_Entity
 .objc_class_name_PlayerEntity
 .objc_class_name_OOCacheManager
 .objc_class_name_OOGraphicsResetManager
@@ -12,6 +14,7 @@
 .objc_class_name_OODebugMonitor
 .objc_class_name_ShipEntity
 .objc_class_name_OOEntityWithDrawable
+.objc_class_name_OOShipGroup
 _OOLogWithFunctionFileAndLine
 _OOLogInsertMarker
 _OOLogSetDisplayMessagesInClass

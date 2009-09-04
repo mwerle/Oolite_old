@@ -221,6 +221,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = 4.0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -260,7 +261,7 @@
 			};
 			name = TestRelease;
 		};
-		1A1AB07E0909AE56001039FA /* Development */ = {
+		1A1AB07E0909AE56001039FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -274,6 +275,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = 4.0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -299,65 +301,15 @@
 				WRAPPER_EXTENSION = mdimporter;
 				ZERO_LINK = NO;
 			};
-			name = Development;
+			name = Debug;
 		};
-		1A1AB0820909AE56001039FA /* Development */ = {
+		1A1AB0820909AE56001039FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
-			name = Development;
-		};
-		1A581F710E311D36007594C1 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_VERSION = 4.2;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-			};
-			name = "Debug GCC 4.2/Leopard";
-		};
-		1A581F720E311D36007594C1 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = /Library/Spotlight;
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
-				PRODUCT_NAME = Oolite;
-				SECTORDER_FLAGS = "";
-				SYMROOT = ../build;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-unused-parameter",
-				);
-				WRAPPER_EXTENSION = mdimporter;
-				ZERO_LINK = NO;
-			};
-			name = "Debug GCC 4.2/Leopard";
+			name = Debug;
 		};
 		1ADCD4380975615F0038B52E /* Deployment */ = {
 			isa = XCBuildConfiguration;
@@ -378,6 +330,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = 4.0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -423,8 +376,7 @@
 		1A1AB07D0909AE56001039FA /* Build configuration list for PBXNativeTarget "Oolite-importer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A1AB07E0909AE56001039FA /* Development */,
-				1A581F720E311D36007594C1 /* Debug GCC 4.2/Leopard */,
+				1A1AB07E0909AE56001039FA /* Debug */,
 				1ADCD4380975615F0038B52E /* Deployment */,
 				1A0832E50C2F10BC00E3AE25 /* TestRelease */,
 			);
@@ -434,8 +386,7 @@
 		1A1AB0810909AE56001039FA /* Build configuration list for PBXProject "Oolite-importer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1A1AB0820909AE56001039FA /* Development */,
-				1A581F710E311D36007594C1 /* Debug GCC 4.2/Leopard */,
+				1A1AB0820909AE56001039FA /* Debug */,
 				1ADCD4390975615F0038B52E /* Deployment */,
 				1A0832E60C2F10BC00E3AE25 /* TestRelease */,
 			);

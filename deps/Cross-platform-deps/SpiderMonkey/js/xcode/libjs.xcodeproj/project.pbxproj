@@ -300,8 +300,7 @@
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
 				PRODUCT_NAME = js;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				SDKROOT_i386 = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				SYMROOT = ../../../../../build;
 			};
 			name = TestRelease;
@@ -312,45 +311,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
 			};
 			name = TestRelease;
-		};
-		1AD6B24A0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
-				GCC_VERSION = 4.2;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-			};
-			name = "Debug GCC 4.2/Leopard";
-		};
-		1AD6B24B0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALL_CONFIG_MACROS = "JS_HAVE_LONG_LONG XP_UNIX JS_C_STRINGS_ARE_UTF8 NAME_ALL_GC_ROOTS";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_DEBUGGING_SYMBOLS = full;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREFIX_HEADER = jsautocfg.h;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					$ALL_CONFIG_MACROS,
-					DEBUG,
-					DEBUG_brendan,
-				);
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = js;
-				SYMROOT = ../../../../../build;
-				USER_HEADER_SEARCH_PATHS = "\"$PROJECT_DIR\" \"$PROJECT_DIR/../src/\"";
-			};
-			name = "Debug GCC 4.2/Leopard";
 		};
 		1DEB91EC08733DB70010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -370,6 +333,7 @@
 				);
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = js;
+				SDKROOT_i386 = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				SYMROOT = ../../../../../build;
 			};
 			name = Debug;
@@ -389,8 +353,7 @@
 				MACOSX_DEPLOYMENT_TARGET_i386 = 10.4;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.3;
 				PRODUCT_NAME = js;
-				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
-				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				SDKROOT_i386 = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				SYMROOT = ../../../../../build;
 			};
 			name = Deployment;
@@ -401,7 +364,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
 			};
 			name = Debug;
 		};
@@ -411,7 +374,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.3.9.sdk;
 			};
 			name = Deployment;
 		};
@@ -422,7 +385,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91EC08733DB70010E9CD /* Debug */,
-				1AD6B24B0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */,
 				1DEB91ED08733DB70010E9CD /* Deployment */,
 				1A6B50330C8B42130035DFCC /* TestRelease */,
 			);
@@ -433,7 +395,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91F008733DB70010E9CD /* Debug */,
-				1AD6B24A0E3B87B5001C42D9 /* Debug GCC 4.2/Leopard */,
 				1DEB91F108733DB70010E9CD /* Deployment */,
 				1A6B50340C8B42130035DFCC /* TestRelease */,
 			);
