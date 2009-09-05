@@ -6,7 +6,7 @@ Script for cloaking device mission.
  
 
 Oolite
-Copyright © 2004-2008 Giles C Williams and contributors
+Copyright © 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@ this.name			= "oolite-cloaking-device";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2007-2009 the Oolite team.";
 this.description	= "Cloaking device mission in galaxy 5.";
-this.version		= "1.73.1";
+this.version		= "1.73.2";
 
 
 this.shipWillExitWitchspace = function ()
