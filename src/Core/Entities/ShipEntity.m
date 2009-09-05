@@ -4456,6 +4456,11 @@ NSComparisonResult ComparePlanetsBySurfaceDistance(id i1, id i2, void* context)
 	OOCargoQuantity		cargoQtyOnBoard = 0;
 	unsigned i;
 	
+	if ([self isPlayer] && ([(PlayerEntity*)self specialCargo] != nil))
+	{
+		return [self maxCargo];
+	}
+	
 	if ([self isPlayer] && [self status] == STATUS_DOCKED)
 	{
 		/*
