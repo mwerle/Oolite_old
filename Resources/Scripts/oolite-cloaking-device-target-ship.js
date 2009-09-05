@@ -6,7 +6,7 @@ Ship script for cloaking mission target ship.
 
 
 Oolite
-Copyright © 2004-2008 Giles C Williams and contributors
+Copyright © 2004-2009 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@ MA 02110-1301, USA.
 this.name			= "oolite-cloaking-device-target-ship";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2008-2009 the Oolite team.";
-this.version		= "1.73.1";
+this.version		= "1.73.2";
 
 
 this.shipDied = function ()

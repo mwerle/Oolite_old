@@ -70,7 +70,7 @@ isExecutableJavaScript(code : String) : Boolean
 
 Oolite Debug OXP
 
-Copyright © 2007-2008 Jens Ayton
+Copyright © 2007-2009 Jens Ayton
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -94,9 +94,9 @@ SOFTWARE.
 
 this.name			= "oolite-debug-console";
 this.author			= "Jens Ayton";
-this.copyright		= "© 2007-2008 the Oolite team.";
+this.copyright		= "© 2007-2009 the Oolite team.";
 this.description	= "Debug console script.";
-this.version		= "1.73.1";
+this.version		= "1.73";
 
 
 this.inputBuffer	= "";
