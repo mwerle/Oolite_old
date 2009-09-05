@@ -420,6 +420,7 @@
 		1A60AFB80D56093B0070510D /* OOMusicController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A60AFB60D56093B0070510D /* OOMusicController.m */; };
 		1A62F0FD0E26A2A000897506 /* OOEquipmentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A62F0FB0E26A2A000897506 /* OOEquipmentType.m */; };
 		1A62F0FE0E26A2A000897506 /* OOEquipmentType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A62F0FC0E26A2A000897506 /* OOEquipmentType.h */; };
+		1A644E361052AA2200833636 /* traderInterceptAI.plist in Copy AIs */ = {isa = PBXBuildFile; fileRef = 1A644E351052AA1C00833636 /* traderInterceptAI.plist */; };
 		1A6515100CCC9E2E0054D01B /* oolite-standard-vertex.vertex in Copy Shaders */ = {isa = PBXBuildFile; fileRef = 1A65150D0CCC9E220054D01B /* oolite-standard-vertex.vertex */; };
 		1A6515110CCC9E2E0054D01B /* oolite-default-shader.fragment in Copy Shaders */ = {isa = PBXBuildFile; fileRef = 1A65150E0CCC9E220054D01B /* oolite-default-shader.fragment */; };
 		1A6B1EF00C9AA5C6000717CF /* OOScriptTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A6B1EEE0C9AA5C6000717CF /* OOScriptTimer.h */; };
@@ -763,6 +764,7 @@
 			dstPath = AIs;
 			dstSubfolderSpec = 7;
 			files = (
+				1A644E361052AA2200833636 /* traderInterceptAI.plist in Copy AIs */,
 				1A94E4FC0F348D5700F1B5D9 /* delayedReactToAttackAI.plist in Copy AIs */,
 				1A572FE50D84B6A3003D4A26 /* oolite-constrictor-AI.plist in Copy AIs */,
 				1A2317B30B9D022500EF0852 /* buoyAI.plist in Copy AIs */,
@@ -1102,18 +1104,18 @@
 		1A2315500B9C778400EF0852 /* splashback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splashback.png; sourceTree = "<group>"; };
 		1A2315510B9C778400EF0852 /* trumblebox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trumblebox.png; sourceTree = "<group>"; };
 		1A2316DE0B9CFAD700EF0852 /* characters.plist */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 4; path = characters.plist; sourceTree = "<group>"; };
-		1A2316DF0B9CFAD700EF0852 /* commodities.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = commodities.plist; sourceTree = "<group>"; };
+		1A2316DF0B9CFAD700EF0852 /* commodities.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = commodities.plist; sourceTree = "<group>"; };
 		1A2316E00B9CFAD700EF0852 /* customsounds.plist */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 4; path = customsounds.plist; sourceTree = "<group>"; };
 		1A2316E10B9CFAD700EF0852 /* demoships.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = demoships.plist; sourceTree = "<group>"; };
-		1A2316E30B9CFAD700EF0852 /* equipment.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = equipment.plist; sourceTree = "<group>"; };
-		1A2316E40B9CFAD700EF0852 /* hud-small.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "hud-small.plist"; sourceTree = "<group>"; };
+		1A2316E30B9CFAD700EF0852 /* equipment.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = equipment.plist; sourceTree = "<group>"; };
+		1A2316E40B9CFAD700EF0852 /* hud-small.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "hud-small.plist"; sourceTree = "<group>"; };
 		1A2316E50B9CFAD700EF0852 /* hud.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = hud.plist; sourceTree = "<group>"; };
-		1A2316E60B9CFAD700EF0852 /* illegal_goods.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = illegal_goods.plist; sourceTree = "<group>"; };
+		1A2316E60B9CFAD700EF0852 /* illegal_goods.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = illegal_goods.plist; sourceTree = "<group>"; };
 		1A2316E70B9CFAD700EF0852 /* keyconfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; languageSpecificationIdentifier = plist; lastKnownFileType = text.plist; path = keyconfig.plist; sourceTree = "<group>"; };
 		1A2316E80B9CFAD700EF0852 /* logcontrol.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = logcontrol.plist; sourceTree = "<group>"; };
 		1A2316E90B9CFAD700EF0852 /* missiontext.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = missiontext.plist; sourceTree = "<group>"; };
 		1A2316EB0B9CFAD700EF0852 /* shipdata.plist */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 4; path = shipdata.plist; sourceTree = "<group>"; };
-		1A2316EC0B9CFAD700EF0852 /* shipyard.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = shipyard.plist; sourceTree = "<group>"; };
+		1A2316EC0B9CFAD700EF0852 /* shipyard.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = shipyard.plist; sourceTree = "<group>"; };
 		1A2316ED0B9CFAD700EF0852 /* speech_pronunciation_guide.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = speech_pronunciation_guide.plist; sourceTree = "<group>"; };
 		1A2317910B9D022400EF0852 /* buoyAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = buoyAI.plist; sourceTree = "<group>"; };
 		1A2317920B9D022500EF0852 /* collectLootAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = collectLootAI.plist; sourceTree = "<group>"; };
@@ -1468,6 +1470,7 @@
 		1A60AFB60D56093B0070510D /* OOMusicController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMusicController.m; sourceTree = "<group>"; };
 		1A62F0FB0E26A2A000897506 /* OOEquipmentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOEquipmentType.m; sourceTree = "<group>"; };
 		1A62F0FC0E26A2A000897506 /* OOEquipmentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOEquipmentType.h; sourceTree = "<group>"; };
+		1A644E351052AA1C00833636 /* traderInterceptAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = traderInterceptAI.plist; path = ../../trunk/Resources/AIs/traderInterceptAI.plist; sourceTree = SOURCE_ROOT; };
 		1A65150D0CCC9E220054D01B /* oolite-standard-vertex.vertex */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "oolite-standard-vertex.vertex"; sourceTree = "<group>"; };
 		1A65150E0CCC9E220054D01B /* oolite-default-shader.fragment */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "oolite-default-shader.fragment"; sourceTree = "<group>"; };
 		1A6B1EEE0C9AA5C6000717CF /* OOScriptTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOScriptTimer.h; sourceTree = "<group>"; };
@@ -1704,8 +1707,8 @@
 		25F3E8A50994FE65002F25FD /* oolite-expansion-document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "oolite-expansion-document.icns"; sourceTree = "<group>"; };
 		25F3E8A60994FE65002F25FD /* oolite-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "oolite-icon.icns"; sourceTree = "<group>"; };
 		25F3E8B30994FE9B002F25FD /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
-		25F3E8BC09950088002F25FD /* Info-Oolite.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Info-Oolite.plist"; path = "../src/Cocoa/Info-Oolite.plist"; sourceTree = "<group>"; };
-		25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Info-OoliteDev.plist"; path = "../src/Cocoa/Info-OoliteDev.plist"; sourceTree = "<group>"; };
+		25F3E8BC09950088002F25FD /* Info-Oolite.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-Oolite.plist"; path = "../src/Cocoa/Info-Oolite.plist"; sourceTree = "<group>"; };
+		25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-OoliteDev.plist"; path = "../src/Cocoa/Info-OoliteDev.plist"; sourceTree = "<group>"; };
 		25F3E8C3099500F1002F25FD /* SoundInspector.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = SoundInspector.nib; path = ../src/Cocoa/SoundInspector.nib; sourceTree = "<group>"; };
 		25F46750099695D5009483BF /* OoliteApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OoliteApp.h; sourceTree = "<group>"; };
 		25F46751099695D5009483BF /* OoliteApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OoliteApp.m; sourceTree = "<group>"; };
@@ -1890,6 +1893,7 @@
 				1A2317B00B9D022500EF0852 /* thargletAI.plist */,
 				1A2317B10B9D022500EF0852 /* thargoidAI.plist */,
 				1A2317B20B9D022500EF0852 /* timebombAI.plist */,
+				1A644E351052AA1C00833636 /* traderInterceptAI.plist */,
 				1A94E4FB0F348D4300F1B5D9 /* delayedReactToAttackAI.plist */,
 			);
 			path = AIs;
