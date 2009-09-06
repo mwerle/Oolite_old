@@ -446,8 +446,8 @@ static OODebugController *sSingleton = nil;
 	
 	for (i = 0; i != count; ++i)
 	{
-		title = [definitions stringAtIndex:i * 2];
-		key = [definitions stringAtIndex:i * 2 + 1];
+		title = [definitions oo_stringAtIndex:i * 2];
+		key = [definitions oo_stringAtIndex:i * 2 + 1];
 		if (title == nil || key == nil)  continue;
 		
 		item = [[NSMenuItem alloc] initWithTitle:title
