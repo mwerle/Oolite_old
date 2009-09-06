@@ -346,6 +346,13 @@ static NSString *StringForObject(id object, NSString *defaultValue);
 }
 
 
+- (id)oo_objectAtIndexSafe:(OOUInteger)index
+{
+	if (index < [self count])  return [self objectAtIndex:index];
+	else  return nil;
+}
+
+
 - (id)objectOfClass:(Class)class atIndex:(OOUInteger)index
 {
 	return [self objectOfClass:class atIndex:index defaultValue:nil];

@@ -140,6 +140,7 @@ SOFTWARE.
 
 // Default: nil
 // - (id)objectAtIndex:(OOUInteger)index;	// Already defined
+- (id)oo_objectAtIndexSafe:(OOUInteger)index;
 - (id)objectOfClass:(Class)class atIndex:(OOUInteger)index;
 - (NSString *)stringAtIndex:(OOUInteger)index;
 - (NSArray *)arrayAtIndex:(OOUInteger)index;

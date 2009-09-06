@@ -531,7 +531,7 @@
 		1AB01ABE0BB15AED00F1B949 /* OOTextureScaling.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AB01ABC0BB15AED00F1B949 /* OOTextureScaling.h */; };
 		1AB01B5F0BB1639600F1B949 /* OOTextureScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AB01ABD0BB15AED00F1B949 /* OOTextureScaling.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31"; }; };
 		1AB01BBB0BB16A8A00F1B949 /* OOFastArithmetic.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AB01BB90BB16A8A00F1B949 /* OOFastArithmetic.h */; };
-		1AB01BBC0BB16A8A00F1B949 /* OOFastArithmetic.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AB01BBA0BB16A8A00F1B949 /* OOFastArithmetic.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31 -falign-functions=32"; }; };
+		1AB01BBC0BB16A8A00F1B949 /* OOFastArithmetic.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AB01BBA0BB16A8A00F1B949 /* OOFastArithmetic.m */; settings = {COMPILER_FLAGS = "-O3 -falign-loops=32 -falign-loops-max-skip=31 -falign-functions=32 -fasm-blocks"; }; };
 		1AB2AAFA0C4CE0CC0008CF4E /* OOOXPVerifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AB2AAF80C4CE0CC0008CF4E /* OOOXPVerifier.h */; };
 		1AB2AAFB0C4CE0CC0008CF4E /* OOOXPVerifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2AAF90C4CE0CC0008CF4E /* OOOXPVerifier.m */; };
 		1AB2AB130C4CE4070008CF4E /* verifyOXP.plist in Copy Config */ = {isa = PBXBuildFile; fileRef = 1AB2AB120C4CE4070008CF4E /* verifyOXP.plist */; };
@@ -1104,18 +1104,18 @@
 		1A2315500B9C778400EF0852 /* splashback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splashback.png; sourceTree = "<group>"; };
 		1A2315510B9C778400EF0852 /* trumblebox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trumblebox.png; sourceTree = "<group>"; };
 		1A2316DE0B9CFAD700EF0852 /* characters.plist */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 4; path = characters.plist; sourceTree = "<group>"; };
-		1A2316DF0B9CFAD700EF0852 /* commodities.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = commodities.plist; sourceTree = "<group>"; };
+		1A2316DF0B9CFAD700EF0852 /* commodities.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = commodities.plist; sourceTree = "<group>"; };
 		1A2316E00B9CFAD700EF0852 /* customsounds.plist */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 4; path = customsounds.plist; sourceTree = "<group>"; };
 		1A2316E10B9CFAD700EF0852 /* demoships.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = demoships.plist; sourceTree = "<group>"; };
-		1A2316E30B9CFAD700EF0852 /* equipment.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = equipment.plist; sourceTree = "<group>"; };
-		1A2316E40B9CFAD700EF0852 /* hud-small.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "hud-small.plist"; sourceTree = "<group>"; };
+		1A2316E30B9CFAD700EF0852 /* equipment.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = equipment.plist; sourceTree = "<group>"; };
+		1A2316E40B9CFAD700EF0852 /* hud-small.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "hud-small.plist"; sourceTree = "<group>"; };
 		1A2316E50B9CFAD700EF0852 /* hud.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = hud.plist; sourceTree = "<group>"; };
-		1A2316E60B9CFAD700EF0852 /* illegal_goods.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = illegal_goods.plist; sourceTree = "<group>"; };
+		1A2316E60B9CFAD700EF0852 /* illegal_goods.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = illegal_goods.plist; sourceTree = "<group>"; };
 		1A2316E70B9CFAD700EF0852 /* keyconfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; languageSpecificationIdentifier = plist; lastKnownFileType = text.plist; path = keyconfig.plist; sourceTree = "<group>"; };
 		1A2316E80B9CFAD700EF0852 /* logcontrol.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = logcontrol.plist; sourceTree = "<group>"; };
 		1A2316E90B9CFAD700EF0852 /* missiontext.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = missiontext.plist; sourceTree = "<group>"; };
 		1A2316EB0B9CFAD700EF0852 /* shipdata.plist */ = {isa = PBXFileReference; explicitFileType = text.plist; fileEncoding = 4; path = shipdata.plist; sourceTree = "<group>"; };
-		1A2316EC0B9CFAD700EF0852 /* shipyard.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = shipyard.plist; sourceTree = "<group>"; };
+		1A2316EC0B9CFAD700EF0852 /* shipyard.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = shipyard.plist; sourceTree = "<group>"; };
 		1A2316ED0B9CFAD700EF0852 /* speech_pronunciation_guide.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = speech_pronunciation_guide.plist; sourceTree = "<group>"; };
 		1A2317910B9D022400EF0852 /* buoyAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = buoyAI.plist; sourceTree = "<group>"; };
 		1A2317920B9D022500EF0852 /* collectLootAI.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = collectLootAI.plist; sourceTree = "<group>"; };
@@ -1707,8 +1707,8 @@
 		25F3E8A50994FE65002F25FD /* oolite-expansion-document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "oolite-expansion-document.icns"; sourceTree = "<group>"; };
 		25F3E8A60994FE65002F25FD /* oolite-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "oolite-icon.icns"; sourceTree = "<group>"; };
 		25F3E8B30994FE9B002F25FD /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
-		25F3E8BC09950088002F25FD /* Info-Oolite.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Info-Oolite.plist"; path = "../src/Cocoa/Info-Oolite.plist"; sourceTree = "<group>"; };
-		25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Info-OoliteDev.plist"; path = "../src/Cocoa/Info-OoliteDev.plist"; sourceTree = "<group>"; };
+		25F3E8BC09950088002F25FD /* Info-Oolite.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-Oolite.plist"; path = "../src/Cocoa/Info-Oolite.plist"; sourceTree = "<group>"; };
+		25F3E8BD09950088002F25FD /* Info-OoliteDev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-OoliteDev.plist"; path = "../src/Cocoa/Info-OoliteDev.plist"; sourceTree = "<group>"; };
 		25F3E8C3099500F1002F25FD /* SoundInspector.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = SoundInspector.nib; path = ../src/Cocoa/SoundInspector.nib; sourceTree = "<group>"; };
 		25F46750099695D5009483BF /* OoliteApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OoliteApp.h; sourceTree = "<group>"; };
 		25F46751099695D5009483BF /* OoliteApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OoliteApp.m; sourceTree = "<group>"; };
@@ -3564,11 +3564,13 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = PNG_USER_CONFIG;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/src/Core/Materials/\"";
 				INSTALL_PATH = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				PREBINDING = NO;
 				PRODUCT_NAME = png;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				SDKROOT_i386 = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				ZERO_LINK = NO;
 			};
@@ -3594,6 +3596,7 @@
 				GCC_REUSE_STRINGS = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					"$(HEADER_SEARCH_PATHS_QUOTED_1)",
 					"$(HEADER_SEARCH_PATHS_QUOTED_2)",
@@ -3625,6 +3628,7 @@
 				OTHER_LDFLAGS_QUOTED_FOR_TARGET_2 = "\"$(OGGVORBISROOT)/libVorbisAll.a\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = Oolite;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				SDKROOT_i386 = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				SECTORDER_FLAGS = "";
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/src/Core/\" \"$(SRCROOT)/src/Core/Entites/\" \"$(SRCROOT)/src/Core/Materials/\" \"$(SRCROOT)/src/BSDCompat/\"";

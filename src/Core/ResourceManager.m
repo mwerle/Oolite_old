@@ -641,17 +641,24 @@ static NSMutableDictionary *string_cache;
 	{
 		for (j = 0; j < [arrayToProcess count] - 1; j++)
 		{
-			for (k=0; k < [[arrayToProcess objectAtIndex:j] count] - 1; k++)
-			{
-				id processValue = [[[arrayToProcess objectAtIndex:j] objectAtIndex:k] objectAtIndex:lookupIndex defaultValue:nil];
-				id refValue = [[refArray objectAtIndex:i] objectAtIndex:lookupIndex defaultValue:nil];
-				
-				if ([processValue isEqual:refValue])
+			OOUInteger count = [[arrayToProcess arrayAtIndex:j] count];
+			if (count == 0)  continue;
+			
+			NS_DURING
+				for (k=0; k < count - 1; k++)
 				{
-					[[arrayToProcess objectAtIndex:j] replaceObjectAtIndex:k withObject:[refArray objectAtIndex:i]];
-					[refArray removeObjectAtIndex:i];
+					id processValue = [[[arrayToProcess oo_objectAtIndexSafe:j] oo_objectAtIndexSafe:k] oo_objectAtIndexSafe:lookupIndex];
+					id refValue = [[refArray oo_objectAtIndexSafe:i] oo_objectAtIndexSafe:lookupIndex];
+					
+					if ([processValue isEqual:refValue])
+					{
+						[[arrayToProcess objectAtIndex:j] replaceObjectAtIndex:k withObject:[refArray objectAtIndex:i]];
+						[refArray removeObjectAtIndex:i];
+					}
 				}
-			}
+			NS_HANDLER
+				// Squash exceptions.
+			NS_ENDHANDLER
 		}
 	}
 	// arrayToProcess has been processed at this point. Any necessary merging has been done.
