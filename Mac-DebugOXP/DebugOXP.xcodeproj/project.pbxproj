@@ -59,21 +59,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 1ABFEE3C10507C5C005AA752 /* Oolite.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 0865432206B8447D000CA0AB /* OoliteDev.app */;
+			remoteGlobalIDString = 0865432206B8447D000CA0AB;
 			remoteInfo = Oolite;
 		};
 		1ABFEE4410507C5C005AA752 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1ABFEE3C10507C5C005AA752 /* Oolite.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 1A71E6F30BCE340C00CD5C13 /* libpng.a */;
+			remoteGlobalIDString = 1A71E6F30BCE340C00CD5C13;
 			remoteInfo = "libpng-custom";
 		};
 		1ABFEE4610507C61005AA752 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1ABFEE3C10507C5C005AA752 /* Oolite.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 0865423506B8447D000CA0AB /* Oolite */;
+			remoteGlobalIDString = 0865423506B8447D000CA0AB;
 			remoteInfo = Oolite;
 		};
 /* End PBXContainerItemProxy section */
@@ -323,7 +323,7 @@
 		1ABFEE3D10507C5C005AA752 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1ABFEE4310507C5C005AA752 /* OoliteDev.app */,
+				1ABFEE4310507C5C005AA752 /* Oolite.app */,
 				1ABFEE4510507C5C005AA752 /* libpng.a */,
 			);
 			name = Products;
@@ -424,10 +424,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		1ABFEE4310507C5C005AA752 /* OoliteDev.app */ = {
+		1ABFEE4310507C5C005AA752 /* Oolite.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = OoliteDev.app;
+			path = Oolite.app;
 			remoteRef = 1ABFEE4210507C5C005AA752 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -495,7 +495,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-debug-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/requires.plist\"\necho \"{ version = \\\"${OOLITE_VERSION}\\\"; max_version = \\\"${OOLITE_VERSION}.99\\\"; }\" > $REQUIRES_PLIST\n";
+			shellScript = "SRC_PATH=\"$SRCROOT/Resources\"\nDST_PATH=\"$SRCROOT/../tools/simpleDebugConsole/Basic-debug.oxp\"\n\nif [ ! -e \"$DST_PATH/Config\" ]\nthen\n\tmkdir \"$DST_PATH/Config\"\nfi\ncp \"$SRC_PATH/debugConfig.plist\" \"$DST_PATH/Config\"\ncp \"$SRC_PATH/DebugOXPLocatorBeacon.magic\" \"$DST_PATH\"\n\nif [ ! -e \"$DST_PATH/Scripts\" ]\nthen\n\tmkdir \"$DST_PATH/Scripts\"\nfi\ncp \"$SRC_PATH/oolite-debug-console.js\" \"$DST_PATH/Scripts\"\n\nREQUIRES_PLIST=\"$DST_PATH/requires.plist\"\necho \"{ version = \\\"${OOLITE_VERSION}\\\"; max_version = \\\"${OOLITE_VERSION}.99\\\"; }\" > \"$REQUIRES_PLIST\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
