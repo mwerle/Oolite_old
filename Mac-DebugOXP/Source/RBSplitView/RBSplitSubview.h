@@ -24,7 +24,7 @@ typedef enum {
 // Most getter methods simply return the corresponding instance variable, so with some care, subclasses
 // could reference them directly.
 	NSString* identifier;			// An identifier string for the subview, default is @"".
-	int tag;						// A tag integer for the subview, default is 0.
+	OOInteger tag;					// A tag integer for the subview, default is 0.
 	float minDimension;				// The minimum dimension. Must be 1.0 or any larger integer.
 	float maxDimension;				// The maximum dimension. Must be at least equal to the minDimension.
 									// Set to a large number if there's no maximum.
@@ -73,8 +73,8 @@ typedef enum {
 - (unsigned)numberOfSubviews;
 
 // Sets and gets the tag.
-- (void)setTag:(int)theTag;
-- (int)tag;
+- (void)setTag:(OOInteger)theTag;
+- (OOInteger)tag;
 
 // Sets and gets the identifier string. Will never be nil.
 - (void)setIdentifier:(NSString*)aString;

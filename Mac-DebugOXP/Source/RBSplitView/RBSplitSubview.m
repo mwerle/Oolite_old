@@ -144,11 +144,11 @@ static animationData* currentAnimation = NULL;
 
 // You can use either tags (ints) or identifiers (NSStrings) to identify individual subviews.
 // We take care not to have nil identifiers.
-- (void)setTag:(int)theTag {
+- (void)setTag:(OOInteger)theTag {
 	tag = theTag;
 }
 
-- (int)tag {
+- (OOInteger)tag {
 	return tag;
 }
 
