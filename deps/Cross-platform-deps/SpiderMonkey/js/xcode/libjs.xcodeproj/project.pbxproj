@@ -332,6 +332,7 @@
 					DEBUG,
 					DEBUG_brendan,
 				);
+				GCC_VERSION = 4.0;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = js;
 				SDKROOT_i386 = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
