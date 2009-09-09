@@ -78,7 +78,7 @@ static OODebugController *sSingleton = nil;
 		nibPath = [self pathForResource:@"OODebugController" ofType:@"nib"];
 		if (nibPath == nil)
 		{
-			OOLog(@"debugOXP.load.failed", @"Could not find OODebugController.oxp.");
+			OOLog(@"debugOXP.load.failed", @"Could not find OODebugController.nib.");
 			[self release];
 			self = nil;
 		}
