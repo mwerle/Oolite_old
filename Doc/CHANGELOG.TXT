@@ -2,6 +2,8 @@ Changes between Oolite 1.73.2 and Oolite 1.73.3:
 * Fixed failure on startup when two OXPs define the same equipment.
 * Fixed bug where the system data screen showed a planet in systems that had
   gone nova.
+* Fixed AI habit of trying to steal cargo right out of other ships' scoops,
+  with hilarious results.
 * [Mac] Docking clearance, the wormhole scanner and targeting of incoming
         missiles are now enabled.
 * [Mac] Fixed incompatibility with Debug OXP.

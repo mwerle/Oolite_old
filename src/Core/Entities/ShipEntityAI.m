@@ -342,15 +342,7 @@ MA 02110-1301, USA.
 
 - (void) dropMessages:(NSString *)messageString
 {
-	NSArray				*messages = nil;
-	NSEnumerator		*messageEnum = nil;
-	NSString			*message = nil;
-	
-	messages = ScanTokensFromString(messageString);
-	for (messageEnum = [messages objectEnumerator]; (message = [messageEnum nextObject]); )
-	{
-		[shipAI dropMessage:message];
-	}
+	[shipAI dropMessage:messageString];
 }
 
 
