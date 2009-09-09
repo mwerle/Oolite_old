@@ -1,12 +1,21 @@
 # Build version string, taking into account that 'VER_REV' may not be set
-VERSION     := $(shell cat src/Cocoa/oolite-version.xcconfig | cut -d '=' -f 2)
-VER_MAJ     := $(strip $(shell echo "${VERSION}" | cut -d '.' -f 1))
-VER_MIN     := $(strip $(shell echo "${VERSION}" | cut -d '.' -f 2))
-VER_REV     := $(strip $(shell echo "${VERSION}" | cut -d '.' -f 3))
+VERSION     := $(strip $(shell cat src/Cocoa/oolite-version.xcconfig | cut -d '=' -f 2))
+VER_MAJ     := $(shell echo "${VERSION}" | cut -d '.' -f 1)
+VER_MIN     := $(shell echo "${VERSION}" | cut -d '.' -f 2)
+VER_REV     := $(shell echo "${VERSION}" | cut -d '.' -f 3)
 VER_REV     := $(if ${VER_REV},${VER_REV},0)
 SVNREVISION := $(shell svn info  | grep Revision | cut -d ' ' -f 2)
 VER         := $(shell echo "${VER_MAJ}.${VER_MIN}.${VER_REV}.${SVNREVISION}")
 BUILDTIME   := $(shell date "+%Y.%m.%d %H:%M")
+DEB_BUILDTIME   := $(shell date "+%a, %d %b %Y %H:%M:%S %z")
+ifeq (${VER_REV},0)
+DEB_VER     := $(shell echo "${VER_MAJ}.${VER_MIN}")
+else
+DEB_VER     := $(shell echo "${VER_MAJ}.${VER_MIN}.${VER_REV}")
+endif
+DEB_REV  := -$(shell cat debian/revision)
+pkg-debtest: DEB_REV := $(shell echo "~test${DEB_REV}")
+pkg-debsnapshot: DEB_REV := $(shell echo "~svn${SVNREVISION}${DEB_REV}")
 
 LIBJS_SRC_DIR=deps/Cross-platform-deps/SpiderMonkey/js/src
 
@@ -62,10 +71,25 @@ all: release release-snapshot debug
 .PHONY: remake
 remake: clean all
 
+# Here are our linux autopackager targets
+#
+pkg-autopackage:
+	makepackage -c -m
+
 # Here are our Debian packager targets
 #
-.PHONY: pkg-deb
-pkg-deb:
+.PHONY: debian/changelog
+debian/changelog:
+	cat debian/changelog.in | sed -e "s/@@VERSION@@/${DEB_VER}/g" -e "s/@@REVISION@@/${DEB_REV}/g" -e "s/@@TIMESTAMP@@/${DEB_BUILDTIME}/g" > debian/changelog
+
+.PHONY: pkg-deb pkg-debtest pkg-debsnapshot
+pkg-deb: debian/changelog
+	debuild binary
+
+pkg-debtest: debian/changelog
+	debuild binary
+
+pkg-debsnapshot: debian/changelog
 	debuild binary
 
 .PHONY: pkg-debclean
@@ -107,8 +131,12 @@ help:
 	@echo "  all     - builds the above two targets"
 	@echo "  clean   - removes all generated files"
 	@echo
-	@echo "  pkg-deb - builds a Debian package"
+	@echo "  pkg-deb - builds a release Debian package"
+	@echo "  pkg-debtest - builds a test release Debian package"
+	@echo "  pkg-debsnapshot - builds a snapshot release Debian package"
 	@echo "  pkg-debclean - cleans up after a Debian package build"
+	@echo
+	@echo "  pkg-autopackage - builds a Linux autopackage"
 	@echo
 	@echo "  pkg-win - builds a release version Windows installer package"
 	@echo "  pkg-win-snapshot - builds a snapshot version Windows installer package"
