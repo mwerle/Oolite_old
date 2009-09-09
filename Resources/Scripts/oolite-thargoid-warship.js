@@ -33,7 +33,7 @@ MA 02110-1301, USA.
 this.name			= "oolite-thargoid-warship";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2008 the Oolite team.";
-this.version		= "1.73.2";
+this.version		= "1.73.3";
 
 
 this.shipDied = function ()
