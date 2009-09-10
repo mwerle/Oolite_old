@@ -1,11 +1,19 @@
-oolite (@@VERSION@@@@REVISION@@) stable; urgency=low
+oolite (@@VERSION@@-0~ubuntu0904@@REVISION@@) stable; urgency=low
 
-  * Packaging release of Oolite @@VERSION@@.
+  * Snapshot release of Oolite @@VERSION@@.
     See /usr/share/doc/oolite/changelog.gz for upstream changes
+  * Includes various home-made patches.
 
  -- Michael Werle <micha@michaelwerle.com>  @@TIMESTAMP@@
 
-oolite (1.73.2-1) stable; urgency=low
+oolite (1.73.3-1) stable; urgency=low
+
+  * Packaging release of Oolite 1.73.3
+    See /usr/share/doc/oolite/changelog.gz for upstream changes
+
+ -- Michael Werle <micha@michaelwerle.com>  Wed, 09 Sep 2009 22:55:28 +0100
+
+ooolite (1.73.2-1) stable; urgency=low
 
   * Packaging release of Oolite 1.73.2
     See /usr/share/doc/oolite/changelog.gz for upstream changes

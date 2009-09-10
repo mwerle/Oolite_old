@@ -1,3 +1,7 @@
+Changes between Oolite 1.73.3 and Oolite 1.73.4:
+
+-------------------------------------------------------------------------------
+
 Changes between Oolite 1.73.2 and Oolite 1.73.3:
 * Fixed failure on startup when two OXPs define the same equipment.
 * Partial fix for bug where the system data screen showed a planet in systems
@@ -11,7 +15,6 @@ Changes between Oolite 1.73.2 and Oolite 1.73.3:
         report enhancement.
 
 -------------------------------------------------------------------------------
-
 
 Changes between Oolite 1.73 and Oolite 1.73.2:
 * Fixed incorrect counting of cargo when docked, which partially resulted in
