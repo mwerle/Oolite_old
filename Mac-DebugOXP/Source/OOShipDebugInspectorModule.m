@@ -79,7 +79,7 @@
 		[_cabinTempField setStringValue:[NSString stringWithFormat:@"%.2f", level]];
 		[_cabinTempIndicator setFloatValue:level * 100.0];
 		fuel = [object fuel];
-		[_fuelField setIntValue:fuel];
+		[_fuelField setStringValue:[NSString stringWithFormat:@"%.1f", (float)fuel / 10.0f]];
 		[_fuelIndicator setIntValue:fuel];
 	}
 	else
