@@ -383,7 +383,7 @@ enum
 		if (0 == available) *ioFlags |= kAudioUnitRenderAction_OutputIsSilence;
 		
 		bzero(ioData->mBuffers[0].mData + available, underflow);
-		bzero(ioData->mBuffers[0].mData + available, underflow);
+		bzero(ioData->mBuffers[1].mData + available, underflow);
 	}
 	
 	remaining -= available;
