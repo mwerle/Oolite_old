@@ -63,6 +63,8 @@ enum
 - (void)reloadAllSettings;
 - (void)setUpFonts;
 
+- (void) saveHistory;
+
 @end
 
 
@@ -116,13 +118,7 @@ enum
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
-	NSArray						*history = nil;
-	
-	history = [inputHistoryManager history];
-	if (history != nil)
-	{
-		[[NSUserDefaults standardUserDefaults] setObject:history forKey:@"debug-js-console-scrollback"];
-	}
+	[self saveHistory];
 }
 
 
@@ -168,6 +164,7 @@ enum
 	[consoleWindow makeFirstResponder:consoleInputField];	// Is unset if an empty string is entered otherwise.
 	
 	[inputHistoryManager addToHistory:command];
+	[self saveHistory];
 	
 	[_debugger performConsoleCommand:command];
 }
@@ -424,6 +421,19 @@ enum
 												   toHaveTrait:NSBoldFontMask];
 	if (_boldFont == nil)  _boldFont = _baseFont;
 	[_boldFont retain];
+}
+
+
+- (void) saveHistory
+{
+	NSArray						*history = nil;
+	
+	history = [inputHistoryManager history];
+	if (history != nil)
+	{
+		[[NSUserDefaults standardUserDefaults] setObject:history forKey:@"debug-js-console-scrollback"];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}
 }
 
 @end
