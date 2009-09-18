@@ -87,7 +87,7 @@ MA 02110-1301, USA.
 	// SDL splash screen  settings
 	
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];	
-	showSplashScreen = [prefs oo_boolForKey:@"splash_screen" defaultValue:YES];
+	showSplashScreen = [prefs boolForKey:@"splash_screen" defaultValue:YES];
 	
 	NSArray				*arguments = nil;
 	NSEnumerator		*argEnum = nil;
