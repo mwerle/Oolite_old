@@ -34,10 +34,9 @@ MA 02110-1301, USA.
 #import "GuiDisplayGen.h"
 #import "PlanetEntity.h"
 #import "OOGraphicsResetManager.h"
+#import "OOCollectionExtractors.h" // for splash screen settings
 
 #define kOOLogUnconvertedNSLog @"unclassified.MyOpenGLView"
-
-#define SDL_SPLASH 1
 
 #include <ctype.h>
 
@@ -84,8 +83,32 @@ MA 02110-1301, USA.
 	Uint32          colorkey;
 	SDL_Surface     *icon=NULL;
 	NSString		*imagesDir;
+	
+	// SDL splash screen  settings
+	
+	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];	
+	showSplashScreen = [prefs oo_boolForKey:@"splash_screen" defaultValue:YES];
+	
+	NSArray				*arguments = nil;
+	NSEnumerator		*argEnum = nil;
+	NSString			*arg = nil;
 
-
+	arguments = [[NSProcessInfo processInfo] arguments];
+	
+	// scan for splash screen overrides: -nosplash || --nosplash , -splash || --splash
+	for (argEnum = [arguments objectEnumerator]; (arg = [argEnum nextObject]); )
+	{
+		if ([arg isEqual:@"-nosplash"] || [arg isEqual:@"--nosplash"])
+		{
+			showSplashScreen = NO;
+			break;
+		}
+		else if ([arg isEqual:@"-splash"] || [arg isEqual:@"--splash"])
+		{
+			showSplashScreen = YES;
+		}
+	}
+	
 	// TODO: This code up to and including stickHandler really ought
 	// not to be in this class.
 	OOLog(@"sdl.init", @"initialising SDL");
@@ -118,14 +141,10 @@ MA 02110-1301, USA.
 	SDL_VERSION(&wInfo.version);
 	SDL_GetWMInfo(&wInfo);
 	SDL_Window   = wInfo.window;
-	imagesDir = @"Resources/Images";
-	
-#else
-
-	imagesDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Images"];
 
 #endif
 
+	imagesDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Images"];
 	icon = SDL_LoadBMP([[imagesDir stringByAppendingPathComponent:@"WMicon.bmp"] cString]);
 
 	if (icon != NULL)
@@ -157,35 +176,36 @@ MA 02110-1301, USA.
 	int videoModeFlags = SDL_HWSURFACE | SDL_OPENGL | SDL_RESIZABLE;
 	firstScreen= (fullScreen) ? [self modeAsSize: currentSize] : currentWindowSize;
 
-#if !SDL_SPLASH
+	if (showSplashScreen)
+	{
+	  #if OOLITE_WINDOWS
+		//pre setVideoMode adjustments
+		NSSize tmp = currentWindowSize;
+		updateContext = NO;	//don't update the window!
+		ShowWindow(SDL_Window,SW_HIDE);
+		ShowWindow(SDL_Window,SW_MINIMIZE);
+		// new SDL.dll  decouples mouse boundaries, snapshots & planet roundness from SetVideoMode.
+		surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
 
-	// new SDL.dll  decouples mouse boundaries, snapshots & planet roundness from SetVideoMode.
-	surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
-	// blank the surface / go to fullscreen
-	[self initialiseGLWithSize: firstScreen];
-	
-#else
+		//post setVideoMode adjustments
+		currentWindowSize=tmp;
+	  #else
+	  
+	  	// SDL_NOFRAME here triggers the same texture bug
+		// as  multiple setVideoMode in windows.
+		surface = SDL_SetVideoMode(8, 8, 32, videoModeFlags );
 
-  #if OOLITE_WINDOWS
-	//pre setVideoMode adjustments
-	NSSize tmp=currentWindowSize;
-	splashScreen=YES;	//don't update the window!
-	ShowWindow(SDL_Window,SW_HIDE);
-	ShowWindow(SDL_Window,SW_MINIMIZE);
-	// new SDL.dll  decouples mouse boundaries, snapshots & planet roundness from SetVideoMode.
-	surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
+	  #endif
+	}
+	else
+	{
+		updateContext = YES;
+		surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
+		// blank the surface / go to fullscreen
+		[self initialiseGLWithSize: firstScreen];
+		
+	}
 
-	//post setVideoMode adjustments
-	currentWindowSize=tmp;
-  #else
-  
-  	// SDL_NOFRAME here triggers the same texture bug
-	// as  multiple setVideoMode in windows.
-	surface = SDL_SetVideoMode(8, 8, 32, videoModeFlags );
-
-  #endif
-
-#endif
     if (!surface)
     {
         char * errStr = SDL_GetError();
@@ -213,17 +233,16 @@ MA 02110-1301, USA.
 
 - (void) endSplashScreen
 {
+	if (!showSplashScreen) return;
 
-#if SDL_SPLASH
-
-  #if OOLITE_WINDOWS
+#if OOLITE_WINDOWS
   
-	wasFullScreen=!fullScreen;
-	splashScreen=NO;
+	wasFullScreen = !fullScreen;
+	updateContext = YES;
 	ShowWindow(SDL_Window,SW_RESTORE);
 	[self initialiseGLWithSize: firstScreen];
   
-  #else
+#else
 
 	int videoModeFlags = SDL_HWSURFACE | SDL_OPENGL;
 
@@ -231,12 +250,10 @@ MA 02110-1301, USA.
 	surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
 	SDL_putenv ("SDL_VIDEO_WINDOW_POS=none"); //stop linux from auto centering on resize
 	
-  #endif
+#endif
  
 	[self autoShowMouse];
 	[self updateScreen];
-
-#endif
 
 }
 
@@ -459,7 +476,7 @@ MA 02110-1301, USA.
 
 - (void) initSplashScreen
 {
-#if SDL_SPLASH
+	if (!showSplashScreen) return;
 
 	//too early for OOTexture!
 	SDL_Surface     	*image=NULL;
@@ -575,8 +592,6 @@ MA 02110-1301, USA.
 	}
 	glDeleteTextures(1, &texture);
 
-#endif
-
 }
 
 - (void) initialiseGLWithSize:(NSSize) v_size
@@ -590,12 +605,8 @@ MA 02110-1301, USA.
 	OOLog(@"display.initGL", @"Requested a new surface of %d x %d, %@.", (int)viewSize.width, (int)viewSize.height,(fullScreen ? @"fullscreen" : @"windowed"));
 
 #if OOLITE_WINDOWS
-  #if SDL_SPLASH
-	if (splashScreen)
-	{
-		return;
-	}
-  #endif
+
+	if (!updateContext) return;
 
 	DEVMODE settings;
 	settings.dmSize        = sizeof(DEVMODE);
@@ -684,13 +695,6 @@ MA 02110-1301, USA.
 #endif
 	OOLog(@"display.initGL", @"Created a new surface of %d x %d, %@.", (int)viewSize.width, (int)viewSize.height,(fullScreen ? @"fullscreen" : @"windowed"));
 
-
-	GLfloat	sun_ambient[] = {0.1, 0.1, 0.1, 1.0};	
-	GLfloat	sun_diffuse[] =	{1.0, 1.0, 1.0, 1.0};
-	GLfloat	sun_specular[] = 	{1.0, 1.0, 1.0, 1.0};
-	GLfloat	sun_center_position[] = {4000000.0, 0.0, 0.0, 1.0};
-	GLfloat	stars_ambient[] =	{0.25, 0.2, 0.25, 1.0};
-
 	if (viewSize.width/viewSize.height > 4.0/3.0)
 		display_z = 480.0 * bounds.size.width/bounds.size.height;
 	else
@@ -736,10 +740,16 @@ MA 02110-1301, USA.
 	else
 	{
 		// At startup only...
+		GLfloat	sun_ambient[] 		= {0.1, 0.1, 0.1, 1.0};	
+		GLfloat	sun_specular[] 		= {1.0, 1.0, 1.0, 1.0};
+		GLfloat	sun_diffuse[] 		= {1.0, 1.0, 1.0, 1.0};
+		GLfloat	sun_position[] 		= {4000000.0, 0.0, 0.0, 1.0};
+		GLfloat	stars_ambient[] 	= {0.25, 0.2, 0.25, 1.0};
+		
 		glLightfv(GL_LIGHT1, GL_AMBIENT, sun_ambient);
 		glLightfv(GL_LIGHT1, GL_SPECULAR, sun_specular);
 		glLightfv(GL_LIGHT1, GL_DIFFUSE, sun_diffuse);
-		glLightfv(GL_LIGHT1, GL_POSITION, sun_center_position);
+		glLightfv(GL_LIGHT1, GL_POSITION, sun_position);
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, stars_ambient);
 
 		glEnable(GL_LIGHT1);		// lighting
@@ -1445,7 +1455,7 @@ keys[a] = NO; keys[b] = NO; \
 				NSSize newSize=NSMakeSize(rsevt->w, rsevt->h);
 				[self initialiseGLWithSize: newSize];
 #if OOLITE_WINDOWS
-				if (!fullScreen && !splashScreen)
+				if (!fullScreen && updateContext)
 				{
 					if (saveSize == NO)
 					{

@@ -134,10 +134,12 @@ extern int debug;
 	SDL_Surface* surface;
 	JoystickHandler *stickHandler;
 	
+	BOOL				showSplashScreen;
+	
 #if OOLITE_WINDOWS
 
 	BOOL				wasFullScreen;
-	BOOL				splashScreen;
+	BOOL				updateContext;
 	BOOL				saveSize;
 	unsigned			keyboardMap;
 	HWND 				SDL_Window;
