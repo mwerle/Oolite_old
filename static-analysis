@@ -1,5 +1,0 @@
-#! /bin/sh
-
-xcodebuild clean -project Oolite.xcodeproj -configuration Debug -target "Build All"
-
-scan-build -k -V -o Analysis xcodebuild -project Oolite.xcodeproj -configuration Debug -target "Build All" > Analysis.log 2>&1
