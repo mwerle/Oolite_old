@@ -305,7 +305,9 @@ static PlayerEntity *sSharedPlayer = nil;
 - (NSDictionary *) commanderDataDictionary
 {
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-
+	
+	[result setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"written_by_version"];
+	
 	NSString *gal_seed = [NSString stringWithFormat:@"%d %d %d %d %d %d",galaxy_seed.a, galaxy_seed.b, galaxy_seed.c, galaxy_seed.d, galaxy_seed.e, galaxy_seed.f];
 	NSString *gal_coords = [NSString stringWithFormat:@"%d %d",(int)galaxy_coordinates.x,(int)galaxy_coordinates.y];
 	NSString *tgt_coords = [NSString stringWithFormat:@"%d %d",(int)cursor_coordinates.x,(int)cursor_coordinates.y];
