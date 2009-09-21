@@ -1467,8 +1467,11 @@ static NSMutableDictionary* currentShipyard = nil;
 	credits -= 10 * price - trade_in;
 	
 	// change ship_desc
-	// TODO: detect brokenness here.
-	if (ship_desc)  [ship_desc release];
+	if (ship_desc)
+	{
+		[self clearSubEntities];
+		[ship_desc release];
+	}
 	ship_desc = [[ship_info stringForKey:SHIPYARD_KEY_SHIPDATA_KEY] copy];
 	NSDictionary *shipDict = [ship_info dictionaryForKey:SHIPYARD_KEY_SHIP];
 	

@@ -1110,22 +1110,24 @@ static PlayerEntity *sSharedPlayer = nil;
 	[self removeAllEquipment];
 	[self addEquipmentFromCollection:[shipDict objectForKey:@"extra_equipment"]];
 	
-	NSString *hud_desc = [shipDict stringForKey:@"hud"];
-	if (hud_desc != nil)
+	NSString *hud_desc = [shipDict stringForKey:@"hud" defaultValue:@"hud.plist"];
+	NSDictionary *huddict = [ResourceManager dictionaryFromFilesNamed:hud_desc inFolder:@"Config" andMerge:YES];
+	// hud defined, but buggy?
+	if (huddict == nil)
 	{
-		NSDictionary *huddict = [ResourceManager dictionaryFromFilesNamed:hud_desc inFolder:@"Config" andMerge:YES];
-		if (huddict)
-		{
-#ifndef NDEBUG
-			gDebugFlags &= ~DEBUG_HIDE_HUD;
-#endif
-			[hud release];
-			hud = [[HeadUpDisplay alloc] initWithDictionary:huddict];
-			[hud setScannerZoom:1.0];
-			[hud resizeGuis: huddict];
-		}
+		huddict = [ResourceManager dictionaryFromFilesNamed:@"hud.plist" inFolder:@"Config" andMerge:YES];
 	}
-	
+	// buggy oxp could override hud.plist with a non-dictionary.
+	if (huddict != nil)
+	{
+#ifndef NDEBUG
+		gDebugFlags &= ~DEBUG_HIDE_HUD;
+#endif
+		[hud release];
+		hud = [[HeadUpDisplay alloc] initWithDictionary:huddict];
+		[hud setScannerZoom:1.0];
+		[hud resizeGuis: huddict];
+	}
 
 	// set up missiles
 	unsigned i;
@@ -1902,7 +1904,8 @@ static PlayerEntity *sSharedPlayer = nil;
 #if DOCKING_CLEARANCE_ENABLED
 		[self setDockingClearanceStatus:DOCKING_CLEARANCE_STATUS_NONE];
 #endif
-		[self doScriptEvent:@"shipLaunchedFromStation"];
+		StationEntity *stationLaunchedFrom = [UNIVERSE nearestEntityMatchingPredicate:IsStationPredicate parameter:NULL relativeToEntity:self];
+		[self doScriptEvent:@"shipLaunchedFromStation" withArgument:stationLaunchedFrom];
 	}
 }
 
@@ -4483,7 +4486,7 @@ static PlayerEntity *sSharedPlayer = nil;
 	targetSystemName =		[targetSystemData stringForKey:KEY_NAME];
 	
 	BOOL	sunGoneNova = NO;
-	if ([targetSystemData objectForKey:@"sun_gone_nova"])
+	if ([targetSystemData boolForKey:@"sun_gone_nova"])
 		sunGoneNova = YES;
 	
 	// GUI stuff
@@ -4506,8 +4509,7 @@ static PlayerEntity *sSharedPlayer = nil;
 		NSString	*inhabitants =		[targetSystemData stringForKey:KEY_INHABITANTS];
 		NSString	*system_desc =		[targetSystemData stringForKey:KEY_DESCRIPTION];
 
-		if ((sunGoneNova && equal_seeds(target_system_seed, system_seed) && [[UNIVERSE sun] goneNova])||
-			(sunGoneNova && (!equal_seeds(target_system_seed, system_seed))))
+		if (sunGoneNova)
 		{
 			population = 0;
 			productivity = 0;
@@ -5136,7 +5138,7 @@ static int last_outfitting_index;
 					previous = 0;					// single page
 				else
 				{
-					previous = skip - n_rows - 2;	// multi-page
+					previous = skip - (n_rows - 2);	// multi-page. 
 					if (previous < 2)
 						previous = 0;				// if only one previous item, just show it
 				}
@@ -5677,22 +5679,7 @@ static int last_outfitting_index;
 	if ([eqKey isEqualToString:@"EQ_MISSILE_REMOVAL"])
 	{
 		credits -= price;
-		[self safeAllMissiles];
-		[self sortMissiles];
-		unsigned i;
-		for (i = 0; i < missiles; i++)
-		{
-			ShipEntity* weapon = missile_entity[i];
-			missile_entity[i] = nil;
-			if (weapon)
-			{
-				NSString* weapon_key = [weapon primaryRole];
-				int weapon_value = (int)[UNIVERSE getPriceForWeaponSystemWithKey:weapon_key];
-				tradeIn += weapon_value;
-				[weapon release];
-			}
-		}
-		missiles = 0;
+		tradeIn += [self removeMissiles];
 		[self doTradeIn:tradeIn forPriceFactor:priceFactor];
 		return YES;
 	}
@@ -5708,7 +5695,30 @@ static int last_outfitting_index;
 }
 
 
--(void) doTradeIn:(OOCreditsQuantity)tradeInValue forPriceFactor:(double)priceFactor
+- (int) removeMissiles
+{
+	[self safeAllMissiles];
+	[self sortMissiles];
+	int tradeIn =0;
+	unsigned i;
+	for (i = 0; i < missiles; i++)
+	{
+		ShipEntity* weapon = missile_entity[i];
+		missile_entity[i] = nil;
+		if (weapon)
+		{
+			NSString* weapon_key = [weapon primaryRole];
+			int weapon_value = (int)[UNIVERSE getPriceForWeaponSystemWithKey:weapon_key];
+			tradeIn += weapon_value;
+			[weapon release];
+		}
+	}
+	missiles = 0;
+	return tradeIn;
+}
+
+
+- (void) doTradeIn:(OOCreditsQuantity)tradeInValue forPriceFactor:(double)priceFactor
 {
 	if (tradeInValue != 0)
 	{

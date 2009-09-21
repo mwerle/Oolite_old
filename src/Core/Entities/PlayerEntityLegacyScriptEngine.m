@@ -1260,7 +1260,7 @@ static int scriptRandomSeed = -1;	// ensure proper random function
 		return;
 	}
 
-	if ([self hasEquipmentItem:eq_type])
+	if ([self hasEquipmentItem:eq_type] || [self hasEquipmentItem:[eq_type stringByAppendingString:@"_DAMAGED"]])
 	{
 		[self removeEquipmentItem:eq_type];
 	}
