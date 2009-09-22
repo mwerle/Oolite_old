@@ -193,14 +193,22 @@ static GameController *sSharedController = nil;
 	pool = [[NSAutoreleasePool alloc] init];
 	
 	NS_DURING
-		// ensures the gameView is drawn to: OpenGL is initialised and so textures can initialse.
-		[self beginSplashScreen];
+		// if not verifying oxps, ensure that gameView is drawn to using beginSplashScreen:
+		// OpenGL is initialised and that allows textures to initialise too.
 
 #if OO_OXP_VERIFIER_ENABLED
+
 		if ([OOOXPVerifier runVerificationIfRequested])
 		{
 			[self exitApp];
 		}
+		else 
+		{
+			[self beginSplashScreen];
+		}
+		
+#else
+		[self beginSplashScreen];
 #endif
 		
 		//[self logProgress:@"Getting display modes..."]; //cannot localise strings before loading OXPs
@@ -238,8 +246,9 @@ static GameController *sSharedController = nil;
 	
 	// Release anything allocated above that is not required.
 	[pool release];
-	
-#if !OOLITE_HAVE_APPKIT
+#if OOLITE_HAVE_APPKIT
+	if (fullscreen) [self goFullscreen:(id)YES];
+#else
 	[[NSRunLoop currentRunLoop] run];
 #endif
 }
@@ -393,6 +402,7 @@ static NSComparisonResult CompareDisplayModes(id arg1, id arg2, void *context)
 	width = [userDefaults intForKey:@"display_width" defaultValue:DISPLAY_DEFAULT_WIDTH];
 	height = [userDefaults intForKey:@"display_height" defaultValue:DISPLAY_DEFAULT_HEIGHT];
 	refresh = [userDefaults intForKey:@"display_refresh" defaultValue:DISPLAY_DEFAULT_REFRESH];
+	fullscreen = [userDefaults boolForKey:@"fullscreen" defaultValue:NO];
 	
 	// Get the list of all available modes
 	modes = (NSArray *)CGDisplayAvailableModes(kCGDirectMainDisplay);
@@ -646,6 +656,7 @@ static NSComparisonResult CompareDisplayModes(id arg1, id arg2, void *context)
 		stayInFullScreenMode = YES;
 		
 		fullscreen = YES;
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"fullscreen"];
 						
 		BOOL past_first_mouse_delta = NO;
 		
@@ -942,6 +953,7 @@ static NSComparisonResult CompareDisplayModes(id arg1, id arg2, void *context)
 
 - (void) exitFullScreenMode
 {
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"fullscreen"];
 	stayInFullScreenMode = NO;
 }
 
