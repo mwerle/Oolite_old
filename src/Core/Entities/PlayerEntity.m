@@ -3281,6 +3281,9 @@ static PlayerEntity *sSharedPlayer = nil;
 	if ([self status] == STATUS_DEAD)  return;
 	if (amount == 0.0)  return;
 	
+	// make sure ent (& its position) is the attacking _ship_/missile !
+	if (ent && [ent isSubEntity]) ent = [ent owner];
+	
 	[[ent retain] autorelease];
 	[[other retain] autorelease];
 	
