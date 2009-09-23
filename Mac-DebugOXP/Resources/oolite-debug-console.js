@@ -18,7 +18,7 @@ The console object has the following properties and methods:
 
 function consoleMessage(colorCode : String, message : String)
 	Similar to Log(), but takes a colour code which is looked up in
-	jsConsoleConfig.plist. null is equivalent to "general".
+	debugConfig.plist. null is equivalent to "general".
 
 function clearConsole()
 	Clear the console.
@@ -70,7 +70,7 @@ isExecutableJavaScript(code : String) : Boolean
 
 Oolite Debug OXP
 
-Copyright © 2007-2008 Jens Ayton
+Copyright © 2007-2009 Jens Ayton
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
