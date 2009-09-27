@@ -1171,7 +1171,7 @@
 	"commodity-name alien items"	= "Alien Items";
 	
 	//autosave filename
-	"autosave-commander-name"		= "autosave";
+	"autosave-commander-name"		= " (autosave)";
 	
 	// Nova mission strings
 	"oolite-nova-coward"			= "Coward! You chose not to help the refugees!";

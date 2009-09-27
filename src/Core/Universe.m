@@ -571,6 +571,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 	[self setViewDirection:VIEW_GUI_DISPLAY];
 	[player setPosition:kZeroVector];
 	[player setOrientation:q0];
+	autoSaveNow = NO;	// don't autosave immediately after loading / restarting game!
 	if(showDemo)
 	{
 		[player setGuiToIntroFirstGo:NO];
@@ -673,7 +674,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context);
 		[self setUpSpace];	// first launch
 	}
 	
-	[self setViewDirection:VIEW_FORWARD];
+	if(!autoSaveNow) [self setViewDirection:VIEW_FORWARD];
 	displayGUI = NO;
 	
 	//reset atmospherics in case we ejected while we were in the atmophere
