@@ -5,6 +5,10 @@
 # Usage: ./oolite
 # Dylan Smith, 2005-09-03
 #
+# Konstantinos Sykas, 2009-09-30
+# Added DTDs transport to $HOME/GNUstep/Library
+#
+
 if [ ! $OOLITE_ROOT ]
 then
    echo "Oops, OOLITE_ROOT was not set. This is very bad, it meant the install"
@@ -21,7 +25,10 @@ fi
 
 # Oolite fails with a black message box with no text with the title
 # 'Critical' if this doesn't exist.
-mkdir -p $HOME/GNUstep/Library
+if [ ! -d $HOME/GNUstep/Library/DTDs ]; then
+   mkdir -p $HOME/GNUstep/Library/DTDs
+   cp -r $OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/Library/DTDs/* $HOME/GNUstep/Library/DTDs/.
+fi
 
 # Set GNUstep environment.
 export GNUSTEP_FLATTENED=yes
@@ -36,7 +43,7 @@ export GNUSTEP_SYSTEM_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/System
 export GNUSTEP_NETWORK_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/Local
 export GNUSTEP_LOCAL_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/Local
 export LD_LIBRARY_PATH=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/lib
-cd $OOLITE_ROOT/$TOPLEVEL
+cd $OOLITE_ROOT/$TOPLEVEL/
 ./oolite.app/oolite
 if [ $? != 0 ]
 then
