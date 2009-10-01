@@ -14,7 +14,7 @@ Packager: Konstantinos Sykas <ksykas@gmail.com>
 Summary: Oolite is an Elite tribute game that is easily expandable.
 URL: http://oolite.aegidian.org
 License: GNU GPL version 2
-SoftwareVersion: 1.73.4-test
+SoftwareVersion: 1.74
 AutopackageTarget: 1.0
 CPUArchitectures: x86
 
