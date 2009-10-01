@@ -358,20 +358,16 @@
 	{
 		pollControls=YES;
 		[self nativeSavePlayer: commanderNameString];
-		[gameView supressKeysUntilKeyUp];
-		[self setGuiToStatusScreen];
-		
 		[self playSaveOverwriteYes];
+		[self setGuiToStatusScreen];
 	}
 	
 	if (([gameView isDown: 13] && ([gui selectedRow] == SAVE_OVERWRITE_NO_ROW))||[gameView isDown: 27]||[gameView isDown: 110]||[gameView isDown: 78])
 	{
-		// esc or NO was pressed - get out of here
-		// FIXME: should return to save screen instead.
+		// esc or NO was pressed - get back to save screen
 		pollControls=YES;
-		[self setGuiToStatusScreen];
-		
 		[self playSaveOverwriteNo];
+		[self setGuiToSaveCommanderScreen:@""];
 	}
 }
 

@@ -3572,7 +3572,7 @@ static PlayerEntity *sSharedPlayer = nil;
 	int result = [super dumpCargo];
 	if (result != CARGO_NOT_CARGO)
 	{
-		[UNIVERSE addMessage:[NSString stringWithFormat:DESC(@"@-ejected") ,[UNIVERSE displayNameForCommodity:result]] forCount:3.0];
+		[UNIVERSE addMessage:[NSString stringWithFormat:DESC(@"@-ejected") ,[UNIVERSE displayNameForCommodity:result]] forCount:3.0 forceDisplay:YES];
 		[self playCargoJettisioned];
 	}
 	return result;
@@ -3778,16 +3778,16 @@ static PlayerEntity *sSharedPlayer = nil;
 	
 	flightSpeed = 160.0f;
 	[self setStatus:STATUS_DEAD];
+	if (whom == nil)  whom = (id)[NSNull null];
+	[self doScriptEvent:@"shipDied" withArguments:[NSArray arrayWithObjects:whom, why, nil]];
+	[self loseTargetStatus];
+	
 	[UNIVERSE displayMessage:DESC(@"gameoverscreen-game-over") forCount:30.0];
 	[UNIVERSE displayMessage:@"" forCount:30.0];
 	[UNIVERSE displayMessage:scoreMS forCount:30.0];
 	[UNIVERSE displayMessage:@"" forCount:30.0];
 	[UNIVERSE displayMessage:DESC(@"gameoverscreen-press-space") forCount:30.0];
 	[self resetShotTime];
-	
-	if (whom == nil)  whom = (id)[NSNull null];
-	[self doScriptEvent:@"shipDied" withArguments:[NSArray arrayWithObjects:whom, why, nil]];
-	[self loseTargetStatus];
 }
 
 
@@ -4291,6 +4291,7 @@ static PlayerEntity *sSharedPlayer = nil;
 
 - (void) setGuiToStatusScreen
 {
+	[[UNIVERSE gameView] supressKeysUntilKeyUp];
 	// intercept any docking messages
 	if ([dockingReport length] > 0 && [self isDocked])
 	{
@@ -6041,11 +6042,6 @@ static int last_outfitting_index;
 	if ([equipmentKey isEqual:@"EQ_ADVANCED_COMPASS"])
 	{
 		[self setCompassMode:COMPASS_MODE_PLANET];
-	}
-	
-	if ([equipmentKey isEqual:@"EQ_CARGO_BAY"])
-	{
-		max_cargo += extra_cargo;
 	}
 	
 	[super addEquipmentItem:equipmentKey];

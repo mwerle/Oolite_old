@@ -2687,7 +2687,8 @@ GLfloat docked_light_specular[4]	= { (GLfloat) 0.7, (GLfloat) 0.7, (GLfloat) 0.4
 
 - (void) game_over
 {
-	[self reinitAndShowDemo:NO];
+	if ([[gameView gameController] playerFileToLoad]) [[gameView gameController] loadPlayerIfRequired];
+	else [self reinitAndShowDemo:NO];
 }
 
 - (void) setupIntroFirstGo: (BOOL) justCobra
@@ -5194,7 +5195,13 @@ OOINLINE BOOL EntityInRange(Vector p1, Entity *e2, float range)
 
 - (void) addMessage:(NSString *)text forCount:(OOTimeDelta)count
 {
-	if (![currentMessage isEqual:text] || universal_time >= messageRepeatTime)
+	[self addMessage:text forCount:count forceDisplay:NO];
+}
+
+
+- (void) addMessage:(NSString *) text forCount:(OOTimeDelta) count forceDisplay:(BOOL) forceDisplay
+{
+	if (![currentMessage isEqual:text] || forceDisplay || universal_time >= messageRepeatTime)
 	{
 #if OOLITE_SPEECH_SYNTH
 		PlayerEntity* player = [PlayerEntity sharedPlayer];

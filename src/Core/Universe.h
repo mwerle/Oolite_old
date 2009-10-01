@@ -446,6 +446,7 @@ enum
 - (void) addDelayedMessage:(NSString *) text forCount:(OOTimeDelta) count afterDelay:(OOTimeDelta) delay;
 - (void) addDelayedMessage:(NSDictionary *) textdict;
 - (void) addMessage:(NSString *) text forCount:(OOTimeDelta) count;
+- (void) addMessage:(NSString *) text forCount:(OOTimeDelta) count forceDisplay:(BOOL) forceDisplay;
 - (void) addCommsMessage:(NSString *) text forCount:(OOTimeDelta) count;
 - (void) addCommsMessage:(NSString *) text forCount:(OOTimeDelta) count andShowComms:(BOOL) showComms;
 - (void) showCommsLog:(OOTimeDelta) how_long;

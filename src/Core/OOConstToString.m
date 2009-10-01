@@ -577,8 +577,8 @@ NSString *ShaderSettingToDisplayString(OOShaderSetting setting)
 
 NSString *CommodityDisplayNameForSymbolicName(NSString *symbolicName)
 {
-	NSString *key = [@"commodity-name " stringByAppendingString:[symbolicName lowercaseString]];
-	return [UNIVERSE descriptionForKey:key];
+	NSString *ret = [UNIVERSE descriptionForKey:[@"commodity-name " stringByAppendingString:[symbolicName lowercaseString]]];
+	return ret ? ret : symbolicName;
 }
 
 
