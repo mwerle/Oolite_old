@@ -343,6 +343,22 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 		return instructions(universalID, ship->position, 0, 100, @"TRY_AGAIN_LATER", nil, NO);
 	}
 
+	// MKW 20090921
+	// If ship is too far away, tell it to approach but don't stop moving and don't
+	// add it to our docking list.
+	if (![shipsOnApproach objectForKey:shipID])
+	{
+		Vector	delta = ship->position;
+		delta.x -= position.x;	delta.y -= position.y;	delta.z -= position.z;
+		float	ship_distance = sqrt(magnitude2(delta));
+
+		if (ship_distance > 25600.0)	// Out of scanner range, approach closer
+		{
+			OOLog(@"station.issueDockingInstructions.toofaraway", @" ship %@ requested to dock from too far (%.2fm) away.", ship, ship_distance);
+			return instructions(universalID, position, 0, 10000, @"APPROACH", nil, NO);
+		}
+	}
+
 #if DOCKING_CLEARANCE_ENABLED
 	// If the ship is not on its docking approach and the player has
 	// requested or even been granted docking clearance, then tell the
@@ -611,7 +627,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 
 		[coordinatesStack addObject:nextCoords];
 	}
-	
+
 	[shipsOnApproach setObject:coordinatesStack forKey:shipID];
 	
 	approach_spacing += 500;  // space out incoming ships by 500m
@@ -1933,6 +1949,8 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	
 	[UNIVERSE clearPreviousMessage];
 
+	[self sanityCheckShipsOnApproach];
+
 	// Docking clearance not required - clear it just in case it's been
 	// set for another nearby station.
 	if (![self requiresDockingClearance])
@@ -2127,6 +2145,11 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	if ([self isRotatingStation]) { [flags addObject:@"rotatingStation"]; }
 	flagsString = [flags count] ? [flags componentsJoinedByString:@", "] : (NSString *)@"none";
 	OOLog(@"dumpState.stationEntity", @"Flags: %@", flagsString);
+}
+
+- (NSArray *)dbgGetShipsOnApproach
+{
+	return [shipsOnApproach allKeys];
 }
 
 @end
