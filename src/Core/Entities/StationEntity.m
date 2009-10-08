@@ -2082,7 +2082,7 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 		if ([determinant isKindOfClass:[NSArray class]])
 		{
 			
-			return [[PlayerEntity sharedPlayer] scriptTestConditions:determinant];
+			return [[PlayerEntity sharedPlayer] scriptTestConditions:OOSanitizeLegacyScriptConditions(determinant, nil)];
 		}
 		else
 		{
