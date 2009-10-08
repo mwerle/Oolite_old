@@ -31,6 +31,7 @@ MA 02110-1301, USA.
 #import "HeadUpDisplay.h"
 
 #import "PlayerEntityLegacyScriptEngine.h"
+#import "OOLegacyScriptWhitelist.h"
 #import "PlanetEntity.h"
 #import "ParticleEntity.h"
 #import "OOShipGroup.h"
