@@ -1,8 +1,10 @@
 # -*-shell-script-*-
 # Original by Dylan Smith <dyls@alioth.net>
 #
-# Konstantinos Sykas, 2009-09-30
-# Updated to include DTDs and new documentation, and to perform a clean uninstall
+# Konstantinos Sykas
+# 2009-09-30: Updated to include DTDs and new documentation, and to perform a clean uninstall
+# 2009-10-13: a. Support for x86_64 architecture packages
+#             b. Perform a clean build before producing the package
 #
 
 [Meta]
@@ -15,8 +17,14 @@ Summary: Oolite is an Elite tribute game that is easily expandable.
 URL: http://oolite.aegidian.org
 License: GNU GPL version 2
 SoftwareVersion: 1.74
-AutopackageTarget: 1.0
+AutopackageTarget: 1.4
+# Uncomment the following line if 'uname -m' gives x86_64
+# CPUArchitectures: x86_64
+
+# Put the following line in comments if 'uname -m' is different than x86_64
 CPUArchitectures: x86
+
+PackageFileName: $SHORTNAME-$SOFTWAREVERSION.$CPUARCHITECTURES.package
 
 # Only uncomment InterfaceVersion if your package exposes interfaces to other software,
 # for instance if it includes DSOs or python/perl modules. See the developer guide for more info,
@@ -33,6 +41,7 @@ profession. Above all, reach the Elite rating.
 # the libc version. Note: autopackage doesn't seem to compress, that's
 # why we are using tar files :/
 [BuildPrepare]
+make -f Makefile clean
 make -f Makefile release
 cp FreeDesktop/oolite.desktop $build_root
 cp FreeDesktop/oolite-icon.png $build_root

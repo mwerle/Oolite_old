@@ -2,8 +2,9 @@
 # Oolite Updater Script
 # Dylan Smith, 2005-09-10
 #
-# Konstantinos Sykas, 2009-09-22
-# rsync to alternative server
+# Konstantinos Sykas
+# 2009-09-22: rsync to alternative server
+# 2009-10-13: x86_64 support
 #
 
 if [ ! $OOLITE_ROOT ]
@@ -41,20 +42,26 @@ if [ $? != 0 ]; then
    exit $?
 fi
 
+if [[ "$(uname -m)" == "x86_64" ]]; then
+    OOLITE_RSYNC_FOLDER="oolite-linux-64"
+else
+    OOLITE_RSYNC_FOLDER="oolite-linux"
+fi
+
 cd $OOLITE_ROOT/$TOPLEVEL
 CURRENTVER=`cat release.txt`
 RSYNC_TERRASTORAGE=0
-# echo Trying rsync://rsync.alioth.net/oolite-linux...
-# rsync -rlv --progress rsync://rsync.alioth.net/oolite-linux/* . 2> /dev/null
-# RSYNC_ALIOTH=$?
-# if [ $RSYNC_ALIOTH != 0 ];
-# then
-#    echo [rsync.alioth.net died and returned $RSYNC_ALIOTH]
-#    echo
-   echo Trying rsync://terrastorage.ath.cx/oolite-linux...
-   rsync -rlv --progress rsync://terrastorage.ath.cx/oolite-linux/* . 2> /dev/null
+echo Trying rsync://rsync.alioth.net/$OOLITE_RSYNC_FOLDER...
+rsync -rlv --progress rsync://rsync.alioth.net/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
+RSYNC_ALIOTH=$?
+if [ $RSYNC_ALIOTH != 0 ];
+then
+   echo [rsync.alioth.net died and returned $RSYNC_ALIOTH]
+   echo
+   echo Trying rsync://terrastorage.ath.cx/$OOLITE_RSYNC_FOLDER...
+   rsync -rlv --progress rsync://terrastorage.ath.cx/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
    RSYNC_TERRASTORAGE=$?
-#  fi
+fi
 if [ $RSYNC_TERRASTORAGE != 0 ]; then
    echo [terrastorage.ath.cx died and returned $RSYNC_TERRASTORAGE]
    echo
@@ -63,7 +70,7 @@ if [ $RSYNC_TERRASTORAGE != 0 ]; then
    echo "Alternatively you may download the full package from "
    echo "http://developer.berlios.de/project/showfiles.php?group_id=3577"
    echo
-   
+
    mv release.txt.backup release.txt
    exit
 fi
