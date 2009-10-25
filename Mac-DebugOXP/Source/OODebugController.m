@@ -134,7 +134,6 @@ static OODebugController *sSingleton = nil;
 
 - (void)awakeFromNib
 {
-	
 	[logPrefsWindow center];
 }
 
