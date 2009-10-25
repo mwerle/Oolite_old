@@ -250,6 +250,15 @@ MA 02110-1301, USA.
 
 	videoModeFlags |= (fullScreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
 	surface = SDL_SetVideoMode(firstScreen.width, firstScreen.height, 32, videoModeFlags);
+
+	if (!surface && fullScreen == YES)
+	{
+		fullScreen = NO;
+		videoModeFlags &= ~SDL_FULLSCREEN;
+		videoModeFlags |= SDL_RESIZABLE;
+		surface = SDL_SetVideoMode(currentWindowSize.width, currentWindowSize.height, 32, videoModeFlags);
+	}
+
 	SDL_putenv ("SDL_VIDEO_WINDOW_POS=none"); //stop linux from auto centering on resize
 	
 #endif
@@ -603,6 +612,7 @@ MA 02110-1301, USA.
 
 - (void) initialiseGLWithSize:(NSSize) v_size useVideoMode:(BOOL) v_mode
 {
+	NSSize oldViewSize = viewSize;
 	viewSize = v_size;
 	OOLog(@"display.initGL", @"Requested a new surface of %d x %d, %@.", (int)viewSize.width, (int)viewSize.height,(fullScreen ? @"fullscreen" : @"windowed"));
 
@@ -677,7 +687,7 @@ MA 02110-1301, USA.
 	
 	if (v_mode == NO)
 		videoModeFlags |= SDL_NOFRAME;
-	else if (fullScreen == YES)
+	if (fullScreen == YES)
 	{
 		videoModeFlags |= SDL_FULLSCREEN;
 	}
@@ -690,6 +700,15 @@ MA 02110-1301, USA.
 	if (w & 3) w = w + 4 - (w & 3);
 	viewSize.width=w;
 	surface = SDL_SetVideoMode((int)viewSize.width, (int)viewSize.height, 32, videoModeFlags);
+
+	if (!surface && fullScreen == YES)
+	{
+		fullScreen = NO;
+		viewSize = oldViewSize;
+		videoModeFlags &= ~SDL_FULLSCREEN;
+		videoModeFlags |= SDL_RESIZABLE;
+		surface = SDL_SetVideoMode((int)viewSize.width, (int)viewSize.height, 32, videoModeFlags);
+	}
 
 	bounds.size.width = surface->w;
 	bounds.size.height = surface->h;
