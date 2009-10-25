@@ -253,7 +253,7 @@ MA 02110-1301, USA.
 
 	if (!surface && fullScreen == YES)
 	{
-		fullScreen = NO;
+		[self setFullScreenMode: NO];
 		videoModeFlags &= ~SDL_FULLSCREEN;
 		videoModeFlags |= SDL_RESIZABLE;
 		surface = SDL_SetVideoMode(currentWindowSize.width, currentWindowSize.height, 32, videoModeFlags);
@@ -703,7 +703,7 @@ MA 02110-1301, USA.
 
 	if (!surface && fullScreen == YES)
 	{
-		fullScreen = NO;
+		[self setFullScreenMode: NO];
 		viewSize = oldViewSize;
 		videoModeFlags &= ~SDL_FULLSCREEN;
 		videoModeFlags |= SDL_RESIZABLE;
