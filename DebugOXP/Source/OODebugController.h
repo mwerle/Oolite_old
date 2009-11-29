@@ -88,6 +88,7 @@ show them, set the preference debug-show-extra-menu-items:
 - (IBAction) createShipAction:sender;
 - (IBAction) clearAllCachesAction:sender;
 - (IBAction) toggleWireframeModeAction:sender;
+- (IBAction) hideShowHUD:sender;
 - (IBAction) inspectPlayer:sender;
 - (IBAction) inspectTarget:sender;
 - (IBAction) cleanUpInspectors:sender;

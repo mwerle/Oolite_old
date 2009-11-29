@@ -211,21 +211,38 @@ static OODebugController *sSingleton = nil;
 }
 
 
+- (IBAction) hideShowHUD:sender
+{
+	BOOL hidden = [[[PlayerEntity sharedPlayer] hud] isHidden];
+	NSString *command = [NSString stringWithFormat:@"player.ship.hudHidden = %@", hidden ? @"false" : @"true"];
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
+}
+
+
 - (IBAction) inspectPlayer:sender
 {
-	[[PlayerEntity sharedPlayer] inspect];
+	//	[[PlayerEntity sharedPlayer] inspect];
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:@"player.ship.inspect()"];
 }
 
 
 - (IBAction) inspectTarget:sender
 {
-	[[[PlayerEntity sharedPlayer] primaryTarget] inspect];
+	//	[[[PlayerEntity sharedPlayer] primaryTarget] inspect];
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:@"player.ship.target.inspect()"];
 }
 
 
 - (IBAction) cleanUpInspectors:sender
 {
 	[OODebugInspector cleanUpInspectors];
+}
+
+
+static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL display)
+{
+	NSString *command = [NSString stringWithFormat:@"console.setDisplayMessagesInClass(\"%@\", %@)", [msgClass escapedForJavaScriptLiteral], display ? @"true" : @"false"];
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
 }
 
 
@@ -236,7 +253,7 @@ static OODebugController *sSingleton = nil;
 	if ([sender respondsToSelector:@selector(representedObject)])
 	{
 		msgClass = [sender representedObject];
-		OOLogSetDisplayMessagesInClass(msgClass, !OOLogWillDisplayMessagesInClass(msgClass));
+		SetDisplayLogMessagesInClassThroughJS(msgClass, !OOLogWillDisplayMessagesInClass(msgClass));
 	}
 }
 
@@ -253,7 +270,7 @@ static OODebugController *sSingleton = nil;
 	NSString					*msgClass = nil;
 	
 	msgClass = [logMsgClassPanelTextField stringValue];
-	if ([msgClass length] != 0)  OOLogSetDisplayMessagesInClass(msgClass, YES);
+	if ([msgClass length] != 0)  SetDisplayLogMessagesInClassThroughJS(msgClass, YES);
 	
 	[NSApp stopModal];
 }
@@ -264,7 +281,7 @@ static OODebugController *sSingleton = nil;
 	NSString					*msgClass = nil;
 	
 	msgClass = [logMsgClassPanelTextField stringValue];
-	if ([msgClass length] != 0)  OOLogSetDisplayMessagesInClass(msgClass, NO);
+	if ([msgClass length] != 0)  SetDisplayLogMessagesInClassThroughJS(msgClass, NO);
 	
 	[NSApp stopModal];
 }
@@ -402,6 +419,12 @@ static OODebugController *sSingleton = nil;
 	if (action == @selector(inspectTarget:))
 	{
 		return [[PlayerEntity sharedPlayer] primaryTarget] != nil;
+	}
+	if (action == @selector(hideShowHUD:))
+	{
+		BOOL hidden = [[[PlayerEntity sharedPlayer] hud] isHidden];
+		[menuItem setTitle:hidden ? @"Show HUD" : @"Hide HUD"];
+		return YES;
 	}
 	
 	return [self respondsToSelector:action];
