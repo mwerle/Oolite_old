@@ -11,7 +11,7 @@
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string>net.brockerhoff.RBSplitView.IBPlugin</string>
+				<string>net.brockerhoff.RBsplitView.IBPlugin</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
@@ -26,7 +26,7 @@
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<string>net.brockerhoff.RBSplitView.IBPlugin</string>
+			<string>net.brockerhoff.RBsplitView.IBPlugin</string>
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.Metadata">
@@ -2665,11 +2665,11 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string>{240, 179}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>net.brockerhoff.RBSplitView.IBPlugin</string>
+					<string>net.brockerhoff.RBsplitView.IBPlugin</string>
 					<integer value="1"/>
-					<string>net.brockerhoff.RBSplitView.IBPlugin</string>
+					<string>net.brockerhoff.RBsplitView.IBPlugin</string>
 					<integer value="1"/>
-					<string>net.brockerhoff.RBSplitView.IBPlugin</string>
+					<string>net.brockerhoff.RBsplitView.IBPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
