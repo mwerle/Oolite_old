@@ -7,6 +7,7 @@
 //
 
 #import "OOTextureGenerator.h"
+#import "textureGeneratorTestRig.h"
 
 
 @implementation OOTextureGenerator
@@ -46,6 +47,19 @@
 {
 	[self loadTexture];
 	_ready = YES;
+}
+
+
+- (void) dumpToRGBFile:(NSString *)rgbName andAlphaFile:(NSString *)alphaName
+{
+	NSAssert(_ready, @"Must call -render before -dumpToRGBFile:andAlphaFile:");
+	
+	[UNIVERSE dumpRGBAToRGBFileNamed:rgbName
+					andGrayFileNamed:alphaName
+							   bytes:data
+							   width:width
+							  height:height
+							rowBytes:width * 4];
 }
 
 @end

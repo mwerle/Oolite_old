@@ -16,8 +16,9 @@
 		1AA2B6AE10D84B14001DC6D4 /* OOPlanetTextureGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2B6AD10D84B14001DC6D4 /* OOPlanetTextureGenerator.m */; };
 		1AA2B72C10D85115001DC6D4 /* CollectionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2B72B10D85115001DC6D4 /* CollectionUtils.m */; };
 		1AA2B74610D853C7001DC6D4 /* OOProfilingStopwatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2B74510D853C7001DC6D4 /* OOProfilingStopwatch.m */; };
+		1ABF226610E66208001A5441 /* MockUniverse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABF226510E66208001A5441 /* MockUniverse.m */; };
+		1ABF227310E66282001A5441 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABF227210E66282001A5441 /* Cocoa.framework */; };
 		8DD76F9A0486AA7600D96B5E /* textureGeneratorTestRig.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* textureGeneratorTestRig.m */; settings = {ATTRIBUTES = (); }; };
-		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -55,6 +56,9 @@
 		1AA2B72B10D85115001DC6D4 /* CollectionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionUtils.m; sourceTree = "<group>"; };
 		1AA2B74410D853C7001DC6D4 /* OOProfilingStopwatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOProfilingStopwatch.h; sourceTree = SOURCE_ROOT; };
 		1AA2B74510D853C7001DC6D4 /* OOProfilingStopwatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOProfilingStopwatch.m; sourceTree = SOURCE_ROOT; };
+		1ABF226510E66208001A5441 /* MockUniverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MockUniverse.m; sourceTree = "<group>"; };
+		1ABF227210E66282001A5441 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		1ABF22D810E66BBC001A5441 /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyOpenGLView.h; sourceTree = "<group>"; };
 		32A70AAB03705E1F00C91783 /* textureGeneratorTestRig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = textureGeneratorTestRig.h; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* textureGeneratorTestRig */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = textureGeneratorTestRig; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -64,7 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				1ABF227310E66282001A5441 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +81,7 @@
 				08FB7795FE84155DC02AAC07 /* Source */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
+				1ABF227210E66282001A5441 /* Cocoa.framework */,
 			);
 			name = textureGeneratorTestRig;
 			sourceTree = "<group>";
@@ -149,6 +154,8 @@
 			children = (
 				1AA2B68A10D84A34001DC6D4 /* OOTextureGenerator.h */,
 				1AA2B68B10D84A34001DC6D4 /* OOTextureGenerator.m */,
+				1ABF226510E66208001A5441 /* MockUniverse.m */,
+				1ABF22D810E66BBC001A5441 /* MyOpenGLView.h */,
 			);
 			name = "Mock classes";
 			sourceTree = "<group>";
@@ -214,6 +221,7 @@
 				1AA2B6AE10D84B14001DC6D4 /* OOPlanetTextureGenerator.m in Sources */,
 				1AA2B72C10D85115001DC6D4 /* CollectionUtils.m in Sources */,
 				1AA2B74610D853C7001DC6D4 /* OOProfilingStopwatch.m in Sources */,
+				1ABF226610E66208001A5441 /* MockUniverse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,7 +240,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = textureGeneratorTestRig.h;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"NDEBUG=1",
 					"OOSTOPWATCH_STANDALONE=1",
 					"OOCOLLECTIONEXTRACTORS_SIMPLE=1",
 					"TEXGEN_TEST_RIG=1",
@@ -255,7 +262,6 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = textureGeneratorTestRig.h;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"NDEBUG=1",
 					"OOSTOPWATCH_STANDALONE=1",
 					"OOCOLLECTIONEXTRACTORS_SIMPLE=1",
 					"TEXGEN_TEST_RIG=1",

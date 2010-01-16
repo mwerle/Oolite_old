@@ -37,4 +37,6 @@ typedef struct
 // For client
 - (void) render;
 
+- (void) dumpToRGBFile:(NSString *)rgbName andAlphaFile:(NSString *)alphaName;
+
 @end

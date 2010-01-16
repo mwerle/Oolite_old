@@ -4,9 +4,12 @@
 #import "OOProfilingStopwatch.h"
 
 
+#define WRITE_RESULTS	1
+
+
 int main (int argc, const char * argv[])
 {
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    [[NSAutoreleasePool alloc] init];
 	
 	// Set up magic numbers for Lave.
 	RANROTSeed seed = { 3560527675, 2338263651 };
@@ -41,7 +44,17 @@ int main (int argc, const char * argv[])
 	
 	NSLog(@"Rendering completed in %g seconds.", stopwatch.currentTime);
 	
-    [pool drain];
+#if WRITE_RESULTS
+	OOTextureGenerator *normalGen = normalTex.generator;
+	[normalGen render];
+	
+	NSLog(@"Writing diffuse/lights.");
+	[diffuseGen dumpToRGBFile:@"diffuse" andAlphaFile:@"lights"];
+	NSLog(@"Writing normal/specular.");
+	[normalGen dumpToRGBFile:@"normal" andAlphaFile:@"specular"];
+	NSLog(@"Done.");
+#endif
+	
     return 0;
 }
 
