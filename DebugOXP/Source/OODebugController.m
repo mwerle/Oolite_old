@@ -45,6 +45,7 @@ SOFTWARE.
 #import "OOJavaScriptEngine.h"
 #import "OODebugInspector.h"
 #import "OOEntityInspectorExtensions.h"
+#import "OOConstToString.h"
 
 
 static OODebugController *sSingleton = nil;
@@ -310,6 +311,17 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 }
 
 
+- (IBAction) setShaderModeToTag:sender
+{
+//	[UNIVERSE setShaderEffectsLevel:[sender tag]];
+	OOShaderSetting setting = [sender tag];
+	NSString *settingString = [ShaderSettingToString(setting) escapedForJavaScriptLiteral];
+	NSString *command = [NSString stringWithFormat:@"console.shaderMode = \"%@\"", settingString];
+	
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
+}
+
+
 - (IBAction)showLogPreferencesAction:sender
 {
 	[logShowFunctionCheckBox setState:OOLogShowFunction()];
@@ -425,6 +437,12 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 		BOOL hidden = [[[PlayerEntity sharedPlayer] hud] isHidden];
 		[menuItem setTitle:hidden ? @"Show HUD" : @"Hide HUD"];
 		return YES;
+	}
+	if (action == @selector(setShaderModeToTag:))
+	{
+		OOShaderSetting shaderLevel = [UNIVERSE shaderEffectsLevel];
+		[menuItem setState:shaderLevel == (OOShaderSetting)[menuItem tag]];
+		return shaderLevel != SHADERS_NOT_SUPPORTED;
 	}
 	
 	return [self respondsToSelector:action];

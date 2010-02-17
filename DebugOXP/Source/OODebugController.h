@@ -104,6 +104,9 @@ show them, set the preference debug-show-extra-menu-items:
 // Debug Flags submenu
 - (IBAction) toggleThisDebugFlagAction:sender;
 
+// Shader Mode submenu
+- (IBAction) setShaderModeToTag:sender;
+
 // Log Preferences window
 - (IBAction) showLogPreferencesAction:sender;
 - (IBAction) logSetShowFunctionAction:sender;
