@@ -193,7 +193,7 @@
 				D2AAC043055464E500DB518D /* Headers */,
 				D2AAC044055464E500DB518D /* Sources */,
 				D289987405E68DCB004EDB86 /* Frameworks */,
-				1A1A07B80F486468006C802F /* ShellScript */,
+				1A1A07B80F486468006C802F /* Clear jsautocfg.h */,
 			);
 			buildRules = (
 			);
@@ -222,13 +222,14 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1A1A07B80F486468006C802F /* ShellScript */ = {
+		1A1A07B80F486468006C802F /* Clear jsautocfg.h */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Clear jsautocfg.h";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
