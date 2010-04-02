@@ -15,7 +15,15 @@
 
 - (id) init
 {
-	[JoystickHandler setStickHandlerClass:[OOLeopardHIDJoystickHandler class]];
+	if ([JoystickHandler setStickHandlerClass:[OOLeopardHIDJoystickHandler class]])
+	{
+		OOLog(@"temp.joystick", @"Successfully installed joystick handler.");
+	}
+	else
+	{
+		OOLog(@"temp.joystick", @"Failed to install joystick handler.");
+	}
+
 	
 	return [super init];
 }

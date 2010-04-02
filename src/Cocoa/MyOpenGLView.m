@@ -89,6 +89,7 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 	
 	self = [super initWithFrame:frameRect pixelFormat:pixelFormat];
 	
+	[JoystickHandler sharedStickHandler];
 	virtualJoystickPosition = NSMakePoint(0.0,0.0);
 	
 	typedString = [[NSMutableString alloc] initWithString:@""];
@@ -917,16 +918,5 @@ static NSString * kOOLogKeyDown				= @"input.keyMapping.keyPress.keyDown";
 }
 
 #endif
-
-
-/*	This method exists purely to suppress Clang static analyzer warnings that
-	these ivars are unused (but may be used by categories, which they are).
-	FIXME: there must be a feature macro we can use to avoid actually building
-	this into the app, but I can't find it in docs.
-*/
-- (BOOL) suppressClangStuff
-{
-	return stickHandler != nil;
-}
 
 @end

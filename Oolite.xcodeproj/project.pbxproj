@@ -373,6 +373,8 @@
 		1A38B4AC0B988532001ED4A0 /* OOLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A38B4AA0B988532001ED4A0 /* OOLogging.h */; };
 		1A38B4AD0B988532001ED4A0 /* OOLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A38B4AB0B988532001ED4A0 /* OOLogging.m */; };
 		1A38FC6011661BFA00D81FBC /* Oolite Leopard support.bundle in Copy Bundles */ = {isa = PBXBuildFile; fileRef = 1A38FBD01165F55000D81FBC /* Oolite Leopard support.bundle */; };
+		1A38FDAF1166464900D81FBC /* PlayerEntityStickMapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A26D09E0BCF9CF70073F257 /* PlayerEntityStickMapper.m */; };
+		1A38FDB01166464A00D81FBC /* PlayerEntityStickMapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A26D09F0BCF9CF70073F257 /* PlayerEntityStickMapper.h */; };
 		1A3A04620BC547DC00B5E2D9 /* OOTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3A04610BC547DC00B5E2D9 /* OOTypes.h */; };
 		1A3ACFEB0C5FF33A00EC50A7 /* OOJSShip.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3ACFE90C5FF33A00EC50A7 /* OOJSShip.h */; };
 		1A3ACFEC0C5FF33A00EC50A7 /* OOJSShip.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3ACFEA0C5FF33A00EC50A7 /* OOJSShip.m */; };
@@ -3227,6 +3229,7 @@
 				1ADA564810CD68D800E891B8 /* OOStellarBody.h in Headers */,
 				1A01574311034A86008EE36A /* ShipEntityLoadRestore.h in Headers */,
 				1A7E3189113ED496009AAB6D /* ProxyPlayerEntity.h in Headers */,
+				1A38FDB01166464A00D81FBC /* PlayerEntityStickMapper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3602,6 +3605,7 @@
 				1A01574411034A86008EE36A /* ShipEntityLoadRestore.m in Sources */,
 				1A7E317C113ED37C009AAB6D /* EntityShaderBindings.m in Sources */,
 				1A7E318A113ED496009AAB6D /* ProxyPlayerEntity.m in Sources */,
+				1A38FDAF1166464900D81FBC /* PlayerEntityStickMapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

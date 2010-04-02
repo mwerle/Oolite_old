@@ -70,7 +70,7 @@ MA 02110-1301, USA.
 #if OOLITE_MAC_OS_X
 #import "Groolite.h"
 #endif
-#if OOLITE_SDL
+#if OOLITE_HAVE_JOYSTICK
 #import "JoystickHandler.h"
 #import "PlayerEntityStickMapper.h"
 #endif
@@ -4987,9 +4987,10 @@ static GLfloat sBaseMass = 0.0;
 
 - (void) setGuiToGameOptionsScreen
 {
-#ifdef GNUSTEP
+#if !OOLITE_MAC_OS_X || OOLITE_HAVE_JOYSTICK
 	MyOpenGLView	*gameView = [UNIVERSE gameView];
 #endif
+	
 	GameController	*controller = [UNIVERSE gameController];
 	OOUInteger		displayModeIndex = [controller indexOfCurrentDisplayMode];
 	NSArray			*modeList = [controller displayModes];
@@ -5112,8 +5113,9 @@ static GLfloat sBaseMass = 0.0;
 			[gui setText:DESC(@"gameoptions-play-in-fullscreen") forRow:GUI_ROW(GAME,DISPLAYSTYLE) align:GUI_ALIGN_CENTER];
 		}
 		[gui setKey: GUI_KEY_OK forRow: GUI_ROW(GAME,DISPLAYSTYLE)];
+#endif
 
-
+#if OOLITE_HAVE_JOYSTICK
 		[gui setText:DESC(@"gameoptions-joystick-configuration") forRow: GUI_ROW(GAME,STICKMAPPER) align: GUI_ALIGN_CENTER];
 		if ([[gameView getStickHandler] getNumSticks])
 		{

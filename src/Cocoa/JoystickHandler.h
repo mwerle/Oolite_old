@@ -2,8 +2,7 @@
 
 JoystickHandler.h
 
-Non-functional JoystickHandler.
-This exists to reduce the amount of #ifdefs and duplicated code.
+Non-functional JoystickHandler. Useful version lives in LeopardFeatures.
 
 
 Oolite

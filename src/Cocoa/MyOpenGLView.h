@@ -107,8 +107,6 @@ extern int debug;
 	NSSize				viewSize;
 	GLfloat				display_z;
 	GLfloat				x_offset, y_offset;
-	
-	JoystickHandler *stickHandler;
 }
 
 

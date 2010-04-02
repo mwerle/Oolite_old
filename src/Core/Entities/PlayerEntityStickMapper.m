@@ -27,6 +27,9 @@ MA 02110-1301, USA.
 #import "JoystickHandler.h"
 #import "OOTexture.h"
 
+#if OOLITE_HAVE_JOYSTICK
+
+
 @implementation PlayerEntity (StickMapper)
 
 - (void) setGuiToStickMapperScreen: (unsigned)skip
@@ -509,3 +512,5 @@ MA 02110-1301, USA.
 
 @end
 
+
+#endif
