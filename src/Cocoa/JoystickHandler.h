@@ -49,7 +49,7 @@ SOFTWARE.
 
 */
 
-#import <Foundation/Foundation.h>
+#import "OOCocoa.h"
 #import "OOFunctionAttributes.h"
 
 OO_MAC_BEGIN_EXPORT
@@ -61,7 +61,8 @@ OO_MAC_BEGIN_EXPORT
 // these are required very frequently (once per frame) so must be light
 // on CPU cycles (try and avoid too many objc sendmsgs).
 // Controls that can be an axis
-enum {
+typedef enum
+{
   AXIS_ROLL,
   AXIS_PITCH,
   AXIS_YAW,
@@ -70,10 +71,11 @@ enum {
   AXIS_VIEWX,
   AXIS_VIEWY,
   AXIS_end
-} axfn;
+} OOJoystickAxisFunction;
 
 // Controls that can be a button
-enum {
+typedef enum
+{
   BUTTON_INCTHRUST,
   BUTTON_DECTHRUST,
   BUTTON_SCANNERZOOM,
@@ -106,7 +108,7 @@ enum {
   BUTTON_VIEWPORT,
   BUTTON_VIEWSTARBOARD,
   BUTTON_end
-} butfn;
+} OOJoystickButtonFunction;
 
 // Stick constants
 #define MAX_STICKS 4
@@ -141,19 +143,22 @@ enum {
 
 @interface JoystickHandler: NSObject
 {
+@private
 	BOOL butstate[BUTTON_end];
 }
 
 + (id) sharedStickHandler;
 
-- (int) getNumSticks;
+- (OOUInteger) getNumSticks;
 - (NSPoint) getRollPitchAxis;
 - (NSPoint) getViewAxis;
-- (double) getAxisState:(int)function;
+- (double) getAxisState:(OOJoystickAxisFunction)function;
 - (double) getSensitivity;
 - (const BOOL *) getAllButtonStates;
 
+// Subclass interface
 + (BOOL) setStickHandlerClass:(Class)stickHandlerClass;
+- (void) setButtonState:(BOOL)state forButton:(OOJoystickButtonFunction)button;
 
 @end
 

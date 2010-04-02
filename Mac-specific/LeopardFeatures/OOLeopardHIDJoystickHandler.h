@@ -54,7 +54,11 @@ SOFTWARE.
 
 @interface OOLeopardHIDJoystickHandler: JoystickHandler
 {
-
+@private
+	OOUInteger			_numSticks;
+	NSPoint				_viewAxis;
+	NSPoint				_rollPitchAxis;
+	double				_yawAxis;
 }
 
 @end

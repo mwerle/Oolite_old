@@ -15,14 +15,7 @@
 
 - (id) init
 {
-	if ([JoystickHandler setStickHandlerClass:[OOLeopardHIDJoystickHandler class]])
-	{
-		OOLog(@"temp.leopardJoystick", @"Successfully installed Leopard joystick handler.");
-	}
-	else
-	{
-		OOLog(@"temp.leopardJoystick.failed", @"Failed to install Leopard joystick handler.");
-	}
+	[JoystickHandler setStickHandlerClass:[OOLeopardHIDJoystickHandler class]];
 	
 	return [super init];
 }

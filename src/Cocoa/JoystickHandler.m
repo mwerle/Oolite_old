@@ -67,7 +67,7 @@ static JoystickHandler *sSharedStickHandler = nil;
 }
 
 
-- (int) getNumSticks
+- (OOUInteger) getNumSticks
 {
 	return 0;
 }
@@ -85,8 +85,9 @@ static JoystickHandler *sSharedStickHandler = nil;
 }
 
 
-- (double) getAxisState:(int)function
+- (double) getAxisState:(OOJoystickAxisFunction)function
 {
+	NSParameterAssert(function < AXIS_end);
 	return 0.0;
 }
 
@@ -117,6 +118,13 @@ static JoystickHandler *sSharedStickHandler = nil;
 	
 	sStickHandlerClass = stickHandlerClass;
 	return YES;
+}
+
+
+- (void) setButtonState:(BOOL)state forButton:(OOJoystickButtonFunction)button
+{
+	NSParameterAssert(button < BUTTON_end);
+	butstate[button] = state;
 }
 
 @end
