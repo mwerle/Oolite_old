@@ -50,7 +50,11 @@ SOFTWARE.
 */
 
 #import "OOCocoa.h"
+#import "OOFunctionAttributes.h"
 #import <stdarg.h>
+
+
+OO_MAC_BEGIN_EXPORT
 
 
 #ifndef OOLOG_POISON_NSLOG
@@ -174,3 +178,6 @@ extern NSString * const kOOLogOpenGLError;					// @"rendering.opengl.error"
 
 // Don't use. However, #defining it as @"unclassified.module" can be used as a stepping stone to OOLog support.
 extern NSString * const kOOLogUnconvertedNSLog;				// @"unclassified"
+
+
+OO_MAC_END_EXPORT

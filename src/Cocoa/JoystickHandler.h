@@ -7,7 +7,7 @@ This exists to reduce the amount of #ifdefs and duplicated code.
 
 
 Oolite
-Copyright (C) 2004-2008 Giles C Williams and contributors
+Copyright (C) 2004-2010 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ MA 02110-1301, USA.
 
 This file may also be distributed under the MIT/X11 license:
 
-Copyright (C) 2006 Jens Ayton
+Copyright (C) 2006-2010 Jens Ayton
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,6 +50,10 @@ SOFTWARE.
 */
 
 #import <Foundation/Foundation.h>
+#import "OOFunctionAttributes.h"
+
+OO_MAC_BEGIN_EXPORT
+
 
 #define STICK_AXISUNASSIGNED -10.0
 
@@ -149,4 +153,9 @@ enum {
 - (double) getSensitivity;
 - (const BOOL *) getAllButtonStates;
 
++ (BOOL) setStickHandlerClass:(Class)stickHandlerClass;
+
 @end
+
+
+OO_MAC_END_EXPORT

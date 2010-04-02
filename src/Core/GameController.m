@@ -1094,6 +1094,10 @@ static void LoadOneSystemSpecificBundle(NSString *name)
 		Class cl = [bundle principalClass];
 		[[[cl alloc] init] release];
 	}
+	else
+	{
+		OOLog(@"mac.systemSpecific.load.failed", @"Failed to load %@", path);
+	}
 }
 
 #endif

@@ -7,13 +7,23 @@
 //
 
 #import "OOLeopardFeaturesLoader.h"
+#import "OOLogging.h"
+#import "OOLeopardHIDJoystickHandler.h"
 
 
 @implementation OOLeopardFeaturesLoader
 
 - (id) init
 {
-	NSLog(@"%s", __func__);
+	if ([JoystickHandler setStickHandlerClass:[OOLeopardHIDJoystickHandler class]])
+	{
+		OOLog(@"temp.leopardJoystick", @"Successfully installed Leopard joystick handler.");
+	}
+	else
+	{
+		OOLog(@"temp.leopardJoystick.failed", @"Failed to install Leopard joystick handler.");
+	}
+	
 	return [super init];
 }
 

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1A38FA1F1165F39800D81FBC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A38FA1E1165F39800D81FBC /* Foundation.framework */; };
 		1A38FBE4116604D100D81FBC /* OOLeopardFeaturesLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A38FBE3116604D100D81FBC /* OOLeopardFeaturesLoader.m */; };
+		1A38FC86116620A300D81FBC /* OOLeopardHIDJoystickHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A38FC85116620A300D81FBC /* OOLeopardHIDJoystickHandler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,7 +42,9 @@
 		1A38FBE2116604D100D81FBC /* OOLeopardFeaturesLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLeopardFeaturesLoader.h; sourceTree = "<group>"; };
 		1A38FBE3116604D100D81FBC /* OOLeopardFeaturesLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLeopardFeaturesLoader.m; sourceTree = "<group>"; };
 		1A38FC131166089C00D81FBC /* oolite-options.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-options.xcconfig"; path = "../../src/Cocoa/oolite-options.xcconfig"; sourceTree = SOURCE_ROOT; };
-		8D576316048677EA00EA77CD /* LeopardFeatures.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LeopardFeatures.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A38FC84116620A300D81FBC /* OOLeopardHIDJoystickHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLeopardHIDJoystickHandler.h; sourceTree = "<group>"; };
+		1A38FC85116620A300D81FBC /* OOLeopardHIDJoystickHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLeopardHIDJoystickHandler.m; sourceTree = "<group>"; };
+		8D576316048677EA00EA77CD /* Oolite Leopard support.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Oolite Leopard support.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,6 +94,8 @@
 			children = (
 				1A38FBE2116604D100D81FBC /* OOLeopardFeaturesLoader.h */,
 				1A38FBE3116604D100D81FBC /* OOLeopardFeaturesLoader.m */,
+				1A38FC84116620A300D81FBC /* OOLeopardHIDJoystickHandler.h */,
+				1A38FC85116620A300D81FBC /* OOLeopardHIDJoystickHandler.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -98,7 +103,7 @@
 		19C28FB6FE9D52B211CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D576316048677EA00EA77CD /* LeopardFeatures.bundle */,
+				8D576316048677EA00EA77CD /* Oolite Leopard support.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -131,7 +136,7 @@
 			name = LeopardFeatures;
 			productInstallPath = "$(HOME)/Library/Bundles";
 			productName = LeopardFeatures;
-			productReference = 8D576316048677EA00EA77CD /* LeopardFeatures.bundle */;
+			productReference = 8D576316048677EA00EA77CD /* Oolite Leopard support.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -190,6 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A38FBE4116604D100D81FBC /* OOLeopardFeaturesLoader.m in Sources */,
+				1A38FC86116620A300D81FBC /* OOLeopardHIDJoystickHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,9 +232,10 @@
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				PRODUCT_NAME = LeopardFeatures;
+				PRODUCT_NAME = "Oolite Leopard support";
 				SDKROOT = macosx10.5;
 				SYMROOT = ../../build;
+				USER_HEADER_SEARCH_PATHS = "../../src//**";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = TestRelease;
@@ -249,6 +256,7 @@
 				PRODUCT_NAME = "Oolite Leopard support";
 				SDKROOT = macosx10.5;
 				SYMROOT = ../../build;
+				USER_HEADER_SEARCH_PATHS = "../../src//**";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -263,9 +271,10 @@
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				PRODUCT_NAME = LeopardFeatures;
+				PRODUCT_NAME = "Oolite Leopard support";
 				SDKROOT = macosx10.5;
 				SYMROOT = ../../build;
+				USER_HEADER_SEARCH_PATHS = "../../src//**";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Deployment;

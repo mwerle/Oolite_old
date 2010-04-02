@@ -1,6 +1,7 @@
 /*
 
-JoystickHandler.m
+OOLeopardHIDJoystickHandler.m
+
 
 Oolite
 Copyright (C) 2004-2010 Giles C Williams and contributors
@@ -23,7 +24,7 @@ MA 02110-1301, USA.
 
 This file may also be distributed under the MIT/X11 license:
 
-Copyright (C) 2006-2010 Jens Ayton
+Copyright (C) 2010 Jens Ayton, 2010 Maik Schulz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,81 +46,9 @@ SOFTWARE.
 
 */
 
-#import "JoystickHandler.h"
-
-OO_MAC_BEGIN_EXPORT
+#import "OOLeopardHIDJoystickHandler.h"
 
 
-static Class sStickHandlerClass = Nil;
-static JoystickHandler *sSharedStickHandler = nil;
-
-
-@implementation JoystickHandler
-
-+ (id) sharedStickHandler
-{
-	if (sSharedStickHandler == nil)
-	{
-		if (sStickHandlerClass == Nil)  sStickHandlerClass = [JoystickHandler class];
-		sSharedStickHandler = [[sStickHandlerClass alloc] init];
-	}
-	return sSharedStickHandler;
-}
-
-
-- (int) getNumSticks
-{
-	return 0;
-}
-
-
-- (NSPoint) getRollPitchAxis
-{
-	return NSZeroPoint;
-}
-
-
-- (NSPoint) getViewAxis
-{
-	return NSZeroPoint;
-}
-
-
-- (double) getAxisState:(int)function
-{
-	return 0.0;
-}
-
-
-- (double) getSensitivity
-{
-	return 1.0;
-}
-
-
-- (const BOOL *) getAllButtonStates
-{
-	return butstate;
-}
-
-
-+ (BOOL) setStickHandlerClass:(Class)stickHandlerClass
-{
-	// Can't set class after handler has been created.
-	if (sSharedStickHandler != nil)  return NO;
-	
-	Class jsClass = [JoystickHandler class];
-	
-	if (stickHandlerClass != Nil)
-	{
-		NSParameterAssert([stickHandlerClass isSubclassOfClass:jsClass/*[JoystickHandler class]*/]);
-	}
-	
-	sStickHandlerClass = stickHandlerClass;
-	return YES;
-}
+@implementation OOLeopardHIDJoystickHandler
 
 @end
-
-
-OO_MAC_END_EXPORT

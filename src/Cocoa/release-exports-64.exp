@@ -1,0 +1,25 @@
+# Symbols used by Leopard features bundle
+.objc_class_name_JoystickHandler
+_OBJC_CLASS_$_JoystickHandler
+_OBJC_METACLASS_$_JoystickHandler
+
+_OOLogWillDisplayMessagesInClass
+_OOLogIndent
+_OOLogOutdent
+_OOLogPushIndent
+_OOLogPopIndent
+_OOLogWithPrefix
+_OOLogWithFunctionFileAndLine
+_OOLogWithFunctionFileAndLineAndArguments
+_OOLogGenericParameterErrorForFunction
+_OOLogGenericSubclassResponsibilityForFunction
+
+_kOOLogSubclassResponsibility
+_kOOLogParameterError
+_kOOLogDeprecatedMethod
+_kOOLogAllocationFailure
+_kOOLogInconsistentState
+_kOOLogException
+_kOOLogFileNotFound
+_kOOLogFileNotLoaded
+_kOOLogUnconvertedNSLog

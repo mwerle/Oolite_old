@@ -57,4 +57,26 @@
 #endif
 
 
+#ifdef __GNUC__
+#define OO_EXPORT			GCC_ATTR((visibility("default")))
+#define OO_BEGIN_EXPORT		_Pragma("GCC visibility push(default)");
+#define OO_END_EXPORT		_Pragma("GCC visibility pop");
+#else
+#error Don't know how to define export attributes for this compiler.
+#define OO_EXPORT
+#define OO_BEGIN_EXPORT
+#define OO_END_EXPORT
+#endif
+
+#if OOLITE_MAC_OS_X
+#define OO_MAC_EXPORT		OO_EXPORT
+#define OO_MAC_BEGIN_EXPORT	OO_BEGIN_EXPORT
+#define OO_MAC_END_EXPORT	OO_END_EXPORT
+#else
+#define OO_MAC_EXPORT
+#define OO_MAC_BEGIN_EXPORT
+#define OO_MAC_END_EXPORT
+#endif
+
+
 #endif	/* INCLUDED_OOFUNCTIONATTRIBUTES_h */
