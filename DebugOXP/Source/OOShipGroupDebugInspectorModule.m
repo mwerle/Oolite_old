@@ -34,7 +34,9 @@
 	members = [NSMutableArray array];
 	for (memberEnum = [object objectEnumerator]; (member = [memberEnum nextObject]); )
 	{
-		[members addObject:[member weakRetain]];
+		id memberRef = [member weakRetain];
+		[members addObject:memberRef];
+		[memberRef release];
 	}
 	
 	// Sort array.
