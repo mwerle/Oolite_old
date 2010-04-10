@@ -27,7 +27,7 @@ MA 02110-1301, USA.
 
 
 this.name			= "oolite-shader-test-suite";
-this.version		= "0.1";
+this.version		= "0.2";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2010 the Oolite team.";
 
@@ -122,7 +122,7 @@ this.startUp = function()
 					{
 						title: "Shader test suite",
 						message: "The test suite is complete.\n\n\n" +
-						"Your OpenGL rendrer information is:\n" +
+						"Your OpenGL renderer information is:\n" +
 						"Vendor: “" + debugConsole.glVendorString + "”\n" +
 						"Renderer: “" + debugConsole.glRendererString + "”\n\n" +
 						"This information can also be found in the Oolite log."
@@ -133,17 +133,23 @@ this.startUp = function()
 				}
 			}
 			
+			// Create a dummy ship to extract its script_info.
+			var modelName = "oolite_shader_test_suite_" + testIndex;
+			var ship = system.addShips(modelName, 1, system.sun.position, 10000)[0];
+			var testDesc = ship.scriptInfo["oolite_shader_test_suite_label"];
+			ship.remove();
+			
 			// Actually run the test.
 			debugConsole.shaderMode = this.passID == 1 ? "SHADERS_SIMPLE" : "SHADERS_FULL";
 			debugConsole.displayFPS = true;
 			var testLabel = (this.passID == 1 ? "simple" : "full") + "-" + testIndex;
-			log("shaderTest.runTest", "Running test " + testLabel + ".");
+			log("shaderTest.runTest", "Running test " + testLabel + " (" + testDesc + ").");
 			
 			var config =
 			{
-				model: "oolite_shader_test_suite_" + testIndex,
+				model: modelName,
 				title: "",
-				message: "\n\n\n" + testLabel
+				message: "\n\n\n" + testLabel + "\n" + testDesc
 			};
 			if (!Mission.runScreen(config, this.runNextTest, this))
 			{

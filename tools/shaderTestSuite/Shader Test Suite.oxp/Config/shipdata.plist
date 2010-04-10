@@ -23,7 +23,6 @@
 	
 	oolite_shader_test_suite_1 =
 	{
-		// diffuse_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_1";
 		
@@ -34,11 +33,15 @@
 				diffuse_map = "oolite_shader_test_suite_1_diffuse.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map";
+		};
 	};
 	
 	oolite_shader_test_suite_2 =
 	{
-		// diffuse_map + emission_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_2";
 		
@@ -51,11 +54,15 @@
 				emission_map = "oolite_shader_test_suite_2_emission.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + emission_map";
+		};
 	};
 	
 	oolite_shader_test_suite_3 =
 	{
-		// emission_map only
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_3";
 		
@@ -69,11 +76,15 @@
 				emission = (160, 255, 160);
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "emission_map only";
+		};
 	};
 	
 	oolite_shader_test_suite_4 =
 	{
-		// diffuse_map + illumination_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_4";
 		
@@ -85,11 +96,15 @@
 				illumination_map = "oolite_shader_test_suite_illumination.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + illumination_map";
+		};
 	};
 	
 	oolite_shader_test_suite_5 =
 	{
-		// illumination_map only
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_5";
 		
@@ -102,11 +117,15 @@
 				illumination_map = "oolite_shader_test_suite_5_illumination.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "illumination_map only";
+		};
 	};
 	
 	oolite_shader_test_suite_6 =
 	{
-		// diffuse_map + emission_map + illumination_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_6";
 		
@@ -120,11 +139,15 @@
 				illumination_map = "oolite_shader_test_suite_illumination.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + emission_map + illumination_map";
+		};
 	};
 	
 	oolite_shader_test_suite_7 =
 	{
-		// diffuse_map + emission_and_illumination_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_7";
 		
@@ -137,11 +160,15 @@
 				emission = (160, 255, 160);
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + emission_and_illumination_map";
+		};
 	};
 	
 	oolite_shader_test_suite_8 =
 	{
-		// diffuse_map + normal_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_8";
 		
@@ -153,11 +180,15 @@
 				normal_map = "oolite_shader_test_suite_normal.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + normal_map";
+		};
 	};
 	
 	oolite_shader_test_suite_9 =
 	{
-		// diffuse_map + normal_and_parallax_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_9";
 		
@@ -170,11 +201,15 @@
 				parallax_scale = -0.04;
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + normal_and_parallax_map";
+		};
 	};
 	
 	oolite_shader_test_suite_10 =
 	{
-		// emission_map + normal_and_parallax_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_10";
 		
@@ -190,11 +225,15 @@
 				parallax_scale = -0.04;
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "emission_map + normal_and_parallax_map";
+		};
 	};
 	
 	oolite_shader_test_suite_11 =
 	{
-		// diffuse_map + emission_map + normal_and_parallax_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_11";
 		
@@ -209,11 +248,15 @@
 				parallax_scale = -0.04;
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + emission_map + normal_and_parallax_map";
+		};
 	};
 	
 	oolite_shader_test_suite_12 =
 	{
-		// diffuse_map + emission_map + illumination_map + normal_and_parallax_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_12";
 		
@@ -229,11 +272,15 @@
 				parallax_scale = -0.04;
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + emission_map + illumination_map + normal_and_parallax_map";
+		};
 	};
 	
 	oolite_shader_test_suite_13 =
 	{
-		// diffuse_map + specular_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_13";
 		
@@ -245,11 +292,15 @@
 				specular_map = "oolite_shader_test_suite_13_specular.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + specular_map";
+		};
 	};
 	
 	oolite_shader_test_suite_14 =
 	{
-		// specular_map only
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_14";
 		
@@ -262,11 +313,15 @@
 				specular_map = "oolite_shader_test_suite_14_specular.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "specular_map only";
+		};
 	};
 	
 	oolite_shader_test_suite_15 =
 	{
-		// diffuse_map + emission_map + specular_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_15";
 		
@@ -280,11 +335,15 @@
 				specular_map = "oolite_shader_test_suite_specular_blank.png";
 			};
 		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + emission_map + specular_map";
+		};
 	};
 	
 	oolite_shader_test_suite_16 =
 	{
-		// diffuse_map + emission_map + illumination_map + normal_and_parallax_map + specular_map
 		like_ship = "oolite_shader_test_suite_base";
 		roles = "oolite_shader_test_suite_16";
 		
@@ -300,6 +359,11 @@
 				normal_and_parallax_map = "oolite_shader_test_suite_normal_and_parallax.png";
 				parallax_scale = -0.04;
 			};
+		};
+		
+		script_info =
+		{
+			oolite_shader_test_suite_label = "diffuse_map + emission_map + illumination_map + normal_and_parallax_map + specular_map";
 		};
 	};
 }
