@@ -82,7 +82,7 @@ this.startUp = function()
 			this.shipLaunchedFromStation = function () { performCleanUp(); }
 			
 			debugConsole.writeLogMarker();
-			log("shaderTest.start", "Starting shader test suite " + this.version + " under Oolite " + oolite.versionString + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\".");
+			log("shaderTest.start", "Starting shader test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\".");
 			
 			this.runNextTest();
 		}

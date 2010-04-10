@@ -65,8 +65,8 @@
 			{
 				diffuse_map = "";
 				diffuse = (129, 129, 129);
-				emission = (200, 200, 200);
 				emission_map = "oolite_shader_test_suite_3_emission.png";
+				emission = (160, 255, 160);
 			};
 		};
 	};
@@ -116,6 +116,7 @@
 			{
 				diffuse_map = "oolite_shader_test_suite_6_diffuse.png";
 				emission_map = "oolite_shader_test_suite_emission_ring.png";
+				emission = (160, 255, 160);
 				illumination_map = "oolite_shader_test_suite_illumination.png";
 			};
 		};
@@ -132,8 +133,8 @@
 			"cube-face" =
 			{
 				diffuse_map = "oolite_shader_test_suite_7_diffuse.png";
-				emission = (200, 200, 200);
 				emission_and_illumination_map = "oolite_shader_test_suite_emission_and_illumination.png";
+				emission = (160, 255, 160);
 			};
 		};
 	};
@@ -184,6 +185,7 @@
 				diffuse_map = "";
 				diffuse = (129, 129, 129);
 				emission_map = "oolite_shader_test_suite_10_emission.png";
+				emission = (160, 255, 160);
 				normal_and_parallax_map = "oolite_shader_test_suite_normal_and_parallax.png";
 				parallax_scale = -0.04;
 			};
@@ -202,6 +204,7 @@
 			{
 				diffuse_map = "oolite_shader_test_suite_diffuse_blank.png";
 				emission_map = "oolite_shader_test_suite_11_emission.png";
+				emission = (160, 255, 160);
 				normal_and_parallax_map = "oolite_shader_test_suite_normal_and_parallax.png";
 				parallax_scale = -0.04;
 			};
@@ -273,6 +276,7 @@
 			{
 				diffuse_map = "oolite_shader_test_suite_diffuse_blank.png";
 				emission_map = "oolite_shader_test_suite_15_emission.png";
+				emission = (160, 255, 160);
 				specular_map = "oolite_shader_test_suite_specular_blank.png";
 			};
 		};
