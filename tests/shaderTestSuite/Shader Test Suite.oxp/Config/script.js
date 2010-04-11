@@ -154,7 +154,7 @@ this.startUp = function()
 		// Ensure environment is what we need - each time in case user tries to be clever.
 		debugConsole.shaderMode = this.passID == 1 ? "SHADERS_SIMPLE" : "SHADERS_FULL";
 		debugConsole.displayFPS = true;
-		debugConsole.debugFlags |= debugConsole.DEBUG_NO_SHADER_FALLBACK;
+		debugConsole.debugFlags |= debugConsole.DEBUG_NO_SHADER_FALLBACK | debugConsole.DEBUG_SHADER_VALIDATION;
 		
 		// Actually run the test.
 		var testLabel = (this.passID == 1 ? "simple" : "full") + "-" + testIndex;
