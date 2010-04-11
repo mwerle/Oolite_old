@@ -46,6 +46,7 @@ SOFTWARE.
 #import "OODebugInspector.h"
 #import "OOEntityInspectorExtensions.h"
 #import "OOConstToString.h"
+#import "OODebugFlags.h"
 
 
 static OODebugController *sSingleton = nil;
