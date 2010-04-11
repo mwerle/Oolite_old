@@ -27,7 +27,7 @@ MA 02110-1301, USA.
 
 
 this.name			= "oolite-shader-test-suite";
-this.version		= "0.2";
+this.version		= "0.3";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2010 the Oolite team.";
 
@@ -76,10 +76,11 @@ this.startUp = function()
 			
 			this.originalShaderMode = debugConsole.shaderMode;
 			this.originalDisplayFPS = debugConsole.displayFPS;
+			this.originalDebugFlags = debugConsole.debugFlags;
 			this.passID = 1;
 			this.nextTestIndex = 1;
 			
-			this.shipLaunchedFromStation = function () { performCleanUp(); }
+			this.shipLaunchedFromStation = function () { log("shaderTest.cancelled", "Shader test suite cancelled by exiting station."); this.performCleanUp(); }
 			
 			debugConsole.writeLogMarker();
 			log("shaderTest.start", "Starting shader test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\".");
@@ -92,11 +93,13 @@ this.startUp = function()
 		{
 			debugConsole.shaderMode = this.originalShaderMode;
 			debugConsole.displayFPS = this.originalDisplayFPS;
+			debugConsole.debugFlags = this.originalDebugFlags;
 			
 			delete this.passID;
 			delete this.nextTestIndex;
 			delete this.originalShaderMode;
 			delete this.originalDisplayFPS;
+			delete this.originalDebugFlags;
 			delete this.shipLaunchedFromStation;
 		}
 		
@@ -127,6 +130,7 @@ this.startUp = function()
 						"Renderer: “" + debugConsole.glRendererString + "”\n\n" +
 						"This information can also be found in the Oolite log."
 					};
+					log("shaderTest.complete", "Shader test suite complete.");
 					debugConsole.writeLogMarker();
 					Mission.runScreen(config, function () {});
 					return;
@@ -139,9 +143,12 @@ this.startUp = function()
 			var testDesc = ship.scriptInfo["oolite_shader_test_suite_label"];
 			ship.remove();
 			
-			// Actually run the test.
+			// Ensure environment is what we need - each time in case user tries to be clever.
 			debugConsole.shaderMode = this.passID == 1 ? "SHADERS_SIMPLE" : "SHADERS_FULL";
 			debugConsole.displayFPS = true;
+			debugConsole.debugFlags |= debugConsole.DEBUG_NO_SHADER_FALLBACK;
+			
+			// Actually run the test.
 			var testLabel = (this.passID == 1 ? "simple" : "full") + "-" + testIndex;
 			log("shaderTest.runTest", "Running test " + testLabel + " (" + testDesc + ").");
 			
