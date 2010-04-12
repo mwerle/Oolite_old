@@ -15,7 +15,6 @@
 		1A45B0CB0BD8E3670078EA87 /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0B60BD8E3670078EA87 /* pngwtran.c */; };
 		1A45B0CC0BD8E3670078EA87 /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0B70BD8E3670078EA87 /* pngwrite.c */; };
 		1A45B0CD0BD8E3670078EA87 /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0B80BD8E3670078EA87 /* pngwio.c */; };
-		1A45B0CE0BD8E3670078EA87 /* pngvcrd.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0B90BD8E3670078EA87 /* pngvcrd.c */; };
 		1A45B0CF0BD8E3670078EA87 /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0BA0BD8E3670078EA87 /* pngtrans.c */; };
 		1A45B0D10BD8E3670078EA87 /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0BC0BD8E3670078EA87 /* pngset.c */; };
 		1A45B0D20BD8E3670078EA87 /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0BD0BD8E3670078EA87 /* pngrutil.c */; };
@@ -25,7 +24,6 @@
 		1A45B0D60BD8E3670078EA87 /* pngpread.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C10BD8E3670078EA87 /* pngpread.c */; };
 		1A45B0D70BD8E3670078EA87 /* pngmem.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C20BD8E3670078EA87 /* pngmem.c */; };
 		1A45B0D80BD8E3670078EA87 /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C30BD8E3670078EA87 /* pngget.c */; };
-		1A45B0D90BD8E3670078EA87 /* pnggccrd.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C40BD8E3670078EA87 /* pnggccrd.c */; };
 		1A45B0DA0BD8E3670078EA87 /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C50BD8E3670078EA87 /* pngerror.c */; };
 		1A45B0DB0BD8E3670078EA87 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C80BD8E3670078EA87 /* png.c */; };
 		1A45B0DC0BD8E3670078EA87 /* example.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0C90BD8E3670078EA87 /* example.c */; };
@@ -36,7 +34,6 @@
 		1A45B2AB0BD930550078EA87 /* logcontrol.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A45B2AA0BD930550078EA87 /* logcontrol.plist */; };
 		1A5824B60E3CCCF300AF2757 /* OOLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A45B0E70BD8E3EA0078EA87 /* OOLogging.m */; };
 		1A5824BB0E3CCCFF00AF2757 /* OOAsyncQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824B90E3CCCFF00AF2757 /* OOAsyncQueue.m */; };
-		1A5824BE0E3CCD0A00AF2757 /* OOLogOutputHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824BD0E3CCD0A00AF2757 /* OOLogOutputHandler.m */; };
 		1A5824C20E3CCD2200AF2757 /* OOLogHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824C10E3CCD2200AF2757 /* OOLogHeader.m */; };
 		1A5824CD0E3CCD6700AF2757 /* NSThreadOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5824CC0E3CCD6700AF2757 /* NSThreadOOExtensions.m */; };
 		1A7D7B9A0C3BEEFD00E4A5F5 /* edgecase-test.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A7D7B990C3BEEFD00E4A5F5 /* edgecase-test.png */; };
@@ -71,7 +68,6 @@
 		1A45B0B60BD8E3670078EA87 /* pngwtran.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwtran.c; sourceTree = "<group>"; };
 		1A45B0B70BD8E3670078EA87 /* pngwrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwrite.c; sourceTree = "<group>"; };
 		1A45B0B80BD8E3670078EA87 /* pngwio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwio.c; sourceTree = "<group>"; };
-		1A45B0B90BD8E3670078EA87 /* pngvcrd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngvcrd.c; sourceTree = "<group>"; };
 		1A45B0BA0BD8E3670078EA87 /* pngtrans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngtrans.c; sourceTree = "<group>"; };
 		1A45B0BB0BD8E3670078EA87 /* pngtest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngtest.c; sourceTree = "<group>"; };
 		1A45B0BC0BD8E3670078EA87 /* pngset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngset.c; sourceTree = "<group>"; };
@@ -82,7 +78,6 @@
 		1A45B0C10BD8E3670078EA87 /* pngpread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngpread.c; sourceTree = "<group>"; };
 		1A45B0C20BD8E3670078EA87 /* pngmem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngmem.c; sourceTree = "<group>"; };
 		1A45B0C30BD8E3670078EA87 /* pngget.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngget.c; sourceTree = "<group>"; };
-		1A45B0C40BD8E3670078EA87 /* pnggccrd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pnggccrd.c; sourceTree = "<group>"; };
 		1A45B0C50BD8E3670078EA87 /* pngerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngerror.c; sourceTree = "<group>"; };
 		1A45B0C60BD8E3670078EA87 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
 		1A45B0C70BD8E3670078EA87 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
@@ -98,8 +93,6 @@
 		1A45B2AA0BD930550078EA87 /* logcontrol.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = logcontrol.plist; sourceTree = "<group>"; };
 		1A5824B90E3CCCFF00AF2757 /* OOAsyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOAsyncQueue.m; sourceTree = "<group>"; };
 		1A5824BA0E3CCCFF00AF2757 /* OOAsyncQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOAsyncQueue.h; sourceTree = "<group>"; };
-		1A5824BC0E3CCD0A00AF2757 /* OOLogOutputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOLogOutputHandler.h; path = ../../src/Cocoa/OOLogOutputHandler.h; sourceTree = SOURCE_ROOT; };
-		1A5824BD0E3CCD0A00AF2757 /* OOLogOutputHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOLogOutputHandler.m; path = ../../src/Cocoa/OOLogOutputHandler.m; sourceTree = SOURCE_ROOT; };
 		1A5824C00E3CCD2200AF2757 /* OOLogHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOLogHeader.h; sourceTree = "<group>"; };
 		1A5824C10E3CCD2200AF2757 /* OOLogHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOLogHeader.m; sourceTree = "<group>"; };
 		1A5824CB0E3CCD6700AF2757 /* NSThreadOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSThreadOOExtensions.h; sourceTree = "<group>"; };
@@ -180,7 +173,6 @@
 				1A45B0B60BD8E3670078EA87 /* pngwtran.c */,
 				1A45B0B70BD8E3670078EA87 /* pngwrite.c */,
 				1A45B0B80BD8E3670078EA87 /* pngwio.c */,
-				1A45B0B90BD8E3670078EA87 /* pngvcrd.c */,
 				1A45B0BA0BD8E3670078EA87 /* pngtrans.c */,
 				1A45B0BB0BD8E3670078EA87 /* pngtest.c */,
 				1A45B0BC0BD8E3670078EA87 /* pngset.c */,
@@ -191,7 +183,6 @@
 				1A45B0C10BD8E3670078EA87 /* pngpread.c */,
 				1A45B0C20BD8E3670078EA87 /* pngmem.c */,
 				1A45B0C30BD8E3670078EA87 /* pngget.c */,
-				1A45B0C40BD8E3670078EA87 /* pnggccrd.c */,
 				1A45B0C50BD8E3670078EA87 /* pngerror.c */,
 				1A45B0C60BD8E3670078EA87 /* pngconf.h */,
 				1A45B0C70BD8E3670078EA87 /* png.h */,
@@ -216,8 +207,6 @@
 				1A45B0B40BD8E3540078EA87 /* pngusr.h */,
 				1A5824B90E3CCCFF00AF2757 /* OOAsyncQueue.m */,
 				1A5824BA0E3CCCFF00AF2757 /* OOAsyncQueue.h */,
-				1A5824BC0E3CCD0A00AF2757 /* OOLogOutputHandler.h */,
-				1A5824BD0E3CCD0A00AF2757 /* OOLogOutputHandler.m */,
 				1A5824C00E3CCD2200AF2757 /* OOLogHeader.h */,
 				1A5824C10E3CCD2200AF2757 /* OOLogHeader.m */,
 				1A5824CB0E3CCD6700AF2757 /* NSThreadOOExtensions.h */,
@@ -360,7 +349,6 @@
 				1A45B0CB0BD8E3670078EA87 /* pngwtran.c in Sources */,
 				1A45B0CC0BD8E3670078EA87 /* pngwrite.c in Sources */,
 				1A45B0CD0BD8E3670078EA87 /* pngwio.c in Sources */,
-				1A45B0CE0BD8E3670078EA87 /* pngvcrd.c in Sources */,
 				1A45B0CF0BD8E3670078EA87 /* pngtrans.c in Sources */,
 				1A45B0D10BD8E3670078EA87 /* pngset.c in Sources */,
 				1A45B0D20BD8E3670078EA87 /* pngrutil.c in Sources */,
@@ -370,14 +358,12 @@
 				1A45B0D60BD8E3670078EA87 /* pngpread.c in Sources */,
 				1A45B0D70BD8E3670078EA87 /* pngmem.c in Sources */,
 				1A45B0D80BD8E3670078EA87 /* pngget.c in Sources */,
-				1A45B0D90BD8E3670078EA87 /* pnggccrd.c in Sources */,
 				1A45B0DA0BD8E3670078EA87 /* pngerror.c in Sources */,
 				1A45B0DB0BD8E3670078EA87 /* png.c in Sources */,
 				1A45B0DC0BD8E3670078EA87 /* example.c in Sources */,
 				1A45B1B50BD8EB410078EA87 /* OOCollectionExtractors.m in Sources */,
 				1A5824B60E3CCCF300AF2757 /* OOLogging.m in Sources */,
 				1A5824BB0E3CCCFF00AF2757 /* OOAsyncQueue.m in Sources */,
-				1A5824BE0E3CCD0A00AF2757 /* OOLogOutputHandler.m in Sources */,
 				1A5824C20E3CCD2200AF2757 /* OOLogHeader.m in Sources */,
 				1A5824CD0E3CCD6700AF2757 /* NSThreadOOExtensions.m in Sources */,
 			);

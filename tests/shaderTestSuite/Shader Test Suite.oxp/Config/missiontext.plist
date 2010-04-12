@@ -1,6 +1,6 @@
 {
 	oolite_shader_test_confirmation =
-	"The suite consists of sixteen tests.\n\nEach test shows a box. In a successful test, the box will have a number in a circle on each side. In a failed test, the box will be red or black (invisible). If a test doesn’t match any of these descriptions, please take a screen shot (by default, the “*” key) and submit it.\n\nThe entire test suite will be run twice, once in full shader mode and once in simple shader mode.";
+	"The suite consists of sixteen tests.\n\nEach test shows a box. In a successful test, the box will have a number in a circle on each side. In a failed test, the box will be black (invisible) or red. If a test doesn’t match any of these descriptions, please take a screen shot (by default, the “*” key) and submit it.\n\nThe entire test suite will be run twice, first in simple shader mode and then in full shader mode.";
 	
 	oolite_shader_test_confirmation_choices =
 	{
