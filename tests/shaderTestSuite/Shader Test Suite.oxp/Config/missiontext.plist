@@ -1,8 +1,12 @@
 {
-	oolite_shader_test_confirmation =
-	"The suite consists of sixteen tests.\n\nEach test shows a box. In a successful test, the box will have a number in a circle on each side. In a failed test, the box will be black (invisible) or red. If a test doesn’t match any of these descriptions, please take a screen shot (by default, the “*” key) and submit it.\n\nThe entire test suite will be run twice, first in simple shader mode and then in full shader mode.";
+	oolite_material_test_confirmation =
+	"Welcome to the Materials Testing Facility.\n\n[count_string]\n\nIn a successful test, the cube will have a number in a circle on each side. In a failed test, the cube will be solid black or red.\n\nIf you see anything else, please document your findings (by default, the “*” key takes a screen shot) and submit them to the testing authorities.\n\nAfter the tests, there will be lemon meringue pie.";
 	
-	oolite_shader_test_confirmation_choices =
+	oolite_material_test_count_no_shaders = "You will be presented with a series of [non_shady_count] Weighted Testing Cubes.";
+	oolite_material_test_count_simple_shaders = "You will be presented with a series of [shady_count] Weighted Testing Cubes. Of these, [non_shady_count] will be shown twice, and the remainder will be shown once."; /* Currently unused */
+	oolite_material_test_count_full_shaders = "You will be presented with a series of [shady_count] Weighted Testing Cubes. Of these, [non_shady_count] will be shown three times, and the remainder will be shown twice.";
+	
+	oolite_material_test_confirmation_choices =
 	{
 		A_CONTINUE = "Run test suite";
 		B_CANCEL = "Cancel";

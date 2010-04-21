@@ -1,8 +1,8 @@
 /*
 
-oolite-shader-test-suite.js
+oolite-material-test-suite.js
 
-Test suite for Oolite's default shader.
+Test suite for Oolite's material model and default shader.
 
 
 Oolite
@@ -26,8 +26,8 @@ MA 02110-1301, USA.
 */
 
 
-this.name			= "oolite-shader-test-suite";
-this.version		= "0.3";
+this.name			= "oolite-material-test-suite";
+this.version		= "0.4";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2010 the Oolite team.";
 
@@ -41,37 +41,38 @@ this.startUp = function()
 	}
 	catch (e)
 	{
-		log("shaderTest.error.consoleRequired", "The shader test suite requires the debug console to be active.");
-		return;
-	}
-	
-	if (debugConsole.shaderMode == "SHADERS_NOT_SUPPORTED")
-	{
-		log("shaderTest.error.shadersNotSupported", "The shader test suite cannot be used because shaders are not supported.");
+		log("materialTest.error.consoleRequired", "The material test suite requires the debug console to be active.");
 		return;
 	}
 	
 	
-	this.testCount = 16;
+	this.shadyTestCount = 16;
+	this.nonShadyTestCount = 7;
+	this.shadersSupported = (debugConsole.shaderMode != "SHADERS_NOT_SUPPORTED");
+	
 	
 	// User-callable initiation function.
 	var scriptName = this.name;
-	debugConsole.script.runShaderTestSuite = function ()
+	debugConsole.script.runMaterialTestSuite = function ()
 	{
-		worldScripts[scriptName].runShaderTestSuite();
+		worldScripts[scriptName].runMaterialTestSuite();
 	}
-	this.runShaderTestSuite = function ()
+	this.runMaterialTestSuite = function ()
 	{
 		if (!player.ship.docked)
 		{
-			debugConsole.consoleMessage("command-error", "You must be docked to run the shader test suite.");
+			debugConsole.consoleMessage("command-error", "You must be docked to run the material test suite.");
 			return;
 		}
 		
 		// Show instruction/confirmation screen.
-		if (!Mission.runScreen({ title: "Shader test suite", messageKey: "oolite_shader_test_confirmation", choicesKey: "oolite_shader_test_confirmation_choices" }, this.startTest, this))
+		var substitutions = { shady_count :this.shadyTestCount, non_shady_count: this.nonShadyTestCount };
+		substitutions.count_string = expandMissionText(this.shadersSupported ? "oolite_material_test_count_full_shaders" : "oolite_material_test_count_no_shaders", substitutions);
+		var introText = expandMissionText("oolite_material_test_confirmation", substitutions);
+		
+		if (!Mission.runScreen({ title: "Shader test suite", message: introText, choicesKey: "oolite_material_test_confirmation_choices" }, this.startTest, this))
 		{
-			log("shaderTest.error.missionScreenFailed", "The shader test suite failed to run a mission screen.");
+			log("materialTest.error.missionScreenFailed", "The material test suite failed to run a mission screen.");
 			return;
 		}
 	}
@@ -88,10 +89,10 @@ this.startUp = function()
 		this.passID = 1;
 		this.nextTestIndex = 1;
 		
-		this.shipLaunchedFromStation = function () { log("shaderTest.cancelled", "Shader test suite cancelled by exiting station."); this.performCleanUp(); }
+		this.shipLaunchedFromStation = function () { log("materialTest.cancelled", "Shader test suite cancelled by exiting station."); this.performCleanUp(); }
 		
 		debugConsole.writeLogMarker();
-		log("shaderTest.start", "Starting shader test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\".");
+		log("materialTest.start", "Starting material test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\"; shaders are " + (this.shadersSupported ? "supported" : "not supported") + ".");
 		
 		this.runNextTest();
 	}
@@ -112,22 +113,47 @@ this.startUp = function()
 	}
 	
 	
+	this.settingsByPass =
+	[
+		{},
+		{
+			passName: "fixed-function",
+			shaderMode: "SHADERS_OFF",
+			maxIndex: this.nonShadyTestCount,
+			rolePrefix: "oolite_non_shader_test_suite_"
+		},
+		{
+			passName: "simple",
+			shaderMode: "SHADERS_SIMPLE",
+			maxIndex: this.shadyTestCount,
+			rolePrefix: "oolite_shader_test_suite_"
+		},
+		{
+			passName: "full",
+			shaderMode: "SHADERS_FULL",
+			maxIndex: this.shadyTestCount,
+			rolePrefix: "oolite_shader_test_suite_"
+		}
+	];
+	
 	this.runNextTest = function ()
 	{
 		var testIndex = this.nextTestIndex++;
 		
-		if (testIndex > this.testCount)
+		if (testIndex > this.settingsByPass[this.passID].maxIndex)
 		{
-			if (this.passID == 1)
+			var maxPass = this.shadersSupported ? 3 : 1;
+			
+			if (this.passID < maxPass)
 			{
-				// Switch to next pass (full shader mode).
-				this.passID = 2;
+				// Switch to next pass.
+				this.passID++;
 				this.nextTestIndex = 2;
 				testIndex = 1;
 			}
 			else
 			{
-				// Both passes have run, we're done.
+				// All passes have run, we're done.
 				this.performCleanUp();
 				var config =
 				{
@@ -138,27 +164,30 @@ this.startUp = function()
 					"Renderer: “" + debugConsole.glRendererString + "”\n\n" +
 					"This information can also be found in the Oolite log."
 				};
-				log("shaderTest.complete", "Shader test suite complete.");
+				log("materialTest.complete", "Shader test suite complete.");
 				debugConsole.writeLogMarker();
 				Mission.runScreen(config, function () {});
 				return;
 			}
 		}
 		
+		var passData = this.settingsByPass[this.passID];
+		
 		// Create a dummy ship to extract its script_info.
-		var modelName = "oolite_shader_test_suite_" + testIndex;
+		var modelName = passData.rolePrefix + testIndex;
 		var ship = system.addShips(modelName, 1, system.sun.position, 10000)[0];
-		var testDesc = ship.scriptInfo["oolite_shader_test_suite_label"];
+		var testDesc = ship.scriptInfo["oolite_material_test_suite_label"];
 		ship.remove();
 		
 		// Ensure environment is what we need - each time in case user tries to be clever.
-		debugConsole.shaderMode = this.passID == 1 ? "SHADERS_SIMPLE" : "SHADERS_FULL";
+		debugConsole.shaderMode = passData.shaderMode;
 		debugConsole.displayFPS = true;
 		debugConsole.debugFlags |= debugConsole.DEBUG_NO_SHADER_FALLBACK | debugConsole.DEBUG_SHADER_VALIDATION;
 		
 		// Actually run the test.
-		var testLabel = (this.passID == 1 ? "simple" : "full") + "-" + testIndex;
-		log("shaderTest.runTest", "Running test " + testLabel + " (" + testDesc + ").");
+		var passNames = ["", "fixed-function", "simple", "full"];
+		var testLabel = passData.passName + ":" + testIndex;
+		log("materialTest.runTest", "Running test " + testLabel + " (" + testDesc + ").");
 		
 		var config =
 		{
@@ -168,12 +197,12 @@ this.startUp = function()
 		};
 		if (!Mission.runScreen(config, this.runNextTest, this))
 		{
-			log("shaderTest.error.missionScreenFailed", "The shader test suite failed to run a mission screen.");
+			log("materialTest.error.missionScreenFailed", "The material test suite failed to run a mission screen.");
 			this.performCleanUp();
 			return;
 		}
 	}
 	
 	
-	log("shaderTest.loaded", "Shader test OXP is installed. To run the shader test, type \"runShaderTestSuite()\" in the debug console.");
+	log("materialTest.loaded", "Material test suite is installed. To run the material test, type \"runMaterialTestSuite()\" in the debug console.");
 };
