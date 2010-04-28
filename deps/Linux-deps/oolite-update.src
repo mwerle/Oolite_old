@@ -1,0 +1,92 @@
+#
+# Oolite Updater Script
+# Dylan Smith, 2005-09-10
+#
+# Konstantinos Sykas
+# 2009-09-22: rsync to alternative server
+# 2009-10-13: x86_64 support
+# 2010-04-23: 1) Improved x86_64 detection
+#             2) Improved exit-message when no new Oolite version is available
+#
+
+if [ ! $OOLITE_ROOT ]
+then
+   echo "Oops, OOLITE_ROOT was not set. This is very bad, it meant the install"
+   echo "package didn't do its job. Please report this!"
+   exit
+fi
+
+which rsync 2>/dev/null >/dev/null
+if [ $? != 0 ]
+then
+   echo "No rsync, no oolite update!"
+   echo "---------------------------"
+   echo "Sorry, you don't seem to have rsync installed."
+   echo "To install it, depending on your distro, run one of the following:"
+   echo "Debian-style distros: apt-get install rsync"
+   echo "Redhattish distros: up2date -i rsync"
+   echo "Other RPM distros: yum install rsync"
+   echo "Gentoo users should know what to do already"
+   echo
+   echo "Then run oolite-update again."
+   echo
+   exit
+fi
+
+if [ -d /usr/lib/Oolite ]; then
+   echo "WARNING! You have installed oolite as root."
+   echo "Make sure you execute oolite-update as root."
+   echo
+fi
+
+cp -p $OOLITE_ROOT/$TOPLEVEL/release.txt $OOLITE_ROOT/$TOPLEVEL/release.txt.backup
+if [ $? != 0 ]; then
+   exit $?
+fi
+
+HOST_ARCH=`uname -m | sed -e s/amd64/x86_64/`
+if [[ "$HOST_ARCH" == "x86_64" ]]; then
+    OOLITE_RSYNC_FOLDER="oolite-linux-64"
+else
+    OOLITE_RSYNC_FOLDER="oolite-linux"
+fi
+
+cd $OOLITE_ROOT/$TOPLEVEL
+CURRENTVER=`cat release.txt`
+RSYNC_TERRASTORAGE=0
+echo Trying rsync://rsync.alioth.net/$OOLITE_RSYNC_FOLDER...
+rsync -rlv --progress rsync://rsync.alioth.net/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
+RSYNC_ALIOTH=$?
+if [ $RSYNC_ALIOTH != 0 ];
+then
+   echo [rsync.alioth.net died and returned $RSYNC_ALIOTH]
+   echo
+   echo Trying rsync://terrastorage.ath.cx/$OOLITE_RSYNC_FOLDER...
+   rsync -rlv --progress rsync://terrastorage.ath.cx/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
+   RSYNC_TERRASTORAGE=$?
+fi
+if [ $RSYNC_TERRASTORAGE != 0 ]; then
+   echo [terrastorage.ath.cx died and returned $RSYNC_TERRASTORAGE]
+   echo
+   echo "If the problem was caused by network or other transient issues, "
+   echo "try running oolite-update again."
+   echo "Alternatively you may download the full package from "
+   echo "http://developer.berlios.de/project/showfiles.php?group_id=3577"
+   echo
+
+   mv release.txt.backup release.txt
+   exit
+fi
+
+rm -f release.txt.backup
+NEWVER=`cat release.txt`
+
+if [ $CURRENTVER != $NEWVER ]
+then
+   echo "Oolite has been upgraded from $CURRENTVER to $NEWVER"
+   exit
+else
+   echo "There is no new version available."
+   echo "Any missing Oolite installation files have been recovered."
+fi
+
