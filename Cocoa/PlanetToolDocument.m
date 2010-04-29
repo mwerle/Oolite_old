@@ -34,6 +34,7 @@
 @interface PlanetToolDocument () <PlanetToolRendererDelegate>
 
 @property (readwrite) BOOL renderingPreview;
+@property (readwrite) BOOL gridGenerator;
 @property (readwrite, assign) NSImage *previewImage;
 
 - (void) asyncLoadImage:(NSString *)path;
@@ -65,6 +66,7 @@ static void LoadProgressHandler(float proportion, void *context);
 @synthesize progressCancelButton = _progressCancelButton;
 
 @synthesize inputFormatPopUp  = _inputFormatPopUp;
+@synthesize outputSizeStepper = _outputSizeStepper;
 
 @synthesize outputSize = _outputSize;
 @synthesize flip = _flip;
@@ -77,6 +79,8 @@ static void LoadProgressHandler(float proportion, void *context);
 @synthesize previewImage = _previewImage;
 @synthesize renderingPreview = _isRenderingPreview;
 
+@synthesize gridGenerator = _gridGenerator;
+
 
 + (void) initialize
 {
@@ -88,7 +92,7 @@ static void LoadProgressHandler(float proportion, void *context);
 {
 	if ((self = [self init]))
 	{
-		_isGridGenerator = YES;
+		self.gridGenerator = YES;
 		self.outputSize = 1024;
 	}
 	return self;
@@ -125,7 +129,7 @@ static void LoadProgressHandler(float proportion, void *context);
 	// Defer this because -windowForSheet will otherwise try to reload the nib.
 	[self performSelector:@selector(deferredAwakeFromNib) withObject:nil afterDelay:0.0f];
 	
-	if (_isGridGenerator)
+	if (self.gridGenerator)
 	{
 		NSPopUpButton *popUp = self.inputFormatPopUp;
 		[popUp setEnabled:NO];
@@ -138,11 +142,12 @@ static void LoadProgressHandler(float proportion, void *context);
 
 - (void) deferredAwakeFromNib
 {
-	if (!_isGridGenerator && _sourcePixMap == nil)
+	if (!self.gridGenerator && _sourcePixMap == nil)
 	{
 		NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Loading \"%@\"...", NULL), [[NSFileManager defaultManager] displayNameAtPath:self.displayName]];
 		[self showProgressSheetWithMessage:message cancelAction:@selector(cancelLoading:)];
 	}
+	self.outputSizeStepper.doubleValue = log2(self.outputSize);
 }
 
 
@@ -199,6 +204,29 @@ static void LoadProgressHandler(float proportion, void *context);
 }
 
 
+- (NSString *) displayName
+{
+	if (self.gridGenerator)  return NSLocalizedString(@"Grid", NULL);
+	else  return super.displayName;
+}
+
+
+- (IBAction) outputSizeStepperAction:(id)sender
+{
+	/*	Update stepper in integer powers of two. If value is fractional, snap
+		to integer in the direction of change (so 300 goes to 512 or 256, for
+		instance).
+	*/
+	NSStepper *stepper = sender;
+	double value = stepper.doubleValue;
+	
+	if (value >= log2(self.outputSize))  value = floor(value);
+	else value = ceil(value);
+	
+	self.outputSize = pow(2.0, value);
+}
+
+
 
 #pragma mark -
 #pragma mark Properties
@@ -246,6 +274,7 @@ static void LoadProgressHandler(float proportion, void *context);
 		{
 			[self startPreviewRender];
 		}
+		self.outputSizeStepper.doubleValue = log2(size);
 	}
 }
 
@@ -325,6 +354,18 @@ static inline float ClampDegrees(float value)
 }
 
 
+- (BOOL) canUseCubeSource
+{
+	return FPMGetWidth(_sourcePixMap) % 6 == 0;
+}
+
+
+- (BOOL) canUseCubeXSource
+{
+	return FPMGetWidth(_sourcePixMap) % 4 == 0 && FPMGetHeight(_sourcePixMap) % 3 == 0;
+}
+
+
 
 #pragma mark -
 #pragma mark Rendering
@@ -364,36 +405,8 @@ static inline float ClampDegrees(float value)
 }
 
 
-- (IBAction) performFinalRender:(id)sender
+- (BOOL) startFinalRenderer
 {
-	NSSavePanel *savePanel = [NSSavePanel savePanel];
-	savePanel.requiredFileType = @"png";
-	savePanel.canSelectHiddenExtension = YES;
-	[savePanel setExtensionHidden:NO];
-	
-	[savePanel beginSheetForDirectory:nil
-								 file:[self suggestedRenderName]
-					   modalForWindow:self.windowForSheet
-						modalDelegate:self
-					   didEndSelector:@selector(renderSaveSheetDidEnd:returnCode:contextInfo:)
-						  contextInfo:nil];
-}
-
-
-- (void) renderSaveSheetDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
-{
-	[sheet orderOut:nil];
-	
-	if (returnCode != NSFileHandlingPanelOKButton)  return;
-	
-	_outputPath = sheet.filename;
-	
-	_outputDisplayName = [sheet.filename lastPathComponent];
-	if ([sheet isExtensionHidden])  _outputDisplayName = [_outputDisplayName stringByDeletingPathExtension];
-	
-	NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Rendering \"%@\"...", NULL), _outputDisplayName];
-	[self showProgressSheetWithMessage:message cancelAction:@selector(cancelRender:)];
-	
 	_lastProgressUpdate = 0.0;
 	
 	_finalRenderer = [PlanetToolRenderer new];
@@ -412,13 +425,68 @@ static inline float ClampDegrees(float value)
 	if (![self startRenderer:_finalRenderer])
 	{
 		[self planetToolRenderer:_finalRenderer failedWithMessage:NSLocalizedString(@"Unknown error.", NULL)];
+		return NO;
+	}
+	return YES;
+}
+
+
+- (IBAction) performFinalRender:(id)sender
+{
+	if (![self startFinalRenderer])  return;
+	
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	savePanel.requiredFileType = @"png";
+	savePanel.canSelectHiddenExtension = YES;
+	[savePanel setExtensionHidden:NO];
+	_outputPath = nil;
+	_readyImage = NO;
+	
+	[savePanel beginSheetForDirectory:nil
+								 file:[self suggestedRenderName]
+					   modalForWindow:self.windowForSheet
+						modalDelegate:self
+					   didEndSelector:@selector(renderSaveSheetDidEnd:returnCode:contextInfo:)
+						  contextInfo:nil];
+}
+
+
+- (void) renderSaveSheetDidEnd:(NSSavePanel *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
+	[sheet orderOut:nil];
+	
+	if (returnCode == NSFileHandlingPanelOKButton)
+	{
+		_outputPath = sheet.filename;
+		
+		_outputDisplayName = [sheet.filename lastPathComponent];
+		if ([sheet isExtensionHidden])  _outputDisplayName = [_outputDisplayName stringByDeletingPathExtension];
+		
+		NSString *message = nil;
+		if (!_readyImage)
+		{
+			message = [NSString stringWithFormat:NSLocalizedString(@"Rendering \"%@\"...", NULL), _outputDisplayName];
+			[self showProgressSheetWithMessage:message cancelAction:@selector(cancelRender:)];
+		}
+		else
+		{
+			[NSThread detachNewThreadSelector:@selector(writeOutputFile) toTarget:self withObject:nil];
+			message = [NSString stringWithFormat:NSLocalizedString(@"Writing \"%@\"...", NULL), _outputDisplayName];
+			[self showProgressSheetWithMessage:message cancelAction:NULL];
+			[self updateProgressAsync:[NSNumber numberWithFloat:1.0f]];
+		}
+	}
+	else
+	{
+		[_finalRenderer cancelRendering];
+		_finalRenderer = NULL;
 	}
 }
 
 
 - (BOOL) startRenderer:(PlanetToolRenderer *)renderer
 {
-	if (_isGridGenerator)
+	if (self.gridGenerator)
 	{
 		return [renderer asyncRenderFromGridGenerator];
 	}
@@ -440,8 +508,16 @@ static inline float ClampDegrees(float value)
 	if (renderer == _finalRenderer)
 	{
 		_outputImage = FPMRetain(image);
-		[NSThread detachNewThreadSelector:@selector(writeOutputFile) toTarget:self withObject:nil];
-		self.progressLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Writing \"%@\"...", NULL), _outputDisplayName];
+		if (_outputPath != nil)
+		{
+			[NSThread detachNewThreadSelector:@selector(writeOutputFile) toTarget:self withObject:nil];
+			self.progressLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Writing \"%@\"...", NULL), _outputDisplayName];
+		}
+		else
+		{
+			_readyImage = YES;
+		}
+
 	}
 	else if (renderer == _previewRenderer)
 	{
@@ -491,17 +567,30 @@ static void WriteErrorHandler(const char *message, bool isError, void *context)
 	}
 	
 	FPMRelease(&_outputImage);
+	_outputPath = nil;
+}
+
+
+- (void) runAlertWithMessage:(NSString *)message informativeText:(NSString *)informativeText
+{
+	NSAlert *alert = [NSAlert alertWithMessageText:message
+									 defaultButton:nil
+								   alternateButton:nil
+									   otherButton:nil
+						 informativeTextWithFormat:@"%@", informativeText];
+	[alert beginSheetModalForWindow:self.windowForSheet
+					  modalDelegate:nil
+					 didEndSelector:NULL
+						contextInfo:NULL];
 }
 
 
 - (void) writingFailedWithMessage:(NSString *)message
 {
 	[self removeProgressSheetWithSuccess:NO];
-	[NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"The document \"%@\" could not be saved.", NULL), _outputDisplayName]
-					defaultButton:nil
-				  alternateButton:nil
-					  otherButton:nil
-		informativeTextWithFormat:@"%@", message];
+	[self runAlertWithMessage:[NSString stringWithFormat:NSLocalizedString(@"The document \"%@\" could not be saved.", NULL), _outputDisplayName]
+			  informativeText:message];
+	
 }
 
 
@@ -510,11 +599,8 @@ static void WriteErrorHandler(const char *message, bool isError, void *context)
 	if (renderer == _finalRenderer)
 	{
 		[self removeProgressSheetWithSuccess:NO];
-		[NSAlert alertWithMessageText:NSLocalizedString(@"Rendering failed.", NULL)
-						defaultButton:nil
-					  alternateButton:nil
-						  otherButton:nil
-			informativeTextWithFormat:@"%@", message];
+		[self runAlertWithMessage:NSLocalizedString(@"Rendering failed.", NULL)
+				  informativeText:message];
 	}
 	else	
 	{
@@ -598,7 +684,7 @@ static void WriteErrorHandler(const char *message, bool isError, void *context)
 			break;
 	}
 	
-	if (result > self.outputSize)  result = self.outputSize;
+	if (result > (NSUInteger)self.outputSize)  result = self.outputSize;
 	return result;
 }
 
@@ -623,7 +709,7 @@ static void WriteErrorHandler(const char *message, bool isError, void *context)
 			break;
 	}
 	
-	if (result > self.outputSize)  result = self.outputSize;
+	if (result > (NSUInteger)self.outputSize)  result = self.outputSize;
 	return result;
 }
 
@@ -679,15 +765,16 @@ static void LoadProgressHandler(float proportion, void *context)
 	[self removeProgressSheetWithSuccess:YES];
 	
 	// Select input and output format based on aspect ratio.
-	float aspectRatio = (float)FPMGetWidth(_sourcePixMap) / (float)FPMGetHeight(_sourcePixMap);
+	float aspectRatio = FPMGetWidth(_sourcePixMap) / FPMGetHeight(_sourcePixMap);
 	NSUInteger size = 0;
-	if (aspectRatio >= 1.5)
+	
+	if (aspectRatio < 1.0f && self.canUseCubeSource)
 	{
-		self.inputFormat = kPlanetToolFormatLatLong;
-		self.outputFormat = kPlanetToolFormatCube;
-		size = FPMGetHeight(_sourcePixMap) / 2;
+		self.inputFormat = kPlanetToolFormatCube;
+		self.outputFormat = kPlanetToolFormatLatLong;
+		size = FPMGetWidth(_sourcePixMap) * 2;
 	}
-	else if (aspectRatio >= 1)
+	else if (aspectRatio < 1.5f && self.canUseCubeXSource)
 	{
 		self.inputFormat = kPlanetToolFormatCubeX;
 		self.outputFormat = kPlanetToolFormatLatLong;
@@ -695,10 +782,11 @@ static void LoadProgressHandler(float proportion, void *context)
 	}
 	else
 	{
-		self.inputFormat = kPlanetToolFormatCube;
-		self.outputFormat = kPlanetToolFormatLatLong;
-		size = FPMGetWidth(_sourcePixMap) * 2;
+		self.inputFormat = kPlanetToolFormatLatLong;
+		self.outputFormat = kPlanetToolFormatCube;
+		size = FPMGetHeight(_sourcePixMap) / 2;
 	}
+	
 	self.outputSize = OORoundUpToPowerOf2(size);
 	
 	[self startPreviewRender];

@@ -723,6 +723,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GENERATE_MASTER_OBJECT_FILE = YES;
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -745,6 +746,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GENERATE_MASTER_OBJECT_FILE = YES;
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -774,6 +776,7 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-fverbose-asm";
 				PRODUCT_NAME = fpmtest;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WARNING_CFLAGS = (
@@ -794,6 +797,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOMATHS_STANDALONE=1";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-fverbose-asm";
 				PRODUCT_NAME = fpmtest;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WARNING_CFLAGS = (
@@ -809,6 +813,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -830,15 +835,13 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"OOMATHS_STANDALONE=1",
-					"FMODF_JUST_WRAPS_FMODL=!defined(__ppc__)",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOMATHS_STANDALONE=1";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
 				LLVM_LTO = NO;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fverbose-asm";
 				PRODUCT_NAME = planettool;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WARNING_CFLAGS = (
@@ -859,6 +862,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GENERATE_MASTER_OBJECT_FILE = YES;
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -882,6 +886,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOMATHS_STANDALONE=1";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-fverbose-asm";
 				PRODUCT_NAME = fpmtest;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WARNING_CFLAGS = (
@@ -900,16 +905,18 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_GC = required;
+				GCC_FAST_MATH = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Cocoa/PlanetTool_prefix.h;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"FMODF_JUST_WRAPS_FMODL=!defined(__ppc__)",
 					"FPM_EXTRA_VALIDATION=1",
 					"OOMATHS_STANDALONE=1",
 					"OO_DEBUG=1",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = 4.2;
 				INFOPLIST_FILE = Cocoa/Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
@@ -920,7 +927,13 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = "Planet Tool";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx10.5;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Debug;
 		};
@@ -930,17 +943,24 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_GC = required;
+				GCC_FAST_MATH = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Cocoa/PlanetTool_prefix.h;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"FMODF_JUST_WRAPS_FMODL=!defined(__ppc__)",
-					"OOMATHS_STANDALONE=1",
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NS_BLOCK_ASSERTIONS=1",
+					"NDEBUG=1",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOMATHS_STANDALONE=1";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_UNROLL_LOOPS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Cocoa/Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LLVM_LTO = NO;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -949,7 +969,13 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = "Planet Tool";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx10.5;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -960,17 +986,20 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_GC = required;
+				GCC_FAST_MATH = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Cocoa/PlanetTool_prefix.h;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"FMODF_JUST_WRAPS_FMODL=!defined(__ppc__)",
 					"FPM_EXTRA_VALIDATION=1",
 					"OOMATHS_STANDALONE=1",
 					"OO_DEBUG=1",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Cocoa/Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -979,7 +1008,13 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = "Planet Tool";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx10.5;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = "Debug-optimized";
 		};
@@ -995,14 +1030,15 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"FMODF_JUST_WRAPS_FMODL=!defined(__ppc__)",
 					"FPM_EXTRA_VALIDATION=1",
 					"OOMATHS_STANDALONE=1",
 					"OO_DEBUG=1",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
+				LLVM_LTO = NO;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fverbose-asm";
 				PRODUCT_NAME = planettool;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WARNING_CFLAGS = (
@@ -1026,14 +1062,12 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					"OOMATHS_STANDALONE=1",
-					"FMODF_JUST_WRAPS_FMODL=!defined(__ppc__)",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOMATHS_STANDALONE=1";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/bin;
 				LLVM_LTO = NO;
+				OTHER_CFLAGS = "-fverbose-asm";
 				PRODUCT_NAME = planettool;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WARNING_CFLAGS = (
@@ -1063,6 +1097,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;

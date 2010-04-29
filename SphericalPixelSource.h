@@ -39,13 +39,6 @@ FPM_BEGIN_EXTERN_C
 #define kRadToDeg		(180.0f / kPiF)
 
 
-// In Mac OS X on Intel systems, fmodf() calls fmodl() (externally), but fmodl() is inlined and thus faster.
-#if FMODF_JUST_WRAPS_FMODL
-#undef fmodf
-#define fmodf fmodl
-#endif
-
-
 /*	Coordinate convention: looking at a planet with the north pole upwards
 	and the geographical coordinate origin in the middle, the vector coordinate
 	space forms a right-handed basis with Y pointing north, X pointing east and
@@ -158,6 +151,17 @@ enum
 typedef uint32_t RenderFlags;
 
 
+/*	Progress callback: called at unspecified intervals during rendering; if
+	it returns false, rendering is stopped.
+*/
+typedef bool (*ProgressCallbackFunction)(size_t numerator, size_t denominator, void *cbContext);
+
+/*	Error callback: called to describe errors during rendering, before
+	returning false to indicate failure. Not called when returning false
+	becuase the progress callback returned false.
+*/
+typedef void (*ErrorCallbackFunction)(const char *message, void *cbContext);
+
 /*	Function which takes a (unit) vector and returns a colour, used to sample
 	any generator or input format.
 */
@@ -166,12 +170,7 @@ typedef FPMColor (*SphericalPixelSourceFunction)(Coordinates where, RenderFlags 
 typedef bool (*SphericalPixelSourceConstructorFunction)(FloatPixMapRef sourceImage, RenderFlags flags, SphericalPixelSourceFunction *source, void **context);
 typedef void (*SphericalPixelSourceDestructorFunction)(void *context);
 
-/*	Progress callback: called at unspecified intervals during rendering; if
-	it returns false, rendering is stopped.
-*/
-typedef bool (*ProgressCallbackFunction)(size_t numerator, size_t denominator, void *context);
-
-typedef FloatPixMapRef (*SphericalPixelSinkFunction)(size_t size, RenderFlags flags, SphericalPixelSourceFunction source, void *sourceContext, ProgressCallbackFunction progress, void *progressContext);
+typedef FloatPixMapRef (*SphericalPixelSinkFunction)(size_t size, RenderFlags flags, SphericalPixelSourceFunction source, void *sourceContext, ProgressCallbackFunction progress, ErrorCallbackFunction error, void *cbContext);
 
 
 //	Build a lookup table of Gauss distribution numbers.
@@ -183,6 +182,15 @@ float GaussTableLookup2D(float x, float xmid, float y, float ymid, float halfWid
 
 
 bool DummyProgressCallback(size_t numerator, size_t denominator, void *context);
+void PrintToStdErrErrorCallback(char *message, void *cbContext);	// Prints message to stderr.
+
+
+// Printf()-style call for ErrroCallbackFunctions.
+void CallErrorCallbackWithFormat(ErrorCallbackFunction callback, void *cbContext, const char *format, ...)
+#if __GNUC__
+__attribute__((format (printf, 3, 4)))
+#endif
+;
 
 
 // [0..1]

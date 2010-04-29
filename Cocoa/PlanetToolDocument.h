@@ -43,8 +43,7 @@
 	NSString						*_outputPath;
 	NSString						*_outputDisplayName;
 	FloatPixMapRef					_outputImage;
-	
-	BOOL							_isGridGenerator;
+	BOOL							_readyImage;	// Set if rendering completes while save panel open.
 	
 #if !__OBJC2__	
 	NSWindow						*_progressSheet;
@@ -52,12 +51,14 @@
 	NSProgressIndicator				*_progressBar;
 	NSButton						*_progressCancelButton;
 	NSPopUpButton					*_inputFormatPopUp;
+	NSStepper						*_outputSizeStepper;
 	
 	BOOL							_flip;
 	BOOL							_fast;
 	BOOL							_jitter;
 	BOOL							_isRenderingPreview;
 	BOOL							_sixteenBitPerChannel;
+	BOOL							_gridGenerator;
 	float							_rotateX;
 	float							_rotateY;
 	float							_rotateZ;
@@ -71,6 +72,7 @@
 @property IBOutlet NSButton *progressCancelButton;
 
 @property IBOutlet NSPopUpButton *inputFormatPopUp;
+@property IBOutlet NSStepper *outputSizeStepper;
 
 @property NSUInteger inputFormat;
 @property NSUInteger outputFormat;
@@ -86,10 +88,17 @@
 @property (readonly, assign) NSImage *previewImage;
 @property (readonly, getter = isRenderingPreview) BOOL renderingPreview;
 
+@property (readonly, getter = isGridGenerator) BOOL gridGenerator;
+@property (readonly) BOOL canUseCubeSource;
+@property (readonly) BOOL canUseCubeXSource;
+
+
 - (IBAction) performFinalRender:(id)sender;
 - (IBAction) cancelLoading:(id)sender;
 
 - (IBAction) resetRotation:(id)sender;
+
+- (IBAction) outputSizeStepperAction:(id)sender;
 
 - (id) initAsGridGenerator;
 
