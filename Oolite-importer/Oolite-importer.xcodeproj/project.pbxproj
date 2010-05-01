@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		1A1966F6104EC4880079B400 /* oolite-targets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */; };
 		1A1AB0E80909B67E001039FA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1AB0E70909B67E001039FA /* Foundation.framework */; };
+		1A21AE63118CCD1A00D4D137 /* NSScannerOOExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A21AE61118CCD1A00D4D137 /* NSScannerOOExtensions.h */; };
+		1A21AE64118CCD1A00D4D137 /* NSScannerOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A21AE62118CCD1A00D4D137 /* NSScannerOOExtensions.m */; };
+		1A21AE7A118CD08000D4D137 /* OOCollectionExtractors.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A21AE78118CD08000D4D137 /* OOCollectionExtractors.h */; };
+		1A21AE7B118CD08000D4D137 /* OOCollectionExtractors.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A21AE79118CD08000D4D137 /* OOCollectionExtractors.m */; };
+		1A21AE83118CD0A800D4D137 /* OoliteImporterPrefix.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A21AE82118CD0A800D4D137 /* OoliteImporterPrefix.h */; };
 		1A69FD68090A3BC600914D59 /* schema.xml in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7D7067446EC006EBB30 /* schema.xml */; };
 		1AADEB2E09169CCB00B6D1FA /* Values.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AADEB2D09169CCB00B6D1FA /* Values.plist */; };
 		2C05A19C06CAA52B00D84F6F /* GetMetadataForFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */; };
@@ -26,6 +31,11 @@
 		1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-targets.xcconfig"; path = "../src/Cocoa/oolite-targets.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1A1AB0E70909B67E001039FA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		1A1AB1C60909BF46001039FA /* Oolite.mdimporter */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Oolite.mdimporter; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A21AE61118CCD1A00D4D137 /* NSScannerOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSScannerOOExtensions.h; path = ../src/Core/NSScannerOOExtensions.h; sourceTree = SOURCE_ROOT; };
+		1A21AE62118CCD1A00D4D137 /* NSScannerOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSScannerOOExtensions.m; path = ../src/Core/NSScannerOOExtensions.m; sourceTree = SOURCE_ROOT; };
+		1A21AE78118CD08000D4D137 /* OOCollectionExtractors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOCollectionExtractors.h; path = ../src/Core/OOCollectionExtractors.h; sourceTree = SOURCE_ROOT; };
+		1A21AE79118CD08000D4D137 /* OOCollectionExtractors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOCollectionExtractors.m; path = ../src/Core/OOCollectionExtractors.m; sourceTree = SOURCE_ROOT; };
+		1A21AE82118CD0A800D4D137 /* OoliteImporterPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OoliteImporterPrefix.h; sourceTree = "<group>"; };
 		1AADEB2D09169CCB00B6D1FA /* Values.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Values.plist; sourceTree = "<group>"; };
 		2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetMetadataForFile.m; sourceTree = "<group>"; };
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +97,11 @@
 			children = (
 				2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */,
 				08FB77B6FE84183AC02AAC07 /* main.c */,
+				1A21AE61118CCD1A00D4D137 /* NSScannerOOExtensions.h */,
+				1A21AE62118CCD1A00D4D137 /* NSScannerOOExtensions.m */,
+				1A21AE78118CD08000D4D137 /* OOCollectionExtractors.h */,
+				1A21AE79118CD08000D4D137 /* OOCollectionExtractors.m */,
+				1A21AE82118CD0A800D4D137 /* OoliteImporterPrefix.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -106,6 +121,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A21AE63118CCD1A00D4D137 /* NSScannerOOExtensions.h in Headers */,
+				1A21AE7A118CD08000D4D137 /* OOCollectionExtractors.h in Headers */,
+				1A21AE83118CD0A800D4D137 /* OoliteImporterPrefix.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +139,7 @@
 				8D576311048677EA00EA77CD /* Sources */,
 				8D576313048677EA00EA77CD /* Frameworks */,
 				8D576315048677EA00EA77CD /* Rez */,
+				1A21AEC3118CD59F00D4D137 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -174,6 +193,22 @@
 		};
 /* End PBXRezBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1A21AEC3118CD59F00D4D137 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo $CONFIGURATION_BUILD_DIR/$FULL_PRODUCT_NAME\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8D576311048677EA00EA77CD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -181,6 +216,8 @@
 			files = (
 				8D576312048677EA00EA77CD /* main.c in Sources */,
 				2C05A19C06CAA52B00D84F6F /* GetMetadataForFile.m in Sources */,
+				1A21AE64118CCD1A00D4D137 /* NSScannerOOExtensions.m in Sources */,
+				1A21AE7B118CD08000D4D137 /* OOCollectionExtractors.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,7 +260,9 @@
 				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OoliteImporterPrefix.h;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOCOLLECTIONEXTRACTORS_SIMPLE=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -234,7 +273,7 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = ../src/Core/;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_SEARCH_PATHS = "";
@@ -278,13 +317,15 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OoliteImporterPrefix.h;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOCOLLECTIONEXTRACTORS_SIMPLE=1";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = ../src/Core/;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_SEARCH_PATHS = "";
@@ -331,7 +372,9 @@
 				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OoliteImporterPrefix.h;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "OOCOLLECTIONEXTRACTORS_SIMPLE=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -342,7 +385,7 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = ../src/Core/;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_SEARCH_PATHS = "";

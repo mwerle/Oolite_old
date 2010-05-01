@@ -31,6 +31,13 @@
         </type>
 		<type name="org.aegidian.oolite.oxp">
 			<allattrs>
+				kMDItemTitle
+				kMDItemVersion
+				kMDItemAuthors
+				kMDItemCopyright
+				kMDItemIdentifier
+				kMDItemDescription
+				kMDItemURL
 				org_aegidian_oolite_shipids
 				org_aegidian_oolite_shipclassnames
 				org_aegidian_oolite_shiproles
@@ -39,6 +46,9 @@
 				org_aegidian_oolite_maxversion
 			</allattrs>
             <displayattrs>
+				kMDItemTitle
+				kMDItemVersion
+				kMDItemCopyright
 				org_aegidian_oolite_minversion
 				org_aegidian_oolite_maxversion
             </displayattrs>
