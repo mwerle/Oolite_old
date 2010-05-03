@@ -51,7 +51,7 @@ export GNUSTEP_HOST_VENDOR=pc
 # export GNUSTEP_LOCAL_ROOT=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/GNUstep/Local
 
 export LD_LIBRARY_PATH=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/lib
-export ESPEAK_DATA_PATH=$OOLITE_ROOT/$TOPLEVEL/oolite-deps/
+export ESPEAK_DATA_PATH=$OOLITE_ROOT/$TOPLEVEL/oolite.app/Resources/
 
 cd $OOLITE_ROOT/$TOPLEVEL/
 ./oolite.app/oolite $@
