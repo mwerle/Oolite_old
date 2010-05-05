@@ -319,7 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				1ABFEE4310507C5C005AA752 /* Oolite.app */,
-				1ABFEE4510507C5C005AA752 /* libpng.a */,
+				1ABFEE4510507C5C005AA752 /* libpng_for_oolite.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -411,7 +411,7 @@
 			remoteRef = 1ABFEE4210507C5C005AA752 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1ABFEE4510507C5C005AA752 /* libpng.a */ = {
+		1ABFEE4510507C5C005AA752 /* libpng_for_oolite.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libpng_for_oolite.a;
