@@ -414,7 +414,7 @@
 		1ABFEE4510507C5C005AA752 /* libpng.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libpng.a;
+			path = libpng_for_oolite.a;
 			remoteRef = 1ABFEE4410507C5C005AA752 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
