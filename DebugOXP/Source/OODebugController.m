@@ -5,7 +5,7 @@ OODebugController.m
 
 Oolite Debug OXP
 
-Copyright (C) 2007 Jens Ayton
+Copyright (C) 2007-2010 Jens Ayton
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -441,9 +441,10 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 	}
 	if (action == @selector(setShaderModeToTag:))
 	{
-		OOShaderSetting shaderLevel = [UNIVERSE shaderEffectsLevel];
-		[menuItem setState:shaderLevel == (OOShaderSetting)[menuItem tag]];
-		return shaderLevel != SHADERS_NOT_SUPPORTED;
+		OOShaderSetting itemLevel = [menuItem tag];
+		
+		[menuItem setState:[UNIVERSE shaderEffectsLevel] == itemLevel];
+		return itemLevel <= [[OOOpenGLExtensionManager sharedManager] maximumShaderSetting];
 	}
 	
 	return [self respondsToSelector:action];
