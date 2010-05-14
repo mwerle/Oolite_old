@@ -48,7 +48,6 @@ this.startUp = function()
 	
 	this.shadyTestCount = 16;
 	this.nonShadyTestCount = 7;
-	this.shadersSupported = (debugConsole.shaderMode != "SHADERS_NOT_SUPPORTED");
 	
 	
 	// User-callable initiation function.
@@ -67,8 +66,14 @@ this.startUp = function()
 		
 		// Show instruction/confirmation screen.
 		var substitutions = { shady_count :this.shadyTestCount, non_shady_count: this.nonShadyTestCount };
-		substitutions.count_string = expandMissionText(this.shadersSupported ? "oolite_material_test_count_full_shaders" : "oolite_material_test_count_no_shaders", substitutions);
+		substitutions.count_string = expandMissionText("oolite_material_test_count_" + debugConsole.maximumShaderMode, substitutions);
 		var introText = expandMissionText("oolite_material_test_confirmation", substitutions);
+		
+		if (substitutions.count_string === null)
+		{
+			log("materialTest.error.unknownMode", "Shader test suite cannot run because maximum shader mode \"" + debugConsole.maximumShaderMode + "\" is not recognised.");
+			return;
+		}
 		
 		if (!Mission.runScreen({ title: "Shader test suite", message: introText, choicesKey: "oolite_material_test_confirmation_choices" }, this.startTest, this))
 		{
@@ -91,8 +96,32 @@ this.startUp = function()
 		
 		this.shipLaunchedFromStation = function () { log("materialTest.cancelled", "Shader test suite cancelled by exiting station."); this.performCleanUp(); }
 		
+		var supportString;
+		switch (debugConsole.maximumShaderMode)
+		{
+			case "SHADERS_NOT_SUPPORTED":
+				supportString = "not supported";
+				this.maxPassID = 1;
+				break;
+				
+			case "SHADERS_SIMPLE":
+				supportString = "supported in simple mode only";
+				this.maxPassID = 2;
+				break;
+				
+			case "SHADERS_FULL":
+				supportString = "fully supported";
+				this.maxPassID = 3;
+				break;
+				
+			default:
+				log("materialTest.error.unknownMode", "Shader test suite cannot run because maximum shader mode \"" + debugConsole.maximumShaderMode + "\" is not recognised.");
+				this.performCleanUp();
+				return;
+		}
+		
 		debugConsole.writeLogMarker();
-		log("materialTest.start", "Starting material test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\"; shaders are " + (this.shadersSupported ? "supported" : "not supported") + ".");
+		log("materialTest.start", "Starting material test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\"; shaders are " + supportString + ".");
 		
 		this.runNextTest();
 	}
@@ -105,6 +134,7 @@ this.startUp = function()
 		debugConsole.debugFlags = this.originalDebugFlags;
 		
 		delete this.passID;
+		delete this.maxPassID;
 		delete this.nextTestIndex;
 		delete this.originalShaderMode;
 		delete this.originalDisplayFPS;
@@ -142,9 +172,7 @@ this.startUp = function()
 		
 		if (testIndex > this.settingsByPass[this.passID].maxIndex)
 		{
-			var maxPass = this.shadersSupported ? 3 : 1;
-			
-			if (this.passID < maxPass)
+			if (this.passID < this.maxPassID)
 			{
 				// Switch to next pass.
 				this.passID++;
