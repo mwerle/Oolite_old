@@ -654,8 +654,8 @@
 								<int key="NSCellFlags2">0</int>
 								<reference key="NSControlView" ref="837960889"/>
 								<double key="NSMaxValue">100</double>
-								<double key="NSWarningValue">20</double>
-								<double key="NSCriticalValue">50</double>
+								<double key="NSWarningValue">15</double>
+								<double key="NSCriticalValue">25</double>
 								<int key="NSIndicatorStyle">1</int>
 							</object>
 						</object>
@@ -702,6 +702,14 @@
 						<reference key="destination" ref="935339171"/>
 					</object>
 					<int key="connectionID">111</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">_loadBar</string>
+						<reference key="source" ref="278505441"/>
+						<reference key="destination" ref="837960889"/>
+					</object>
+					<int key="connectionID">114</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1154,9 +1162,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{21, 979}, {173, 138}}</string>
+					<string>{{21, 624}, {173, 138}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{21, 979}, {173, 138}}</string>
+					<string>{{21, 624}, {173, 138}}</string>
 					<boolean value="YES"/>
 					<boolean value="NO"/>
 					<boolean value="YES"/>
@@ -1275,7 +1283,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">113</int>
+			<int key="maxID">114</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

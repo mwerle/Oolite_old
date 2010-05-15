@@ -79,7 +79,7 @@ SOFTWARE.
 
 - (void) soundDebugMonitorNoteAUGraphLoad:(float)load
 {
-	[_loadBar setFloatValue:load];
+	[_loadBar setFloatValue:load * 100.0f];
 	if (load > _loadHighWaterMark)
 	{
 		_loadHighWaterMark = load;
