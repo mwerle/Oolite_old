@@ -89,12 +89,12 @@ this.startUp = function()
 		if (resonse != "A_CONTINUE")  return;
 		
 		this.originalShaderMode = debugConsole.shaderMode;
-		this.originalDisplayFPS = debugConsole.displayFPS;
 		this.originalDebugFlags = debugConsole.debugFlags;
 		this.passID = 1;
 		this.nextTestIndex = 1;
+		this.originalHUD = player.ship.hud;
 		
-		this.shipLaunchedFromStation = function () { log("materialTest.cancelled", "Shader test suite cancelled by exiting station."); this.performCleanUp(); }
+		this.shipWillLaunchFromStation = function () { log("materialTest.cancelled", "Shader test suite cancelled by exiting station."); this.performCleanUp(); }
 		
 		var supportString;
 		switch (debugConsole.maximumShaderMode)
@@ -123,6 +123,7 @@ this.startUp = function()
 		debugConsole.writeLogMarker();
 		log("materialTest.start", "Starting material test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\"; shaders are " + supportString + ".");
 		
+		player.ship.hud = "oolite_material_test_suite_blank_hud.plist";
 		this.runNextTest();
 	}
 	
@@ -130,8 +131,8 @@ this.startUp = function()
 	this.performCleanUp = function ()
 	{
 		debugConsole.shaderMode = this.originalShaderMode;
-		debugConsole.displayFPS = this.originalDisplayFPS;
 		debugConsole.debugFlags = this.originalDebugFlags;
+		player.ship.hud = this.originalHUD;
 		
 		delete this.passID;
 		delete this.maxPassID;
@@ -140,6 +141,7 @@ this.startUp = function()
 		delete this.originalDisplayFPS;
 		delete this.originalDebugFlags;
 		delete this.shipLaunchedFromStation;
+		delete this.originalHUD;
 	}
 	
 	
@@ -209,7 +211,6 @@ this.startUp = function()
 		
 		// Ensure environment is what we need - each time in case user tries to be clever.
 		debugConsole.shaderMode = passData.shaderMode;
-		debugConsole.displayFPS = true;
 		debugConsole.debugFlags |= debugConsole.DEBUG_NO_SHADER_FALLBACK | debugConsole.DEBUG_SHADER_VALIDATION;
 		
 		// Actually run the test.
@@ -221,7 +222,8 @@ this.startUp = function()
 		{
 			model: modelName,
 			title: "",
-			message: "\n\n\n" + testLabel + "\n" + testDesc
+			message: "\n\n\n" + testLabel + "\n" + testDesc,
+			background: "oolite_material_test_suite_backdrop.png"
 		};
 		if (!Mission.runScreen(config, this.runNextTest, this))
 		{
