@@ -91,7 +91,7 @@
 		1AEAAC1C0BA45584000705D0 /* jsparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jsparse.c; sourceTree = "<group>"; };
 		1AEAAC1D0BA45584000705D0 /* prmjtime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = prmjtime.c; sourceTree = "<group>"; };
 		1AEAAC430BA455A9000705D0 /* jsautocfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsautocfg.h; sourceTree = SOURCE_ROOT; };
-		D2AAC046055464E500DB518D /* libjs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjs.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2AAC046055464E500DB518D /* libmozjs_for_oolite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmozjs_for_oolite.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +118,7 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC046055464E500DB518D /* libjs.a */,
+				D2AAC046055464E500DB518D /* libmozjs_for_oolite.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,7 +201,7 @@
 			);
 			name = libjs;
 			productName = libjs;
-			productReference = D2AAC046055464E500DB518D /* libjs.a */;
+			productReference = D2AAC046055464E500DB518D /* libmozjs_for_oolite.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -298,7 +298,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = $ALL_CONFIG_MACROS;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = js;
+				PRODUCT_NAME = mozjs_for_oolite;
 				SYMROOT = ../../../../../build;
 				WARNING_CFLAGS = "-Wno-unused-value";
 			};
@@ -333,7 +333,7 @@
 				);
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = js;
+				PRODUCT_NAME = mozjs_for_oolite;
 				SYMROOT = ../../../../../build;
 				WARNING_CFLAGS = "-Wno-unused-value";
 			};
@@ -349,7 +349,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = $ALL_CONFIG_MACROS;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = js;
+				PRODUCT_NAME = mozjs_for_oolite;
 				SYMROOT = ../../../../../build;
 				WARNING_CFLAGS = "-Wno-unused-value";
 			};

@@ -380,7 +380,7 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 	
 	if ([[OODebugMonitor sharedDebugMonitor] debuggerConnected])
 	{
-		command = [NSString stringWithFormat:@"system.legacy_addShipsWithinRadius('%@', 1, 'abs', player.ship.position, 10000)", [shipRole escapedForJavaScriptLiteral]];
+		command = [NSString stringWithFormat:@"this.T = system.addShips('%@', 1, player.ship.position, 10000); if (this.T) this.T = this.T[0]; else consoleMessage('command-error', 'Could not spawn \"%@\".');", [shipRole escapedForJavaScriptLiteral], [shipRole escapedForJavaScriptLiteral]];
 		[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
 	}
 	else
