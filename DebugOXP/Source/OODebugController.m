@@ -314,7 +314,6 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 
 - (IBAction) setShaderModeToTag:sender
 {
-//	[UNIVERSE setShaderEffectsLevel:[sender tag]];
 	OOShaderSetting setting = [sender tag];
 	NSString *settingString = [ShaderSettingToString(setting) escapedForJavaScriptLiteral];
 	NSString *command = [NSString stringWithFormat:@"console.shaderMode = \"%@\"", settingString];
@@ -353,7 +352,7 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 
 - (IBAction)insertLogSeparatorAction:sender
 {
-	OOLogInsertMarker();
+	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:@"console.writeLogMarker()"];
 }
 
 
