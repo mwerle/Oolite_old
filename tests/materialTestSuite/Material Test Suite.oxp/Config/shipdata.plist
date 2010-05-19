@@ -314,7 +314,8 @@
 			"cube-face" =
 			{
 				diffuse_map = "";
-				diffuse_color = (32, 32, 32);
+				diffuse_color = (129, 129, 129);
+//				diffuse_color = (32, 32, 32);
 				specular_map = "oolite_shader_test_suite_14_specular.png";
 			};
 		};
