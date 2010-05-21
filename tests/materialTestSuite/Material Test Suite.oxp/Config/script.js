@@ -140,7 +140,7 @@ this.startUp = function()
 		delete this.originalShaderMode;
 		delete this.originalDisplayFPS;
 		delete this.originalDebugFlags;
-		delete this.shipLaunchedFromStation;
+		delete this.shipWillLaunchFromStation;
 		delete this.originalHUD;
 	}
 	
