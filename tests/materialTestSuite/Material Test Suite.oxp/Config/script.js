@@ -27,7 +27,7 @@ MA 02110-1301, USA.
 
 
 this.name			= "oolite-material-test-suite";
-this.version		= "0.6";
+this.version		= "0.7";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2010 the Oolite team.";
 
@@ -50,12 +50,6 @@ this.startUp = function()
 	this.nonShadyTestCount = 7;
 	
 	
-	// User-callable initiation function.
-	var scriptName = this.name;
-	debugConsole.script.runMaterialTestSuite = function ()
-	{
-		worldScripts[scriptName].runMaterialTestSuite();
-	}
 	this.runMaterialTestSuite = function ()
 	{
 		if (!player.ship.docked)
@@ -63,6 +57,8 @@ this.startUp = function()
 			debugConsole.consoleMessage("command-error", "You must be docked to run the material test suite.");
 			return;
 		}
+		
+		log("temp", "Debug console: " + debugConsole);
 		
 		// Show instruction/confirmation screen.
 		var substitutions = { shady_count :this.shadyTestCount, non_shady_count: this.nonShadyTestCount };
@@ -75,10 +71,27 @@ this.startUp = function()
 			return;
 		}
 		
-		if (!Mission.runScreen({ title: "Shader test suite", message: introText, choicesKey: "oolite_material_test_confirmation_choices" }, this.startTest, this))
+		if (!mission.runScreen({ titleKey: "oolite_material_test_title", message: introText, choicesKey: "oolite_material_test_confirmation_choices" }, this.startTest, this))
 		{
 			log("materialTest.error.missionScreenFailed", "The material test suite failed to run a mission screen.");
 			return;
+		}
+	}
+	
+	// Run on startup.
+	this.missionScreenOpportunity = function ()
+	{
+		delete this.missionScreenOpportunity;
+		this.runMaterialTestSuite();
+	}
+	
+	// User-callable initiation function, if debug console is installed.
+	var scriptName = this.name;
+	if (debugConsole.script !== undefined)
+	{
+		debugConsole.script.runMaterialTestSuite = function ()
+		{
+			worldScripts[scriptName].runMaterialTestSuite();
 		}
 	}
 	
@@ -97,6 +110,7 @@ this.startUp = function()
 		this.shipWillLaunchFromStation = function () { log("materialTest.cancelled", "Shader test suite cancelled by exiting station."); this.performCleanUp(); }
 		
 		var supportString;
+		var shady = false;
 		switch (debugConsole.maximumShaderMode)
 		{
 			case "SHADERS_NOT_SUPPORTED":
@@ -107,11 +121,13 @@ this.startUp = function()
 			case "SHADERS_SIMPLE":
 				supportString = "supported in simple mode only";
 				this.maxPassID = 2;
+				shady = true;
 				break;
 				
 			case "SHADERS_FULL":
 				supportString = "fully supported";
 				this.maxPassID = 3;
+				shady = true;
 				break;
 				
 			default:
@@ -121,7 +137,19 @@ this.startUp = function()
 		}
 		
 		debugConsole.writeLogMarker();
-		log("materialTest.start", "Starting material test suite " + this.version + " under Oolite " + oolite.versionString + " and " + debugConsole.platformDescription + " with OpenGL renderer \"" + debugConsole.glRendererString + "\", vendor \"" + debugConsole.glVendorString + "\"; shaders are " + supportString + ".");
+		var startString = "Starting material test suite " + this.version +
+		                  " under Oolite " + oolite.versionString +
+		                  " and " + debugConsole.platformDescription +
+		                  " with OpenGL renderer \"" + debugConsole.glRendererString +
+		                  "\", vendor \"" + debugConsole.glVendorString +
+		                  "\"; shaders are " + supportString;
+		if (shady)
+		{
+			startString += ", texture image unit count is " + debugConsole.glFragmentShaderTextureUnitCount;
+		}
+		startString += ".";
+		
+		log("materialTest.start", startString);
 		
 		player.ship.hud = "oolite_material_test_suite_blank_hud.plist";
 		this.runNextTest();
@@ -185,18 +213,18 @@ this.startUp = function()
 			{
 				// All passes have run, we're done.
 				this.performCleanUp();
-				var config =
+				
+				var substitutions =
 				{
-					title: "Shader test suite",
-					message: "The test suite is complete.\n\n\n" +
-					"Your OpenGL renderer information is:\n" +
-					"Vendor: “" + debugConsole.glVendorString + "”\n" +
-					"Renderer: “" + debugConsole.glRendererString + "”\n\n" +
-					"This information can also be found in the Oolite log."
+					gl_vendor_string: debugConsole.glVendorString,
+					gl_renderer_string: debugConsole.glRendererString,
+					gl_tex_image_unit_count: debugConsole.glFragmentShaderTextureUnitCount
 				};
+				var message = expandMissionText((this.maxPassID == 1) ? "oolite_material_test_completion_no_shaders" : "oolite_material_test_completion_shaders", substitutions);
+				
 				log("materialTest.complete", "Shader test suite complete.");
 				debugConsole.writeLogMarker();
-				Mission.runScreen(config, function () {});
+				mission.runScreen({ titleKey: "oolite_material_test_title", message: message }, function () {});
 				return;
 			}
 		}
@@ -225,7 +253,7 @@ this.startUp = function()
 			message: "\n\n\n" + testLabel + "\n" + testDesc,
 			background: "oolite_material_test_suite_backdrop.png"
 		};
-		if (!Mission.runScreen(config, this.runNextTest, this))
+		if (!mission.runScreen(config, this.runNextTest, this))
 		{
 			log("materialTest.error.missionScreenFailed", "The material test suite failed to run a mission screen.");
 			this.performCleanUp();
@@ -234,5 +262,5 @@ this.startUp = function()
 	}
 	
 	
-	log("materialTest.loaded", "Material test suite is installed. To run the material test, type \"runMaterialTestSuite()\" in the debug console.");
+	log("materialTest.loaded", "Material test suite is installed.");
 };
