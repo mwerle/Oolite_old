@@ -17,9 +17,9 @@ then
    exit
 fi
 
-if [ ! -f ~/.oolite-run ]
+if [ ! -f ~/.Oolite/.oolite-run ]
 then
-   touch ~/.oolite-run
+   touch ~/.Oolite/.oolite-run
    cat $OOLITE_ROOT/$TOPLEVEL/doc/README-PREAMBLE.TXT \
         $OOLITE_ROOT/$TOPLEVEL/doc/README.TXT | more
 fi
