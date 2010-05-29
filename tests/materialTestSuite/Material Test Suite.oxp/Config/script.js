@@ -58,8 +58,6 @@ this.startUp = function()
 			return;
 		}
 		
-		log("temp", "Debug console: " + debugConsole);
-		
 		// Show instruction/confirmation screen.
 		var substitutions = { shady_count :this.shadyTestCount, non_shady_count: this.nonShadyTestCount };
 		substitutions.count_string = expandMissionText("oolite_material_test_count_" + debugConsole.maximumShaderMode, substitutions);
@@ -212,6 +210,7 @@ this.startUp = function()
 			else
 			{
 				// All passes have run, we're done.
+				var shady = this.maxPassID == 1;
 				this.performCleanUp();
 				
 				var substitutions =
@@ -220,7 +219,7 @@ this.startUp = function()
 					gl_renderer_string: debugConsole.glRendererString,
 					gl_tex_image_unit_count: debugConsole.glFragmentShaderTextureUnitCount
 				};
-				var message = expandMissionText((this.maxPassID == 1) ? "oolite_material_test_completion_no_shaders" : "oolite_material_test_completion_shaders", substitutions);
+				var message = expandMissionText(shady ? "oolite_material_test_completion_no_shaders" : "oolite_material_test_completion_shaders", substitutions);
 				
 				log("materialTest.complete", "Shader test suite complete.");
 				debugConsole.writeLogMarker();
