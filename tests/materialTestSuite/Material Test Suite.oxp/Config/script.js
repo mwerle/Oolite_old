@@ -100,6 +100,7 @@ this.startUp = function()
 		if (resonse != "A_CONTINUE")  return;
 		
 		this.originalShaderMode = debugConsole.shaderMode;
+		this.originalReducedDetailMode = debugConsole.reducedDetailMode;
 		this.originalDebugFlags = debugConsole.debugFlags;
 		this.passID = 1;
 		this.nextTestIndex = 1;
@@ -157,6 +158,7 @@ this.startUp = function()
 	this.performCleanUp = function ()
 	{
 		debugConsole.shaderMode = this.originalShaderMode;
+		debugConsole.reducedDetailMode = this.originalReducedDetailMode;
 		debugConsole.debugFlags = this.originalDebugFlags;
 		player.ship.hud = this.originalHUD;
 		
@@ -164,6 +166,7 @@ this.startUp = function()
 		delete this.maxPassID;
 		delete this.nextTestIndex;
 		delete this.originalShaderMode;
+		delete this.originalReducedDetailMode;
 		delete this.originalDisplayFPS;
 		delete this.originalDebugFlags;
 		delete this.shipWillLaunchFromStation;
@@ -238,6 +241,7 @@ this.startUp = function()
 		
 		// Ensure environment is what we need - each time in case user tries to be clever.
 		debugConsole.shaderMode = passData.shaderMode;
+		debugConsole.reducedDetailMode = false;
 		debugConsole.debugFlags |= debugConsole.DEBUG_NO_SHADER_FALLBACK | debugConsole.DEBUG_SHADER_VALIDATION;
 		
 		// Actually run the test.
@@ -249,7 +253,7 @@ this.startUp = function()
 		{
 			model: modelName,
 			title: "",
-			message: "\n\n\n" + testLabel + "\n" + testDesc,
+			message: "\n\n" + testLabel + "\n" + testDesc,
 			background: "oolite_material_test_suite_backdrop.png"
 		};
 		if (!mission.runScreen(config, this.runNextTest, this))
