@@ -38,7 +38,6 @@ SOFTWARE.
 	IBOutlet NSTextField			*_maxField;
 	IBOutlet NSLevelIndicator		*_loadBar;
 	
-	OOUInteger						_channelCount;
 	OOUInteger						_channelCountHighWaterMark;
 	OOUInteger						_loadHighWaterMark;
 }
