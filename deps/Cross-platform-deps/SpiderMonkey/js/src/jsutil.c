@@ -51,6 +51,41 @@
 #    include <windows.h>
 #endif
 
+
+// Nasty hack for Oolite-Mac: integrate assertions into log.
+// Would be messier on other platforms because of lack of CoreFoundation.
+#if __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+void OOLogWithPrefix(CFStringRef messageClass, const char *function, const char *file, const char *line, CFStringRef prefix, CFStringRef format, ...);
+CFStringRef OOLogAbbreviatedFileName(const char *inName);
+
+
+void js_ErrPrintf_Mac(const char file, JSIntn line, const char *function, const char *format, ...)
+{
+	CFStringRef cfFormat = CFStringCreateWithCString(NULL, format, kCFStringEncodingUTF8);
+	if (cfFormat == NULL)  cfFormat = CFStringCreateWithCString(NULL, format, kCFStringEncodingMacRoman);
+	if (cfFormat == NULL)  return;
+	
+	va_list args;
+	va_start(args, format);
+	CFStringRef message = CFStringCreateWithFormatAndArguments(NULL, NULL, cfFormat, args);
+	va_end(args);
+	CFRelease(cfFormat);
+	
+	if (message != NULL)
+	{
+		OOLogWithPrefix(CFSTR("javascript.error"), function, file, line, CFSTR(""), CFSTR("%@"), message);
+		CFRelease(message);
+	}
+}
+
+
+JS_PUBLIC_API(void) JS_Assert(const char *s, const char *file, JSIntn ln)
+{
+	OOLogWithPrefix(CFSTR("javascript.assert"), NULL, file, ln, CFSTR(""), CFSTR("Assertion failure: %s, at %@:%d"), s, OOLogAbbreviatedFileName(file), ln);
+	abort();
+}
+#else
 JS_PUBLIC_API(void) JS_Assert(const char *s, const char *file, JSIntn ln)
 {
     fprintf(stderr, "Assertion failure: %s, at %s:%d\n", s, file, ln);
@@ -58,10 +93,11 @@ JS_PUBLIC_API(void) JS_Assert(const char *s, const char *file, JSIntn ln)
     DebugBreak();
     exit(3);
 #elif defined(XP_OS2) || (defined(__GNUC__) && defined(__i386))
-    asm("int $3");
+//    asm("int $3");
 #endif
     abort();
 }
+#endif
 
 #if defined DEBUG_notme && defined XP_UNIX
 

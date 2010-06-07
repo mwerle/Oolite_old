@@ -828,7 +828,7 @@ js_root_printer(JSDHashTable *table, JSDHashEntryHdr *hdr, uint32 i, void *arg)
     JSGCRootHashEntry *rhe = (JSGCRootHashEntry *)hdr;
 
     (*leakedroots)++;
-    fprintf(stderr,
+    js_ErrPrintf(
             "JS engine warning: leaking GC root \'%s\' at %p\n",
             rhe->name ? (char *)rhe->name : "", rhe->root);
 
@@ -845,12 +845,12 @@ CheckLeakedRoots(JSRuntime *rt)
                            &leakedroots);
     if (leakedroots > 0) {
         if (leakedroots == 1) {
-            fprintf(stderr,
+            js_ErrPrintf(
 "JS engine warning: 1 GC root remains after destroying the JSRuntime.\n"
 "                   This root may point to freed memory. Objects reachable\n"
 "                   through it have not been finalized.\n");
         } else {
-            fprintf(stderr,
+            js_ErrPrintf(
 "JS engine warning: %lu GC roots remain after destroying the JSRuntime.\n"
 "                   These roots may point to freed memory. Objects reachable\n"
 "                   through them have not been finalized.\n",
@@ -1012,7 +1012,7 @@ CanScheduleCloseHook(JSGenerator *gen)
     canSchedule = *js_GetGCThingFlags(parent) & GCF_MARK;
 #ifdef DEBUG_igor
     if (!canSchedule) {
-        fprintf(stderr, "GEN: Kill without schedule, gen=%p parent=%p\n",
+        js_ErrPrintf( "GEN: Kill without schedule, gen=%p parent=%p\n",
                 (void *)gen, (void *)parent);
     }
 #endif
@@ -1058,7 +1058,7 @@ ShouldDeferCloseHook(JSContext *cx, JSGenerator *gen, JSBool *defer)
     }
 #ifdef DEBUG_igor
     if (*defer) {
-        fprintf(stderr, "GEN: deferring, gen=%p parent=%p\n",
+        js_ErrPrintf( "GEN: deferring, gen=%p parent=%p\n",
                 (void *)gen, (void *)parent);
     }
 #endif
@@ -2504,7 +2504,7 @@ gc_root_marker(JSDHashTable *table, JSDHashEntryHdr *hdr, uint32 num, void *arg)
             }
         }
         if (!root_points_to_gcArenaList && rhe->name) {
-            fprintf(stderr,
+            js_ErrPrintf(
 "JS API usage error: the address passed to JS_AddNamedRoot currently holds an\n"
 "invalid jsval.  This is usually caused by a missing call to JS_RemoveRoot.\n"
 "The root's name is \"%s\".\n",

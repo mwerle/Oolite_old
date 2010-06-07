@@ -414,7 +414,7 @@ js_FinishAtomState(JSAtomState *state)
     JS_HashTableEnumerateEntries(state->table, js_atom_uninterner, &args);
 #ifdef DEBUG
     if (args.leaks != 0) {
-        fprintf(stderr,
+        js_ErrPrintf(
 "JS engine warning: %lu atoms remain after destroying the JSRuntime.\n"
 "                   These atoms may point to freed memory. Things reachable\n"
 "                   through them have not been finalized.\n",

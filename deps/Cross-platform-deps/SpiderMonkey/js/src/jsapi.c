@@ -750,7 +750,7 @@ JS_DestroyRuntime(JSRuntime *rt)
         uintN cxcount = 0;
         while ((cx = js_ContextIterator(rt, JS_TRUE, &iter)) != NULL)
             cxcount++;
-        fprintf(stderr,
+        js_ErrPrintf(
 "JS API usage error: %u contexts left in runtime upon JS_DestroyRuntime.\n",
                 cxcount);
     }

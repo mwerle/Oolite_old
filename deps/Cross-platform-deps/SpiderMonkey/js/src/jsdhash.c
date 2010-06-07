@@ -220,7 +220,7 @@ JS_DHashTableInit(JSDHashTable *table, const JSDHashTableOps *ops, void *data,
 
 #ifdef DEBUG
     if (entrySize > 10 * sizeof(void *)) {
-        fprintf(stderr,
+        js_ErrPrintf(
                 "jsdhash: for the table at address %p, the given entrySize"
                 " of %lu %s favors chaining over double hashing.\n",
                 (void *)table,

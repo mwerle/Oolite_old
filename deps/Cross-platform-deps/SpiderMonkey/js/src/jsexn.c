@@ -1173,7 +1173,7 @@ js_ErrorToException(JSContext *cx, const char *message, JSErrorReport *reportp)
 
 #if defined( DEBUG_mccabe ) && defined ( PRINTNAMES )
     /* Print the error name and the associated exception name to stderr */
-    fprintf(stderr, "%s\t%s\n",
+    js_ErrPrintf("%s\t%s\n",
             errortoexnname[errorNumber].name,
             errortoexnname[errorNumber].exception);
 #endif
