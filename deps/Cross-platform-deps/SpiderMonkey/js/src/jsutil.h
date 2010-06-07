@@ -66,7 +66,7 @@ JS_Assert(const char *s, const char *file, JSIntn ln);
 // Nasty hack for Oolite-Mac: integrate assertions into log.
 // Would be messier on other platforms because of lack of CoreFoundation.
 #if __APPLE__
-void js_ErrPrintf_Mac(const char file, JSIntn line, const char *function, const char *format, ...);
+void js_ErrPrintf_Mac(const char *file, JSIntn line, const char *function, const char *format, ...);
 #define js_ErrPrintf(...) js_ErrPrintf_Mac(__FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
 #else
 #define js_ErrPrintf(...) fprintf(stderr, __VA_ARGS__)

@@ -56,11 +56,11 @@
 // Would be messier on other platforms because of lack of CoreFoundation.
 #if __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
-void OOLogWithPrefix(CFStringRef messageClass, const char *function, const char *file, const char *line, CFStringRef prefix, CFStringRef format, ...);
+void OOLogWithPrefix(CFStringRef messageClass, const char *function, const char *file, unsigned long line, CFStringRef prefix, CFStringRef format, ...);
 CFStringRef OOLogAbbreviatedFileName(const char *inName);
 
 
-void js_ErrPrintf_Mac(const char file, JSIntn line, const char *function, const char *format, ...)
+void js_ErrPrintf_Mac(const char *file, JSIntn line, const char *function, const char *format, ...)
 {
 	CFStringRef cfFormat = CFStringCreateWithCString(NULL, format, kCFStringEncodingUTF8);
 	if (cfFormat == NULL)  cfFormat = CFStringCreateWithCString(NULL, format, kCFStringEncodingMacRoman);

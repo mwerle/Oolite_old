@@ -33,7 +33,6 @@
 		1AEAAC320BA45584000705D0 /* jsdbgapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 1AEAAC0E0BA45584000705D0 /* jsdbgapi.c */; };
 		1AEAAC330BA45584000705D0 /* jsxml.c in Sources */ = {isa = PBXBuildFile; fileRef = 1AEAAC0F0BA45584000705D0 /* jsxml.c */; };
 		1AEAAC340BA45584000705D0 /* jsnum.c in Sources */ = {isa = PBXBuildFile; fileRef = 1AEAAC100BA45584000705D0 /* jsnum.c */; };
-		1AEAAC350BA45584000705D0 /* jscpucfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 1AEAAC110BA45584000705D0 /* jscpucfg.c */; };
 		1AEAAC360BA45584000705D0 /* jsscope.c in Sources */ = {isa = PBXBuildFile; fileRef = 1AEAAC120BA45584000705D0 /* jsscope.c */; };
 		1AEAAC370BA45584000705D0 /* jsemit.c in Sources */ = {isa = PBXBuildFile; fileRef = 1AEAAC130BA45584000705D0 /* jsemit.c */; };
 		1AEAAC380BA45584000705D0 /* jsscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 1AEAAC140BA45584000705D0 /* jsscan.c */; };
@@ -266,7 +265,6 @@
 				1AEAAC320BA45584000705D0 /* jsdbgapi.c in Sources */,
 				1AEAAC330BA45584000705D0 /* jsxml.c in Sources */,
 				1AEAAC340BA45584000705D0 /* jsnum.c in Sources */,
-				1AEAAC350BA45584000705D0 /* jscpucfg.c in Sources */,
 				1AEAAC360BA45584000705D0 /* jsscope.c in Sources */,
 				1AEAAC370BA45584000705D0 /* jsemit.c in Sources */,
 				1AEAAC380BA45584000705D0 /* jsscan.c in Sources */,
@@ -301,7 +299,7 @@
 					TOO_MUCH_GC,
 					WAY_TOO_MUCH_GC,
 				);
-				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = mozjs_for_oolite;
 				SYMROOT = ../../../../../build;

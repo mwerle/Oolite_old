@@ -289,7 +289,7 @@ int main(int argc, char **argv)
             printf("#define IS_LITTLE_ENDIAN 1\n");
             printf("#undef  IS_BIG_ENDIAN\n\n");
         } else {
-            js_ErrPrintf("%s: unknown byte order"
+            fprintf(stderr, "%s: unknown byte order"
                     "(big_endian=%d, little_endian=%d, ntests=%d)!\n",
                     argv[0], big_endian, little_endian, ntests);
             return EXIT_FAILURE;
