@@ -299,7 +299,7 @@
 					TOO_MUCH_GC,
 					WAY_TOO_MUCH_GC,
 				);
-				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = mozjs_for_oolite;
 				SYMROOT = ../../../../../build;
