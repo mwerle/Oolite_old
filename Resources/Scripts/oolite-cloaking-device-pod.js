@@ -6,7 +6,7 @@ Ship script for cloaking device cargo pod.
 
 
 Oolite
-Copyright © 2004-2008 Giles C Williams and contributors
+Copyright © 2004-2010 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@ MA 02110-1301, USA.
 
 this.name			= "oolite-cloaking-device-pod";
 this.author			= "Jens Ayton";
-this.copyright		= "© 2007–2009 the Oolite team.";
+this.copyright		= "© 2007–2010 the Oolite team.";
 this.version		= "1.74.1";
 
 
@@ -40,7 +40,7 @@ this.shipWasScooped = function (scooper)
 {
 	if (scooper.isPlayer)
 	{
-		if (!player.ship.hasEquipment("EQ_CLOAKING_DEVICE"))
+		if (player.ship.equipmentStatus("EQ_CLOAKING_DEVICE") !== "EQUIPMENT_OK")
 		{
 			player.ship.awardEquipment("EQ_CLOAKING_DEVICE");
 			// Should we make it possible to repair?

@@ -6,7 +6,7 @@ Script for Thargoid plans mission.
 
 
 Oolite
-Copyright © 2004-2008 Giles C Williams and contributors
+Copyright © 2004-2010 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@ MA 02110-1301, USA.
 
 this.name			= "oolite-thargoid-plans";
 this.author			= "Eric Walch";
-this.copyright		= "© 2008–2009 the Oolite team.";
+this.copyright		= "© 2008–2010 the Oolite team.";
 this.version		= "1.74.1";
 
 
@@ -70,8 +70,8 @@ this.missionOffers = function ()
 				player.score += 256; // ship kills
 				mission.setInstructions(null);  // reset the mission briefing
 				missionVariables.thargplans = "MISSION_COMPLETE";
-				// for backward compatibility, hasEquipment doesn't check the damaged version.
-				if (player.ship.hasEquipment("EQ_ENERGY_UNIT") || player.ship.hasEquipment("EQ_ENERGY_UNIT_DAMAGED"))
+				// for backward compatibility, remove energy_unit.
+				if (player.ship.equipmentStatus("EQ_ENERGY_UNIT") !== "EQUIPMENT_UNAVAILABLE")
 				{
 					// remove the specified equipment, either working or damaged version.
 					player.ship.removeEquipment("EQ_ENERGY_UNIT");

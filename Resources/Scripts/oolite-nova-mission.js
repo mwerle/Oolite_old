@@ -6,7 +6,7 @@ Script for nova mission.
 
 
 Oolite
-Copyright ¨© 2004-2009 Giles C Williams and contributors
+Copyright © 2004–2010 Giles C Williams and contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@ MA 02110-1301, USA.
 
 this.name			= "oolite-nova";
 this.author			= "Eric Walch, Jens Ayton, Kaks";
-this.copyright		= "© 2009 the Oolite team.";
+this.copyright		= "© 2009–2010 the Oolite team.";
 this.version		= "1.74.1";
 
 
@@ -256,7 +256,7 @@ this.shipWillExitWitchspace = function ()  // call this as soon as possible so o
 	if (!missionVariables.nova && galaxyNumber === 3)
 	{
 		if (missionVariables.novacount !== undefined)  { missionVariables.novacount++; }
-		if (player.ship.hasEquipment("EQ_GAL_DRIVE") && missionVariables.novacount > 3 && !missionVariables.nova && !system.isInterstellarSpace)
+		if (player.ship.equipmentStatus("EQ_GAL_DRIVE") === "EQUIPMENT_OK" && missionVariables.novacount > 3 && !missionVariables.nova && !system.isInterstellarSpace)
 		{
 			missionVariables.nova = "TWO_HRS_TO_ZERO";
 			player.ship.fuelLeakRate = 25;
