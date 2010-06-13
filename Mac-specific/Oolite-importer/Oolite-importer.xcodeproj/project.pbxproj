@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		1A1AB0E80909B67E001039FA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1AB0E70909B67E001039FA /* Foundation.framework */; };
-		1A21AE63118CCD1A00D4D137 /* NSScannerOOExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A21AE61118CCD1A00D4D137 /* NSScannerOOExtensions.h */; };
-		1A21AE64118CCD1A00D4D137 /* NSScannerOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A21AE62118CCD1A00D4D137 /* NSScannerOOExtensions.m */; };
-		1A21AE7A118CD08000D4D137 /* OOCollectionExtractors.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A21AE78118CD08000D4D137 /* OOCollectionExtractors.h */; };
-		1A21AE7B118CD08000D4D137 /* OOCollectionExtractors.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A21AE79118CD08000D4D137 /* OOCollectionExtractors.m */; };
 		1A21AE83118CD0A800D4D137 /* OoliteImporterPrefix.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A21AE82118CD0A800D4D137 /* OoliteImporterPrefix.h */; };
+		1A3E01D911C57598000FF226 /* NSScannerOOExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3E01D711C57598000FF226 /* NSScannerOOExtensions.h */; };
+		1A3E01DA11C57598000FF226 /* NSScannerOOExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3E01D811C57598000FF226 /* NSScannerOOExtensions.m */; };
+		1A3E01DD11C5759E000FF226 /* OOCollectionExtractors.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3E01DB11C5759E000FF226 /* OOCollectionExtractors.h */; };
+		1A3E01DE11C5759E000FF226 /* OOCollectionExtractors.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3E01DC11C5759E000FF226 /* OOCollectionExtractors.m */; };
 		1A69FD68090A3BC600914D59 /* schema.xml in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7D7067446EC006EBB30 /* schema.xml */; };
 		1AADEB2E09169CCB00B6D1FA /* Values.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AADEB2D09169CCB00B6D1FA /* Values.plist */; };
 		2C05A19C06CAA52B00D84F6F /* GetMetadataForFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */; };
@@ -27,14 +27,14 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77B6FE84183AC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-targets.xcconfig"; path = "../src/Cocoa/oolite-targets.xcconfig"; sourceTree = SOURCE_ROOT; };
+		1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "oolite-targets.xcconfig"; path = "../../src/Cocoa/oolite-targets.xcconfig"; sourceTree = SOURCE_ROOT; };
 		1A1AB0E70909B67E001039FA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		1A1AB1C60909BF46001039FA /* Oolite.mdimporter */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Oolite.mdimporter; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A21AE61118CCD1A00D4D137 /* NSScannerOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSScannerOOExtensions.h; path = ../src/Core/NSScannerOOExtensions.h; sourceTree = SOURCE_ROOT; };
-		1A21AE62118CCD1A00D4D137 /* NSScannerOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSScannerOOExtensions.m; path = ../src/Core/NSScannerOOExtensions.m; sourceTree = SOURCE_ROOT; };
-		1A21AE78118CD08000D4D137 /* OOCollectionExtractors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOCollectionExtractors.h; path = ../src/Core/OOCollectionExtractors.h; sourceTree = SOURCE_ROOT; };
-		1A21AE79118CD08000D4D137 /* OOCollectionExtractors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOCollectionExtractors.m; path = ../src/Core/OOCollectionExtractors.m; sourceTree = SOURCE_ROOT; };
 		1A21AE82118CD0A800D4D137 /* OoliteImporterPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OoliteImporterPrefix.h; sourceTree = "<group>"; };
+		1A3E01D711C57598000FF226 /* NSScannerOOExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSScannerOOExtensions.h; path = Core/NSScannerOOExtensions.h; sourceTree = "<group>"; };
+		1A3E01D811C57598000FF226 /* NSScannerOOExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSScannerOOExtensions.m; path = Core/NSScannerOOExtensions.m; sourceTree = "<group>"; };
+		1A3E01DB11C5759E000FF226 /* OOCollectionExtractors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OOCollectionExtractors.h; path = Core/OOCollectionExtractors.h; sourceTree = "<group>"; };
+		1A3E01DC11C5759E000FF226 /* OOCollectionExtractors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OOCollectionExtractors.m; path = Core/OOCollectionExtractors.m; sourceTree = "<group>"; };
 		1AADEB2D09169CCB00B6D1FA /* Values.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Values.plist; sourceTree = "<group>"; };
 		2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetMetadataForFile.m; sourceTree = "<group>"; };
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -96,10 +96,7 @@
 			children = (
 				2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */,
 				08FB77B6FE84183AC02AAC07 /* main.c */,
-				1A21AE61118CCD1A00D4D137 /* NSScannerOOExtensions.h */,
-				1A21AE62118CCD1A00D4D137 /* NSScannerOOExtensions.m */,
-				1A21AE78118CD08000D4D137 /* OOCollectionExtractors.h */,
-				1A21AE79118CD08000D4D137 /* OOCollectionExtractors.m */,
+				1A3E01E211C575A9000FF226 /* Oolite */,
 				1A21AE82118CD0A800D4D137 /* OoliteImporterPrefix.h */,
 			);
 			name = Source;
@@ -113,6 +110,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1A3E01E211C575A9000FF226 /* Oolite */ = {
+			isa = PBXGroup;
+			children = (
+				1A3E01D711C57598000FF226 /* NSScannerOOExtensions.h */,
+				1A3E01D811C57598000FF226 /* NSScannerOOExtensions.m */,
+				1A3E01DB11C5759E000FF226 /* OOCollectionExtractors.h */,
+				1A3E01DC11C5759E000FF226 /* OOCollectionExtractors.m */,
+			);
+			name = Oolite;
+			path = ../../src;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -120,9 +129,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A21AE63118CCD1A00D4D137 /* NSScannerOOExtensions.h in Headers */,
-				1A21AE7A118CD08000D4D137 /* OOCollectionExtractors.h in Headers */,
 				1A21AE83118CD0A800D4D137 /* OoliteImporterPrefix.h in Headers */,
+				1A3E01D911C57598000FF226 /* NSScannerOOExtensions.h in Headers */,
+				1A3E01DD11C5759E000FF226 /* OOCollectionExtractors.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,8 +223,8 @@
 			files = (
 				8D576312048677EA00EA77CD /* main.c in Sources */,
 				2C05A19C06CAA52B00D84F6F /* GetMetadataForFile.m in Sources */,
-				1A21AE64118CCD1A00D4D137 /* NSScannerOOExtensions.m in Sources */,
-				1A21AE7B118CD08000D4D137 /* OOCollectionExtractors.m in Sources */,
+				1A3E01DA11C57598000FF226 /* NSScannerOOExtensions.m in Sources */,
+				1A3E01DE11C5759E000FF226 /* OOCollectionExtractors.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,7 +280,7 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../src/Core/;
+				HEADER_SEARCH_PATHS = ../../src/Core/;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_SEARCH_PATHS = "";
@@ -283,7 +292,7 @@
 				PREBINDING = YES;
 				PRODUCT_NAME = Oolite;
 				SECTORDER_FLAGS = "";
-				SYMROOT = ../build;
+				SYMROOT = ../../build;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -296,6 +305,7 @@
 		};
 		1A0832E60C2F10BC00E3AE25 /* TestRelease */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = macosx10.4;
@@ -323,7 +333,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../src/Core/;
+				HEADER_SEARCH_PATHS = ../../src/Core/;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_SEARCH_PATHS = "";
@@ -334,7 +344,7 @@
 				PREBINDING = YES;
 				PRODUCT_NAME = Oolite;
 				SECTORDER_FLAGS = "";
-				SYMROOT = ../build;
+				SYMROOT = ../../build;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -347,6 +357,7 @@
 		};
 		1A1AB0820909AE56001039FA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = macosx10.4;
@@ -383,7 +394,7 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../src/Core/;
+				HEADER_SEARCH_PATHS = ../../src/Core/;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
 				LIBRARY_SEARCH_PATHS = "";
@@ -395,7 +406,7 @@
 				PREBINDING = YES;
 				PRODUCT_NAME = Oolite;
 				SECTORDER_FLAGS = "";
-				SYMROOT = ../build;
+				SYMROOT = ../../build;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -408,6 +419,7 @@
 		};
 		1ADCD4390975615F0038B52E /* Deployment */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A1966F5104EC4880079B400 /* oolite-targets.xcconfig */;
 			buildSettings = {
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = macosx10.4;
