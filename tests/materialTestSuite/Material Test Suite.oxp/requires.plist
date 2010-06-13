@@ -1,4 +1,4 @@
 {
 	version = "1.74";
-	version = "1.74.99";
+	max_version = "1.74.99";
 }
