@@ -2026,10 +2026,10 @@ static BOOL replacingMissile = NO;
 
 - (BOOL) engageAutopilotToStation:(OOUniversalID)stationForDocking
 {
-	if (autopilot_engaged)
-	{	
-		return YES;
-	}
+	if ([self isDocked])  return NO;
+	
+	if (autopilot_engaged)  return YES;
+	
 	if (stationForDocking == NO_TARGET || ![[UNIVERSE entityForUniversalID:stationForDocking] isStation])
 	{
 		OOLog(@"PlayerEntity.engageAutopilotToStation.failed", 

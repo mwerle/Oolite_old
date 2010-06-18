@@ -549,7 +549,7 @@ static JSBool PlayerShipUseSpecialCargo(JSContext *context, JSObject *this, uint
 }
 
 
-// engageAutopilotToStation(stationForDocking : StationEntity)
+// engageAutopilotToStation(stationForDocking : StationEntity) : Boolean
 static JSBool PlayerShipEngageAutopilotToStation(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
 {
 	PlayerEntity			*player = OOPlayerForScripting();

@@ -606,18 +606,22 @@ static JSBool ShipGetProperty(JSContext *context, JSObject *this, jsval name, js
 			
 		case kShip_forwardWeapon:
 			result = [entity weaponTypeForFacing:WEAPON_FACING_FORWARD];
+			if (result == nil)  result = [NSNull null];
 			break;
-		
+			
 		case kShip_aftWeapon:
 			result = [entity weaponTypeForFacing:WEAPON_FACING_AFT];
+			if (result == nil)  result = [NSNull null];
 			break;
-		
+			
 		case kShip_portWeapon:		// for future expansion
 			result = [entity weaponTypeForFacing:WEAPON_FACING_PORT];
+			if (result == nil)  result = [NSNull null];
 			break;
-		
+			
 		case kShip_starboardWeapon: // for future expansion
 			result = [entity weaponTypeForFacing:WEAPON_FACING_STARBOARD];
+			if (result == nil)  result = [NSNull null];
 			break;
 		
 		case kShip_missiles:
