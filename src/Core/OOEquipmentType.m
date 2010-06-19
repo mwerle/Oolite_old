@@ -386,6 +386,27 @@ static NSDictionary		*sMissilesRegistry = nil;
 }
 
 
+- (BOOL) canBeDamaged
+{
+	if ([self isMissileOrMine])  return NO;
+	
+	if ([_identifier isEqualToString:@"EQ_TRUMBLE"] ||
+		[_identifier isEqualToString:@"EQ_PASSENGER_BERTH"] ||
+		[_identifier isEqualToString:@"EQ_CARGO_BAY"])
+	{
+		return NO;
+	}
+	
+	return YES;
+}
+
+
+- (BOOL) isVisible
+{
+	return ![_identifier isEqualToString:@"EQ_TRUMBLE"];
+}
+
+
 - (OOCargoQuantity) requiredCargoSpace
 {
 	return _requiredCargoSpace;

@@ -1586,6 +1586,7 @@ static JSBool ShipSetEquipmentStatus(JSContext *context, JSObject *this, uintN a
 	// equipment status accepted: @"EQUIPMENT_OK", @"EQUIPMENT_DAMAGED"
 	
 	ShipEntity				*thisEnt = nil;
+	OOEquipmentType			*eqType = nil;
 	NSString				*key = nil;
 	NSString				*damagedKey = nil;
 	NSString				*status = nil;
@@ -1600,8 +1601,8 @@ static JSBool ShipSetEquipmentStatus(JSContext *context, JSObject *this, uintN a
 		return NO;
 	}
 	
-	key = JSValueToEquipmentKey(context, argv[0]);
-	if (EXPECT_NOT(key == nil))
+	eqType = JSValueToEquipmentType(context, argv[0]);
+	if (EXPECT_NOT(eqType == nil))
 	{
 		OOReportJSBadArguments(context, @"Ship", @"setEquipmentStatus", argc, argv, nil, @"equipment type");
 		return NO;
@@ -1620,26 +1621,38 @@ static JSBool ShipSetEquipmentStatus(JSContext *context, JSObject *this, uintN a
 		return NO;
 	}
 	
-	damagedKey = [key stringByAppendingString:@"_DAMAGED"];
+	key = [eqType identifier];
 	hasOK = [thisEnt hasEquipmentItem:key];
-	hasDamaged = [thisEnt hasEquipmentItem:damagedKey];
-	
-	if (([status isEqualToString:@"EQUIPMENT_OK"] && hasDamaged) || ([status isEqualToString:@"EQUIPMENT_DAMAGED"] && hasOK))
+	if ([eqType canBeDamaged])
 	{
-		// the implementation is identical between player and ship.
-		[thisEnt removeEquipmentItem:key];
-		if ([thisEnt isPlayer])
+		damagedKey = [key stringByAppendingString:@"_DAMAGED"];
+		hasDamaged = [thisEnt hasEquipmentItem:damagedKey];
+		
+		if (([status isEqualToString:@"EQUIPMENT_OK"] && hasDamaged) || ([status isEqualToString:@"EQUIPMENT_DAMAGED"] && hasOK))
 		{
-			// these player methods are different to the ship ones.
-			[(PlayerEntity*)thisEnt addEquipmentItem:(hasOK ? damagedKey : key)];
-			if (hasOK) [(PlayerEntity*)thisEnt doScriptEvent:@"equipmentDamaged" withArgument:key];
-			// if player's Docking Computers are set to EQUIPMENT_DAMAGED while on, stop them
-			if (hasOK && [key isEqualToString:@"EQ_DOCK_COMP"])  [(PlayerEntity*)thisEnt disengageAutopilot];
+			// the implementation is identical between player and ship.
+			[thisEnt removeEquipmentItem:key];
+			if ([thisEnt isPlayer])
+			{
+				// these player methods are different to the ship ones.
+				[(PlayerEntity*)thisEnt addEquipmentItem:(hasOK ? damagedKey : key)];
+				if (hasOK) [(PlayerEntity*)thisEnt doScriptEvent:@"equipmentDamaged" withArgument:key];
+				// if player's Docking Computers are set to EQUIPMENT_DAMAGED while on, stop them
+				if (hasOK && [key isEqualToString:@"EQ_DOCK_COMP"])  [(PlayerEntity*)thisEnt disengageAutopilot];
+			}
+			else
+			{
+				[thisEnt addEquipmentItem:(hasOK ? damagedKey : key)];
+				if (hasOK) [thisEnt doScriptEvent:@"equipmentDamaged" withArgument:key];
+			}
 		}
-		else
+	}
+	else
+	{
+		if (hasOK && ![status isEqualToString:@"EQUIPMENT_OK"])
 		{
-			[thisEnt addEquipmentItem:(hasOK ? damagedKey : key)];
-			if (hasOK) [thisEnt doScriptEvent:@"equipmentDamaged" withArgument:key];
+			OOReportJSWarning(context, @"Equipment %@ cannot be damaged.", key);
+			hasOK = NO;
 		}
 	}
 	

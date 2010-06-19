@@ -90,6 +90,9 @@ SOFTWARE.
 - (BOOL) isMissileOrMine;
 - (BOOL) isPortableBetweenShips;
 
+- (BOOL) canBeDamaged;
+- (BOOL) isVisible;
+
 - (OOCargoQuantity) requiredCargoSpace;
 - (NSSet *) requiresEquipment;		// Set of equipment identifiers; all items required
 - (NSSet *) requiresAnyEquipment;	// Set of equipment identifiers; any item required

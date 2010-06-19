@@ -2063,8 +2063,6 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 	NSEnumerator				*keyEnum = nil;
 	id							key = nil;
 	
-	if (!includeWeapons && _equipment == nil)  return NO;
-	
 	// Make sure it's an array or set, using a single-object set if it's a string.
 	if ([equipmentKeys isKindOfClass:[NSString class]])  equipmentKeys = [NSArray arrayWithObject:equipmentKeys];
 	else if (![equipmentKeys isKindOfClass:[NSArray class]] && ![equipmentKeys isKindOfClass:[NSSet class]])  return NO;

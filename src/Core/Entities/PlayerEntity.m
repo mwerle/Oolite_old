@@ -4851,17 +4851,20 @@ static BOOL replacingMissile = NO;
 
 	for (eqTypeEnum = [eqTypes objectEnumerator]; (eqType = [eqTypeEnum nextObject]); )
 	{
-		if ([self hasEquipmentItem:[eqType identifier]])
+		if ([eqType isVisible])
 		{
-			[quip addObject:[NSArray arrayWithObjects:[eqType name], [NSNumber numberWithBool:YES], nil]];
-		}
-		else if (![UNIVERSE strict])
-		{
-			// Check for damaged version
-			if ([self hasEquipmentItem:[[eqType identifier] stringByAppendingString:@"_DAMAGED"]])
+			if ([self hasEquipmentItem:[eqType identifier]])
 			{
-				desc = [NSString stringWithFormat:DESC(@"equipment-@-not-available"), [eqType name]];
-				[quip addObject:[NSArray arrayWithObjects:desc, [NSNumber numberWithBool:NO], nil]];
+				[quip addObject:[NSArray arrayWithObjects:[eqType name], [NSNumber numberWithBool:YES], nil]];
+			}
+			else if (![UNIVERSE strict])
+			{
+				// Check for damaged version
+				if ([self hasEquipmentItem:[[eqType identifier] stringByAppendingString:@"_DAMAGED"]])
+				{
+					desc = [NSString stringWithFormat:DESC(@"equipment-@-not-available"), [eqType name]];
+					[quip addObject:[NSArray arrayWithObjects:desc, [NSNumber numberWithBool:NO], nil]];
+				}
 			}
 		}
 	}
@@ -6921,6 +6924,11 @@ static NSString *last_outfitting_key=nil;
 		{
 			if ([[self missileForPylon:i] hasPrimaryRole:itemKey])  return YES;
 		}
+	}
+	
+	if ([itemKey isEqualToString:@"EQ_TRUMBLE"])
+	{
+		return [self trumbleCount] > 0;
 	}
 	
 	return NO;
