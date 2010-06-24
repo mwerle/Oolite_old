@@ -483,7 +483,7 @@ static JSBool VectorToSource(JSContext *context, JSObject *this, uintN argc, jsv
 	
 	if (EXPECT_NOT(!JSObjectGetVector(context, this, &thisv))) return NO;
 	
-	*outResult = [[NSString stringWithFormat:@"Vector(%g, %g, %g)", thisv.x, thisv.y, thisv.z]
+	*outResult = [[NSString stringWithFormat:@"Vector3D(%g, %g, %g)", thisv.x, thisv.y, thisv.z]
 				  javaScriptValueInContext:context];
 	return YES;
 }
@@ -615,7 +615,7 @@ static JSBool VectorTripleProduct(JSContext *context, JSObject *this, uintN argc
 	
 	if (EXPECT_NOT(!JSObjectGetVector(context, this, &thisv))) return NO;
 	if (EXPECT_NOT(!VectorFromArgumentList(context, @"Vector3D", @"tripleProduct", argc, argv, &thatv, &consumed)))  return NO;
-	argc += consumed;
+	argc -= consumed;
 	argv += consumed;
 	if (EXPECT_NOT(!VectorFromArgumentList(context, @"Vector3D", @"tripleProduct", argc, argv, &theotherv, NULL)))  return NO;
 	
