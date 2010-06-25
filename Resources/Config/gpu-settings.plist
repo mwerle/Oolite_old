@@ -73,8 +73,7 @@
 			*/
 			renderer = "(Intel|GMA).*\\b[89]\\d{2}(?!\\d)";
 		};
-	//	maximum_shader_level = "SHADERS_SIMPLE";
-		default_shader_level = "SHADERS_SIMPLE";
+		maximum_shader_level = "SHADERS_SIMPLE";
 		smooth_points = false;		// Point smoothing is not supported in hardware.
 		use_dust_shader = false;	// Vertex shaders are emulated on CPU.
 	};
@@ -86,8 +85,7 @@
 			vendor = "AT[Ii]";
 			renderer = "/\\bR(V?3|[CSV]4)\\d\\d(?!\\d)/";
 		};
-	//	maximum_shader_level = "SHADERS_SIMPLE";
-		default_shader_level = "SHADERS_SIMPLE";
+		maximum_shader_level = "SHADERS_SIMPLE";
 	};
 	
 	"ATI R300 family (X/Mesa)" =
@@ -97,8 +95,7 @@
 			vendor = "DRI R300 Project";
 			renderer = "Mesa DRI R300 \\(R(V?3|[CSV]4)";
 		};
-	//	maximum_shader_level = "SHADERS_SIMPLE";
-		default_shader_level = "SHADERS_SIMPLE";
+		maximum_shader_level = "SHADERS_SIMPLE";
 		// Anti-aliased lines are done in software.
 		// Assuming same for anti-aliased points.
 		smooth_points = false; 
@@ -112,8 +109,7 @@
 			vendor = "X\\.Org R300 Project";
 			renderer = "Gallium .* on R(V?3|[CSV]4)";
 		};
-	//	maximum_shader_level = "SHADERS_SIMPLE";
-		default_shader_level = "SHADERS_SIMPLE";
+		maximum_shader_level = "SHADERS_SIMPLE";
 		// Anti-aliased lines & points are not implemented.
 		// (Correct as of commit df3590f.)
 		smooth_points = false; 
