@@ -1,3 +1,23 @@
+Changes between Oolite 1.74 and Oolite 1.74.1:
+
+* Scripts can once again award and check for trumbles, and the standard trumble
+  mission once again works. (Limitation: scripts cannot increase the number of
+  trumbles by awarding more. This will be fixed in 1.75.)
+* The nova mission once again awards the appropriate reward on a successful
+  outcome.
+* No more "Witchspace engine malfunction" message when entering a post-nova
+  system.
+* When docked at a secondary station, the default selection on the game menu
+  screen is "Game Options" rather than "Begin New Game".
+* Fixed several JavaScript interface bugs that could cause a faulty script to
+  halt without any error message.
+* Adjusted graphics settings: shader mode is now restricted to Simple for
+  Intel GMA 950 and ATI Radeon R300 GPU families, and some other tweaks.
+* Possible fix for random freezes when using speech synthesis in Windows.
+* Various minor bug fixes and tweaks.
+
+-------------------------------------------------------------------------------
+
 Changes between Oolite 1.73.4 and Oolite 1.74:
 
 Gameplay
