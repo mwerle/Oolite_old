@@ -1,5 +1,5 @@
 These versions of the Ogg and Vorbis libraries were built from the
-libogg-1.1.3 and libvorbis 1.2.0 tarballs, available from
+libogg-1.2.0 and libvorbis 1.3.1 tarballs, available from
 <http://www.xiph.org/>, using the enclosed modified versions of the
 XCode projects included in those tarballs.
 
