@@ -759,12 +759,8 @@ static JSBool VectorToCoordinateSystem(JSContext *context, JSObject *this, uintN
 		OOReportJSBadArguments(context, @"Vector3D", @"toCoordinateSystem", argc, argv, nil, @"coordinate system");
 		return NO;
 	}
-	
-	OOJSPauseTimeLimiter();
 
 	VectorToJSValue(context, [UNIVERSE legacyPositionFrom:thisv asCoordinateSystem:coordScheme], outResult);
-
-	OOJSResumeTimeLimiter();
 	
 	return YES;
 }
@@ -786,13 +782,9 @@ static JSBool VectorFromCoordinateSystem(JSContext *context, JSObject *this, uin
 		OOReportJSBadArguments(context, @"Vector3D", @"fromCoordinateSystem", argc, argv, nil, @"coordinate system");
 		return NO;
 	}
-		
-	OOJSPauseTimeLimiter();
 	
 	arg = [NSString stringWithFormat:@"%@ %f %f %f", coordScheme, thisv.x, thisv.y, thisv.z];
 	VectorToJSValue(context, [UNIVERSE coordinatesFromCoordinateSystemString:arg], outResult);
-
-	OOJSResumeTimeLimiter();
 	
 	return YES;
 }
@@ -823,12 +815,8 @@ static JSBool VectorStaticFromCoordinateSystem(JSContext *context, JSObject *thi
 		return NO;
 	}
 	
-	OOJSPauseTimeLimiter();
-	
 	arg = [NSString stringWithFormat:@"%@ %f %f %f", coordScheme, where.x, where.y, where.z];
 	VectorToJSValue(context, [UNIVERSE coordinatesFromCoordinateSystemString:arg], outResult);
-
-	OOJSResumeTimeLimiter();
 	
 	return YES;
 }
