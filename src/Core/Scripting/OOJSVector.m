@@ -71,7 +71,6 @@ static JSBool VectorStaticInterpolate(JSContext *context, JSObject *this, uintN 
 static JSBool VectorStaticRandom(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorStaticRandomDirection(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorStaticRandomDirectionAndLength(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
-static JSBool VectorStaticFromCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 //static JSBool VectorStaticConstruct(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 
 
@@ -150,7 +149,6 @@ static JSFunctionSpec sVectorStaticMethods[] =
 	{ "random",					VectorStaticRandom,			0, },
 	{ "randomDirection",		VectorStaticRandomDirection, 0, },
 	{ "randomDirectionAndLength", VectorStaticRandomDirectionAndLength, 0, },
-	{ "vectorFromCoordinateSystem",	VectorStaticFromCoordinateSystem,	2, },
 	{ 0 }
 };
 
@@ -759,7 +757,7 @@ static JSBool VectorToCoordinateSystem(JSContext *context, JSObject *this, uintN
 		OOReportJSBadArguments(context, @"Vector3D", @"toCoordinateSystem", argc, argv, nil, @"coordinate system");
 		return NO;
 	}
-
+	
 	VectorToJSValue(context, [UNIVERSE legacyPositionFrom:thisv asCoordinateSystem:coordScheme], outResult);
 	
 	return YES;
@@ -784,38 +782,6 @@ static JSBool VectorFromCoordinateSystem(JSContext *context, JSObject *this, uin
 	}
 	
 	arg = [NSString stringWithFormat:@"%@ %f %f %f", coordScheme, thisv.x, thisv.y, thisv.z];
-	VectorToJSValue(context, [UNIVERSE coordinatesFromCoordinateSystemString:arg], outResult);
-	
-	return YES;
-}
-
-
-// vectorFromCoordinateSystem(coords : vectorExpression, coordScheme : String)
-static JSBool VectorStaticFromCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
-{
-	Vector				where;
-	NSString			*coordScheme = nil;
-	NSString			*arg = nil;
-	uintN				consumed = 0;
-	BOOL				OK = YES;
-	
-	if (!VectorFromArgumentListNoError(context, argc, argv, &where, &consumed))
-	{
-		OK = NO;
-	}
-	
-	if (argc > consumed)
-	{
-		coordScheme = JSValToNSString(context, argv[consumed]);
-	}
-	
-	if (EXPECT_NOT(coordScheme == nil || OK == NO))
-	{
-		OOReportJSBadArguments(context, @"Vector3D", @"vectorWithCoordinateSystem", argc, argv, nil, @"coordinates, coordinate system");
-		return NO;
-	}
-	
-	arg = [NSString stringWithFormat:@"%@ %f %f %f", coordScheme, where.x, where.y, where.z];
 	VectorToJSValue(context, [UNIVERSE coordinatesFromCoordinateSystemString:arg], outResult);
 	
 	return YES;
