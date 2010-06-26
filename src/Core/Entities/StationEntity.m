@@ -736,7 +736,6 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	DESTROY(localPassengers);
 	DESTROY(localContracts);
 	DESTROY(localShipyard);
-	DESTROY(local_market);
 	
 	[super dealloc];
 }
@@ -2133,14 +2132,9 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 	return dockingPatternModelFileName;
 }
 
-- (NSString *) marketName
+- (NSString *) marketOverrideName
 {
-	if( local_market == nil )
-	{
-		local_market = [shipinfoDictionary oo_stringForKey:@"market" defaultValue:[self primaryRole]];
-		[local_market retain];
-	}
-	return local_market;
+	return [shipinfoDictionary oo_stringForKey:@"market"];
 }
 
 

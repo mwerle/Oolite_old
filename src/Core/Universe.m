@@ -6931,19 +6931,28 @@ static NSDictionary	*sCachedSystemData = nil;
 	NSMutableArray	*ourEconomy = nil;
 	unsigned		i;
 	
-	if( some_station && some_station == [UNIVERSE  station] )
+	if( (some_station == nil || some_station == [UNIVERSE  station]) )
 	{
 		marketName = [[self currentSystemData] oo_stringForKey:@"market"];
 	}
-	if (marketName == nil) marketName = [some_station marketName];
-	
-	market = [commodityLists oo_arrayForKey:marketName];
-	if( market == nil)
+	if( marketName == nil )
+		marketName = [some_station marketOverrideName];
+	if( marketName != nil )
+	{
+		market = [commodityLists oo_arrayForKey:marketName];
+		if( market == nil )
+		{
+			OOLogWARN(@"universe.setup.badMarket", @"System or station specified undefined market '%@'.", marketName);
+		}
+	}
+	if( market == nil && some_station != nil )
 	{
 		market = [commodityLists oo_arrayForKey:[some_station primaryRole]];
 	}
-	if( market == nil) market = [commodityLists oo_arrayForKey:@"default"];
-	
+	if( market == nil)
+	{
+		market = [commodityLists oo_arrayForKey:@"default"];
+	}	
 	ourEconomy = [NSMutableArray arrayWithArray:market];
 	
 	for (i = 0; i < [ourEconomy count]; i++)
