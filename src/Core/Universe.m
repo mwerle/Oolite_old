@@ -1822,11 +1822,11 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 	switch (c_sys[2])
 	{
 		case 'p':
-			scale = [self planet] ? [[self planet] radius]: 5000;
+			scale = [the_planet radius];
 			break;
 			
 		case 's':
-			scale = [self sun] ? [[self sun] radius]: 100000;
+			scale = [the_sun radius];
 			break;
 			
 		case 'u':
@@ -1834,7 +1834,7 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 			break;
 			
 		case 'm':
-			scale = 1.0;
+			scale = 1.0f;
 			break;
 			
 		default:
@@ -1855,15 +1855,21 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 
 - (NSString *) expressPosition:(Vector) pos inCoordinateSystem:(NSString *) system
 {
-	
+	Vector result = [self legacyPositionFrom:pos asCoordinateSystem:system];
+	return [NSString stringWithFormat:@"%@ %.2f %.2f %.2f", system, result.x, result.y, result.z];
+}
+
+
+- (Vector) legacyPositionFrom:(Vector) pos asCoordinateSystem:(NSString *) system
+{
 	NSString* l_sys = [system lowercaseString];
 	if ([l_sys length] != 3)
-		return nil;
+		return kZeroVector;
 	OOPlanetEntity* the_planet = [self planet];
 	OOSunEntity* the_sun = [self sun];
-	if ((!the_planet)||(!the_sun))
+	if (the_planet == nil || the_sun == nil || [l_sys isEqualToString:@"abs"])
 	{
-		return [NSString stringWithFormat:@"%@ %.2f %.2f %.2f", system, pos.x, pos.y, pos.z];
+		return pos;
 	}
 	Vector  w_pos = [self getWitchspaceExitPosition];	// don't reset PRNG
 	Vector  p_pos = the_planet->position;
@@ -1883,7 +1889,7 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 				case 's':
 					p1 = s_pos;	p2 = p_pos;	break;
 				default:
-					return nil;
+					return kZeroVector;
 			}
 			break;
 		case 'p':		
@@ -1895,7 +1901,7 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 				case 's':
 					p1 = s_pos;	p2 = w_pos;	break;
 				default:
-					return nil;
+					return kZeroVector;
 			}
 			break;
 		case 's':
@@ -1907,11 +1913,11 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 				case 'p':
 					p1 = p_pos;	p2 = w_pos;	break;
 				default:
-					return nil;
+					return kZeroVector;
 			}
 			break;
 		default:
-			return nil;
+			return kZeroVector;
 	}
 	Vector k = vector_normal_or_zbasis(vector_subtract(p1, p0));	// 'z' axis in m
 	Vector v = vector_normal_or_xbasis(vector_subtract(p2, p0));	// temporary vector in plane of 'forward' and 'right'
@@ -1924,14 +1930,12 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 	{
 		case 'p':
 		{
-			OOPlanetEntity *planet = [self planet];
-			scale = 1.0f / (planet ? [planet collisionRadius]: 5000);
+			scale = 1.0f / [the_planet radius];
 			break;
 		}
 		case 's':
 		{
-			OOSunEntity *sun = [self sun];
-			scale = 1.0f / (sun ? [sun collisionRadius]: 100000);
+			scale = 1.0f / [the_sun radius];
 			break;
 		}
 			
@@ -1944,7 +1948,7 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 			break;
 			
 		default:
-			return nil;
+			return kZeroVector;
 	}
 	
 	// result = p0 + ijk
@@ -1953,7 +1957,7 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 								scale * (r_pos.x * j.x + r_pos.y * j.y + r_pos.z * j.z),
 								scale * (r_pos.x * k.x + r_pos.y * k.y + r_pos.z * k.z) ); // scale * dot_products
 	
-	return [NSString stringWithFormat:@"%@ %.2f %.2f %.2f", system, result.x, result.y, result.z];
+	return result;
 }
 
 
@@ -6936,7 +6940,6 @@ static NSDictionary	*sCachedSystemData = nil;
 	market = [commodityLists oo_arrayForKey:marketName];
 	if( market == nil)
 	{
-		OOLogWARN(@"universe.setup.badMarket", @"System or station specified undefined market '%@'.", marketName);
 		market = [commodityLists oo_arrayForKey:[some_station primaryRole]];
 	}
 	if( market == nil) market = [commodityLists oo_arrayForKey:@"default"];

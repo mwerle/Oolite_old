@@ -55,6 +55,8 @@ static JSBool VectorSquaredDistanceTo(JSContext *context, JSObject *this, uintN 
 static JSBool VectorMultiply(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorDot(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorAngleTo(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
+static JSBool VectorFromCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
+static JSBool VectorToCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorCross(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorTripleProduct(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorDirection(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
@@ -69,6 +71,7 @@ static JSBool VectorStaticInterpolate(JSContext *context, JSObject *this, uintN 
 static JSBool VectorStaticRandom(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorStaticRandomDirection(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 static JSBool VectorStaticRandomDirectionAndLength(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
+static JSBool VectorStaticFromCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 //static JSBool VectorStaticConstruct(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult);
 
 
@@ -134,6 +137,8 @@ static JSFunctionSpec sVectorMethods[] =
 	{ "rotateBy",				VectorRotateBy,				1, },
 	{ "rotationTo",				VectorRotationTo,			1, },
 	{ "toArray",				VectorToArray,				0, },
+	{ "fromCoordinateSystem",	VectorFromCoordinateSystem,	1, },
+	{ "toCoordinateSystem",		VectorToCoordinateSystem,	1, },
 	{ 0 }
 };
 
@@ -145,6 +150,7 @@ static JSFunctionSpec sVectorStaticMethods[] =
 	{ "random",					VectorStaticRandom,			0, },
 	{ "randomDirection",		VectorStaticRandomDirection, 0, },
 	{ "randomDirectionAndLength", VectorStaticRandomDirectionAndLength, 0, },
+	{ "vectorFromCoordinateSystem",	VectorStaticFromCoordinateSystem,	2, },
 	{ 0 }
 };
 
@@ -735,6 +741,96 @@ static JSBool VectorToArray(JSContext *context, JSObject *this, uintN argc, jsva
 	}
 	
 	return NO;
+}
+
+
+// toCoordinateSystem(coordScheme : String)
+static JSBool VectorToCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
+{
+	Vector				thisv;
+	NSString			*coordScheme = nil;
+	
+	if (EXPECT_NOT(!JSObjectGetVector(context, this, &thisv))) return NO;
+
+	coordScheme = JSValToNSString(context, argv[0]);
+	if (EXPECT_NOT(coordScheme == nil ||
+				   argc < 1 ))
+	{
+		OOReportJSBadArguments(context, @"Vector3D", @"toCoordinateSystem", argc, argv, nil, @"coordinate system");
+		return NO;
+	}
+	
+	OOJSPauseTimeLimiter();
+
+	VectorToJSValue(context, [UNIVERSE legacyPositionFrom:thisv asCoordinateSystem:coordScheme], outResult);
+
+	OOJSResumeTimeLimiter();
+	
+	return YES;
+}
+
+
+// fromCoordinateSystem(coordScheme : String)
+static JSBool VectorFromCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
+{
+	Vector				thisv;
+	NSString			*coordScheme = nil;
+	NSString			*arg = nil;	
+	
+	if (EXPECT_NOT(!JSObjectGetVector(context, this, &thisv))) return NO;
+
+	coordScheme = JSValToNSString(context, argv[0]);
+	if (EXPECT_NOT(coordScheme == nil ||
+				   argc < 1 ))
+	{
+		OOReportJSBadArguments(context, @"Vector3D", @"fromCoordinateSystem", argc, argv, nil, @"coordinate system");
+		return NO;
+	}
+		
+	OOJSPauseTimeLimiter();
+	
+	arg = [NSString stringWithFormat:@"%@ %f %f %f", coordScheme, thisv.x, thisv.y, thisv.z];
+	VectorToJSValue(context, [UNIVERSE coordinatesFromCoordinateSystemString:arg], outResult);
+
+	OOJSResumeTimeLimiter();
+	
+	return YES;
+}
+
+
+// vectorFromCoordinateSystem(coords : vectorExpression, coordScheme : String)
+static JSBool VectorStaticFromCoordinateSystem(JSContext *context, JSObject *this, uintN argc, jsval *argv, jsval *outResult)
+{
+	Vector				where;
+	NSString			*coordScheme = nil;
+	NSString			*arg = nil;
+	uintN				consumed = 0;
+	BOOL				OK = YES;
+	
+	if (!VectorFromArgumentListNoError(context, argc, argv, &where, &consumed))
+	{
+		OK = NO;
+	}
+	
+	if (argc > consumed)
+	{
+		coordScheme = JSValToNSString(context, argv[consumed]);
+	}
+	
+	if (EXPECT_NOT(coordScheme == nil || OK == NO))
+	{
+		OOReportJSBadArguments(context, @"Vector3D", @"vectorWithCoordinateSystem", argc, argv, nil, @"coordinates, coordinate system");
+		return NO;
+	}
+	
+	OOJSPauseTimeLimiter();
+	
+	arg = [NSString stringWithFormat:@"%@ %f %f %f", coordScheme, where.x, where.y, where.z];
+	VectorToJSValue(context, [UNIVERSE coordinatesFromCoordinateSystemString:arg], outResult);
+
+	OOJSResumeTimeLimiter();
+	
+	return YES;
 }
 
 
