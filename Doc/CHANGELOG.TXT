@@ -9,6 +9,7 @@ Changes between Oolite 1.74 and Oolite 1.74.1:
   system.
 * When docked at a secondary station, the default selection on the game menu
   screen is "Game Options" rather than "Begin New Game".
+* Fixed annoying audio latency when playing first sound under Mac OS X.
 * Fixed several JavaScript interface bugs that could cause a faulty script to
   halt without any error message.
 * Adjusted graphics settings: shader mode is now restricted to Simple for
