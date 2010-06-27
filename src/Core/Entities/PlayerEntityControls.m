@@ -2641,7 +2641,14 @@ static NSTimeInterval	time_last_frame;
 		stickHandler=[gameView getStickHandler];
 	}
 	numSticks=[stickHandler getNumSticks];
-	deadzone = STICK_DEADZONE / [stickHandler getSensitivity];
+	if (mouse_control_on)
+	{
+		deadzone = 0.0;
+	}
+	else
+	{
+		deadzone = STICK_DEADZONE / [stickHandler getSensitivity];
+	}
 	
 	/*	DJS: Handle inputs on the joy roll/pitch axis.
 	 Mouse control on takes precidence over joysticks.

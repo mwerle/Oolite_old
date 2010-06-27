@@ -13,8 +13,16 @@ Changes between Oolite 1.74 and Oolite 1.74.1:
   halt without any error message.
 * Adjusted graphics settings: shader mode is now restricted to Simple for
   Intel GMA 950 and ATI Radeon R300 GPU families, and some other tweaks.
+* Fixed a material synthesis bug where illumination_modulate_color was ignored
+  when using emission_and_illumination_map in shader mode (material test suite
+  test case 7).
 * Possible fix for random freezes when using speech synthesis in Windows.
 * Various minor bug fixes and tweaks.
+
+New JavaScript methods:
+* vector3D.fromCoordinateSystem()
+* vector3D.toCoordinateSystem()
+
 
 -------------------------------------------------------------------------------
 
@@ -217,13 +225,11 @@ OXP/scripting
 * Giving player a trumble may fail if they already have some.
 * Better error reporting in various situations.
 
-
 New world events:
 * compassTargetChanged()
 * guiScreenWillChange()
 * missionScreenOpportunity()
 * shipSpawned() (Sent immediately after ship event of the same name)
-
 
 New ship events:
 * shipCloakActivated()
@@ -231,7 +237,6 @@ New ship events:
 * shipRemoved()
 * shipTargetDestroyed() - replaces shipDestroyedTarget()
 * shipTargetLost() - replaces shipLostTarget()
-
 
 New JavaScript properties and methods:
 * expandMissionText()
@@ -326,7 +331,6 @@ New JavaScript properties and methods:
 * systemInfo.routeToSystem()
 * SystemInfo.filteredSystems()
 
-
 Deprecated JavaScript properties and methods:
 * mission.choice - convert to mission.runScreen().
 * mission.runMissionScreen() - convert to mission.runScreen().
@@ -342,7 +346,6 @@ Deprecated JavaScript properties and methods:
 * ship.availableCargoSpace - use ship.cargoSpaceAvailable instead.
 * ship.cargoCapacity - use ship.cargoSpaceCapacity instead.
 * timer.isPersistent - no replacement.
-
 
 New/modified shipdata keys:
 * auto_ai (fuzzy boolean, default: true): now applies to escorts.
@@ -367,7 +370,6 @@ New/modified shipdata keys:
   "escort_role", "escort_ship", "has_shipyard", "is_carrier" and "scan_class".
   If both are present, the new one is used. like_ship merging does the right
   thing.
-
 
 New AI commands:
 * checkAegis
