@@ -24,7 +24,6 @@ New JavaScript methods:
 * vector3D.fromCoordinateSystem()
 * vector3D.toCoordinateSystem()
 
-
 -------------------------------------------------------------------------------
 
 Changes between Oolite 1.73.4 and Oolite 1.74:
