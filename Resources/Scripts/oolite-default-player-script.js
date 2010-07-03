@@ -11,4 +11,4 @@ exist so the player isn’t a special case.
 this.name			= "oolite-default-player-script";
 this.author			= "Jens Ayton";
 this.description	= "Standard script for player ship.";
-this.version		= "1.74.1";
+this.version		= "1.74.2";

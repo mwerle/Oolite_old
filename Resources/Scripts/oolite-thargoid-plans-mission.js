@@ -33,7 +33,7 @@ MA 02110-1301, USA.
 this.name			= "oolite-thargoid-plans";
 this.author			= "Eric Walch";
 this.copyright		= "© 2008–2010 the Oolite team.";
-this.version		= "1.74.1";
+this.version		= "1.74.2";
 
 
 this.missionOffers = function ()

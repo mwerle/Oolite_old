@@ -33,7 +33,7 @@ MA 02110-1301, USA.
 this.name			= "oolite-cloaking-device-pod";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2007–2010 the Oolite team.";
-this.version		= "1.74.1";
+this.version		= "1.74.2";
 
 
 this.shipWasScooped = function (scooper)
