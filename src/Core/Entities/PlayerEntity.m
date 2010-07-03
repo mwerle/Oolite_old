@@ -3762,6 +3762,7 @@ static BOOL replacingMissile = NO;
 	rel_pos = vector_subtract(rel_pos, position);
 	
 	[self doScriptEvent:@"shipBeingAttacked" withArgument:ent];
+	if ([ent isShip]) [(ShipEntity *)ent doScriptEvent:@"shipAttackedOther" withArgument:self];
 
 	d_forward = dot_product(rel_pos, v_forward);
 	
