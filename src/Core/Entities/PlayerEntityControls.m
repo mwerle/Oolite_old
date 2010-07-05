@@ -1487,8 +1487,7 @@ static NSTimeInterval	time_last_frame;
 						if ([planetSearchString length] == 1) [[UNIVERSE gui] targetNextFoundSystem:0];
 						
 						// Always select the right one out of 2 overlapping systems.
-						[self targetNewSystem:1 whileTyping:YES];
-						[self targetNewSystem:-1  whileTyping:YES];
+						[self targetNewSystem:0 whileTyping:YES];
 					}
 					else
 					{
