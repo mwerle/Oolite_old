@@ -4132,9 +4132,19 @@ static BOOL MaintainLinkedLists(Universe* uni)
 					// check if it is a proper rotating station (ie. roles contains the word "station")
 					if ([(StationEntity*)se isRotatingStation])
 					{
+						double stationRoll = 0.0;
 						// check for station_roll override
-						NSDictionary*	systeminfo = [self generateSystemData:system_seed];
-						double stationRoll = [systeminfo oo_doubleForKey:@"station_roll" defaultValue:0.4];
+						id definedRoll = [[se shipInfoDictionary] objectForKey:@"station_roll"];
+						
+						if (definedRoll != nil)
+						{
+							stationRoll = OODoubleFromObject(definedRoll, stationRoll);
+						}
+						else
+						{
+							NSDictionary*	systeminfo = [self generateSystemData:system_seed];
+							stationRoll = [systeminfo oo_doubleForKey:@"station_roll" defaultValue:0.4];
+						}
 						
 						[se setRoll: stationRoll];
 					}
