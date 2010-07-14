@@ -1486,7 +1486,9 @@ static WormholeEntity *whole = nil;
 	
 	target = [self primaryTarget];
 	
-	for (shipEnum = [[self group] objectEnumerator]; (ship = [shipEnum nextObject]); )
+	// -memberArray creates a new collection, which is needed because the group might be mutated by the members' AIs.
+	NSArray *groupMembers = [[self group] memberArray];
+	for (shipEnum = [groupMembers objectEnumerator]; (ship = [shipEnum nextObject]); )
 	{
 		[ship setFound_target:target];
 		[ship reactToAIMessage:@"GROUP_ATTACK_TARGET"];
