@@ -4232,8 +4232,15 @@ static BOOL replacingMissile = NO;
 			NSString *damagedKey = [NSString stringWithFormat:@"%@_DAMAGED", system_key];
 			[self addEquipmentItem:damagedKey];	// for possible future repair.
 			[self doScriptEvent:@"equipmentDamaged" withArgument:system_key];
-			if (![self hasEquipmentItem:system_name] && [self hasEquipmentItem:damagedKey])	// Because script may have undamaged it or removed it.
+			
+			if (![self hasEquipmentItem:system_name] && [self hasEquipmentItem:damagedKey])
 			{
+				/*
+					Display "foo damaged" message only if no script has
+					repaired or removed the equipment item. (If a script does
+					either of those and wants a message, it can write it
+					itself.)
+				*/
 				[UNIVERSE addMessage:[NSString stringWithFormat:DESC(@"@-damaged"), system_name] forCount:4.5];
 			}
 		}
