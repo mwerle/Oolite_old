@@ -6,6 +6,7 @@ Changes between Oolite 1.74.1 and Oolite 1.74.2:
 * Exhaust plume now resets after hyperspace jumps/scripted teleporting.
 * Fixed overlapping system confusion when loading games and searching for
   systems.
+* Fixed occasional "bleached"-looking planets on system info screen.
 * SystemInfo.systemsInRange() can now be called on a specific SystemInfo
   object, instead of always applying to the current system.
 * Improved default speech synthesis voice (not Mac OS X).
