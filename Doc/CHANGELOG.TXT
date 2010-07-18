@@ -1,3 +1,27 @@
+Changes between Oolite 1.74.1 and Oolite 1.74.2:
+
+* Stopped player from selecting invalid jump destination during jump countdown.
+* Switching to custom views now allowed in a consistent way.
+* Weapon repeat rate is now per-weapon.
+* Exhaust plume now resets after hyperspace jumps/scripted teleporting.
+* Fixed overlapping system confusion when loading games and searching for
+  systems.
+* SystemInfo.systemsInRange() can now be called on a specific SystemInfo
+  object, instead of always applying to the current system.
+* Improved default speech synthesis voice (not Mac OS X).
+* New JavaScript event: shipAttackedOther() (inverse of shipBeingAttacked(),
+  called immediately after shipBeingAttacked()).
+* If a script removes a piece of equipment in the equipmentDamaged() event
+  handler, no "equipment damaged" message is generated.
+* Ship.removeEquipment() now works on damaged equipment.
+* New shipinfo key: station_roll.
+* Fixed some cases where AIs could break group handling.
+* Shader errors detected in the link phase (generally, problems involving
+  state shared between the vertex and fragment shader) are now reported
+  properly.
+
+-------------------------------------------------------------------------------
+
 Changes between Oolite 1.74 and Oolite 1.74.1:
 
 * Scripts can once again award and check for trumbles, and the standard trumble
