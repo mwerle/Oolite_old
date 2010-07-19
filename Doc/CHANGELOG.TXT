@@ -1,6 +1,8 @@
 Changes between Oolite 1.74.1 and Oolite 1.74.2:
 
 * Stopped player from selecting invalid jump destination during jump countdown.
+* Fixed docking permissions inconsistencies: all hostile stations now refuse
+  docking permissions.
 * Switching to custom views now allowed in a consistent way.
 * Weapon repeat rate is now per-weapon.
 * Exhaust plume now resets after hyperspace jumps/scripted teleporting.

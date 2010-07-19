@@ -641,6 +641,8 @@ static NSTimeInterval	time_last_frame;
 			
 			if (![UNIVERSE displayCursor])
 			{
+				BOOL isOkayToUseAutopilot = legalStatus <= 50;	// used for C, shift-C, & shift-D (same condition handled inside station code for docking clearance)
+				
 				exceptionContext = @"afterburner";
 				if ((joyButtonState[BUTTON_FUELINJECT] || [gameView isDown:key_inject_fuel]) &&
 					[self hasFuelInjection] &&
@@ -971,7 +973,6 @@ static NSTimeInterval	time_last_frame;
 					if ([self hasDockingComputer] && !autopilot_key_pressed)   // look for the 'c' key
 					{
 						BOOL isUsingDockingAI = [[shipAI name] isEqual: PLAYER_DOCKING_AI_NAME];
-						BOOL isOkayToUseAutopilot = YES;
 						
 						if (isUsingDockingAI)
 						{
@@ -980,6 +981,10 @@ static NSTimeInterval	time_last_frame;
 								isOkayToUseAutopilot = NO;
 								[self playAutopilotOutOfRange];
 								[UNIVERSE addMessage:DESC(@"autopilot-out-of-range") forCount:4.5];
+							}
+							else
+							{
+								if (!isOkayToUseAutopilot) [UNIVERSE addMessage:DESC(@"autopilot-denied") forCount:4.5];
 							}
 						}
 						
@@ -1002,9 +1007,10 @@ static NSTimeInterval	time_last_frame;
 					{
 						Entity* primeTarget = [self primaryTarget];
 						BOOL primeTargetIsHostile = [self hasHostileTarget];
+						isOkayToUseAutopilot = isOkayToUseAutopilot && [primeTarget universalID] == [[UNIVERSE station] universalID];
 						if ((primeTarget) && (primeTarget->isStation) && 
 							[primeTarget isKindOfClass:[StationEntity class]] &&
-							!primeTargetIsHostile)
+							(!primeTargetIsHostile || isOkayToUseAutopilot))
 						{
 							[self engageAutopilotToStation:primaryTarget];
 							[UNIVERSE addMessage:DESC(@"autopilot-on") forCount:4.5];
