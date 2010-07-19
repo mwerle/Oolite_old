@@ -24,7 +24,7 @@ GNUSTEP_INSTALLATION_DIR = $(GNUSTEP_USER_ROOT)
 GNUSTEP_OBJ_DIR_BASENAME := $(GNUSTEP_OBJ_DIR_NAME)
 HOST_ARCH := $(shell echo $(GNUSTEP_HOST_CPU) | sed -e s/i.86/x86/ -e s/amd64/x86_64/ )
 ifeq ($(GNUSTEP_HOST_OS),mingw32)
-	ADDITIONAL_INCLUDE_DIRS = -Ideps/Windows-x86-deps/include -Isrc/SDL -Isrc/Core -Isrc/BSDCompat -Isrc/Core/Scripting -Isrc/Core/Materials -Isrc/Core/Entities -Isrc/Core/OXPVerifier -Isrc/Core/Debug
+	ADDITIONAL_INCLUDE_DIRS = -Ideps/Windows-x86-deps/include -Ideps/Cross-platform-deps/SpiderMonkey/js/src -Isrc/SDL -Isrc/Core -Isrc/BSDCompat -Isrc/Core/Scripting -Isrc/Core/Materials -Isrc/Core/Entities -Isrc/Core/OXPVerifier -Isrc/Core/Debug
 	ADDITIONAL_OBJC_LIBS = -lglu32 -lopengl32 -lpng14.dll -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lgnustep-base -ljs32 -lwinmm -mwindows
 	ADDITIONAL_CFLAGS = -DWIN32 -DNEED_STRLCPY `sdl-config --cflags`
 # note the vpath stuff above isn't working for me, so adding src/SDL and src/Core explicitly
@@ -56,14 +56,14 @@ else
 			GNUSTEP_OBJ_DIR_NAME := $(GNUSTEP_OBJ_DIR_NAME).spk
 		endif
 	else
+		oolite_LIB_DIRS += -Ldeps/Linux-deps/$(HOST_ARCH)/lib_linker
+		ADDITIONAL_OBJC_LIBS += -lpng14 -lSDL_mixer -lSDL -lgnustep-base
+		ADDITIONAL_INCLUDE_DIRS += -Ideps/Linux-deps/include
 		ifeq ($(ESPEAK),yes)
-			ADDITIONAL_OBJC_LIBS += -lpulse -lespeak
+			ADDITIONAL_OBJC_LIBS += -lespeak
 			ADDITIONAL_OBJCFLAGS+=-DHAVE_LIBESPEAK=1
 			GNUSTEP_OBJ_DIR_NAME := $(GNUSTEP_OBJ_DIR_NAME).spk
 		endif
-		ADDITIONAL_OBJC_LIBS += -lpng14 -lSDL_mixer -lSDL -lgnustep-base
-		ADDITIONAL_INCLUDE_DIRS += -Ideps/Linux-deps/include
-		oolite_LIB_DIRS += -Ldeps/Linux-deps/$(HOST_ARCH)/lib_linker
 	endif
 endif
 ifeq ($(profile),yes)
@@ -275,6 +275,7 @@ OOLITE_RSRC_MGMT_FILES = \
 OOLITE_SCRIPTING_FILES = \
 	EntityOOJavaScriptExtensions.m \
 	OOJavaScriptEngine.m \
+	OOJSEngineTimeManagement.m \
 	OOJSCall.m \
 	OOJSClock.m \
 	OOJSEntity.m \
