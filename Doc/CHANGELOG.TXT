@@ -9,14 +9,16 @@ Changes between Oolite 1.74.1 and Oolite 1.74.2:
 * Fixed overlapping system confusion when loading games and searching for
   systems.
 * Fixed occasional "bleached"-looking planets on system info screen.
+* Improved default speech synthesis voice (not Mac OS X).
 * SystemInfo.systemsInRange() can now be called on a specific SystemInfo
   object, instead of always applying to the current system.
-* Improved default speech synthesis voice (not Mac OS X).
 * New JavaScript event: shipAttackedOther() (inverse of shipBeingAttacked(),
   called immediately after shipBeingAttacked()).
 * If a script removes a piece of equipment in the equipmentDamaged() event
   handler, no "equipment damaged" message is generated.
 * Ship.removeEquipment() now works on damaged equipment.
+* Fixed substitution priority for expandDescription() & expandMissionText(), the
+  local override dictionary now takes precedence over everything else.
 * New shipinfo key: station_roll.
 * Fixed some cases where AIs could break group handling.
 * Shader errors detected in the link phase (generally, problems involving
