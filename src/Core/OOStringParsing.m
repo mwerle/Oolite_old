@@ -273,7 +273,7 @@ NSString *ExpandDescriptionForSeedName(NSString *text, Random_Seed seed, NSStrin
 	do
 	{
 		old_desc = result;
-		result = ExpandDescriptionsWithLocalsForSystemSeedName(result, seed, nil, name);
+		result = ExpandDescriptionsWithOptions(result, seed, nil, nil, name);
 	} while (--stack_check && ![result isEqual:old_desc]);
 	
 	if (!stack_check)
@@ -294,11 +294,11 @@ NSString *ExpandDescriptionForCurrentSystem(NSString *text)
 
 NSString *ExpandDescriptionsWithLocalsForSystemSeed(NSString *text, Random_Seed seed, NSDictionary *locals)
 {
-	return ExpandDescriptionsWithLocalsForSystemSeedName(text, seed, locals, nil);
+	return ExpandDescriptionsWithOptions(text, seed, nil, locals, nil);
 }
 
 
-NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_Seed seed, NSDictionary *locals, NSString *pName)
+NSString *ExpandDescriptionsWithOptions(NSString *text, Random_Seed seed, NSDictionary *overrides, NSDictionary *legacyLocals, NSString *pName)
 {
 	PlayerEntity		*player = [PlayerEntity sharedPlayer];
 	NSMutableString		*partial = [[text mutableCopy] autorelease];
@@ -324,7 +324,7 @@ NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_S
 	}
 	[all_descriptions setObject:OOStringFromDeciCredits([player deciCredits], YES, NO) forKey:@"credits_number"];
 	if (pName == nil)  pName = [UNIVERSE getSystemName:seed];
-
+	
 	while ([partial rangeOfString:@"["].location != NSNotFound)
 	{
 		p1 = [partial rangeOfString:@"["].location;
@@ -345,11 +345,11 @@ NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_S
 		after = [partial substringWithRange:NSMakeRange(p2,[partial length] - p2)];
 		middle = [partial substringWithRange:NSMakeRange(p1 + 1 , p2 - p1 - 2)];
 		
-		// replace all local variables first!
-		part = ReplaceVariables(middle, NULL, locals);
-			
+		// Overrides override all else.
+		value = [overrides objectForKey:middle];
+		
 		// check all_descriptions for an array that's keyed to middle
-		value = [all_descriptions objectForKey:middle];
+		if (value == nil)  value = [all_descriptions objectForKey:middle];
 		if ([value isKindOfClass:[NSArray class]] && [value count] > 0)
 		{
 			rnd = gen_rnd_number() % [value count];
@@ -358,7 +358,7 @@ NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_S
 		}
 		else if ([value isKindOfClass:[NSString class]])
 		{
-			part = [all_descriptions objectForKey:middle];
+			part = value;
 		}
 		else if ([[middle stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]] isEqual:@""])
 		{
@@ -402,37 +402,47 @@ NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_S
 				}
 			}
 		}
+		else
+		{
+			// do replacement of mission and local variables here instead.
+			part = ReplaceVariables(middle, NULL, legacyLocals);
+		}
 		
-		partial = [NSMutableString stringWithFormat:@"%@%@%@",before,part,after];
+		
+		partial = [NSMutableString stringWithFormat:@"%@%@%@", before, part, after];
 	}
-		
-	[partial	replaceOccurrencesOfString:@"%H"
-				withString:pName
-				options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
 	
-	[partial	replaceOccurrencesOfString:@"%I"
-				withString:[NSString stringWithFormat:@"%@%@",pName, DESC(@"planetname-derivative-suffix")]
-								   options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
-
-	[partial	replaceOccurrencesOfString:@"%R"
-								withString:OldRandomDigrams()
-								   options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
+	[partial replaceOccurrencesOfString:@"%H"
+							 withString:pName
+								options:NSLiteralSearch
+								  range:NSMakeRange(0, [partial length])];
 	
-	[partial	replaceOccurrencesOfString:@"%N"
-								withString:NewRandomDigrams()
-								   options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
-
-
+	[partial replaceOccurrencesOfString:@"%I"
+							 withString:[NSString stringWithFormat:@"%@%@",pName, DESC(@"planetname-derivative-suffix")]
+								options:NSLiteralSearch
+								  range:NSMakeRange(0, [partial length])];
+	
+	[partial replaceOccurrencesOfString:@"%R"
+							 withString:OldRandomDigrams()
+								options:NSLiteralSearch
+								  range:NSMakeRange(0, [partial length])];
+	
+	[partial replaceOccurrencesOfString:@"%N"
+							 withString:NewRandomDigrams()
+								options:NSLiteralSearch
+								  range:NSMakeRange(0, [partial length])];
+	
+	
 	// Now replace  all occurrences of %J000 to %J255 with the corresponding  system name. 
-
+	
 	NSRange foundToken, foundID;
 	NSString *stringID=@"";
 	char s;
 	BOOL err=NO;
 	int intVal;
-
+	
     foundToken = [partial rangeOfString:@"%J"];
-
+	
     while (foundToken.location != NSNotFound)
     {
 		foundID=NSMakeRange(foundToken.location+2,3);
@@ -454,14 +464,14 @@ NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_S
 			if (!err)
 			{
 				intVal = [stringID intValue];
-				if ( intVal < 256 )
+				if (intVal < 256)
 				{
-					[partial	replaceOccurrencesOfString:[NSString stringWithFormat:@"%%J%@",stringID]
-							withString:[UNIVERSE getSystemName:[UNIVERSE systemSeedForSystemNumber:(OOSystemID)intVal]] 
-							options:NSLiteralSearch range:NSMakeRange(0, [partial length])];
+					[partial replaceOccurrencesOfString:[NSString stringWithFormat:@"%%J%@",stringID]
+											 withString:[UNIVERSE getSystemName:[UNIVERSE systemSeedForSystemNumber:(OOSystemID)intVal]] 
+												options:NSLiteralSearch
+												  range:NSMakeRange(0, [partial length])];
 				}
-				else
-					err = YES;
+				else  err = YES;
 			}
 		}
 		if (err)
@@ -475,7 +485,7 @@ NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_S
 			}
 			err = NO; // keep parsing the string for other %J tokens!
 		}
-
+		
 		if (foundID.location + 5 > [partial length])
 		{
 			foundToken.location=NSNotFound;
@@ -486,7 +496,7 @@ NSString *ExpandDescriptionsWithLocalsForSystemSeedName(NSString *text, Random_S
 			if (foundToken.location!=NSNotFound) foundToken.location += foundID.location;
 		}
     }
-
+	
 	return partial; 
 }
 
