@@ -9,6 +9,8 @@ Changes between Oolite 1.74.1 and Oolite 1.74.2:
 * Fixed overlapping system confusion when loading games and searching for
   systems.
 * Fixed occasional "bleached"-looking planets on system info screen.
+* Fixed wrong distance showing on the short range chart when switching back from
+  the long range chart.
 * Improved default speech synthesis voice (not Mac OS X).
 * SystemInfo.systemsInRange() can now be called on a specific SystemInfo
   object, instead of always applying to the current system.

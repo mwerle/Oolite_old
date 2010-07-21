@@ -5302,8 +5302,6 @@ static BOOL replacingMissile = NO;
 
 - (void) setGuiToShortRangeChartScreen
 {
-	double			distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
-	double			estimatedTravelTime = distance * distance;
 	GuiDisplayGen	*gui = [UNIVERSE gui];
 	OOGUIScreenID	oldScreen = gui_screen;
 	
@@ -5318,8 +5316,12 @@ static BOOL replacingMissile = NO;
 	{
 		target_system_seed = [UNIVERSE findSystemAtCoords:cursor_coordinates withGalaxySeed:galaxy_seed];
 	}
-	NSString *targetSystemName = [[UNIVERSE getSystemName:target_system_seed] retain];  // retained
 	
+	// now calculate the distance.
+	double			distance = distanceBetweenPlanetPositions(target_system_seed.d,target_system_seed.b,galaxy_coordinates.x,galaxy_coordinates.y);
+	double			estimatedTravelTime = distance * distance;
+	
+	NSString		*targetSystemName = [[UNIVERSE getSystemName:target_system_seed] retain];  // retained
 	[UNIVERSE preloadPlanetTexturesForSystem:target_system_seed];
 
 	// GUI stuff
@@ -5329,7 +5331,7 @@ static BOOL replacingMissile = NO;
 		
 		[gui setText:targetSystemName	forRow:19];
 		[gui setText:[NSString stringWithFormat:DESC(@"short-range-chart-distance-f"), distance]   forRow:20];
-		[gui setText:(distance <= (fuel/10.0f) ? [NSString stringWithFormat:DESC(@"short-range-chart-est-travel-time-f"), estimatedTravelTime] : (id)@"") forRow:21];
+		[gui setText:((distance > 0 && distance <= fuel/10.0f) ? [NSString stringWithFormat:DESC(@"short-range-chart-est-travel-time-f"), estimatedTravelTime] : @"") forRow:21];
 		
 		[gui setShowTextCursor:NO];
 	}
