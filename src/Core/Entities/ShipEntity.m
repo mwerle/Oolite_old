@@ -1939,15 +1939,6 @@ ShipEntity* doOctreesCollide(ShipEntity* prime, ShipEntity* other)
 			bounding_box_add_vector(&totalBoundingBox, sebb.min);
 		}
 	}
-	
-}
-
-
-// override Entity version...
-//
-- (double) speed
-{
-	return sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z + flightSpeed * flightSpeed);
 }
 
 
@@ -5860,10 +5851,10 @@ NSComparisonResult ComparePlanetsBySurfaceDistance(id i1, id i2, void* context)
 			}
 		}
 		
-		// Explode subentities. We use a temporary copy because the subentity array will be mutated.
-		NSEnumerator	*subEnum = [[NSArray arrayWithArray:subEntities] objectEnumeratorFilteredWithSelector:@selector(isShip)];
+		// Explode subentities.
+		NSEnumerator	*subEnum = nil;
 		ShipEntity		*se = nil;
-		while (se = [subEnum nextObject], se != nil)
+		for (subEnum = [self shipSubEntityEnumerator]; (se = [subEnum nextObject]); )
 		{
 			[se setSuppressExplosion:suppressExplosion];
 			[se setPosition:[se absolutePositionForSubentity]];
