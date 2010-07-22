@@ -2775,6 +2775,7 @@ static BOOL replacingMissile = NO;
 {
 	NSDictionary *hudDict = nil;
 	BOOL theHudIsHidden = NO;
+	double	scannerZoom = 1.0;
 	
 	if (!hudFileName)  return NO;
 	
@@ -2786,7 +2787,11 @@ static BOOL replacingMissile = NO;
 		return NO;
 	}
 	
-	if (hud != nil)  theHudIsHidden = [hud isHidden];
+	if (hud != nil)
+	{
+		theHudIsHidden = [hud isHidden];
+		scannerZoom = [hud scanner_zoom];
+	}
 	
 	// buggy oxp could override hud.plist with a non-dictionary.
 	if (hudDict != nil)
@@ -2794,7 +2799,7 @@ static BOOL replacingMissile = NO;
 		[hud setHidden:NO];
 		DESTROY(hud);
 		hud = [[HeadUpDisplay alloc] initWithDictionary:hudDict inFile:hudFileName];
-		[hud setScannerZoom:1.0];
+		[hud setScannerZoom:scannerZoom];
 		[hud resizeGuis: hudDict];
 		[hud setHidden:theHudIsHidden]; // reset hidden status to what it was originally.
 	}

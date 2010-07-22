@@ -5,6 +5,7 @@ Changes between Oolite 1.74.1 and Oolite 1.74.2:
   docking permissions.
 * Switching to custom views now allowed in a consistent way.
 * Weapon repeat rate is now per-weapon.
+* Current zoom level is now preserved when switching HUDs.
 * Exhaust plume now resets after hyperspace jumps/scripted teleporting.
 * Fixed overlapping system confusion when loading games and searching for
   systems.
