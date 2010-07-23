@@ -74,6 +74,7 @@ MA 02110-1301, USA.
 
 #define SHIPENTITY_MAX_MISSILES			32
 
+#define TURRET_TYPICAL_ENERGY			25.0f
 #define TURRET_SHOT_SPEED				2000.0f
 #define TURRET_SHOT_DURATION			3.0
 #define TURRET_SHOT_RANGE				(TURRET_SHOT_SPEED * TURRET_SHOT_DURATION)
@@ -574,6 +575,7 @@ MA 02110-1301, USA.
 - (void) setWeaponDataFromType:(OOWeaponType)weapon_type;
 - (float) weaponRechargeRate;
 - (void) setWeaponRechargeRate:(float)value;
+- (void) setWeaponEnergy:(float)value;
 
 - (GLfloat) scannerRange;
 - (void) setScannerRange: (GLfloat) value;
