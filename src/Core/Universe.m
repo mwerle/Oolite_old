@@ -1492,7 +1492,9 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 			[trader_ship setPosition:launchPos];
 			[trader_ship setBounty:0];
 			[trader_ship setCargoFlag:CARGO_FLAG_FULL_PLENTIFUL];
-			if([trader_ship heatInsulation] < 7) [trader_ship setHeatInsulation:7]; // With this value most ships will survive the sun trip.
+			float minInsulation = [[trader_ship name] isEqualToString:@"Anaconda"] ? 8.0f : 7.0f;
+			if ([trader_ship heatInsulation] < minInsulation) [trader_ship setHeatInsulation:minInsulation];
+
 			
 			if (([trader_ship pendingEscortCount] > 0)&&((Ranrot() % 7) < government))	// remove escorts if we feel safe
 			{
@@ -2310,7 +2312,11 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 			if (randf() > 0.10)
 				[ship switchAITo:@"route1traderAI.plist"];
 			else
+			{
 				[ship switchAITo:@"route2sunskimAI.plist"];	// route3 really, but the AI's the same
+				float minInsulation = [[ship name] isEqualToString:@"Anaconda"] ? 8.0f : 7.0f;
+				if ([ship heatInsulation] < minInsulation) [ship setHeatInsulation:minInsulation];
+			}
 			
 			if (([ship pendingEscortCount] > 0)&&((Ranrot() % 7) < government))	// remove escorts if we feel safe
 			{
@@ -2439,7 +2445,11 @@ GLfloat docked_light_specular[4]	= { DOCKED_ILLUM_LEVEL, DOCKED_ILLUM_LEVEL, DOC
 				if (randf() > 0.10)
 					[ship switchAITo:@"route1traderAI.plist"];
 				else
+				{
 					[ship switchAITo:@"route2sunskimAI.plist"];	// route3 really, but the AI's the same
+					float minInsulation = [[ship name] isEqualToString:@"Anaconda"] ? 8.0f : 7.0f;
+					if ([ship heatInsulation] < minInsulation) [ship setHeatInsulation:minInsulation];
+				}
 			}
 			else if ([role isEqual:@"pirate"])
 			{

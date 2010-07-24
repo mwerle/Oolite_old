@@ -116,8 +116,7 @@ enum
 
 #define PLANETINFO_UNIVERSAL_KEY			@"universal"
 
-#define MAX_ENTITY_UID						1000
-
+// Derived constants (MIN_ENTITY_UID, MAX_ENTITY_UID) are defined in OOTypes.h
 #define	UNIVERSE_MAX_ENTITIES				2048
 
 #define OOLITE_EXCEPTION_LOOPING			@"OoliteLoopingException"

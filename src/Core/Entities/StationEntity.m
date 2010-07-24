@@ -1488,8 +1488,8 @@ static NSDictionary* instructions(int station_id, Vector coords, float speed, fl
 			if (sunskimmer) 
 			{
 				[ship switchAITo:@"route2sunskimAI.plist"];
-				if([ship heatInsulation] < 7) [ship setHeatInsulation:7]; 
-				// even with this value the slow sunskim-anaconda will burn in a big sun.
+				float minInsulation = [[ship name] isEqualToString:@"Anaconda"] ? 8.0f : 7.0f;
+				if ([ship heatInsulation] < minInsulation) [ship setHeatInsulation:minInsulation];
 			}
 			else
 			{

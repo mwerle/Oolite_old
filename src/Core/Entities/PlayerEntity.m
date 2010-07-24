@@ -2329,8 +2329,11 @@ static BOOL replacingMissile = NO;
 
 - (void) performLaunchingUpdates:(OOTimeDelta)delta_t
 {
-	// synchronise player's & launching station's spins.
-	if (![UNIVERSE breakPatternHide])  flightRoll = launchRoll;
+	if (![UNIVERSE breakPatternHide])
+	{
+		flightRoll = launchRoll;	// synchronise player's & launching station's spins.
+		[self doBookkeeping:delta_t];	// don't show ghost exhaust plumes from previous docking!
+	}
 	
 	if ([UNIVERSE breakPatternOver])
 	{
