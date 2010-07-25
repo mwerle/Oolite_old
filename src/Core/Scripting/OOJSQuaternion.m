@@ -190,13 +190,16 @@ BOOL JSValueToQuaternion(JSContext *context, jsval value, Quaternion *outQuatern
 
 BOOL JSObjectGetQuaternion(JSContext *context, JSObject *quaternionObj, Quaternion *outQuaternion)
 {
+	assert(outQuaternion != NULL);
+
 	Quaternion				*private = NULL;
 	Entity					*entity = nil;
 	jsuint					arrayLength;
 	jsval					arrayW, arrayX, arrayY, arrayZ;
 	jsdouble				dVal;
 	
-	if (EXPECT_NOT(outQuaternion == NULL || quaternionObj == NULL)) return NO;
+	// quaternionObj can legitimately be NULL, e.g. when JS_NULL is converted to a JSObject *.
+	if (quaternionObj == NULL) return NO;
 	
 	private = JS_GetInstancePrivate(context, quaternionObj, &sQuaternionClass.base, NULL);
 	if (private != NULL)	// If this is a (JS) Quaternion...
@@ -445,6 +448,8 @@ static JSBool QuaternionConstruct(JSContext *context, JSObject *this, uintN argc
 
 static JSBool QuaternionEquality(JSContext *context, JSObject *this, jsval value, JSBool *outEqual)
 {
+	assert(outEqual != NULL);
+	
 	Quaternion				thisq, thatq;
 	
 	// Note: "return YES" means no error, not equality.
