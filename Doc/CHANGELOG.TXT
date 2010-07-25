@@ -6,7 +6,8 @@ Changes between Oolite 1.74.1 and Oolite 1.74.2:
 * Switching to custom views now allowed in a consistent way.
 * Weapon repeat rate is now per-weapon.
 * Current zoom level is now preserved when switching HUDs.
-* Exhaust plume now resets after hyperspace jumps/scripted teleporting/shift-D.
+* Exhaust plume now resets after hyperspace jumps/scripted teleporting/
+  auto-docking.
 * Fixed overlapping system confusion when loading games and searching for
   systems.
 * All automatically generated sun skimmers should now be adequately shielded.
@@ -21,8 +22,8 @@ Changes between Oolite 1.74.1 and Oolite 1.74.2:
 * If a script removes a piece of equipment in the equipmentDamaged() event
   handler, no "equipment damaged" message is generated.
 * Ship.removeEquipment() now works on damaged equipment.
-* Fixed substitution priority for expandDescription() & expandMissionText(), the
-  local override dictionary now takes precedence over everything else.
+* Fixed substitution priority for expandDescription() and expandMissionText(),
+  the overrides (if provided) now take precedence over everything else.
 * New shipinfo key: station_roll.
 * Fixed some cases where AIs could break group handling.
 * Shader errors detected in the link phase (generally, problems involving
