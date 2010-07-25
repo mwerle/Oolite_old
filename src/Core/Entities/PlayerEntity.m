@@ -2272,7 +2272,7 @@ static BOOL replacingMissile = NO;
 			[self doScriptEvent:@"playerJumpFailed" withArgument:@"insufficient fuel"];
 			go = NO;
 		}
-		if ((![UNIVERSE inInterstellarSpace]) && equal_seeds(system_seed,target_system_seed))
+		if (!galactic_witchjump && ![UNIVERSE inInterstellarSpace] && equal_seeds(system_seed,target_system_seed))
 		{
 			//dont allow player to hyperspace to current location.  
 			//Note interstellar space will have a system_seed place we came from 
