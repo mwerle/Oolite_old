@@ -928,6 +928,7 @@ static int baseVertexIndexForEdge(int va, int vb, BOOL textured);
 	if (fileName == nil)  return NO;
 	
 	[self loadTexture:OOTextureSpecFromObject(fileName, nil)];
+	[self deleteDisplayLists];
 	
 	OOUInteger i;
 	[self setModelName:kTexturedPlanetModel];
@@ -1358,6 +1359,12 @@ static int baseVertexIndexForEdge(int va, int vb, BOOL textured)
 			displayListNames[i] = 0;
 		}
 	}
+}
+
+
+- (void)resetGraphicsState
+{
+	[self deleteDisplayLists];
 }
 
 
