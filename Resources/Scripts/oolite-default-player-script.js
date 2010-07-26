@@ -31,4 +31,4 @@ this.name			= "oolite-default-player-script";
 this.author			= "Jens Ayton";
 this.description	= "Standard script for player ship.";
 this.copyright		= "© 2008-2010 the Oolite team.";
-this.version		= "1.74.2";
+this.version		= "1.74.3";
