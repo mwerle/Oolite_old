@@ -1125,7 +1125,11 @@ static NSMutableArray *ScanTokensFromString(NSString *values);
 
 - (OOJSExprNode *) convertQuery_dockedAtMainStation_bool
 {
-	return EX_EQUAL(EX_PROP(EX_PROP(@"player", @"ship"), @"dockedStation"), EX_PROP(@"system", @"mainStation"));
+	/*	player.ship.docked && player.ship.dockedStation == system.mainStation
+		(player.ship.docked is required, because player.ship.dockedStation ==
+		system.mainStation is true in interstellar space.)
+	*/
+	return EX_AND(EX_PROP(EX_PROP(@"player", @"ship"), @"docked"), EX_EQUAL(EX_PROP(EX_PROP(@"player", @"ship"), @"dockedStation"), EX_PROP(@"system", @"mainStation")));
 }
 
 

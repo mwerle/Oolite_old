@@ -416,7 +416,7 @@ static BOOL IsIdentifier(NSString *string);
 - (NSString *) expandStringWithLocalVariables:(NSString *)string
 {
 	/*	Strings with [local_foo] substitutions are handled by splitting
-		at the first [local_foo], inserting the releveant local, then
+		at the first [local_foo], inserting the relevant local, then
 		recursively calling expandString: for the prefix and suffix.
 		
 		Example:
@@ -539,7 +539,7 @@ static BOOL IsIdentifier(NSString *string);
 		A better way might be to expand all brackets instead. A problem there
 		is that in principle, descriptions.plist entries can override method
 		call substitutions (but not local or mission variables), although it
-		would be reasonable to consider tha a bug.
+		would be reasonable to consider that a bug.
 	*/
 	static NSDictionary *specialCases = nil;
 	if (specialCases == nil)
