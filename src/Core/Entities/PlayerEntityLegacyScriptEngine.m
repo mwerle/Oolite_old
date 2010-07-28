@@ -1371,7 +1371,7 @@ static int scriptRandomSeed = -1;	// ensure proper random function
 
 - (void) removeAllCargo:(BOOL)forceRemoval
 {
-	// misnamed function. it only removes  cargo measured in TONS, g & Kg items are not removed. --Kaks 20091004 
+	// misnamed function. it only removes cargo measured in TONS, g & Kg items are not removed. --Kaks 20091004 
 	OOCargoType				type;
 	OOMassUnit				unit;
 	
@@ -1398,7 +1398,7 @@ static int scriptRandomSeed = -1;	// ensure proper random function
 		}
 	}
 	
-	if(forceRemoval && [self status] != STATUS_DOCKED)
+	if (forceRemoval && [self status] != STATUS_DOCKED)
 	{
 		int i;
 		for (i = [cargo count]-1; i >=0; i--)
