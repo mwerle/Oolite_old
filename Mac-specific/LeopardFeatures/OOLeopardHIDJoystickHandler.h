@@ -48,9 +48,9 @@ SOFTWARE.
 
 */
 
+#define ENUMKEY(x) [NSString stringWithFormat: @"%d", x]
 
 #import "JoystickHandler.h"
-
 
 @interface OOLeopardHIDJoystickHandler: JoystickHandler
 {
@@ -59,6 +59,20 @@ SOFTWARE.
 	NSPoint				_viewAxis;
 	NSPoint				_rollPitchAxis;
 	double				_yawAxis;
+	int8_t axismap[MAX_STICKS][MAX_AXES];
+	int8_t buttonmap[MAX_STICKS][MAX_BUTTONS];
+	double axstate[AXIS_end];
+//	BOOL butstate[BUTTON_end];
+	BOOL precisionMode;
+	int numSticks;
+
+	// Handle callbacks - the object, selector to call
+	// the desired function, and the hardware (axis or button etc.)
+	id cbObject;
+	SEL cbSelector;
+	int cbFunc;
+	char cbHardware;
+	
 }
 
 @end

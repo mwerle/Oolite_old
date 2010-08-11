@@ -202,7 +202,8 @@ enum {
 #define OOLITE_HAVE_APPKIT		0
 #endif
 
-#define OOLITE_HAVE_JOYSTICK	OOLITE_SDL
+#define OOLITE_HAVE_JOYSTICK	1
+//#define OOLITE_HAVE_JOYSTICK	OOLITE_SDL
 
 
 // When Oolite-Linux used AppKit, the load/save dialogs didn't work well with the SDL window, so we use a separate macro for this.

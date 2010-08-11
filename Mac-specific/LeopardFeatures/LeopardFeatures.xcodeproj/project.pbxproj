@@ -18,21 +18,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 1A38FBB51165F4BF00D81FBC /* Oolite.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 0865432206B8447D000CA0AB /* Oolite.app */;
+			remoteGlobalIDString = 0865432206B8447D000CA0AB;
 			remoteInfo = Oolite;
 		};
 		1A38FBBD1165F4BF00D81FBC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1A38FBB51165F4BF00D81FBC /* Oolite.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 1A71E6F30BCE340C00CD5C13 /* libpng.a */;
+			remoteGlobalIDString = 1A71E6F30BCE340C00CD5C13;
 			remoteInfo = "libpng-custom";
 		};
 		1A38FBBF1165F4C700D81FBC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1A38FBB51165F4BF00D81FBC /* Oolite.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 0865423506B8447D000CA0AB /* Oolite */;
+			remoteGlobalIDString = 0865423506B8447D000CA0AB;
 			remoteInfo = Oolite;
 		};
 /* End PBXContainerItemProxy section */
@@ -311,7 +311,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.5;
 			};
 			name = Debug;
 		};

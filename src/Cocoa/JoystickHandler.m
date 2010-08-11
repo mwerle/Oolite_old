@@ -127,6 +127,67 @@ static JoystickHandler *sSharedStickHandler = nil;
 	butstate[button] = state;
 }
 
+// actual implementation of the following methods is in OOLeopardHIDJoystickHandler
+
+- (NSArray *)listSticks
+{
+	NSMutableArray *stickList=[NSMutableArray array];
+	return stickList;
+}
+
+- (void) unsetButtonFunction: (int)function
+{
+}
+
+- (void) unsetAxisFunction: (int)function
+{
+}
+
+- (void)saveStickSettings
+{
+}
+
+- (NSDictionary *)getAxisFunctions
+{
+	NSMutableDictionary *fnList=[NSMutableDictionary dictionary];
+	return fnList;
+}
+
+
+- (NSDictionary *)getButtonFunctions
+{
+	NSMutableDictionary *fnList=[NSMutableDictionary dictionary];
+	return fnList;
+}
+
+- (void) setFunctionForAxis: (int)axis 
+                   function: (int)function
+                      stick: (int)stickNum
+{
+}
+
+
+- (void) setFunctionForButton: (int)button 
+                     function: (int)function 
+                        stick: (int)stickNum
+{
+}
+
+- (void) setFunction: (int)function  withDict: (NSDictionary *)stickFn
+{
+}
+
+- (void)setCallback: (SEL) selector
+             object: (id) obj
+           hardware: (char)hwflags
+{
+}
+
+
+- (void)clearCallback
+{
+}
+
 @end
 
 

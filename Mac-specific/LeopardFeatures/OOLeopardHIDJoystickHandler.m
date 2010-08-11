@@ -277,6 +277,215 @@ static void Handle_RemovalCallback(void *context, IOReturn result, void *sender,
 	}
 	
 	CFRelease(elements);
+/*	
+	if (cbObject) {
+		NSDictionary *fnDict = [NSDictionary dictionaryWithObjectAndKeys:
+								[NSNumber numberWithBool: NO], STICK_ISAXIS,
+								[NSNumber numberWithInt: 1], STICK_NUMBER, //FIXME: insert sticknumber, not 1
+								[NSNumber numberWithInt: 1], STICK_AXBUT, //FIXME: insert button, not 1
+								nil];
+		cbHardware = 0;
+		[cbObject performSelector:cbSelector withObject:fnDict];
+		cbObject = nil;
+	}
+*/	
+}
+
+//implementations of the SDL Joystick Handler methods follow
+
+- (NSArray *)listSticks
+{
+	OOUInteger i;
+	NSMutableArray *stickList=[NSMutableArray array];
+	for(i=0; i < [self getNumSticks]; i++)
+	{
+		[stickList addObject: [NSString stringWithFormat: @"Joystick %n", i]];
+	}
+	return stickList;
+}
+
+- (void) unsetButtonFunction: (int)function
+{
+	int i,j;
+	for(i=0; i < MAX_BUTTONS; i++)
+	{
+		for(j=0; j < MAX_STICKS; j++)
+		{
+			if(buttonmap[j][i] == function)
+			{
+				buttonmap[j][i]=STICK_NOFUNCTION;
+				break;
+			}
+		}
+	}
+}
+
+- (void) unsetAxisFunction: (int)function
+{
+	int i, j;
+	for(i=0; i < MAX_AXES; i++)
+	{
+		for(j=0; j < MAX_STICKS; j++)
+		{
+			if(axismap[j][i] == function)
+			{
+				axismap[j][i]=STICK_NOFUNCTION;
+				axstate[function]=STICK_AXISUNASSIGNED;
+				break;
+			}
+		}
+	}
+}
+
+- (void)saveStickSettings
+{
+	NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
+	[defaults setObject: [self getAxisFunctions]
+				 forKey: AXIS_SETTINGS];
+	[defaults setObject: [self getButtonFunctions]
+				 forKey: BUTTON_SETTINGS];
+	
+	[defaults synchronize];
+}
+
+- (NSDictionary *)getAxisFunctions
+{
+	int i,j;
+	NSMutableDictionary *fnList=[NSMutableDictionary dictionary];
+	
+	// Add axes
+	for(i=0; i < MAX_AXES; i++)
+	{
+		for(j=0; j < MAX_STICKS; j++)
+		{
+			if(axismap[j][i] >= 0)
+			{
+				NSDictionary *fnDict=[NSDictionary dictionaryWithObjectsAndKeys:
+									  [NSNumber numberWithBool: YES], STICK_ISAXIS,
+									  [NSNumber numberWithInt: j], STICK_NUMBER, 
+									  [NSNumber numberWithInt: i], STICK_AXBUT,
+									  nil];
+				[fnList setValue: fnDict
+						  forKey: ENUMKEY(axismap[j][i])];
+			}
+		}
+	}
+	return fnList;
+}
+
+
+- (NSDictionary *)getButtonFunctions
+{
+	int i, j;
+	NSMutableDictionary *fnList=[NSMutableDictionary dictionary];
+	
+	// Add buttons
+	for(i=0; i < MAX_BUTTONS; i++)
+	{
+		for(j=0; j < MAX_STICKS; j++)
+		{
+			if(buttonmap[j][i] >= 0)
+			{
+				NSDictionary *fnDict=[NSDictionary dictionaryWithObjectsAndKeys:
+									  [NSNumber numberWithBool: NO], STICK_ISAXIS, 
+									  [NSNumber numberWithInt: j], STICK_NUMBER, 
+									  [NSNumber numberWithInt: i], STICK_AXBUT, 
+									  nil];
+				[fnList setValue: fnDict
+						  forKey: ENUMKEY(buttonmap[j][i])];
+			}
+		}
+	}
+	return fnList;
+}
+
+- (void) setFunctionForAxis: (int)axis 
+                   function: (int)function
+                      stick: (int)stickNum
+{
+	int i, j;
+//	Sint16 axisvalue=SDL_JoystickGetAxis(stick[stickNum], axis);
+	for(i=0; i < MAX_AXES; i++)
+	{
+		for(j=0; j < MAX_STICKS; j++)
+		{
+			if(axismap[j][i] == function)
+			{
+				axismap[j][i] = STICK_NOFUNCTION;
+				break;
+			}
+		}
+	}
+	axismap[stickNum][axis]=function;
+	
+	// initialize the throttle to what it's set to now (or else the
+	// commander has to waggle the throttle to wake it up). Other axes
+	// set as default.
+//	if(function == AXIS_THRUST)
+//	{
+//		axstate[function]=(float)(65536 - (axisvalue + 32768)) / 65536;
+//	}
+//	else
+//	{
+//		axstate[function]=(float)axisvalue / STICK_NORMALDIV;
+//	}
+	axstate[function]=(float)0;
+}
+
+
+- (void) setFunctionForButton: (int)button 
+                     function: (int)function 
+                        stick: (int)stickNum
+{
+	int i, j;
+	for(i=0; i < MAX_BUTTONS; i++)
+	{
+		for(j=0; j < MAX_STICKS; j++)
+		{
+			if(buttonmap[j][i] == function)
+			{
+				buttonmap[j][i] = STICK_NOFUNCTION;
+				break;
+			}
+		}
+	}
+	buttonmap[stickNum][button]=function;
+}
+
+- (void) setFunction: (int)function  withDict: (NSDictionary *)stickFn
+{
+	BOOL isAxis=[(NSNumber *)[stickFn objectForKey: STICK_ISAXIS] boolValue];
+	int stickNum=[(NSNumber *)[stickFn objectForKey: STICK_NUMBER] intValue];
+	int stickAxBt=[(NSNumber *)[stickFn objectForKey: STICK_AXBUT] intValue];
+	
+	if(isAxis)
+	{
+		[self setFunctionForAxis: stickAxBt 
+						function: function
+						   stick: stickNum];
+	}
+	else
+	{
+		[self setFunctionForButton: stickAxBt
+						  function: function
+							 stick: stickNum];
+	}
+}
+
+- (void)setCallback: (SEL) selector
+             object: (id) obj
+           hardware: (char)hwflags
+{
+	cbObject=obj;
+	cbSelector=selector;
+	cbHardware=hwflags;	
+}
+
+
+- (void)clearCallback
+{
+	cbObject=nil;
+	cbHardware=0;
 }
 
 @end

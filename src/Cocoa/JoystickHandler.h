@@ -56,59 +56,6 @@ OO_MAC_BEGIN_EXPORT
 
 #define STICK_AXISUNASSIGNED -10.0
 
-// Enums are used here rather than a more complex ObjC object because
-// these are required very frequently (once per frame) so must be light
-// on CPU cycles (try and avoid too many objc sendmsgs).
-// Controls that can be an axis
-typedef enum
-{
-  AXIS_ROLL,
-  AXIS_PITCH,
-  AXIS_YAW,
-  AXIS_PRECISION,
-  AXIS_THRUST,
-  AXIS_VIEWX,
-  AXIS_VIEWY,
-  AXIS_end
-} OOJoystickAxisFunction;
-
-// Controls that can be a button
-typedef enum
-{
-  BUTTON_INCTHRUST,
-  BUTTON_DECTHRUST,
-  BUTTON_SCANNERZOOM,
-  BUTTON_JETTISON,
-  BUTTON_COMPASSMODE,
-  BUTTON_COMMSLOG,
-  BUTTON_DOCKCPU,
-  BUTTON_DOCKCPUFAST,
-  BUTTON_DOCKCPUTARGET,
-  BUTTON_FUELINJECT,
-  BUTTON_HYPERSPEED,
-  BUTTON_HYPERDRIVE,
-  BUTTON_GALACTICDRIVE,
-  BUTTON_FIRE,
-  BUTTON_ARMMISSILE,
-  BUTTON_LAUNCHMISSILE,
-  BUTTON_UNARM,
-#if TARGET_INCOMING_MISSILES
-  BUTTON_TARGETINCOMINGMISSILE,
-#endif
-  BUTTON_CYCLEMISSILE,
-  BUTTON_ENERGYBOMB,
-  BUTTON_ID,
-  BUTTON_ECM,
-  BUTTON_ESCAPE,
-  BUTTON_CLOAK,
-  BUTTON_PRECISION,
-  BUTTON_VIEWFORWARD,
-  BUTTON_VIEWAFT,
-  BUTTON_VIEWPORT,
-  BUTTON_VIEWSTARBOARD,
-  BUTTON_end
-} OOJoystickButtonFunction;
-
 // Stick constants
 #define MAX_STICKS 4
 #define MAX_AXES  16
@@ -139,11 +86,68 @@ typedef enum
 #define STICK_AXBUT  @"stickAxBt"		// Axis or button number
 #define STICK_FUNCTION @"stickFunc"		// Function of axis/button
 
+// Enums are used here rather than a more complex ObjC object because
+// these are required very frequently (once per frame) so must be light
+// on CPU cycles (try and avoid too many objc sendmsgs).
+// Controls that can be an axis
+typedef enum
+{
+	AXIS_ROLL,
+	AXIS_PITCH,
+	AXIS_YAW,
+	AXIS_PRECISION,
+	AXIS_THRUST,
+	AXIS_VIEWX,
+	AXIS_VIEWY,
+	AXIS_end
+} OOJoystickAxisFunction;
+
+// Controls that can be a button
+typedef enum
+{
+	BUTTON_INCTHRUST,
+	BUTTON_DECTHRUST,
+	BUTTON_SCANNERZOOM,
+	BUTTON_JETTISON,
+	BUTTON_COMPASSMODE,
+	BUTTON_COMMSLOG,
+	BUTTON_DOCKCPU,
+	BUTTON_DOCKCPUFAST,
+	BUTTON_DOCKCPUTARGET,
+	BUTTON_FUELINJECT,
+	BUTTON_HYPERSPEED,
+	BUTTON_HYPERDRIVE,
+	BUTTON_GALACTICDRIVE,
+	BUTTON_FIRE,
+	BUTTON_ARMMISSILE,
+	BUTTON_LAUNCHMISSILE,
+	BUTTON_UNARM,
+#if TARGET_INCOMING_MISSILES
+	BUTTON_TARGETINCOMINGMISSILE,
+#endif
+	BUTTON_CYCLEMISSILE,
+	BUTTON_ENERGYBOMB,
+	BUTTON_ID,
+	BUTTON_ECM,
+	BUTTON_ESCAPE,
+	BUTTON_CLOAK,
+	BUTTON_PRECISION,
+	BUTTON_VIEWFORWARD,
+	BUTTON_VIEWAFT,
+	BUTTON_VIEWPORT,
+	BUTTON_VIEWSTARBOARD,
+	BUTTON_end
+} OOJoystickButtonFunction;
 
 @interface JoystickHandler: NSObject
 {
 @private
+//	int8_t axismap[MAX_STICKS][MAX_AXES];
+//	int8_t buttonmap[MAX_STICKS][MAX_BUTTONS];
+//	double axstate[AXIS_end];
 	BOOL butstate[BUTTON_end];
+//	BOOL precisionMode;
+//	int numSticks;
 }
 
 + (id) sharedStickHandler;
@@ -154,6 +158,25 @@ typedef enum
 - (double) getAxisState:(OOJoystickAxisFunction)function;
 - (double) getSensitivity;
 - (const BOOL *) getAllButtonStates;
+
+// from the SDL Joystick Handler
+- (NSArray *)listSticks;
+- (void) setFunctionForAxis: (int)axis
+                   function: (int)function
+                      stick: (int)stickNum;
+- (void) setFunctionForButton: (int)button
+                     function: (int)function
+                        stick: (int)stickNum;
+- (void) setFunction: (int)function withDict: (NSDictionary *)stickFn;
+- (void) unsetButtonFunction: (int)function;
+- (void) unsetAxisFunction: (int)function;
+- (void) saveStickSettings;
+- (NSDictionary *)getAxisFunctions;
+- (NSDictionary *)getButtonFunctions;
+- (void)setCallback: (SEL)selector
+             object: (id)obj
+           hardware: (char)hwflags;
+- (void)clearCallback;
 
 // Subclass interface
 + (BOOL) setStickHandlerClass:(Class)stickHandlerClass;
