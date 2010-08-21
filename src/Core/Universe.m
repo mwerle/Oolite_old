@@ -7841,7 +7841,7 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 			NSString *missile_desc = [missileRoles oo_stringAtIndex:i];
 			if (missile_desc != nil && ![missile_desc isEqualToString:@"NONE"])
 			{
-				ship_missiles_value += [UNIVERSE getEquipmentPriceForKey:@"EQ_MISSILE"] / 10;
+				ship_missiles_value += [UNIVERSE getEquipmentPriceForKey:missile_desc] / 10;
 			}
 		}
 	}
@@ -7863,10 +7863,21 @@ static OOComparisonResult comparePrice(id dict1, id dict2, void * context)
 	if (ship_aft_weapon)
 	{
 		weapon_key = WeaponTypeToEquipmentString(ship_aft_weapon);
-		if (base_weapon_key != nil)
-			ship_main_weapons_value += [UNIVERSE getEquipmentPriceForKey:base_weapon_key] / 10;
+		if (base_weapon_key)
+		{
+			if (weapon_key)
+			{
+				ship_main_weapons_value += [UNIVERSE getEquipmentPriceForKey:weapon_key] / 10;
+			}
+			else
+			{
+				ship_main_weapons_value += [UNIVERSE getEquipmentPriceForKey:base_weapon_key] / 10;
+			}
+		}
 		else
+		{
 			ship_other_weapons_value += [UNIVERSE getEquipmentPriceForKey:weapon_key] / 10;
+		}
 	}
 	if (ship_port_weapon)
 	{
