@@ -325,7 +325,7 @@ OOINLINE void GLColorWithOverallAlpha(const GLfloat *color, GLfloat alpha)
 }
 
 
-- (double) scannerZoom
+- (double) scanner_zoom
 {
 	return scanner_zoom;
 }
