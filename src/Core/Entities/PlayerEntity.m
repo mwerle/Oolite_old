@@ -4054,6 +4054,13 @@ static BOOL replacingMissile = NO;
 	[UNIVERSE addMessage:DESC(@"escape-sequence") forCount:4.5];
 	[self resetShotTime];
 	
+	// need to zero out all facings shot_times too, otherwise we may end up
+	// with a broken escape pod sequence - Nikos 20100909
+	forward_shot_time = 0.0;
+	aft_shot_time = 0.0;
+	port_shot_time = 0.0;
+	starboard_shot_time = 0.0;
+	
 	[escapePod release];
 	
 	return result;
