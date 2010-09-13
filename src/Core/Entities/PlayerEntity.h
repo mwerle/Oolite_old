@@ -471,7 +471,8 @@ typedef enum
 	
 							isSpeechOn: 1,
 	
-							keyboardRollPitchOverride: 1,
+							keyboardRollOverride: 1,   // Handle keyboard roll...
+							keyboardPitchOverride: 1,  // ...and pitch override separately - (fix for BUG #17490)  
 							keyboardYawOverride: 1,
 							waitingForStickCallback: 1;
 #if OOLITE_ESPEAK
