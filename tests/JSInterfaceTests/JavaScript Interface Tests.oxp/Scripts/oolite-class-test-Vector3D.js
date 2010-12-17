@@ -192,17 +192,6 @@ this.startUp = function ()
 		require.near("sqDistance", sqDistance, correct, 1e-6);
 	});
 	
-	testRig.$registerTest("Vector3D.toArray", function ()
-	{
-		var array = new Vector3D(1, 2, 3).toArray();
-		
-		require.instance("array", array, Array);
-		require.property("array", array, "length", 3);
-		require.property("array", array, 0, 1);
-		require.property("array", array, 1, 2);
-		require.property("array", array, 2, 3);
-	});
-	
 	
 	testRig.$registerTest("Vector3D.squaredMagnitude", function ()
 	{
@@ -218,5 +207,81 @@ this.startUp = function ()
 		var sqMagnitude4 = new Vector3D(3, 4, 0).squaredMagnitude();
 		require.near("sqMagnitude4", sqMagnitude4, 25, 1e-6);
 	});
+	
+	testRig.$registerTest("Vector3D.toArray", function ()
+	{
+		var array = new Vector3D(1, 2, 3).toArray();
+		
+		require.instance("array", array, Array);
+		require.property("array", array, "length", 3);
+		require.property("array", array, 0, 1);
+		require.property("array", array, 1, 2);
+		require.property("array", array, 2, 3);
+	});
+	
 	// TODO: toCoordinateSystem()
+	
+	testRig.$registerTest("Vector3D.tripleProduct", function ()
+	{
+		var u = new Vector3D(5, 7, 3);
+		var v = new Vector3D(1, 5, -6);
+		var w = new Vector3D(2, -1, 4);
+		
+		var tripleProduct = u.tripleProduct(v, w);
+		require.near("tripleProduct", tripleProduct, -75);
+	});
+	
+	testRig.$registerTest("Vector3D.interpolate", function ()
+	{
+		var u = new Vector3D(-10, 6, 3);
+		var v = new Vector3D(-1, 0, 0);
+		
+		var interp1 = Vector3D.interpolate(u, v, 0);
+		require.vector("interp1", interp1, [-10, 6, 3]);
+		
+		var interp2 = Vector3D.interpolate(u, v, 1);
+		require.vector("interp2", interp2, [-1, 0, 0]);
+		
+		var interp3 = Vector3D.interpolate(u, v, 1/3);
+		require.vector("interp3", interp3, [-7, 4, 2]);
+		
+		var interp4 = Vector3D.interpolate(u, v, 2);
+		require.vector("interp4", interp4, [8, -6, -3]);
+	});
+	
+	testRig.$registerTest("Vector3D.random", function ()
+	{
+		// Doesn’t test distribution, just that results are in valid range.
+		var i;
+		for (i = 0; i < 100; i++)
+		{
+			var random = Vector3D.random(3);
+			require.instance("random", random, Vector3D);
+			require("random.magnitude() <= 3", random.magnitude() <= 3);
+		}
+	});
+	
+	testRig.$registerTest("Vector3D.randomDirection", function ()
+	{
+		// Doesn’t test distribution, just that results are in valid range.
+		var i;
+		for (i = 0; i < 100; i++)
+		{
+			var random = Vector3D.randomDirection(3);
+			require.instance("random", random, Vector3D);
+			require.near("random", random, 3);
+		}
+	});
+	
+	testRig.$registerTest("Vector3D.randomDirectionAndLength", function ()
+	{
+		// Doesn’t test distribution, just that results are in valid range.
+		var i;
+		for (i = 0; i < 100; i++)
+		{
+			var random = Vector3D.randomDirectionAndLength(3);
+			require.instance("random", random, Vector3D);
+			require("random.magnitude() <= 3", random.magnitude() <= 3);
+		}
+	});
 }
