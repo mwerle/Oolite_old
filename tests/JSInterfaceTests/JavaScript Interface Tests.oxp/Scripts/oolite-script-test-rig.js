@@ -53,26 +53,45 @@ this.$registerPostLaunchTest = function registerPostLaunchTest(name, test)
 
 this.$require =
 {
+	// $require.defined(): require that value not undefined or null.
 	defined: function requireDefined(name, value)
 	{
 		if (value === undefined || value === null)  throw "Expected " + name + " to have a value.";
 	},
 	
-	instance: function requireDefined(name, value, proto)
+	// $require.instance(): require that value is an instance of proto.
+	instance: function requireInstance(name, value, proto)
 	{
 		if (proto === undefined)  throw "Usage error: $require.instance proto parameter is undefined.";
 		if (!(value instanceof proto))  throw "Expected " + name + " to be an instance of " + proto + ".";
 	},
 	
+	// $require.value(): require an exact == match to a primitive value.
 	value: function requireValue(name, actual, expected)
 	{
 		if (actual != expected)  throw "Expected " + name + " to be " + expected + ", got " + actual + ".";
 	},
 	
-	property: function requireProperty(target, targetName, propName, expected)
+	// $require.near(): like value, but allows an error range. Intended for floating-point tests.
+	near: function requireNear(name, actual, expected, epsilon)
+	{
+		if (Math.abs(actual - expected) > epsilon)  throw "Expected " + name + " to be within " + epsilon + " of " + expected + ", got " + actual;
+	},
+	
+	// $require.property(): require that a property has a specific (exact) value.
+	property: function requireProperty(targetName, target, propName, expected)
 	{
 		var actual = target[propName];
-		if (actual != expected)  throw "Expected " + targetName + "." + propName + " to be " + expected + ", got " + actual;
+		this.value(targetName + "." + propName, actual, expected);
+	//	if (actual != expected)  throw "Expected " + targetName + "." + propName + " to be " + expected + ", got " + actual;
+	},
+	
+	// $require.propertyNear(): require that a property has a specific value, within epsilon.
+	propertyNear: function requirePropertyNear(targetName, target, propName, expected, epsilon)
+	{
+		var actual = target[propName];
+		this.near(targetName + "." + propName, actual, expected, epsilon);
+//		if (Math.abs(actual - expected) > epsilon)  throw "Expected " + targetName + "." + propName + " to be within " + epsilon " of " + expected + ", got " + actual;
 	}
 }
 
