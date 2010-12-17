@@ -51,48 +51,68 @@ this.$registerPostLaunchTest = function registerPostLaunchTest(name, test)
 }
 
 
-this.$require =
+this.$require = function require(description, predicate)
 {
-	// $require.defined(): require that value not undefined or null.
-	defined: function requireDefined(name, value)
-	{
-		if (value === undefined || value === null)  throw "Expected " + name + " to have a value.";
-	},
-	
+	if (!predicate)  throw "Expected invariant " + description;
+}
+
+
+// $require.defined(): require that value not undefined or null.
+this.$require.defined = function requireDefined(name, value)
+{
+	if (value === undefined || value === null)  throw "Expected " + name + " to have a value.";
+}
+
+
 	// $require.instance(): require that value is an instance of proto.
-	instance: function requireInstance(name, value, proto)
-	{
-		if (proto === undefined)  throw "Usage error: $require.instance proto parameter is undefined.";
-		if (!(value instanceof proto))  throw "Expected " + name + " to be an instance of " + proto + ".";
-	},
+this.$require.instance = function requireInstance(name, value, proto)
+{
+	if (proto === undefined)  throw "Usage error: $require.instance proto parameter is undefined.";
+	if (!(value instanceof proto))  throw "Expected " + name + " to be an instance of " + proto.name + ".";
+}
 	
 	// $require.value(): require an exact == match to a primitive value.
-	value: function requireValue(name, actual, expected)
-	{
-		if (actual != expected)  throw "Expected " + name + " to be " + expected + ", got " + actual + ".";
-	},
+this.$require.value = function requireValue(name, actual, expected)
+{
+	if (actual != expected)  throw "Expected " + name + " to be " + expected + ", got " + actual + ".";
+}
 	
 	// $require.near(): like value, but allows an error range. Intended for floating-point tests.
-	near: function requireNear(name, actual, expected, epsilon)
-	{
-		if (Math.abs(actual - expected) > epsilon)  throw "Expected " + name + " to be within " + epsilon + " of " + expected + ", got " + actual;
-	},
+this.$require.near = function requireNear(name, actual, expected, epsilon)
+{
+	if (epsilon === undefined)  epsilon = 1e-6;
+	if (Math.abs(actual - expected) > epsilon)  throw "Expected " + name + " to be within " + epsilon + " of " + expected + ", got " + actual;
+}
 	
 	// $require.property(): require that a property has a specific (exact) value.
-	property: function requireProperty(targetName, target, propName, expected)
-	{
-		var actual = target[propName];
-		this.value(targetName + "." + propName, actual, expected);
-	//	if (actual != expected)  throw "Expected " + targetName + "." + propName + " to be " + expected + ", got " + actual;
-	},
+this.$require.property = function requireProperty(targetName, target, propName, expected)
+{
+	var actual = target[propName];
+	this.value(targetName + "." + propName, actual, expected);
+}
 	
 	// $require.propertyNear(): require that a property has a specific value, within epsilon.
-	propertyNear: function requirePropertyNear(targetName, target, propName, expected, epsilon)
-	{
-		var actual = target[propName];
-		this.near(targetName + "." + propName, actual, expected, epsilon);
-//		if (Math.abs(actual - expected) > epsilon)  throw "Expected " + targetName + "." + propName + " to be within " + epsilon " of " + expected + ", got " + actual;
-	}
+this.$require.propertyNear = function requirePropertyNear(targetName, target, propName, expected, epsilon)
+{
+	var actual = target[propName];
+	this.near(targetName + "." + propName, actual, expected, epsilon);
+}
+	
+	// $require.vector(): require that a Vector3D matches an array of three numbers, within epsilon.
+this.$require.vector = function requireVector(name, actual, expected, epsilon)
+{
+	this.propertyNear(name, actual, "x", expected[0], epsilon);
+	this.propertyNear(name, actual, "y", expected[1], epsilon);
+	this.propertyNear(name, actual, "z", expected[2], epsilon);
+}
+	
+	// $require.quaternion(): require that a Quaternion matches an array of four numbers, within epsilon.
+this.$require.quaternion = function requireQuaternion(name, actual, expected, epsilon)
+{
+	this.propertyNear(name, actual, "w", expected[0], epsilon);
+	this.propertyNear(name, actual, "x", expected[1], epsilon);
+	this.propertyNear(name, actual, "y", expected[2], epsilon);
+	this.propertyNear(name, actual, "z", expected[3], epsilon);
 }
 
 // End of API
@@ -112,55 +132,59 @@ this.$runTest = function runTest(testInfo)
 {
 	try
 	{
-		var success = testInfo.test();
-		if (success)
-		{
-			consoleMessage("command-result", "Pass: " + testInfo.name);
-			return true;
-		}
-		else
-		{
-			consoleMessage("error", "FAIL: " + testInfo.name, 0, 4);
-			return false;
-		}
+		testInfo.test();
+		consoleMessage("command-result", "Pass: " + testInfo.name);
+		return true;
 	}
 	catch (e)
 	{
-		consoleMessage("error", "FAIL WITH EXCEPTION: " + testInfo.name + " -- " + e, 0, 4);
+		consoleMessage("error", "FAIL: " + testInfo.name + " -- " + e, 0, 4);
 		return false;
 	}
 }
 
 
-this.$runTestSeries = function runTestSeries(series)
+this.$runTestSeries = function runTestSeries(series, showProfile)
 {
-	try
+	function doRun()
 	{
-		var i, count = series.length, failedCount = 0;
-		
-		for (i = 0; i < count; i++)
+		try
 		{
-			if (!$runTest(series[i]))  failedCount++;
+			var i, count = series.length, failedCount = 0;
+			
+			for (i = 0; i < count; i++)
+			{
+				if (!$runTest(series[i]))  failedCount++;
+			}
+			
+			if (failedCount)
+			{
+				consoleMessage("error", "***** " + failedCount + " of " + count + " tests FAILED", 0, 5);
+			}
+			else
+			{
+				consoleMessage("command-result", "All " + count + " tests passed.");
+			}
 		}
-		
-		if (failedCount)
+		catch (e)
 		{
-			consoleMessage("error", "***** " + failedCount + " of " + count + " tests FAILED", 0, 5);
-		}
-		else
-		{
-			consoleMessage("command-result", "All " + count + " tests passed.");
+			consoleMessage("error", "EXCEPTION IN TEST RIG: " + e, 0, 21);
+			throw e;
 		}
 	}
-	catch (e)
+	if (debugConsole !== undefined)
 	{
-		consoleMessage("error", "EXCEPTION IN TEST RIG: " + e, 0, 21);
-		throw e;
+		var prof = debugConsole.profile(doRun, this);
+		if (showProfile)  log(prof);
+	}
+	else
+	{
+		doRun();
 	}
 }
 
 
-global.ooRunTests = function ooRunTests()
+global.ooRunTests = function ooRunTests(showProfile)
 {
 	if (!player.ship.docked)
 	{
@@ -168,8 +192,9 @@ global.ooRunTests = function ooRunTests()
 		return;
 	}
 	
+	if (showProfile === undefined)  showProfile = false;
 	log("Running docked tests...");
-	$runTestSeries($tests);
+	$runTestSeries($tests, showProfile);
 	
 	if ($postLaunchTests.length != 0)
 	{
@@ -178,7 +203,7 @@ global.ooRunTests = function ooRunTests()
 			this.shipLaunchedFromStation = function ()
 			{
 				log("Running post-launch tests...");
-				$runTestSeries($postLaunchTests);
+				$runTestSeries($postLaunchTests, showProfile);
 				delete this.shipLaunchedFromStation;
 			}
 		}
