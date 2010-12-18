@@ -1,4 +1,5 @@
 (
 	"oolite-script-test-rig.js",
-	"oolite-class-test-Vector3D.js"
+	"oolite-class-test-Vector3D.js",
+	"oolite-class-test-Quaternion.js"
 )

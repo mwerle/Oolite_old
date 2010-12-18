@@ -29,7 +29,7 @@ MA 02110-1301, USA.
 this.name			= "oolite-script-test-rig";
 this.author			= "Jens Ayton";
 this.copyright		= "© 2010 the Oolite team.";
-this.description	= "Driver for JavaScript coverage tests.";
+this.description	= "Driver for JavaScript unit tests.";
 this.version		= "1.75";
 
 
@@ -101,6 +101,7 @@ this.$require.propertyNear = function requirePropertyNear(targetName, target, pr
 	// $require.vector(): require that a Vector3D matches an array of three numbers, within epsilon.
 this.$require.vector = function requireVector(name, actual, expected, epsilon)
 {
+	this.instance(name, actual, Vector3D);
 	this.propertyNear(name, actual, "x", expected[0], epsilon);
 	this.propertyNear(name, actual, "y", expected[1], epsilon);
 	this.propertyNear(name, actual, "z", expected[2], epsilon);
@@ -109,6 +110,7 @@ this.$require.vector = function requireVector(name, actual, expected, epsilon)
 	// $require.quaternion(): require that a Quaternion matches an array of four numbers, within epsilon.
 this.$require.quaternion = function requireQuaternion(name, actual, expected, epsilon)
 {
+	this.instance(name, actual, Quaternion);
 	this.propertyNear(name, actual, "w", expected[0], epsilon);
 	this.propertyNear(name, actual, "x", expected[1], epsilon);
 	this.propertyNear(name, actual, "y", expected[2], epsilon);

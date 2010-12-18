@@ -253,7 +253,7 @@ this.startUp = function ()
 	{
 		// Doesn’t test distribution, just that results are in valid range.
 		var i;
-		for (i = 0; i < 100; i++)
+		for (i = 0; i < 20; i++)
 		{
 			var random = Vector3D.random(3);
 			require.instance("random", random, Vector3D);
@@ -265,11 +265,11 @@ this.startUp = function ()
 	{
 		// Doesn’t test distribution, just that results are in valid range.
 		var i;
-		for (i = 0; i < 100; i++)
+		for (i = 0; i < 20; i++)
 		{
 			var random = Vector3D.randomDirection(3);
 			require.instance("random", random, Vector3D);
-			require.near("random", random, 3);
+			require.near("random.magnitude()", random.magnitude(), 3);
 		}
 	});
 	
@@ -277,7 +277,7 @@ this.startUp = function ()
 	{
 		// Doesn’t test distribution, just that results are in valid range.
 		var i;
-		for (i = 0; i < 100; i++)
+		for (i = 0; i < 20; i++)
 		{
 			var random = Vector3D.randomDirectionAndLength(3);
 			require.instance("random", random, Vector3D);
