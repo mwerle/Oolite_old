@@ -284,4 +284,20 @@ this.startUp = function ()
 			require("random.magnitude() <= 3", random.magnitude() <= 3);
 		}
 	});
+	
+	testRig.$registerTest("Vector3D.toString", function ()
+	{
+		var v = new Vector3D(42, 17, 163);
+		var string = v.toString();
+		
+		require.value("string", string, "(42, 17, 163)");
+	});
+	
+	testRig.$registerTest("Vector3D.toSource", function ()
+	{
+		var v = new Vector3D(42, 17, 163);
+		var source = v.toSource();
+		
+		require.value("source", source, "Vector3D(42, 17, 163)");
+	});
 }

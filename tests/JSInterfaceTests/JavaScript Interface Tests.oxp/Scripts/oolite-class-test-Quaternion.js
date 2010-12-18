@@ -182,4 +182,20 @@ this.startUp = function ()
 			require.near("normalized", normalized, random.toArray());
 		}
 	});
+	
+	testRig.$registerTest("Quaternion.toString", function ()
+	{
+		var q = new Quaternion(1.5, 14, 0, -3);
+		var string = q.toString();
+		
+		require.value("string", string, "(1.5 + 14i + 0j - 3k)");
+	});
+	
+	testRig.$registerTest("Quaternion.toSource", function ()
+	{
+		var q = new Quaternion(1.5, 14, 0, -3);
+		var source = q.toSource();
+		
+		require.value("source", source, "Quaternion(1.5, 14, 0, -3)");
+	});
 }
