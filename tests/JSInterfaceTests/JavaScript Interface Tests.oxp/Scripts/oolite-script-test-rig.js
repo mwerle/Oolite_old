@@ -198,12 +198,16 @@ global.ooRunTests = function ooRunTests(showProfile)
 	
 	if ($postLaunchTests.length != 0)
 	{
+		var station = player.ship.dockedStation;
+		
 		if (!this.shipLaunchedFromStation)
 		{
 			this.shipLaunchedFromStation = function ()
 			{
 				log("Running post-launch tests...");
 				$runTestSeries($postLaunchTests, showProfile);
+				
+				station.dockPlayer();
 				delete this.shipLaunchedFromStation;
 			}
 		}
