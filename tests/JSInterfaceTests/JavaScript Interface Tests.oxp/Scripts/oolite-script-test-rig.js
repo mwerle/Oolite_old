@@ -33,24 +33,26 @@ this.description	= "Driver for JavaScript unit tests.";
 this.version		= "1.75";
 
 
-this.$tests = [];
-this.$postLaunchTests = [];
-
+(function ()
+{
 
 // API for test implementation scripts.
 
+// $registerTest(): register a test to run while docked.
 this.$registerTest = function registerTest(name, test)
 {
-	$tests.push({ name: name, test: test });
+	tests.push({ name: name, test: test });
 }
 
 
+// $registerPostLaunchTest(): register a test to run in space.
 this.$registerPostLaunchTest = function registerPostLaunchTest(name, test)
 {
-	$postLaunchTests.push({ name: name, test: test });
+	postLaunchTests.push({ name: name, test: test });
 }
 
 
+// $require(): assert that predicate is a truthy value.
 this.$require = function require(description, predicate)
 {
 	if (!predicate)  throw "Expected invariant " + description;
@@ -64,41 +66,41 @@ this.$require.defined = function requireDefined(name, value)
 }
 
 
-	// $require.instance(): require that value is an instance of proto.
+// $require.instance(): require that value is an instance of proto.
 this.$require.instance = function requireInstance(name, value, proto)
 {
 	if (proto === undefined)  throw "Usage error: $require.instance proto parameter is undefined.";
 	if (!(value instanceof proto))  throw "Expected " + name + " to be an instance of " + proto.name + ".";
 }
 	
-	// $require.value(): require an exact == match to a primitive value.
+// $require.value(): require an exact == match to a primitive value.
 this.$require.value = function requireValue(name, actual, expected)
 {
 	if (actual != expected)  throw "Expected " + name + " to be " + expected + ", got " + actual + ".";
 }
 	
-	// $require.near(): like value, but allows an error range. Intended for floating-point tests.
+// $require.near(): like value, but allows an error range. Intended for floating-point tests.
 this.$require.near = function requireNear(name, actual, expected, epsilon)
 {
 	if (epsilon === undefined)  epsilon = 1e-6;
 	if (Math.abs(actual - expected) > epsilon)  throw "Expected " + name + " to be within " + epsilon + " of " + expected + ", got " + actual;
 }
 	
-	// $require.property(): require that a property has a specific (exact) value.
+// $require.property(): require that a property has a specific (exact) value.
 this.$require.property = function requireProperty(targetName, target, propName, expected)
 {
 	var actual = target[propName];
 	this.value(targetName + "." + propName, actual, expected);
 }
 	
-	// $require.propertyNear(): require that a property has a specific value, within epsilon.
+// $require.propertyNear(): require that a property has a specific value, within epsilon.
 this.$require.propertyNear = function requirePropertyNear(targetName, target, propName, expected, epsilon)
 {
 	var actual = target[propName];
 	this.near(targetName + "." + propName, actual, expected, epsilon);
 }
 	
-	// $require.vector(): require that a Vector3D matches an array of three numbers, within epsilon.
+// $require.vector(): require that a Vector3D matches an array of three numbers, within epsilon.
 this.$require.vector = function requireVector(name, actual, expected, epsilon)
 {
 	this.instance(name, actual, Vector3D);
@@ -107,7 +109,7 @@ this.$require.vector = function requireVector(name, actual, expected, epsilon)
 	this.propertyNear(name, actual, "z", expected[2], epsilon);
 }
 	
-	// $require.quaternion(): require that a Quaternion matches an array of four numbers, within epsilon.
+// $require.quaternion(): require that a Quaternion matches an array of four numbers, within epsilon.
 this.$require.quaternion = function requireQuaternion(name, actual, expected, epsilon)
 {
 	this.instance(name, actual, Quaternion);
@@ -117,8 +119,65 @@ this.$require.quaternion = function requireQuaternion(name, actual, expected, ep
 	this.propertyNear(name, actual, "z", expected[3], epsilon);
 }
 
-// End of API
 
+/*	
+	$deferResult()
+	Inform the test rig that results will be returned later. $deferResult() returns an object
+	with two public methods, reportSuccess() and reportFailure(message). When the results
+	are ready, one of these must be called.
+*/
+this.$deferResult = function deferResult()
+{
+	if (!currentTest)
+	{
+		throw "Usage error: $deferResult() must be called during a test.";
+	}
+	
+	deferredCount++;
+	var name = currentTest;
+	currentDeferred = true;
+	
+	return {
+		reportSuccess: function reportSuccess()
+		{
+			printResult(name, null);
+			if (--deferredCount == 0)  completeTests();
+		},
+		reportFailure: function reportFailure(message)
+		{
+			printResult(name, error);
+			if (--deferredCount == 0)  completeTests();
+		}
+	};
+}
+
+
+
+
+// End of API; begin implementation
+
+
+
+
+var tests = [], postLaunchTests = [];
+var deferredCount;
+var currentDeferred;
+var currentTest;
+var running;
+var failedCount;
+var testCount;
+
+
+function resetState()
+{
+	running = false;
+	failedCount = 0;
+	deferredCount = 0;
+	currentTest = null;
+	testCount = 0;
+	currentDeferred = false;
+}
+resetState();
 
 
 this.startUp = function startUp()
@@ -130,42 +189,69 @@ this.startUp = function startUp()
 }
 
 
-this.$runTest = function runTest(testInfo)
+function printResult(name, error)
 {
-	try
+	if (error)
 	{
-		testInfo.test();
-		consoleMessage("command-result", "Pass: " + testInfo.name);
-		return true;
+		consoleMessage("error", "FAIL: " + name + " -- " + error, 0, 4);
 	}
-	catch (e)
+	else
 	{
-		consoleMessage("error", "FAIL: " + testInfo.name + " -- " + e, 0, 4);
-		return false;
+		consoleMessage("command-result", "Pass: " + name);	
 	}
 }
 
 
-this.$runTestSeries = function runTestSeries(series, showProfile)
+function runTest(testInfo)
+{
+	var success = true;
+	try
+	{
+		currentTest = testInfo.name;
+		
+		testInfo.test();
+		if (!currentDeferred)  printResult(testInfo.name, null);
+	}
+	catch (e)
+	{
+		printResult(testInfo.name, e);
+		success = false;
+	}
+	
+	currentTest = null;
+	currentDeferred = false;
+	
+	return success;
+}
+
+
+function completeTests()
+{
+	if (failedCount > 0)
+	{
+		consoleMessage("error", "***** " + failedCount + " of " + testCount + " tests FAILED", 0, 5);
+	}
+	else
+	{
+		consoleMessage("command-result", "All " + testCount + " tests passed.");
+	}
+	
+	resetState();
+}
+
+
+function runTestSeries(series, showProfile)
 {
 	function doRun()
 	{
 		try
 		{
-			var i, count = series.length, failedCount = 0;
+			var i, count = series.length;
+			testCount += count;
 			
 			for (i = 0; i < count; i++)
 			{
-				if (!$runTest(series[i]))  failedCount++;
-			}
-			
-			if (failedCount)
-			{
-				consoleMessage("error", "***** " + failedCount + " of " + count + " tests FAILED", 0, 5);
-			}
-			else
-			{
-				consoleMessage("command-result", "All " + count + " tests passed.");
+				if (!runTest(series[i]))  failedCount++;
 			}
 		}
 		catch (e)
@@ -186,6 +272,20 @@ this.$runTestSeries = function runTestSeries(series, showProfile)
 }
 
 
+function reportSuccess(name)
+{
+	printResult(name, null);
+	if (--deferredCount == 0)  this.completeTests();
+}
+
+
+function reportFailure(name, error)
+{
+	printResult(name, error);
+	if (--deferredCount == 0)  this.completeTests();
+}
+
+
 global.ooRunTests = function ooRunTests(showProfile)
 {
 	if (!player.ship.docked)
@@ -194,11 +294,31 @@ global.ooRunTests = function ooRunTests(showProfile)
 		return;
 	}
 	
+	if (running)
+	{
+		consoleMessage("command-error", "Deferred tests are currently running.");
+		return;
+	}
+	
+	testCount = 0;
+	
+	function runFinished()
+	{
+		if (deferredCount == 0)
+		{
+			this.completeTests();
+		}
+		else
+		{
+			consoleMessage("command-result", "Waiting for " + deferredCount + " asynchronous tests to complete.");
+		}
+	}
+	
 	if (showProfile === undefined)  showProfile = false;
 	log("Running docked tests...");
-	$runTestSeries($tests, showProfile);
+	runTestSeries(tests, showProfile);
 	
-	if ($postLaunchTests.length != 0)
+	if (postLaunchTests.length != 0)
 	{
 		var station = player.ship.dockedStation;
 		
@@ -207,13 +327,22 @@ global.ooRunTests = function ooRunTests(showProfile)
 			this.shipLaunchedFromStation = function ()
 			{
 				log("Running post-launch tests...");
-				$runTestSeries($postLaunchTests, showProfile);
+				runTestSeries(postLaunchTests, showProfile);
 				
 				station.dockPlayer();
 				delete this.shipLaunchedFromStation;
+				
+				runFinished();
 			}
 		}
 		
 		player.ship.launch();
 	}
+	else
+	{
+		runFinished();
+	}
 }
+
+}).call(this);
+
