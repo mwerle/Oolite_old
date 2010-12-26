@@ -125,38 +125,53 @@ this.$require.quaternion = function requireQuaternion(name, actual, expected, ep
 	Inform the test rig that results will be returned later. $deferResult() returns an object
 	with two public methods, reportSuccess() and reportFailure(message). When the results
 	are ready, one of these must be called.
+	timeout is a time limit in seconds (default: 10 seconds). If neither reportSuccess() nor
+	reportFailure() is called within the time limit, a timeout failure is reported.
 */
-this.$deferResult = function deferResult()
+this.$deferResult = function deferResult(timeout)
 {
 	if (!currentTest)
 	{
 		throw "Usage error: $deferResult() must be called during a test.";
 	}
+	if (timeout === undefined)  timeout = 10;
 	
 	deferredCount++;
 	var name = currentTest;
 	currentDeferred = true;
+	var haveReported = false;
+	var timer = new Timer(this, function() { reporter.reportFailure("timed out"); }, timeout);
 	
-	return {
+	var reporter =
+	{
 		reportSuccess: function reportSuccess()
 		{
-			printResult(name, null);
-			if (--deferredCount == 0)  completeTests();
+			if (!haveReported)
+			{
+				printResult(name, null);
+				if (--deferredCount == 0)  completeTests();
+				timer.stop();
+			}
 		},
-		reportFailure: function reportFailure(message)
+		reportFailure: function reportFailure(error)
 		{
-			printResult(name, error);
-			if (--deferredCount == 0)  completeTests();
+			if (!haveReported)
+			{
+				printResult(name, error);
+				failedCount++;
+				if (--deferredCount == 0)  completeTests();
+				timer.stop();
+			}
 		}
 	};
+	
+	return reporter;
 }
 
 
 
 
 // End of API; begin implementation
-
-
 
 
 var tests = [], postLaunchTests = [];
@@ -186,6 +201,7 @@ this.startUp = function startUp()
 	{
 		this.consoleMessage = function(colorCode, message)  { log(message); }
 	}
+	log("interfaceTest.loaded", "JavaScript interface test suite is installed; enter ooRunTests() while docked.");
 }
 
 
