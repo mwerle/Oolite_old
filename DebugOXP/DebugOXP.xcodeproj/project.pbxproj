@@ -34,10 +34,6 @@
 		1A47F7020D6729F100E0A585 /* oolite-debug-console.js in Copy Files to Scripts */ = {isa = PBXBuildFile; fileRef = 1A47F7010D6729F100E0A585 /* oolite-debug-console.js */; };
 		1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */; };
 		1A4D0DE60C90A68900A6FBDB /* OOMacDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */; };
-		1A4FB2FF0C8DB89E00DC8E1F /* jspubtd.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FC0C8DB89E00DC8E1F /* jspubtd.h */; };
-		1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */; };
-		1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */; };
-		1A4FB3030C8DB8AA00DC8E1F /* jsautocfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */; };
 		1A572FFD0D84BB77003D4A26 /* OODebugInspector.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A572FFB0D84BB77003D4A26 /* OODebugInspector.h */; };
 		1A572FFE0D84BB77003D4A26 /* OODebugInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A572FFC0D84BB77003D4A26 /* OODebugInspector.m */; };
 		1A5730020D84BFBF003D4A26 /* OODebugInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A5730000D84BFBF003D4A26 /* OODebugInspector.xib */; };
@@ -47,7 +43,6 @@
 		1A909C880F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A909C860F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h */; };
 		1A909C890F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A909C870F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m */; };
 		1A909C940F3C6DCA003AE160 /* OOShipGroupDebugInspectorModule.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A909C920F3C6DCA003AE160 /* OOShipGroupDebugInspectorModule.xib */; };
-		1A98BC3310C1E7A2000F1F56 /* OODebugOXPPrefix.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A98BC3210C1E7A2000F1F56 /* OODebugOXPPrefix.h */; };
 		1A98BC4510C1E95E000F1F56 /* RBSplitView-shim.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A98BC4410C1E95E000F1F56 /* RBSplitView-shim.m */; settings = {COMPILER_FLAGS = "-Wno-extra"; }; };
 		1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */; };
 		1AD26BFA0C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD26BF80C8434AB00B4BFD1 /* OOTextFieldHistoryManager.m */; };
@@ -159,10 +154,6 @@
 		1A47F7010D6729F100E0A585 /* oolite-debug-console.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "oolite-debug-console.js"; sourceTree = "<group>"; };
 		1A4D0DE30C90A68900A6FBDB /* OOMacDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOMacDebugger.h; sourceTree = "<group>"; };
 		1A4D0DE40C90A68900A6FBDB /* OOMacDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOMacDebugger.m; sourceTree = "<group>"; };
-		1A4FB2FC0C8DB89E00DC8E1F /* jspubtd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jspubtd.h; path = src/jspubtd.h; sourceTree = "<group>"; };
-		1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jstypes.h; path = src/jstypes.h; sourceTree = "<group>"; };
-		1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = src/jsapi.h; sourceTree = "<group>"; };
-		1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsautocfg.h; path = xcode/jsautocfg.h; sourceTree = "<group>"; };
 		1A572FFB0D84BB77003D4A26 /* OODebugInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugInspector.h; sourceTree = "<group>"; };
 		1A572FFC0D84BB77003D4A26 /* OODebugInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OODebugInspector.m; sourceTree = "<group>"; };
 		1A5730010D84BFBF003D4A26 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OODebugInspector.xib; sourceTree = "<group>"; };
@@ -202,7 +193,6 @@
 				1A846BAB0D79F9680081280D /* oolite-version.xcconfig */,
 				1AD88FD9103F2F0500AA36F4 /* oolite-options.xcconfig */,
 				1A0518D00C7CC69600BA5CCA /* Source */,
-				1A4FB2F70C8DB87100DC8E1F /* SpiderMonkey headers */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
@@ -289,18 +279,6 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
-		1A4FB2F70C8DB87100DC8E1F /* SpiderMonkey headers */ = {
-			isa = PBXGroup;
-			children = (
-				1A4FB2FE0C8DB89E00DC8E1F /* jsapi.h */,
-				1A4FB3020C8DB8AA00DC8E1F /* jsautocfg.h */,
-				1A4FB2FC0C8DB89E00DC8E1F /* jspubtd.h */,
-				1A4FB2FD0C8DB89E00DC8E1F /* jstypes.h */,
-			);
-			name = "SpiderMonkey headers";
-			path = "../deps/Cross-platform-deps/SpiderMonkey/js";
-			sourceTree = "<group>";
-		};
 		1A572FFA0D84BAB9003D4A26 /* Inspector */ = {
 			isa = PBXGroup;
 			children = (
@@ -341,10 +319,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AD26BF90C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h in Headers */,
-				1A4FB2FF0C8DB89E00DC8E1F /* jspubtd.h in Headers */,
-				1A4FB3000C8DB89E00DC8E1F /* jstypes.h in Headers */,
-				1A4FB3010C8DB89E00DC8E1F /* jsapi.h in Headers */,
-				1A4FB3030C8DB8AA00DC8E1F /* jsautocfg.h in Headers */,
 				1A4D0DE50C90A68900A6FBDB /* OOMacDebugger.h in Headers */,
 				1A572FFD0D84BB77003D4A26 /* OODebugInspector.h in Headers */,
 				1A57300E0D84C10F003D4A26 /* OOEntityInspectorExtensions.h in Headers */,
@@ -354,7 +328,6 @@
 				1A2DFBCB0D894A1D0055CF71 /* OOShipDebugInspectorModule.h in Headers */,
 				1A0CF1B10D89FD7700E0B568 /* OOAIDebugInspectorModule.h in Headers */,
 				1A909C880F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h in Headers */,
-				1A98BC3310C1E7A2000F1F56 /* OODebugOXPPrefix.h in Headers */,
 				1A06F2921196E69500AFA5B4 /* OODebugSoundInspector.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -598,11 +571,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREFIX_HEADER = Source/OODebugOXPPrefix.h;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					$OOLITE_OPTION_MACROS,
-					XP_UNIX,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = $OOLITE_OPTION_MACROS;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
@@ -610,7 +579,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Debug;
 				SYMROOT = ../build;
-				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
+				USER_HEADER_SEARCH_PATHS = "../src/Core/** ../src/Cocoa $(SYMROOT)/$(CONFIGURATION)/include/js";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -635,18 +604,14 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_PREFIX_HEADER = ../src/Cocoa/OOPrefixHeader.h;
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
-					$OOLITE_OPTION_MACROS,
-					XP_UNIX,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = $OOLITE_OPTION_MACROS;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Debug;
 				SYMROOT = ../build;
-				USER_HEADER_SEARCH_PATHS = "../src/Core ../src/Core/Debug ../src/Core/Entities ../src/Core/Materials ../src/Core/Scripting ../src/Cocoa ../deps/Cocoa-deps/js/headers/";
+				USER_HEADER_SEARCH_PATHS = "../src/Core/** ../src/Cocoa $(SYMROOT)/$(CONFIGURATION)/include/js";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
