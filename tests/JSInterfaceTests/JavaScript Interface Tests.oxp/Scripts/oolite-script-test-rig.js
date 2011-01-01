@@ -35,7 +35,6 @@ this.version		= "1.75";
 
 (function ()
 {
-
 // API for test implementation scripts.
 
 // $registerTest(): register a test to run while docked.
@@ -125,53 +124,38 @@ this.$require.quaternion = function requireQuaternion(name, actual, expected, ep
 	Inform the test rig that results will be returned later. $deferResult() returns an object
 	with two public methods, reportSuccess() and reportFailure(message). When the results
 	are ready, one of these must be called.
-	timeout is a time limit in seconds (default: 10 seconds). If neither reportSuccess() nor
-	reportFailure() is called within the time limit, a timeout failure is reported.
 */
-this.$deferResult = function deferResult(timeout)
+this.$deferResult = function deferResult()
 {
 	if (!currentTest)
 	{
 		throw "Usage error: $deferResult() must be called during a test.";
 	}
-	if (timeout === undefined)  timeout = 10;
 	
 	deferredCount++;
 	var name = currentTest;
 	currentDeferred = true;
-	var haveReported = false;
-	var timer = new Timer(this, function() { reporter.reportFailure("timed out"); }, timeout);
 	
-	var reporter =
-	{
+	return {
 		reportSuccess: function reportSuccess()
 		{
-			if (!haveReported)
-			{
-				printResult(name, null);
-				if (--deferredCount == 0)  completeTests();
-				timer.stop();
-			}
+			printResult(name, null);
+			if (--deferredCount == 0)  completeTests();
 		},
-		reportFailure: function reportFailure(error)
+		reportFailure: function reportFailure(message)
 		{
-			if (!haveReported)
-			{
-				printResult(name, error);
-				failedCount++;
-				if (--deferredCount == 0)  completeTests();
-				timer.stop();
-			}
+			printResult(name, message);
+			if (--deferredCount == 0)  completeTests();
 		}
 	};
-	
-	return reporter;
 }
 
 
 
 
 // End of API; begin implementation
+
+
 
 
 var tests = [], postLaunchTests = [];
@@ -201,7 +185,6 @@ this.startUp = function startUp()
 	{
 		this.consoleMessage = function(colorCode, message)  { log(message); }
 	}
-	log("interfaceTest.loaded", "JavaScript interface test suite is installed; enter ooRunTests() while docked.");
 }
 
 
@@ -291,14 +274,14 @@ function runTestSeries(series, showProfile)
 function reportSuccess(name)
 {
 	printResult(name, null);
-	if (--deferredCount == 0)  this.completeTests();
+	if (--deferredCount == 0)  completeTests();
 }
 
 
 function reportFailure(name, error)
 {
 	printResult(name, error);
-	if (--deferredCount == 0)  this.completeTests();
+	if (--deferredCount == 0)  completeTests();
 }
 
 
@@ -322,7 +305,7 @@ global.ooRunTests = function ooRunTests(showProfile)
 	{
 		if (deferredCount == 0)
 		{
-			this.completeTests();
+			completeTests();
 		}
 		else
 		{

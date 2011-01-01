@@ -35,21 +35,39 @@ this.startUp = function ()
 {
 	var testRig = worldScripts["oolite-script-test-rig"];
 	var require = testRig.$require;
-	var testTimer, zeroTimer;
+	var testTimer, zeroTimer, reportTimer;
 	
 	testRig.$registerTest("Timer constructor", function ()
 	{
 		var deferedRef = testRig.$deferResult(2);
 		
 		var hitCount = 0;
-		testTimer = new Timer(this, function ()
+		testTimer = new Timer(this, function testTimerCallback()
 		{
-			if (hitCount++ == 3)
+			if (++hitCount == 3)
 			{
 				testTimer.stop();
-				testTimer = null;
 				
-				deferedRef.reportSuccess();
+				/*	Defer report to ensure that the timer actually stopped
+					as intended. This was not the case prior to r3942 (but
+					I think it did work at some time before that.)
+					-- Ahruman 2011-01-01
+				*/
+				this.reportTimer = new Timer(this, function reportTimerCallback()
+				{
+					if (testTimer.isRunning)
+					{
+						deferedRef.reportFailure("Timer still running when it should have stopped.");
+					}
+					else if (hitCount != 3)
+					{
+						deferedRef.reportFailure("Timer nominally stopped but has run again -- hit count is " + hitCount);
+					}
+					else
+					{
+						deferedRef.reportSuccess();
+					}
+				}, 0.5);
 			}
 		}, 0.25, 0.3);
 	});
@@ -58,7 +76,7 @@ this.startUp = function ()
 	{
 		var deferedRef = testRig.$deferResult(0.1);
 		
-		zeroTimer = new Timer(this, function ()
+		zeroTimer = new Timer(this, function zeroTimerCallback()
 		{
 			deferedRef.reportSuccess();
 		}, 0.0);
