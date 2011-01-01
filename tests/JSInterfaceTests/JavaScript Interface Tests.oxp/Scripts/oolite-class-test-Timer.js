@@ -35,11 +35,11 @@ this.startUp = function ()
 {
 	var testRig = worldScripts["oolite-script-test-rig"];
 	var require = testRig.$require;
-	var testTimer;
+	var testTimer, zeroTimer;
 	
 	testRig.$registerTest("Timer constructor", function ()
 	{
-		var deferedRef = testRig.$deferResult();
+		var deferedRef = testRig.$deferResult(2);
 		
 		var hitCount = 0;
 		testTimer = new Timer(this, function ()
@@ -47,11 +47,21 @@ this.startUp = function ()
 			if (hitCount++ == 3)
 			{
 				testTimer.stop();
-				delete testTimer;
+				testTimer = null;
 				
 				deferedRef.reportSuccess();
 			}
 		}, 0.25, 0.3);
+	});
+	
+	testRig.$registerTest("Zero-delay timer", function ()
+	{
+		var deferedRef = testRig.$deferResult(0.1);
+		
+		zeroTimer = new Timer(this, function ()
+		{
+			deferedRef.reportSuccess();
+		}, 0.0);
 	});
 	
 	testRig.$registerTest("Timer properties", function ()
