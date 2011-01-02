@@ -33,6 +33,8 @@ this.version		= "1.75";
 
 this.startUp = function ()
 {
+	"use strict";
+	
 	var testRig = worldScripts["oolite-script-test-rig"];
 	var require = testRig.$require;
 	var testTimer, zeroTimer, reportTimer;

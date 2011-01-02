@@ -164,7 +164,6 @@
 		1A909C860F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOShipGroupDebugInspectorModule.h; sourceTree = "<group>"; };
 		1A909C870F3C6BBB003AE160 /* OOShipGroupDebugInspectorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OOShipGroupDebugInspectorModule.m; sourceTree = "<group>"; };
 		1A909C930F3C6DCA003AE160 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OOShipGroupDebugInspectorModule.xib; sourceTree = "<group>"; };
-		1A98BC3210C1E7A2000F1F56 /* OODebugOXPPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OODebugOXPPrefix.h; sourceTree = "<group>"; };
 		1A98BC4410C1E95E000F1F56 /* RBSplitView-shim.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RBSplitView-shim.m"; sourceTree = "<group>"; };
 		1ABFEE3C10507C5C005AA752 /* Oolite.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Oolite.xcodeproj; path = ../Oolite.xcodeproj; sourceTree = SOURCE_ROOT; };
 		1AD26BF70C8434AB00B4BFD1 /* OOTextFieldHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OOTextFieldHistoryManager.h; sourceTree = "<group>"; };
@@ -273,7 +272,6 @@
 				1A06F2901196E69500AFA5B4 /* OODebugSoundInspector.h */,
 				1A06F2911196E69500AFA5B4 /* OODebugSoundInspector.m */,
 				1A572FFA0D84BAB9003D4A26 /* Inspector */,
-				1A98BC3210C1E7A2000F1F56 /* OODebugOXPPrefix.h */,
 				1A98BC4410C1E95E000F1F56 /* RBSplitView-shim.m */,
 			);
 			path = Source;

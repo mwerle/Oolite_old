@@ -35,6 +35,8 @@ this.version		= "1.75";
 
 (function ()
 {
+"use strict";
+
 // API for test implementation scripts.
 
 // $registerTest(): register a test to run while docked.
