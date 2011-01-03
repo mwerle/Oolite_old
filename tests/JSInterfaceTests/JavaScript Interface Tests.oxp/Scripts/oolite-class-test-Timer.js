@@ -26,7 +26,7 @@ MA 02110-1301, USA.
 
 this.name			= "oolite-class-test-Timer";
 this.author			= "Jens Ayton";
-this.copyright		= "© 2010-2011 the Oolite team.";
+this.copyright		= "© 2010–2011 the Oolite team.";
 this.description	= "Test cases for Timer.";
 this.version		= "1.75";
 
