@@ -103,7 +103,7 @@ this.startUp = function ()
 	testRig.$registerTest("expandDescription %J", function ()
 	{
 		var systemNumber = Math.floor(Math.random() * 256);
-		var expanded = expandDescription("%J" + systemNumber);
+		var expanded = expandDescription("%J" + (systemNumber < 10 ? "00" : systemNumber < 100 ? "0" : "") + systemNumber);
 		
 		require.value("expanded", expanded, System.systemNameForID(systemNumber));
 	});
