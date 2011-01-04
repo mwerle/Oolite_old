@@ -64,4 +64,15 @@ this.startUp = function ()
 		
 		require.value("expanded", expanded, expected);
 	});
+	
+	testRig.$registerTest("expandMissionText parameterized substitution of number", function ()
+	{
+		var substitutions = {};
+		var key = "oolite-test-expandDescription-substitution-parameter";
+		var expected = 42;
+		substitutions[key] = expected;
+		var expanded = expandMissionText("oolite-test-expandMissionText-parameterized-substitution", substitutions);
+		
+		require.value("expanded", expanded, expected);
+	});
 }
