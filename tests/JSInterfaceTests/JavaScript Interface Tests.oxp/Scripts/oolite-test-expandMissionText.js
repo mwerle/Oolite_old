@@ -60,7 +60,7 @@ this.startUp = function ()
 		var key = "oolite-test-expandDescription-substitution-parameter";
 		var expected = "baz";
 		substitutions[key] = expected;
-		var expanded = expandMissionText("oolite-test-expandMissionText-parameterized-substitution");
+		var expanded = expandMissionText("oolite-test-expandMissionText-parameterized-substitution", substitutions);
 		
 		require.value("expanded", expanded, expected);
 	});
