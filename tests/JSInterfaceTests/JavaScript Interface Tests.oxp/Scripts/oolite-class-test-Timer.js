@@ -41,7 +41,7 @@ this.startUp = function ()
 	
 	testRig.$registerTest("Timer constructor", function ()
 	{
-		var deferedRef = testRig.$deferResult(2);
+		var deferredRef = testRig.$deferResult(2);
 		
 		var hitCount = 0;
 		testTimer = new Timer(this, function testTimerCallback()
@@ -59,15 +59,15 @@ this.startUp = function ()
 				{
 					if (testTimer.isRunning)
 					{
-						deferedRef.reportFailure("Timer still running when it should have stopped.");
+						deferredRef.reportFailure("Timer still running when it should have stopped.");
 					}
 					else if (hitCount != 3)
 					{
-						deferedRef.reportFailure("Timer nominally stopped but has run again -- hit count is " + hitCount);
+						deferredRef.reportFailure("Timer nominally stopped but has run again -- hit count is " + hitCount);
 					}
 					else
 					{
-						deferedRef.reportSuccess();
+						deferredRef.reportSuccess();
 					}
 				}, 0.5);
 			}
@@ -76,11 +76,11 @@ this.startUp = function ()
 	
 	testRig.$registerTest("Zero-delay timer", function ()
 	{
-		var deferedRef = testRig.$deferResult(0.1);
+		var deferredRef = testRig.$deferResult(0.1);
 		
 		zeroTimer = new Timer(this, function zeroTimerCallback()
 		{
-			deferedRef.reportSuccess();
+			deferredRef.reportSuccess();
 		}, 0.0);
 	});
 	

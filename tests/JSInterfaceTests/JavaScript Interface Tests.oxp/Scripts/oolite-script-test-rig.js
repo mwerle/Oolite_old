@@ -138,16 +138,27 @@ this.$deferResult = function deferResult()
 	var name = currentTest;
 	currentDeferred = true;
 	
+	var reported = false;
+	
 	return {
 		reportSuccess: function reportSuccess()
 		{
-			printResult(name, null);
-			if (--deferredCount == 0)  completeTests();
+			if (!reported)
+			{
+				printResult(name, null);
+				if (--deferredCount == 0)  completeTests();
+				reported = true;
+			}
 		},
 		reportFailure: function reportFailure(message)
 		{
-			printResult(name, message);
-			if (--deferredCount == 0)  completeTests();
+			if (!reported)
+			{
+				printResult(name, message);
+				failedCount++;
+				if (--deferredCount == 0)  completeTests();
+				reported = true;
+			}
 		}
 	};
 }
