@@ -38,14 +38,20 @@ SOFTWARE.
 @interface OOJavaScriptConsoleController: OOWeakRefObject
 {
 	IBOutlet NSWindow					*consoleWindow;
+	
+	// Container views for each pane.
+	IBOutlet NSView						*consoleLogHolderView;
+	IBOutlet NSView						*consoleInputHolderView;
+	
+	// Content views that actually hold the interesting stuff.
 	IBOutlet NSTextView					*consoleTextView;
 	IBOutlet NSTextField				*consoleInputField;
+	
 	IBOutlet OOTextFieldHistoryManager	*inputHistoryManager;
-	IBOutlet RBSplitSubview				*inputSplitSubview;
+	RBSplitSubview						*inputSplitSubview;
+	IBOutlet NSScroller					*verticalScroller;
 	
 	OOMacDebugger						*_debugger;
-	
-	NSScrollView						*_consoleScrollView;
 	
 	NSFont								*_baseFont,
 										*_boldFont;

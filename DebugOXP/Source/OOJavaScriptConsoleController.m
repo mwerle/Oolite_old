@@ -92,22 +92,40 @@ enum
 
 - (void)awakeFromNib
 {
-	NSUserDefaults				*defaults = nil;
-	
 	assert(kConsoleTrimToSize < kConsoleMaxSize);
 	
-	_consoleScrollView = [consoleTextView enclosingScrollView];
+	//	Build RBSplitView programmatically to avoid issues with IB plug-in.
+	NSView *contentView = [consoleWindow contentView];
+	RBSplitView *splitView = [[RBSplitView alloc] initWithFrame:[contentView frame]];
 	
+	[contentView addSubview:splitView];
+	[splitView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
+	
+	[splitView setHorizontal:YES];
+	[splitView setDelegate:self];
+	
+	[splitView addSubview:consoleLogHolderView atPosition:0];
+	[[splitView subviewAtPosition:0] setMinDimension:100 andMaxDimension:0];
+	
+	CGFloat height = [consoleInputHolderView frame].size.height;
+	[splitView addSubview:consoleInputHolderView atPosition:1];
+	inputSplitSubview = [splitView subviewAtPosition:1];
+	[inputSplitSubview setMinDimension:30 andMaxDimension:0];
+	
+	NSString *thumbPath = [[NSBundle bundleForClass:[self class]] pathForResource:@"SplitViewThumb" ofType:@"png"];
+	[splitView setDivider:[[[NSImage alloc] initWithContentsOfFile:thumbPath] autorelease]];
+	[inputSplitSubview setDimension:height];
+	
+	// Free performance boost in Leopard.
 	if ([[consoleTextView layoutManager] respondsToSelector:@selector(setAllowsNonContiguousLayout:)])
 	{
-		// Free performance boost in Leopard.
 		[[consoleTextView layoutManager] setAllowsNonContiguousLayout:YES];
 	}
 	
 	// Ensure auto-scrolling will work.
-	[[_consoleScrollView verticalScroller] setFloatValue:1.0];
+	[verticalScroller setFloatValue:1.0];
 	
-	defaults = [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[inputHistoryManager setHistory:[defaults arrayForKey:@"debug-js-console-scrollback"]];
 	
 	[self reloadAllSettings];
@@ -210,7 +228,7 @@ enum
 						   range:emphasisRange];
 	}
 	
-	doScroll = [[_consoleScrollView verticalScroller] floatValue] > 0.980;
+	doScroll = [verticalScroller floatValue] > 0.980;
 	
 	textStorage = [consoleTextView textStorage];
 	[textStorage appendAttributedString:mutableStr];
