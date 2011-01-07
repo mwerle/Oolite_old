@@ -101,13 +101,13 @@ enum
 	[contentView addSubview:splitView];
 	[splitView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
 	
-	[splitView setHorizontal:YES];
+	[splitView setVertical:NO];
 	[splitView setDelegate:self];
 	
 	[splitView addSubview:consoleLogHolderView atPosition:0];
 	[[splitView subviewAtPosition:0] setMinDimension:100 andMaxDimension:0];
 	
-	CGFloat height = [consoleInputHolderView frame].size.height;
+	OOCGFloat height = [consoleInputHolderView frame].size.height;
 	[splitView addSubview:consoleInputHolderView atPosition:1];
 	inputSplitSubview = [splitView subviewAtPosition:1];
 	[inputSplitSubview setMinDimension:30 andMaxDimension:0];
