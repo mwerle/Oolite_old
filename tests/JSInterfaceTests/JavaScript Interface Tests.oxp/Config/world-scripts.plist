@@ -7,5 +7,6 @@
 	"oolite-class-test-Vector3D.js",
 	
 	"oolite-test-expandDescription.js",
-	"oolite-test-expandMissionText.js"
+	"oolite-test-expandMissionText.js",
+	"oolite-test-frameCallbacks.js"
 )
