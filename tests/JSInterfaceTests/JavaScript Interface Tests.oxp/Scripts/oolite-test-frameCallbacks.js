@@ -43,10 +43,12 @@ this.startUp = function ()
 		const testTime = 2.5;
 		
 		var sum = 0;
+		log("script.frameCallback.test-script", "Will add Frame Callbacks test FCB.");
 		var fcb = addFrameCallback(function (delta)
 		{
 			sum += delta;
 		});
+		log("script.frameCallback.test-script", "Did add Frame Callbacks test FCB with tracking ID " + fcb + ".");
 		
 		require(isValidFrameCallback(fcb), "addFrameCallback() should return a valid tracking ID.");
 		
@@ -63,7 +65,21 @@ this.startUp = function ()
 			
 			testTimer = new Timer(this, function ()
 			{
+				if (!isValidFrameCallback(fcb))
+				{
+					deferredRef.reportFailure("Expected fcb to be valid before removal.");
+					return;
+				}
+				
+				log("script.frameCallback.test-script", "Will remove Frame Callbacks test FCB with tracking ID " + fcb + ".");
 				removeFrameCallback(fcb);
+				log("script.frameCallback.test-script", "Did remove Frame Callbacks test FCB.");
+				
+				if (isValidFrameCallback(fcb))
+				{
+					deferredRef.reportFailure("Expected fcb to be invalid after removal.");
+					return;
+				}
 				
 				/*
 					Check that sum is within a reasonable slop of testTime.
@@ -87,8 +103,11 @@ this.startUp = function ()
 		var fcb2hitCount = 0;
 		var fcb2;
 		
+		log("script.frameCallback.test-script", "Will add Nested Frame Callbacks test outer FCB.");
 		var fcb1 = addFrameCallback(function (delta)
 		{
+			log("script.frameCallback.test-script", "Executing Nested Frame Callbacks test outer FCB, hit #" + (fcb1hitCount + 1) + " of expected 2.");
+			
 			if (fcb1hitCount == 0)
 			{
 				/*
@@ -99,15 +118,29 @@ this.startUp = function ()
 					execution phase.
 				*/
 				
+				log("script.frameCallback.test-script", "Will add Nested Frame Callbacks test inner FCB (should be deferred).");
 				fcb2 = addFrameCallback(function (delta)
 				{
+					log("script.frameCallback.test-script", "Executing Nested Frame Callbacks test inner FCB, hit #" + (fcb2hitCount + 1) + " of expected 1.");
+					
+					log("script.frameCallback.test-script", "Will remove Nested Frame Callbacks test outer FCB with tracking ID " + fcb1 + " (should be deferred)");
 					removeFrameCallback(fcb1);
+					log("script.frameCallback.test-script", "Did remove Nested Frame Callbacks test outer FCB.");
+					
+					log("script.frameCallback.test-script", "Will remove Nested Frame Callbacks test inner FCB with tracking ID " + fcb2 + " (should be deferred)");
 					removeFrameCallback(fcb2);
+					log("script.frameCallback.test-script", "Did remove Nested Frame Callbacks test inner FCB.");
 					fcb2hitCount++;
+					
+					log("script.frameCallback.test-script", "End of Nested Frame Callbacks test inner FCB.");
 				});
+				log("script.frameCallback.test-script", "Did add Nested Frame Callbacks test inner FCB with tracking ID " + fcb2 + ".");
 			}
 			fcb1hitCount++;
+			
+			log("script.frameCallback.test-script", "End of Nested Frame Callbacks test outer FCB.");
 		});
+		log("script.frameCallback.test-script", "Did add Nested Frame Callbacks test outer FCB with tracking ID " + fcb1 + ".");
 		
 		require(isValidFrameCallback(fcb1), "addFrameCallback() should return a valid tracking ID.");
 		
