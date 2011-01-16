@@ -67,13 +67,9 @@ SOFTWARE.
 }
 
 
-- (void) soundDebugMonitorNoteChannelUseMask:(uintmax_t)channelMask
+- (void) soundDebugMonitorNoteState:(OOCASoundDebugMonitorChannelState)state ofChannel:(OOUInteger)channel
 {
-	unsigned i;
-	for (i = 0; i < ((sizeof channelMask) * CHAR_BIT); i++)
-	{
-		[[_checkBoxes cellWithTag:i] setIntValue:channelMask & (1 << i)];
-	}
+	[[_checkBoxes cellWithTag:channel] setIntValue:state];
 }
 
 
