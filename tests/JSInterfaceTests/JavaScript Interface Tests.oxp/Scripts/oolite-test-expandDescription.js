@@ -90,9 +90,9 @@ this.startUp = function ()
 		require('expanded.indexof("%") == -1', expanded.indexOf("%") == -1);
 	});
 	
-	testRig.$registerTest("expandDescription %R", function ()
+	testRig.$registerTest("expandDescription %N", function ()
 	{
-		var expanded = expandDescription("%R");
+		var expanded = expandDescription("%N");
 		
 		// %N produces a pseudo-random name, so we make do with ensuring it fits the expected pattern.
 		require("expanded.length >= 2", expanded.length >= 2);
