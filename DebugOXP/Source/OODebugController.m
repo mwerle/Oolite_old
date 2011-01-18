@@ -315,7 +315,7 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 - (IBAction) setShaderModeToTag:sender
 {
 	OOShaderSetting setting = [sender tag];
-	NSString *settingString = [ShaderSettingToString(setting) escapedForJavaScriptLiteral];
+	NSString *settingString = [OOStringFromShaderSetting(setting) escapedForJavaScriptLiteral];
 	NSString *command = [NSString stringWithFormat:@"console.shaderMode = \"%@\"", settingString];
 	
 	[[OODebugMonitor sharedDebugMonitor] performJSConsoleCommand:command];
