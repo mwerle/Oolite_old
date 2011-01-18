@@ -29,7 +29,7 @@
 	{
 		[_stackDepthField setIntValue:[object stackDepth]];
 		[_timeToThinkField setStringValue:[NSString stringWithFormat:@"%.1f", [object nextThinkTime] - [UNIVERSE getTime]]];
-		[_behaviourField setStringValue:BehaviourToString([[object owner] behaviour])];
+		[_behaviourField setStringValue:OOStringFromBehaviour([[object owner] behaviour])];
 		[_frustrationField setDoubleValue:[[object owner] frustration]];
 	}
 	else

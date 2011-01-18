@@ -88,13 +88,13 @@
 
 - (NSString *) inspScanClassLine
 {
-	return ScanClassToString([self scanClass]);
+	return OOStringFromScanClass([self scanClass]);
 }
 
 
 - (NSString *) inspStatusLine
 {
-	return EntityStatusToString([self status]);
+	return OOStringFromEntityStatus([self status]);
 }
 
 
