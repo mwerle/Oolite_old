@@ -272,9 +272,9 @@ function runTestSeries(series, showProfile)
 			throw e;
 		}
 	}
-	if (debugConsole !== undefined && debugConsole.profile !== undefined)
+	if (console !== undefined && console.profile !== undefined)
 	{
-		var prof = debugConsole.profile(doRun, this);
+		var prof = console.profile(doRun, this);
 		if (showProfile)  log(prof);
 	}
 	else
