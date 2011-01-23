@@ -254,7 +254,8 @@ this.startUp = function()
 			model: modelName,
 			title: "",
 			message: "\n\n" + testLabel + "\n" + testDesc,
-			background: "oolite_material_test_suite_backdrop.png"
+			background: { name: "oolite_material_test_suite_backdrop.png", width: 640, height: 480 },
+			overlay: null
 		};
 		if (!mission.runScreen(config, this.runNextTest, this))
 		{
