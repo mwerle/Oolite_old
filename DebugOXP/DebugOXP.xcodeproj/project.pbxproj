@@ -58,13 +58,6 @@
 			remoteGlobalIDString = 0865432206B8447D000CA0AB;
 			remoteInfo = Oolite;
 		};
-		1ABFEE4410507C5C005AA752 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1ABFEE3C10507C5C005AA752 /* Oolite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1A71E6F30BCE340C00CD5C13;
-			remoteInfo = "libpng-custom";
-		};
 		1ABFEE4610507C61005AA752 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1ABFEE3C10507C5C005AA752 /* Oolite.xcodeproj */;
@@ -84,16 +77,6 @@
 				1A02553C0C7E1C3400F622D4 /* DebugOXPLocatorBeacon.magic in Copy Files to Wrapper */,
 			);
 			name = "Copy Files to Wrapper";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1A0259F00C7F8D2900F622D4 /* Copy Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1A025A030C7F8D5B00F622D4 /* Copy Files to Config */ = {
@@ -307,7 +290,6 @@
 			isa = PBXGroup;
 			children = (
 				1ABFEE4310507C5C005AA752 /* Oolite.app */,
-				1ABFEE4510507C5C005AA752 /* libpng_for_oolite.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -347,7 +329,6 @@
 				1A02553E0C7E1C5300F622D4 /* Copy Files to Wrapper */,
 				1A025A030C7F8D5B00F622D4 /* Copy Files to Config */,
 				1A9590840C80539A00C112A9 /* Copy Files to Scripts */,
-				1A0259F00C7F8D2900F622D4 /* Copy Frameworks */,
 				1A0255AC0C7E211200F622D4 /* Generate requires.plist */,
 			);
 			buildRules = (
@@ -400,13 +381,6 @@
 			fileType = wrapper.application;
 			path = Oolite.app;
 			remoteRef = 1ABFEE4210507C5C005AA752 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1ABFEE4510507C5C005AA752 /* libpng_for_oolite.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libpng_for_oolite.a;
-			remoteRef = 1ABFEE4410507C5C005AA752 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
