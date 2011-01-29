@@ -174,7 +174,7 @@ static OODebugController *sSingleton = nil;
 	wasEnabled = OOLogWillDisplayMessagesInClass(@"universe.objectDump");
 	OOLogSetDisplayMessagesInClass(@"universe.objectDump", YES);
 	
-	[UNIVERSE obj_dump];
+	[UNIVERSE debugDumpEntities];
 	
 	OOLogSetDisplayMessagesInClass(@"universe.objectDump", wasEnabled);
 }
