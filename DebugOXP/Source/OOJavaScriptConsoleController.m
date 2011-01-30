@@ -31,6 +31,7 @@ SOFTWARE.
 #import "OOJavaScriptConsoleController.h"
 #import "OOMacDebugger.h"
 #import "OODebugMonitor.h"
+#import "OOJavaScriptEngine.h"
 
 #import "OOLogging.h"
 #import "OODebugUtilities.h"
@@ -192,6 +193,8 @@ enum
 			 colorKey:(NSString *)colorKey
 		emphasisRange:(NSRange)emphasisRange
 {
+	OOJS_PROFILE_ENTER
+	
 	NSMutableAttributedString	*mutableStr = nil;
 	NSColor						*fgColor = nil,
 								*bgColor = nil;
@@ -241,6 +244,8 @@ enum
 	
 	// Scroll to end of field
 	if (doScroll)  [consoleTextView scrollRangeToVisible:NSMakeRange(length, 0)];
+	
+	OOJS_PROFILE_EXIT_VOID
 }
 
 
