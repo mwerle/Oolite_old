@@ -198,7 +198,7 @@ enum
 	NSMutableAttributedString	*mutableStr = nil;
 	NSColor						*fgColor = nil,
 								*bgColor = nil;
-	NSRange						fullRange;
+	volatile NSRange			fullRange;
 	NSTextStorage				*textStorage = nil;
 	BOOL						doScroll;
 	unsigned					length;
@@ -206,7 +206,7 @@ enum
 	mutableStr = [NSMutableAttributedString stringWithString:[string stringByAppendingString:@"\n"]
 														font:_baseFont];
 	
-	fullRange = NSMakeRange(0, [mutableStr length]);
+	fullRange = (NSRange){ 0, [mutableStr length] };
 	fgColor = [self foregroundColorForKey:colorKey];
 	if (fgColor != nil)
 	{
@@ -238,12 +238,12 @@ enum
 	length = [textStorage length];
 	if (fullRange.length > kConsoleMaxSize)
 	{
-		[textStorage deleteCharactersInRange:NSMakeRange(length - kConsoleTrimToSize, kConsoleTrimToSize)];
+		[textStorage deleteCharactersInRange:(NSRange){ length - kConsoleTrimToSize, kConsoleTrimToSize }];
 		length = kConsoleTrimToSize;
 	}
 	
 	// Scroll to end of field
-	if (doScroll)  [consoleTextView scrollRangeToVisible:NSMakeRange(length, 0)];
+	if (doScroll)  [consoleTextView scrollRangeToVisible:(NSRange){ length, 0 }];
 	
 	OOJS_PROFILE_EXIT_VOID
 }
@@ -254,7 +254,7 @@ enum
 	NSTextStorage				*textStorage = nil;
 	
 	textStorage = [consoleTextView textStorage];
-	[textStorage deleteCharactersInRange:NSMakeRange(0, [textStorage length])];
+	[textStorage deleteCharactersInRange:(NSRange){ 0, [textStorage length] }];
 }
 
 
