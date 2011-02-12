@@ -63,6 +63,7 @@ show them, set the preference debug-show-extra-menu-items:
 	IBOutlet NSButton						*logShowFunctionCheckBox;
 	IBOutlet NSButton						*logShowFileAndLineCheckBox;
 	IBOutlet NSButton						*logShowMessageClassCheckBox;
+	IBOutlet NSButton						*logShowTimeStampCheckBox;
 	
 	IBOutlet NSPanel						*createShipPanel;
 	IBOutlet NSTextField					*createShipPanelTextField;
@@ -112,6 +113,7 @@ show them, set the preference debug-show-extra-menu-items:
 - (IBAction) logSetShowFunctionAction:sender;
 - (IBAction) logSetShowFileAndLineAction:sender;
 - (IBAction) logSetShowMessageClassAction:sender;
+- (IBAction) logSetShowTimeStampAction:sender;
 
 - (IBAction) insertLogSeparatorAction:sender;
 

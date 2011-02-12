@@ -328,6 +328,7 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 	[logShowFunctionCheckBox setState:OOLogShowFunction()];
 	[logShowFileAndLineCheckBox setState:OOLogShowFileAndLine()];
 	[logShowMessageClassCheckBox setState:OOLogShowMessageClass()];
+	[logShowTimeStampCheckBox setState:OOLogShowTime()];
 	
 	[logPrefsWindow makeKeyAndOrderFront:self];
 }
@@ -348,6 +349,12 @@ static void SetDisplayLogMessagesInClassThroughJS(NSString *msgClass, BOOL displ
 - (IBAction)logSetShowMessageClassAction:sender
 {
 	OOLogSetShowMessageClass([sender state]);
+}
+
+
+- (IBAction) logSetShowTimeStampAction:sender
+{
+	OOLogSetShowTime([sender state]);
 }
 
 
