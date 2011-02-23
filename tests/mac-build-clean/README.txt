@@ -16,5 +16,9 @@ As you may imagine, this is slow. On my 2007 iMac, it takes about 40 minutes.
 If you show off about it being much faster on your machine, I'll force you to
 do it nightly.
 
+Because it builds a debug build for each supported architecture, and the
+build process involves running code-generation tools, it must be run on a
+64-bit Intel system with Rosetta installed.
+
 If you plan on running this, I suggest excluding the enclosing directory from
 Time Machine backups.
