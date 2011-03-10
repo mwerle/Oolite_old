@@ -154,6 +154,6 @@ this.startUp = function ()
 	{
 		var expanded = expandDescription("[credits_number]");
 		
-		require.value("expanded", expanded, player.credits);
+		require.value("expanded", expanded, formatCredits(player.credits, true, false));
 	});
 }
