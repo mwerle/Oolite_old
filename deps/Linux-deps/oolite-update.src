@@ -7,9 +7,11 @@
 # 2009-10-13: x86_64 support
 # 2010-04-23: 1) Improved x86_64 detection
 #             2) Improved exit-message when no new Oolite version is available
+# 2011-03-22: Removed TOPLEVEL environment variable. A small fix in the default.*.apspec file
+#             made TOPLEVEL obsolete. OOLITE_ROOT is more than enough.
 #
 
-if [ ! $OOLITE_ROOT ]
+if [ ! ${OOLITE_ROOT} ]
 then
    echo "Oops, OOLITE_ROOT was not set. This is very bad, it meant the install"
    echo "package didn't do its job. Please report this!"
@@ -39,7 +41,7 @@ if [ -d /usr/lib/Oolite ]; then
    echo
 fi
 
-cp -p $OOLITE_ROOT/$TOPLEVEL/release.txt $OOLITE_ROOT/$TOPLEVEL/release.txt.backup
+cp -p ${OOLITE_ROOT}/release.txt ${OOLITE_ROOT}/release.txt.backup
 if [ $? != 0 ]; then
    exit $?
 fi
@@ -51,7 +53,7 @@ else
     OOLITE_RSYNC_FOLDER="oolite-linux"
 fi
 
-cd $OOLITE_ROOT/$TOPLEVEL
+cd ${OOLITE_ROOT}
 CURRENTVER=`cat release.txt`
 RSYNC_TERRASTORAGE=0
 echo Trying rsync://rsync.alioth.net/$OOLITE_RSYNC_FOLDER...
