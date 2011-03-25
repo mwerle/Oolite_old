@@ -64,7 +64,8 @@ function rundebugbuild
 }
 
 
-rundebugbuild ppc
+# PPC-debug doesn't work because SpiderMonkey doesn't currently build in debug mode without JaegerMonkey.
+#rundebugbuild ppc
 rundebugbuild i386
 rundebugbuild x86_64
 runbuild TestRelease
