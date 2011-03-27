@@ -2,7 +2,7 @@
 # Oolite Run Script
 # This is to run Oolite with the standalone Dependencies Pack.
 #
-# Usage: ./oolite
+# Usage: ./oolite-wrapper
 # Dylan Smith, 2005-09-03
 #
 # Konstantinos Sykas
@@ -23,10 +23,10 @@ then
    exit
 fi
 
-if [ ! -f $HOME/.Oolite/.oolite-run ]
+if [ ! -f $HOME/.Oolite/.oolite${TRUNK}-run ]
 then
    mkdir -p $HOME/.Oolite/
-   touch $HOME/.Oolite/.oolite-run
+   touch $HOME/.Oolite/.oolite${TRUNK}-run
    cat ${OOLITE_ROOT}/doc/README-PREAMBLE.TXT \
         ${OOLITE_ROOT}/doc/README.TXT | more
 fi
@@ -65,7 +65,7 @@ cd ${OOLITE_ROOT}/
 if [ $? != 0 ]
 then
    echo
-   echo "Erk. It looks like Oolite died with an error. When making an error"
+   echo "Erk. It looks like Oolite${TRUNK} died with an error. When making an error"
    echo "report, please copy + paste the log above into the report."
    echo
    echo "(Press Ctrl-C to continue)"

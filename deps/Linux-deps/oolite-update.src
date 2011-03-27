@@ -21,7 +21,7 @@ fi
 which rsync 2>/dev/null >/dev/null
 if [ $? != 0 ]
 then
-   echo "No rsync, no oolite update!"
+   echo "No rsync, no Oolite${TRUNK} update!"
    echo "---------------------------"
    echo "Sorry, you don't seem to have rsync installed."
    echo "To install it, depending on your distro, run one of the following:"
@@ -30,15 +30,26 @@ then
    echo "Other RPM distros: yum install rsync"
    echo "Gentoo users should know what to do already"
    echo
-   echo "Then run oolite-update again."
+   echo "Then run oolite${TRUNK}-update again."
    echo
    exit
 fi
 
-if [ -d /usr/lib/Oolite ]; then
-   echo "WARNING! You have installed oolite as root."
-   echo "Make sure you execute oolite-update as root."
-   echo
+if [ $SELF_PACKAGER ]
+then
+  if [ ${SYSTEM_WIDE} ] 
+  then
+     echo "WARNING! You have installed Oolite${TRUNK} as root."
+     echo "Make sure you execute oolite${TRUNK}-update as root."
+     echo
+  fi
+else   # Remove the "else" section if autopackager will be dismissed
+  if [ -d /usr/lib/Oolite${TRUNK} ] 
+  then
+     echo "WARNING! You have installed Oolite${TRUNK} as root."
+     echo "Make sure you execute oolite${TRUNK}-update as root."
+     echo
+  fi
 fi
 
 cp -p ${OOLITE_ROOT}/release.txt ${OOLITE_ROOT}/release.txt.backup
@@ -48,9 +59,10 @@ fi
 
 HOST_ARCH=`uname -m | sed -e s/amd64/x86_64/`
 if [ "$HOST_ARCH" = "x86_64" ]; then
-    OOLITE_RSYNC_FOLDER="oolite-linux-64"
+    OOLITE_RSYNC_FOLDER="oolite${TRUNK}-linux-64"
+    STATUS_ARCH="_AMD64"
 else
-    OOLITE_RSYNC_FOLDER="oolite-linux"
+    OOLITE_RSYNC_FOLDER="oolite${TRUNK}-linux"
 fi
 
 cd ${OOLITE_ROOT}
@@ -71,9 +83,14 @@ if [ $RSYNC_TERRASTORAGE != 0 ]; then
    echo [terrastorage.ath.cx died and returned $RSYNC_TERRASTORAGE]
    echo
    echo "If the problem was caused by network or other transient issues, "
-   echo "try running oolite-update again."
+   echo "try running oolite${TRUNK}-update again."
    echo "Alternatively you may download the full package from "
-   echo "http://developer.berlios.de/project/showfiles.php?group_id=3577"
+   if [ ${TRUNK} ] 
+   then
+     echo "http://terrastorage.ath.cx/oolite/status${STATUS_ARCH}.html"
+   else
+     echo "http://developer.berlios.de/project/showfiles.php?group_id=3577"
+   fi
    echo
 
    mv release.txt.backup release.txt
@@ -85,10 +102,10 @@ NEWVER=`cat release.txt`
 
 if [ $CURRENTVER != $NEWVER ]
 then
-   echo "Oolite has been upgraded from $CURRENTVER to $NEWVER"
+   echo "Oolite${TRUNK} has been upgraded from $CURRENTVER to $NEWVER"
    exit
 else
    echo "There is no new version available."
-   echo "Any missing Oolite installation files have been recovered."
+   echo "Any missing Oolite${TRUNK} installation files have been recovered."
 fi
 
