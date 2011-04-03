@@ -1,4 +1,6 @@
-#
+
+
+# 
 # Oolite Run Script
 # This is to run Oolite with the standalone Dependencies Pack.
 #
@@ -14,14 +16,12 @@
 #             2) Replaced any usage of ~ as homepath by $HOME
 #             3) Fixed a problem where oolite needed to run twice before the
 #                the $HOME/.Oolite/.oolite-run file could be created.
-#
+# 2011-03-26: Updated to support the new self-extractable package
+# 2011-04-03: Updated to facilitate rsync repository setup for oolite-update script
+# 
 
-if [ ! ${OOLITE_ROOT} ]
-then
-   echo "Oops, OOLITE_ROOT was not set. This is very bad, it meant the install"
-   echo "package didn't do its job. Please report this!"
-   exit
-fi
+
+OOLITE_ROOT=$(cd $(dirname $0); cd ..; pwd -P)
 
 if [ ! -f $HOME/.Oolite/.oolite${TRUNK}-run ]
 then

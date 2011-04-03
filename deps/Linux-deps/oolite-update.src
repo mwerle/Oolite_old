@@ -1,3 +1,5 @@
+
+
 #
 # Oolite Updater Script
 # Dylan Smith, 2005-09-10
@@ -9,15 +11,28 @@
 #             2) Improved exit-message when no new Oolite version is available
 # 2011-03-22: Removed TOPLEVEL environment variable. A small fix in the default.*.apspec file
 #             made TOPLEVEL obsolete. OOLITE_ROOT is more than enough.
-#
+# 2011-03-26: Updated to support the new self-extractable package
+# 2011-04-03: Updated to facilitate rsync repository setup for oolite-update script
+# 
 
-if [ ! ${OOLITE_ROOT} ]
+
+RSYNC_SERVER_PRIMARY="terrastorage.ath.cx"
+RSYNC_SERVER_SECONDARY="rsync.alioth.net"
+RSYNC_ERR=0
+if [ `id -u` -eq 0 ] 
 then
-   echo "Oops, OOLITE_ROOT was not set. This is very bad, it meant the install"
-   echo "package didn't do its job. Please report this!"
-   exit
+  USER_IS_ROOT=1
+fi
+OOLITE_ROOT=$(cd $(dirname $0); cd ..; pwd -P)
+HOST_ARCH=`uname -m | sed -e s/amd64/x86_64/`
+if [ "$HOST_ARCH" = "x86_64" ]; then
+    OOLITE_RSYNC_FOLDER="oolite${TRUNK}-linux-64"
+    STATUS_ARCH="_AMD64"
+else
+    OOLITE_RSYNC_FOLDER="oolite${TRUNK}-linux"
 fi
 
+# Check if rsync client is available
 which rsync 2>/dev/null >/dev/null
 if [ $? != 0 ]
 then
@@ -32,55 +47,57 @@ then
    echo
    echo "Then run oolite${TRUNK}-update again."
    echo
-   exit
+   exit 1
 fi
 
 if [ $SELF_PACKAGER ]
 then
-  if [ ${SYSTEM_WIDE} ] 
+  # Refuse automated update of a relocated installation
+  if [ "${OOLITE_ROOT}" != "$HOME/${INSTALL_ROOT_USERHOME}/${OOLITE_ROOT_NAME}" ] &&  [ "${OOLITE_ROOT}" != "${INSTALL_ROOT_SYSTEMWIDE}/${OOLITE_ROOT_NAME}" ]
   then
-     echo "WARNING! You have installed Oolite${TRUNK} as root."
-     echo "Make sure you execute oolite${TRUNK}-update as root."
-     echo
+    echo "Error: Oolite${TRUNK} installation has been relocated from its original path."
+    exit 1
+  fi
+
+  # Check if we have the right privileges to proceed with update
+  if [ "${OOLITE_ROOT}" = "${INSTALL_ROOT_SYSTEMWIDE}/${OOLITE_ROOT_NAME}" ] && [ ! ${USER_IS_ROOT} ]
+  then
+    echo "Error: Oolite${TRUNK} was installed by root, so you must be root to update it."
+    exit 1
   fi
 else   # Remove the "else" section if autopackager will be dismissed
-  if [ -d /usr/lib/Oolite${TRUNK} ] 
+  if [ "${OOLITE_ROOT}" = "/usr/lib/Oolite${TRUNK}" ]  && [ ! ${USER_IS_ROOT} ]
   then
-     echo "WARNING! You have installed Oolite${TRUNK} as root."
-     echo "Make sure you execute oolite${TRUNK}-update as root."
-     echo
+    echo "Error: Oolite${TRUNK} was installed by root, so you must be root to update it."
+    exit 1
   fi
 fi
 
-cp -p ${OOLITE_ROOT}/release.txt ${OOLITE_ROOT}/release.txt.backup
-if [ $? != 0 ]; then
-   exit $?
-fi
 
-HOST_ARCH=`uname -m | sed -e s/amd64/x86_64/`
-if [ "$HOST_ARCH" = "x86_64" ]; then
-    OOLITE_RSYNC_FOLDER="oolite${TRUNK}-linux-64"
-    STATUS_ARCH="_AMD64"
-else
-    OOLITE_RSYNC_FOLDER="oolite${TRUNK}-linux"
-fi
+# Start update
 
 cd ${OOLITE_ROOT}
 CURRENTVER=`cat release.txt`
-RSYNC_TERRASTORAGE=0
-echo Trying rsync://rsync.alioth.net/$OOLITE_RSYNC_FOLDER...
-rsync -rlv --progress rsync://rsync.alioth.net/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
-RSYNC_ALIOTH=$?
-if [ $RSYNC_ALIOTH != 0 ];
+SVNREV=`echo ${CURRENTVER} | cut -d '.' -f 4`
+
+# Backup release.txt
+cp -p ${OOLITE_ROOT}/release.txt ${OOLITE_ROOT}/release.txt.backup
+
+# Try rsync from primary server
+echo Trying rsync://${RSYNC_SERVER_PRIMARY}/$OOLITE_RSYNC_FOLDER...
+rsync -rlvz --progress rsync://${RSYNC_SERVER_PRIMARY}/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
+RSYNC_ERR=$?
+if [ ${RSYNC_ERR} != 0 ];
 then
-   echo [rsync.alioth.net died and returned $RSYNC_ALIOTH]
+   # Try rsync from secondary server
+   echo [${RSYNC_SERVER_PRIMARY} died and returned ${RSYNC_ERR}]
    echo
-   echo Trying rsync://terrastorage.ath.cx/$OOLITE_RSYNC_FOLDER...
-   rsync -rlv --progress rsync://terrastorage.ath.cx/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
-   RSYNC_TERRASTORAGE=$?
+   echo Trying rsync://${RSYNC_SERVER_SECONDARY}/$OOLITE_RSYNC_FOLDER...
+   rsync -rlvz --progress rsync://${RSYNC_SERVER_SECONDARY}/$OOLITE_RSYNC_FOLDER/* . 2> /dev/null
+   RSYNC_ERR=$?
 fi
-if [ $RSYNC_TERRASTORAGE != 0 ]; then
-   echo [terrastorage.ath.cx died and returned $RSYNC_TERRASTORAGE]
+if [ ${RSYNC_ERR} != 0 ]; then
+   echo [${RSYNC_SERVER_SECONDARY} died and returned ${RSYNC_ERR}]
    echo
    echo "If the problem was caused by network or other transient issues, "
    echo "try running oolite${TRUNK}-update again."
@@ -89,23 +106,34 @@ if [ $RSYNC_TERRASTORAGE != 0 ]; then
    then
      echo "http://terrastorage.ath.cx/oolite/status${STATUS_ARCH}.html"
    else
-     echo "http://developer.berlios.de/project/showfiles.php?group_id=3577"
+     echo "http://www.oolite.org/download.shtml"
    fi
    echo
 
+   # Restore release.txt and exit
    mv release.txt.backup release.txt
-   exit
+   exit 1
 fi
 
+# rsync was successful; release.txt.backup can be removed
 rm -f release.txt.backup
-NEWVER=`cat release.txt`
 
-if [ $CURRENTVER != $NEWVER ]
+# Inform the user about what happened during update
+NEW_CURRENTVER=`cat release.txt`
+NEW_SVNREV=`echo ${NEW_CURRENTVER} | cut -d '.' -f 4`
+if [ ${NEW_SVNREV} -gt ${SVNREV} ]
 then
-   echo "Oolite${TRUNK} has been upgraded from $CURRENTVER to $NEWVER"
-   exit
+   echo "Oolite${TRUNK} has been upgraded from ${CURRENTVER} to ${NEW_CURRENTVER}"
+   exit 0
 else
-   echo "There is no new version available."
-   echo "Any missing Oolite${TRUNK} installation files have been recovered."
+   if [ ${NEW_SVNREV} -lt ${SVNREV} ]   # TODO - Do not downgrade
+   then
+      echo "Oolite${TRUNK} has been downgraded from ${CURRENTVER} to ${NEW_CURRENTVER}"
+      exit 0
+   else
+      echo "Your Oolite${TRUNK} installation is already up to date."
+      echo "Any missing Oolite${TRUNK} installation files have been restored."
+      exit 0
+   fi
 fi
 
